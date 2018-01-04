@@ -1,0 +1,13 @@
+{
+    "commands": {
+		"reload": [
+            "GUILDID"
+        ],
+        "servers": [
+            "GUILDID"
+        ],
+        "welcome": [
+            "GUILDID"
+		]
+    }
+}

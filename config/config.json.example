@@ -1,0 +1,19 @@
+{
+	"debug": false,
+	"commandPrefix": "!",
+	"databases": {
+		"default": "mongodb",
+		"mongodb": {
+			"connection": "localhost/test",
+			"options": {
+				"useMongoClient": true
+			}
+		}
+	},
+	"elizaEnabled": true,
+	"serverName": "insert your server name",
+	"welcomeChannel": "insert channel id of channel where you want welcome to be",
+	"defaultEmbedColor": 5592405,
+	"pruneInterval": 10,
+	"pruneMax": 100
+}
