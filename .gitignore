@@ -26,8 +26,8 @@ coverage
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# Compiled binary addons (http://nodejs.org/api/addons.html)
-build/Release
+# Build Directory
+dist/*
 
 # Dependency directory
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
