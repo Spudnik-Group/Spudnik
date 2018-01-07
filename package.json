@@ -1,66 +1,67 @@
 {
-	"name": "Spudnik",
-	"description": "An awesome chat bot for Discord.",
-	"version": "0.0.1",
-	"license": "Apache-2.0",
-	"readme": "README.md",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/Richardson-Media-House/Spudnik.git"
-	},
-	"author": "Spudnik Group",
-	"contributors": [
-		"Nate Richardson <hello@naterichardson.com> (https://naterichardson.com)",
-		"Matt Carroll <admin@develogix.com> (https://develogix.com)",
-		"Joseph Moran III <joseph.moraniii@gmail.com> (https://josephmoran.co)",
-		"Jacob Smith <jacobthesmith@gmail.com>"
-	],
-	"main": "spudnik.js",
-	"dependencies": {
-		"bufferutil": "^3.0.1",
-		"chalk": "^2.0.1",
-		"d20": "^1.4.1",
-		"discord.js": "^11.2.1",
-		"erlpack": "hammerandchisel/erlpack",
-		"feedparser": "1.1.x",
-		"ffmpeg-binaries": "^3.2.2",
-		"leet": "^1.3.0",
-		"m3u8stream": "^0.2.1",
-		"mongoose": "^4.11.10",
-		"node-opus": "0.2.6",
-		"remove-markdown": "0.2.0",
-		"request": "^2.81.0",
-		"soap": "^0.19.2",
-		"unshort": "^1.0.0",
-		"urban": "^0.3.1",
-		"uws": "^0.14.1",
-		"youtube-dl": "^1.11.1",
-		"wikijs": "^0.3.0",
-		"xml2js": "^0.4.17"
-	},
-	"devDependencies": {
-		"xo": "^0.18.2"
-	},
-	"xo": {
-		"rules": {
-			"linebreak-style": "off",
-			"no-prototype-builtins": "warn",
-			"radix": "warn",
-			"guard-for-in": "warn",
-			"import/no-unresolved": "off",
-			"camelcase": "off",
-			"no-negated-condition": "warn",
-			"object-curly-spacing": [
-				"error",
-				"always",
-				{
-					"arraysInObjects": false
-				}
-			]
-		}
-	},
-	"scripts": {
-		"launch": "node spudnik",
-		"test": "xo"
-	}
+  "name": "Spudnik",
+  "description": "An awesome chat bot for Discord.",
+  "version": "0.0.1",
+  "license": "Apache-2.0",
+  "readme": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Richardson-Media-House/Spudnik.git"
+  },
+  "author": "Spudnik Group",
+  "contributors": [
+    "Nate Richardson <hello@naterichardson.com> (https://naterichardson.com)",
+    "Matt Carroll <admin@develogix.com> (https://develogix.com)",
+    "Joseph Moran III <joseph.moraniii@gmail.com> (https://josephmoran.co)",
+    "Jacob Smith <jacobthesmith@gmail.com>"
+  ],
+  "main": "spudnik.js",
+  "dependencies": {
+    "bufferutil": "^3.0.1",
+    "chalk": "^2.0.1",
+    "d20": "^1.4.1",
+    "discord.js": "^11.2.1",
+    "erlpack": "hammerandchisel/erlpack",
+    "feedparser": "1.1.x",
+    "ffmpeg-binaries": "^3.2.2",
+    "leet": "^1.3.0",
+    "m3u8stream": "^0.2.1",
+    "mongoose": "^4.11.10",
+    "node-opus": "0.2.6",
+    "remove-markdown": "0.2.0",
+    "request": "^2.81.0",
+    "soap": "^0.19.2",
+    "typescript": "^2.6.2",
+    "unshort": "^1.0.0",
+    "urban": "^0.3.1",
+    "uws": "^0.14.1",
+    "wikijs": "^0.3.0",
+    "xml2js": "^0.4.17",
+    "youtube-dl": "^1.11.1"
+  },
+  "devDependencies": {
+    "xo": "^0.18.2"
+  },
+  "xo": {
+    "rules": {
+      "linebreak-style": "off",
+      "no-prototype-builtins": "warn",
+      "radix": "warn",
+      "guard-for-in": "warn",
+      "import/no-unresolved": "off",
+      "camelcase": "off",
+      "no-negated-condition": "warn",
+      "object-curly-spacing": [
+        "error",
+        "always",
+        {
+          "arraysInObjects": false
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "launch": "node spudnik",
+    "test": "xo"
+  }
 }
