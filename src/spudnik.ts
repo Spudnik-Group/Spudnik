@@ -3,21 +3,23 @@ import * as path from 'path';
 import chalk from 'chalk';
 import * as Discord from 'discord.js';
 import * as Mongoose from 'mongoose';
+import { iConfig } from './lib/config';
+import { iAuth } from './lib/auth';
 
 export class Spudnik {
-	public Auth: any;
-	public Config: any;
+	public Auth: iAuth;
+	public Config: iConfig;
 	public Permissions: any;
 	public Discord: any;
 
 	// Helpers
 	require = (filePath: string) => {
-		delete require.cache[path.join(path.dirname(require.main.filename), filePath)];
-		return require(path.join(path.dirname(require.main.filename), filePath))(this);
+		delete require.cache[path.join('./', filePath)];
+		return require(path.join('./', filePath))(this);
 	};
 	getFileContents = (filePath: string) => {
 		try {
-			return fs.readFileSync(path.join(path.dirname(require.main.filename), filePath), 'utf-8');
+			return fs.readFileSync(path.join('./', filePath), 'utf-8');
 		} catch (err) {
 			console.log(chalk.red(err));
 			return '';
@@ -25,7 +27,7 @@ export class Spudnik {
 	};
 	getFileArray = (srcPath: string) => {
 		try {
-			srcPath = path.join(path.dirname(require.main.filename), srcPath);
+			srcPath = path.join('./', srcPath);
 			return fs.readdirSync(srcPath).filter(file => fs.statSync(path.join(srcPath, file)).isFile());
 		} catch (err) {
 			console.log(chalk.red(err));
@@ -46,15 +48,17 @@ export class Spudnik {
 	};
 
 	// Functions
-	launch = (auth: any, config: any) => {
+	launch = (auth: iAuth, config: iConfig) => {
 		this.Auth = auth;
 		this.Config = config;
 
 		// Bot login
 		this.Discord = new Discord.Client();
-		if (this.Auth.bot_token) {
+		console.log(chalk.blue(`---Spudnik Stage 2 Engaged.---`));
+		console.log(chalk.magenta(`Discord.js version: ${Discord.version}`));
+		if (this.Auth.token) {
 			console.log(chalk.magenta('Logging in to Discord...'));
-			this.Discord.login(this.Auth.bot_token);
+			this.Discord.login(this.Auth.token);
 			require('./lib/on-event')(this);
 		} else {
 			console.log(chalk.red('ERROR: Spudnik must have a Discord bot token...'));

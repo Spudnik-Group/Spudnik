@@ -1,6 +1,5 @@
 {
-	"bot_token" : "bot token",
-	"youtube_api_key": "create one here https://console.developers.google.com",
-	"brewerydb_api_key": "go here and click sign up http://www.brewerydb.com/developers",
-	"dictionary_api_key": "go here and sign up http://www.dictionaryapi.com/products/api-collegiate-dictionary.htm"
+	"token" : "bot token",
+	"brewerydbApiKey": "go here and click sign up http://www.brewerydb.com/developers",
+	"dictionaryApiKey": "go here and sign up http://www.dictionaryapi.com/products/api-collegiate-dictionary.htm"
 }
