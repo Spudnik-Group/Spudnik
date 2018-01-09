@@ -40,6 +40,8 @@
     "youtube-dl": "^1.11.1"
   },
   "devDependencies": {
+    "@types/mongoose": "^4.7.32",
+    "@types/node": "^8.5.7",
     "xo": "^0.18.2"
   },
   "xo": {
