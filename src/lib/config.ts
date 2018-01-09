@@ -22,7 +22,7 @@ export class Configuration implements IConfig {
 	@JsonProperty("commandPrefix", String)
 	private _commandPrefix: string = '!';
 
-	@JsonProperty("elizaEnabled", String)
+	@JsonProperty("elizaEnabled", Boolean)
 	private _elizaEnabled: boolean = false;
 
 	@JsonProperty("pruneInterval", Number)
