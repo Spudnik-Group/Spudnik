@@ -21,7 +21,7 @@
     "chalk": "^2.0.1",
     "d20": "^1.4.1",
     "discord.js": "^11.2.1",
-    "erlpack": "hammerandchisel/erlpack",
+    "erlpack": "github:hammerandchisel/erlpack",
     "feedparser": "2.2.x",
     "ffmpeg-binaries": "^3.2.2",
     "json2typescript": "^1.0.5",

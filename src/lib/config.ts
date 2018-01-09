@@ -1,45 +1,76 @@
 import * as fs from 'fs';
+import { JsonConvert, JsonObject, JsonProperty } from 'json2typescript';
 import chalk from 'chalk';
-import { Error } from 'mongoose';
 
-export interface iConfig {
-	debug: boolean;
-	commandPrefix: string;
-	elizaEnabled: boolean;
-	pruneInterval: number;
-	pruneMax: number;
-	defaultEmbedColor: number;
+const authObj: object = JSON.parse(fs.readFileSync('./config/config.json', 'utf8'));
+const jsonConvert: JsonConvert = new JsonConvert();
+
+interface IConfig {
+	getDebug(): boolean;
+	getCommandPrefix(): string;
+	getElizaEnabled(): boolean;
+	getPruneInterval(): number;
+	getPruneMax(): number;
+	getDefaultEmbedColor(): number;
 }
 
-class DefaultConfig implements iConfig {
-	debug: false;
-	commandPrefix: '!';
-	elizaEnabled: false;
-	pruneInterval: 10;
-	pruneMax: 100;
-	defaultEmbedColor: 5592405;
-}
+@JsonObject
+export class Configuration implements IConfig {
+	@JsonProperty("debug", Boolean)
+	private _debug: boolean = false;
 
-function config() {
-	try {
-		return JSON.parse(fs.readFileSync('../../config/config.json', 'utf8'));
-	} catch (err) {
-		// No config file, set up defaults
-		const output: DefaultConfig = new DefaultConfig();
-		try {
-			if (fs.lstatSync('../config/config.json').isFile()) {
-				console.log(chalk.yellow(`WARNING: config.json found but we couldn't read it!\n${err.stack}`));
-			}
-		} catch (err2) {
-			console.log(chalk.red(err2));
-			fs.writeFile('../config/config.json', JSON.stringify(output, null, 2), err3 => {
-				if (err3) {
-					throw new Error(err3.toString());
-				}
-			});
-		}
-		return output;
+	@JsonProperty("commandPrefix", String)
+	private _commandPrefix: string = '!';
+
+	@JsonProperty("elizaEnabled", String)
+	private _elizaEnabled: boolean = false;
+
+	@JsonProperty("pruneInterval", Number)
+	private _pruneInterval: number = 10;
+
+	@JsonProperty("pruneMax", Number)
+	private _pruneMax: number = 100;
+
+	@JsonProperty("defaultEmbedColor", Number)
+	private _defaultEmbedColor: number = 5592405;
+
+	public getDebug() {
+		return this._debug;
+	}
+	public getCommandPrefix() {
+		return this._commandPrefix;
+	}
+	public getElizaEnabled() {
+		return this._elizaEnabled;
+	}
+	public getPruneInterval() {
+		return this._pruneInterval;
+	}
+	public getPruneMax() {
+		return this._pruneMax;
+	}
+	public getDefaultEmbedColor() {
+		return this._defaultEmbedColor;
+	}
+
+	protected setDebug(debug: boolean) {
+		this._debug = debug;
+	}
+	protected setCommandPrefix(commandPrefix: string) {
+		this._commandPrefix = commandPrefix;
+	}
+	protected setElizaEnabled(enabled: boolean) {
+		this._elizaEnabled = enabled;
+	}
+	protected setPruneInterval(interval: number) {
+		this._pruneInterval = interval;
+	}
+	protected setPruneMax(max: number) {
+		this._pruneMax = max;
+	}
+	protected setDefaultEmbedColor(color: number) {
+		this._defaultEmbedColor = color;
 	}
 }
 
-module.exports = config();
+export const Config: Configuration = jsonConvert.deserializeObject(authObj, Configuration);
