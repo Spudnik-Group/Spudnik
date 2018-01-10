@@ -1,10 +1,9 @@
-const mongoose = require('mongoose');
+import { Schema } from 'mongoose';
 
-const Schema = mongoose.Schema;
-
-module.exports = new Schema({
+export const GuildAntiraidSettingsSchema: Schema = new Schema({
 	guildId: String,
 	channelId: String,
 	seconds: { type: Number, default: 10 },
 	limit: { type: Number, default: 4 }
 });
+

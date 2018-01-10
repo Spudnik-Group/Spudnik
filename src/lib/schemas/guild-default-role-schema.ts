@@ -1,8 +1,6 @@
-const mongoose = require('mongoose');
+import { Schema } from 'mongoose';
 
-const Schema = mongoose.Schema;
-
-module.exports = new Schema({
+export const GuildDefaultRoleSchema: Schema = new Schema({
 	guildId: { type: String, required: true, unique: true },
 	roleId: { type: String, required: true, unique: true }
 });
