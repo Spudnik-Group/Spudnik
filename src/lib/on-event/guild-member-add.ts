@@ -4,11 +4,8 @@ import chalk from 'chalk';
 
 import { Guild, TextChannel, GuildMember, } from 'discord.js'
 import { AntiraidSettings } from '../antiraid-settings';
-import { GuildAntiraidSettingsSchema } from '../schemas/guild-antiraid-settings-schema';
 
 module.exports = (Spudnik: Spudnik) => {
-	const GuildAntiraidSettings = Spudnik.Database.model('GuildAntiraidSettings', GuildAntiraidSettingsSchema);
-
 	Spudnik.Discord.on('guildMemberAdd', member => {
 		const guild = member.guild;
 		const guildId = guild.id;
@@ -20,11 +17,8 @@ module.exports = (Spudnik: Spudnik) => {
 		// Add the server to the list of watched guild
 		let antiraidSettings = Spudnik.Config.antiraid[guildId];
 		if (!antiraidSettings) {
-			const settings = new GuildAntiraidSettings({
-				guildId: guild.id,
-				channelId: guild.defaultChannel.id
-			});
-			Spudnik.Config.antiraid[guildId] = new AntiraidSettings(guild, settings);
+			Spudnik.Config.antiraid[guildId] = new AntiraidSettings(guild, { channelId: guild.defaultChannel.id, limit: 10, seconds: 10 });
+			// TODO: add to db
 			antiraidSettings = Spudnik.Config.antiraid[guildId];
 		}
 
@@ -35,8 +29,7 @@ module.exports = (Spudnik: Spudnik) => {
 		const channel = guild.channels.find('id', guildSettings.channelId) as TextChannel;
 
 		// Determine if the antiraid needs to be disabled.
-		const resetJoinCount = antiraidSettings.recentMembers.length &&
-			member.joinedTimestamp - antiraidSettings.recentMembers[antiraidSettings.recentMembers.length - 1].joinedTimestamp > seconds * 1000;
+		const resetJoinCount = antiraidSettings.recentMembers.length && member.joinedTimestamp - antiraidSettings.recentMembers[antiraidSettings.recentMembers.length - 1].joinedTimestamp > seconds * 1000;
 
 		if (limit && antiraidSettings.recentMembers.length >= limit && !resetJoinCount) {
 			// If we haven't started kicking, do so now.
@@ -83,7 +76,7 @@ module.exports = (Spudnik: Spudnik) => {
 		antiraidSettings.recentMembers.push(member);
 
 		// Add default role to new user
-		if (Spudnik.Config.roles && Object.keys(Spudnik.Config.roles).includes(guild.id) && Spudnik.Config.roles[guild.id].default) {
+		if (Spudnik.Config.roles && (Object.keys(Spudnik.Config.roles).indexOf(guild.id) > -1) && Spudnik.Config.roles[guild.id].default) {
 			const role = guild.roles.filter(x => x.id === Spudnik.Config.roles[guild.id].default).first();
 
 			if (role) {

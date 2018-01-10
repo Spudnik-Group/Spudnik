@@ -15,7 +15,7 @@ export class AntiraidSettings {
 };
 
 export class GuildSettings {
-	public guildId: string;
+	public channelId: string;
 	public seconds: number;
 	public limit: number;
 }

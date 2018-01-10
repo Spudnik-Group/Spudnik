@@ -31,9 +31,9 @@ module.exports = (Spudnik: Spudnik) => {
 			}
 
 			guildSettings.forEach((settings: AntiraidGuildSettings) => {
-				const guild = Spudnik.Discord.guilds.find('id', settings.guildId);
+				const guild = Spudnik.Discord.guilds.find('id', settings.channelId);
 				if (guild) {
-					Spudnik.Config.antiraid[settings.guildId] = new AntiraidSettings(guild, settings);
+					Spudnik.Config.antiraid[guild.id] = new AntiraidSettings(guild, settings);
 				}
 			});
 
