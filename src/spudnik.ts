@@ -3,7 +3,7 @@ import * as path from 'path';
 import chalk from 'chalk';
 
 import * as Discord from 'discord.js';
-import { Client } from 'discord.js';
+import { Client as DiscordClient } from 'discord.js';
 
 import * as Mongoose from 'mongoose';
 
@@ -15,7 +15,7 @@ import { SettingProviderConfig } from './lib/setting-provider';
 export class Spudnik {
 	public Auth: Authorization;
 	public Config: Configuration;
-	public Discord: Client;
+	public Discord: DiscordClient;
 	public Database: Mongoose.Mongoose;
 
 	// Helpers
@@ -81,8 +81,7 @@ export class Spudnik {
 		// Bot login
 		this.Database.connection.once('open', () => {
 			this.Discord = new Discord.Client();
-			console.log(chalk.blue(`---Spudnik Stage 2 Engaged.---`));
-			console.log(chalk.green(`Discord.js version: ${Discord.version}`));
+
 			if (this.Auth.getToken()) {
 				console.log(chalk.magenta('Logging in to Discord...'));
 				this.Discord.login(this.Auth.getToken());
