@@ -8,11 +8,13 @@ import { AntiraidSettings } from '../antiraid-settings';
 import { GuildAntiraidSettingsSchema } from '../schemas/guild-antiraid-settings-schema';
 import { GuildAssignableRolesSchema } from '../schemas/guild-assignable-roles-schema';
 import { GuildDefaultRoleSchema } from '../schemas/guild-default-role-schema';
+import { GuildWelcomeMessagesSchema } from '../schemas/guild-welcome-messages-schema';
 
 module.exports = (Spudnik: Spudnik) => {
 	const guildAntiraidSettings = Spudnik.Database.model('GuildAntiraidSettings', GuildAntiraidSettingsSchema);
 	const guildAssignableRoles = Spudnik.Database.model('GuildAssignableRolesSchema', GuildAssignableRolesSchema);
 	const guildDefaultRoles = Spudnik.Database.model('GuildDefaultRoles', GuildDefaultRoleSchema);
+	const guildWelcomeMessages = Spudnik.Database.model('GuildWelcomeMessages', GuildWelcomeMessagesSchema);
 
 	Spudnik.Discord.once('ready', () => {
 		console.log(`Logged into Discord! Serving in ${Spudnik.Discord.guilds.array().length} Discord servers`);
@@ -32,7 +34,7 @@ module.exports = (Spudnik: Spudnik) => {
 			guildSettings.forEach((settings: AntiraidSettings) => {
 				const guild = Spudnik.Discord.guilds.find('id', settings.guildId);
 				if (guild) {
-					Spudnik.Config.antiraidGuilds[settings.guildId] = new AntiraidSettings(guild, settings);
+					Spudnik.Config.Config.antiraid[settings.guildId] = new AntiraidSettings(guild, settings);
 				}
 			});
 
@@ -79,6 +81,29 @@ module.exports = (Spudnik: Spudnik) => {
 					Spudnik.Config.roles[settings.guildId].default = settings.roleId;
 				}
 			});
+
+			return true;
+		});
+
+		// Setup welcome messages
+		guildWelcomeMessages.find((err: any, guildSettings: any[]) => {
+			if (err) {
+				console.log(chalk.red(`Error: ${err}`));
+				return false;
+			}
+
+			guildSettings.forEach(settings => {
+				console.log(chalk.yellow(settings));
+				const guild = Spudnik.Discord.guilds.find('id', settings.guildId);
+
+				if (guild) {
+					if (!Spudnik.Config.welcomeMessages[settings.guildId]) {
+						Spudnik.Config.welcomeMessages[settings.guildId] = settings.welcomeMessage;
+					}
+				}
+			});
+
+			console.dir(Spudnik.Config.welcomeMessages);
 
 			return true;
 		});

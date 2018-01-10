@@ -1,5 +1,8 @@
-module.exports = Spudnik => {
-	function messageCallback(output, msg, expires, delCalling) {
+import { Spudnik } from "../../spudnik";
+import { Message } from "discord.js";
+
+module.exports = (Spudnik: Spudnik) => {
+	function messageCallback(output: any, msg: Message, expires: boolean, delCalling: boolean) {
 		if (expires) {
 			return msg.channel.send(output).then(message => message.delete(5000));
 		}
@@ -9,7 +12,7 @@ module.exports = Spudnik => {
 		msg.channel.send(output);
 	}
 
-	function checkMessageForCommand(msg, isEdit) {
+	function checkMessageForCommand(msg: Message, isEdit: boolean) {
 		// Drop our own messages to prevent feedback loops
 		if (msg.author === Spudnik.Discord.user) {
 			return;
@@ -19,22 +22,24 @@ module.exports = Spudnik => {
 			return;
 		}
 		if (msg.isMentioned(Spudnik.Discord.user)) {
-			if (Spudnik.Config.elizaEnabled) {
+			/*
+			if (Spudnik.Config.getElizaEnabled()) {
 				// If Eliza AI is enabled, respond to @mention
 				const message = msg.content.replace(`${Spudnik.Discord.user} `, '');
 				msg.channel.send(Spudnik.Eliza.transform(message));
 				return;
 			}
+			*/
 
 			msg.channel.send('Yes?');
 			return;
 		}
 
 		// Check if message is a command
-		if (msg.content.startsWith(Spudnik.Config.commandPrefix)) {
-			const commands = Spudnik.commands;
-			const cmdTxt = msg.content.split(' ')[0].substring(Spudnik.Config.commandPrefix.length).toLowerCase();
-			const suffix = msg.content.substring(cmdTxt.length + Spudnik.Config.commandPrefix.length + 1); // Add one for the ! and one for the space
+		if (msg.content.startsWith(Spudnik.Config.getCommandPrefix())) {
+			const commands = Spudnik.Commands;
+			const cmdTxt = msg.content.split(' ')[0].substring(Spudnik.Config.getCommandPrefix().length).toLowerCase();
+			const suffix = msg.content.substring(cmdTxt.length + Spudnik.Config.getCommandPrefix().length + 1); // Add one for the ! and one for the space
 			const cmd = commands[cmdTxt];
 
 			if (cmdTxt === 'help') {
@@ -47,25 +52,24 @@ module.exports = Spudnik => {
 					let info = '';
 					if (cmds.length > 0) {
 						cmds.forEach(cmd => {
-							if (Spudnik.Permissions.checkPermission(msg.guild.id, cmd)) {
-								info += `**${Spudnik.Config.commandPrefix + cmd}**`;
-								const usage = commands[cmd].usage;
-								if (usage) {
-									info += ` ${usage}`;
-								}
-
-								let description = commands[cmd].description;
-
-								if (description instanceof Function) {
-									description = description();
-								}
-
-								if (description) {
-									info += `\n\t${description}`;
-								}
-								info += '\n';
+							info += `**${Spudnik.Config.getCommandPrefix() + cmd}**`;
+							const usage = commands[cmd].usage;
+							if (usage) {
+								info += ` ${usage}`;
 							}
+
+							let description = commands[cmd].description;
+
+							if (description instanceof Function) {
+								description = description();
+							}
+
+							if (description) {
+								info += `\n\t${description}`;
+							}
+							info += '\n';
 						});
+
 						msg.channel.send(info);
 						return;
 					}
@@ -76,7 +80,7 @@ module.exports = Spudnik => {
 						const sortedCommands = Object.keys(commands).sort();
 						for (const i in sortedCommands) {
 							const cmd = sortedCommands[i];
-							let info = `**${Spudnik.Config.commandPrefix + cmd}**`;
+							let info = `**${Spudnik.Config.getCommandPrefix() + cmd}**`;
 							const usage = commands[cmd].usage;
 
 							if (usage) {
@@ -112,16 +116,15 @@ module.exports = Spudnik => {
 				if (msg.member.hasPermission('ADMINISTRATOR')) {
 					msg.channel.send({
 						embed: {
-							color: Spudnik.Config.defaultEmbedColor,
+							color: Spudnik.Config.getDefaultEmbedColor(),
 							description: 'Reloading commands...'
 						}
 					}).then(response => {
 						Spudnik.setupCommands();
-						Spudnik.setupDiscordCommands();
 						response.delete();
 						msg.channel.send({
 							embed: {
-								color: Spudnik.Config.defaultEmbedColor,
+								color: Spudnik.Config.getDefaultEmbedColor(),
 								description: `Reloaded:\n* ${Spudnik.commandCount()} Base Commands\n* ${Object.keys(Spudnik.DiscordCommands).length} Discord Commands`
 							}
 						});
@@ -129,22 +132,18 @@ module.exports = Spudnik => {
 				} else {
 					msg.channel.send({
 						embed: {
-							color: Spudnik.Config.defaultEmbedColor,
+							color: Spudnik.Config.getDefaultEmbedColor(),
 							description: `You can't do that Dave...`
 						}
 					});
 				}
 			} else if (cmd) {
 				try {
-					if (Spudnik.Permissions.checkPermission(msg.guild.id, cmdTxt)) {
-						console.log(`Treating ${msg.content} from ${msg.guild.id}:${msg.author} as command`);
-						cmd.process(msg, suffix, isEdit, messageCallback);
-					} else {
-						console.log(msg.guild.id, cmdTxt, `failed`);
-					}
+					console.log(`Treating ${msg.content} from ${msg.guild.id}:${msg.author} as command`);
+					cmd.process(msg, suffix, isEdit, messageCallback);
 				} catch (err) {
 					let msgTxt = `Command ${cmdTxt} failed :disappointed_relieved:`;
-					if (Spudnik.Config.debug) {
+					if (Spudnik.Config.getDebug()) {
 						msgTxt += `\n${err.stack}`;
 					}
 					msg.channel.send(msgTxt);
@@ -156,7 +155,4 @@ module.exports = Spudnik => {
 	}
 
 	Spudnik.Discord.on('message', msg => checkMessageForCommand(msg, false));
-	Spudnik.Discord.on('messageUpdate', (oldMessage, newMessage) => {
-		checkMessageForCommand(newMessage, true);
-	});
 };

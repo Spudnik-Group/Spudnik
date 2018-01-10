@@ -1,6 +1,8 @@
 import * as fs from 'fs';
 import chalk from 'chalk';
 import { JsonConvert, JsonObject, JsonProperty } from 'json2typescript';
+
+import { AntiraidSettings } from './antiraid-settings';
 import { SettingProviderConfig } from './setting-provider';
 
 const configObj: object = JSON.parse(fs.readFileSync('./config/config.json', 'utf8'));
@@ -44,7 +46,11 @@ export class Configuration implements IConfig {
 	@JsonProperty("defaultEmbedColor", Number)
 	private _defaultEmbedColor: number = 5592405;
 
+	public antiraid: { [index: string]: AntiraidSettings } = {};
+
 	public roles: { [index: string]: Role } = {};
+
+	public welcomeMessages: { [index: string]: string } = {};
 
 	public getDebug() {
 		return this._debug;

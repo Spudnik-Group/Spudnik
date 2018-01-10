@@ -1,4 +1,6 @@
-module.exports = Spudnik => {
+import { Spudnik } from "../../spudnik";
+
+module.exports = (Spudnik: Spudnik) => {
 	Spudnik.Discord.on('guildMemberRemove', member => {
 		const guild = member.guild;
 		if (guild.defaultChannel) {

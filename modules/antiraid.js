@@ -3,7 +3,7 @@ const AntiraidSettings = require('../classes/antiraid-settings');
 const GuildAntiraidSettingsSchema = require('../classes/guild-antiraid-settings-schema');
 
 module.exports = Spudnik => {
-	Spudnik.antiraidGuilds = {};
+	Spudnik.Config.antiraid = {};
 
 	const GuildAntiraidSettings = Spudnik.Database.model('GuildAntiraidSettings', GuildAntiraidSettingsSchema);
 
@@ -26,7 +26,7 @@ module.exports = Spudnik => {
 				}
 
 				// Get the antiraid settings for the guild that the command was run from or instantiate it if it doesn't already exist.
-				let antiraidSettings = Spudnik.antiraidGuilds[msg.guild.id];
+				let antiraidSettings = Spudnik.Config.antiraid[msg.guild.id];
 				if (!antiraidSettings) {
 					const guild = Spudnik.Discord.guilds.find('id', msg.guild.id);
 					if (!guild) {
@@ -37,8 +37,8 @@ module.exports = Spudnik => {
 						guildId: guild.id,
 						channelId: guild.id
 					});
-					Spudnik.antiraidGuilds[msg.guild.id] = new AntiraidSettings(guild, settings);
-					antiraidSettings = Spudnik.antiraidGuilds[msg.guild.id];
+					Spudnik.Config.antiraid[msg.guild.id] = new AntiraidSettings(guild, settings);
+					antiraidSettings = Spudnik.Config.antiraid[msg.guild.id];
 				}
 
 				// Only some values of the antiraid are allowed to be viewed and updated.

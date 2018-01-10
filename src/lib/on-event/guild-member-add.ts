@@ -1,33 +1,38 @@
-const chalk = require('chalk');
-const AntiraidSettings = require('../../classes/antiraid-settings');
-const GuildAntiraidSettingsSchema = require('../../classes/guild-antiraid-settings-schema');
+import { Spudnik } from "../../spudnik";
 
-module.exports = function (Spudnik) {
+import chalk from 'chalk';
+
+import { Guild, TextChannel, GuildMember, } from 'discord.js'
+import { AntiraidSettings } from '../antiraid-settings';
+import { GuildAntiraidSettingsSchema } from '../schemas/guild-antiraid-settings-schema';
+
+module.exports = (Spudnik: Spudnik) => {
 	const GuildAntiraidSettings = Spudnik.Database.model('GuildAntiraidSettings', GuildAntiraidSettingsSchema);
 
 	Spudnik.Discord.on('guildMemberAdd', member => {
 		const guild = member.guild;
-		const guildId = member.guild.id;
+		const guildId = guild.id;
+
 		if (!guild) {
 			console.log(chalk.red(`A member joined a guild Spudnik is not a part of ('id': ${guildId})`));
 		}
 
 		// Add the server to the list of watched guild
-		let antiraidSettings = Spudnik.antiraidGuilds[guildId];
+		let antiraidSettings = Spudnik.Config.antiraid[guildId];
 		if (!antiraidSettings) {
 			const settings = new GuildAntiraidSettings({
 				guildId: guild.id,
-				channelId: guild.id
+				channelId: guild.defaultChannel.id
 			});
-			Spudnik.antiraidGuilds[guildId] = new AntiraidSettings(guild, settings);
-			antiraidSettings = Spudnik.antiraidGuilds[guildId];
+			Spudnik.Config.antiraid[guildId] = new AntiraidSettings(guild, settings);
+			antiraidSettings = Spudnik.Config.antiraid[guildId];
 		}
 
 		// Get the settings for the server
 		const guildSettings = antiraidSettings.settings;
 		const seconds = guildSettings.seconds;
 		const limit = guildSettings.limit;
-		const channel = guild.channels.find('id', guildSettings.channelId);
+		const channel = guild.channels.find('id', guildSettings.channelId) as TextChannel;
 
 		// Determine if the antiraid needs to be disabled.
 		const resetJoinCount = antiraidSettings.recentMembers.length &&
@@ -40,7 +45,7 @@ module.exports = function (Spudnik) {
 					channel.send('Antiraid measures have been activated.');
 				}
 
-				antiraidSettings.recentMembers.forEach(recentMember => {
+				antiraidSettings.recentMembers.forEach((recentMember: GuildMember) => {
 					recentMember.kick('Antiraid protection').then(() => {
 						if (channel) {
 							channel.send(`${recentMember.user.username}#${recentMember.user.discriminator} was kicked due to antiraid protection.`);
@@ -78,11 +83,11 @@ module.exports = function (Spudnik) {
 		antiraidSettings.recentMembers.push(member);
 
 		// Add default role to new user
-		if (Spudnik.Discord.roles && Object.keys(Spudnik.Discord.roles).includes(guild.id) && Spudnik.Discord.roles[guild.id].default) {
-			const role = guild.getRole(Spudnik.Discord.roles[guild.id].default);
+		if (Spudnik.Config.roles && Object.keys(Spudnik.Config.roles).includes(guild.id) && Spudnik.Config.roles[guild.id].default) {
+			const role = guild.roles.filter(x => x.id === Spudnik.Config.roles[guild.id].default).first();
 
 			if (role) {
-				console.log(chalk.blue(`Added default role ${role.name}:${role.id} to ${member.name}:${member.id} on ${guild.name}:${guild.id}`));
+				console.log(chalk.blue(`Added default role ${role.name}:${role.id} to ${member.nickname}:${member.id} on ${guild.name}:${guild.id}`));
 				member.addRole(role);
 			} else {
 				console.log(chalk.red(`Default role for ${guild.name}:${guild.id} is not configured properly.`));

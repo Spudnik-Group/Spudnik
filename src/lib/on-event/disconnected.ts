@@ -1,5 +1,9 @@
-module.exports = Spudnik => {
+import chalk from 'chalk';
+
+import { Spudnik } from "../../spudnik";
+
+module.exports = (Spudnik: Spudnik) => {
 	Spudnik.Discord.on('disconnected', () => {
-		console.log('Disconnected from Discord!');
+		console.log(chalk.red('Disconnected from Discord!'));
 	});
 };
