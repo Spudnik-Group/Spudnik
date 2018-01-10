@@ -7,15 +7,15 @@ export class AntiraidSettings {
 	public recentMembers: GuildMember[];
 	public kicking: boolean;
 
-	constructor(guild: Guild, settings: GuildAntiraidSettingsSchema) {
+	constructor(guild: Guild, settings: GuildSettings) {
 		this.settings = settings;
 		this.recentMembers = [];
 		this.kicking = false;
 	}
 };
 
-class GuildSettings {
-	public channelId: string;
+export class GuildSettings {
+	public guildId: string;
 	public seconds: number;
 	public limit: number;
 }

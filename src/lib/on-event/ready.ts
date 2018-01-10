@@ -2,7 +2,7 @@ import chalk from 'chalk';
 
 import { Spudnik } from "../../spudnik";
 import { Role } from '../config'
-import { AntiraidSettings } from '../antiraid-settings';
+import { AntiraidSettings, GuildSettings as AntiraidGuildSettings } from '../antiraid-settings';
 
 // Import schemas need on ready
 import { GuildAntiraidSettingsSchema } from '../schemas/guild-antiraid-settings-schema';
@@ -24,23 +24,21 @@ module.exports = (Spudnik: Spudnik) => {
 		Spudnik.Discord.user.setPresence({ game: { name: `${Spudnik.Config.getCommandPrefix()}help | ${Spudnik.Discord.guilds.array().length} Servers` } });
 
 		// Setup anti-raid settings
-		/*
-		guildAntiraidSettings.find((error: any, guildSettings: AntiraidSettings[]) => {
+		guildAntiraidSettings.find((error: any, guildSettings: AntiraidGuildSettings[]) => {
 			if (error) {
 				console.log(chalk.red('Error: ' + error));
 				return false;
 			}
 
-			guildSettings.forEach((settings: AntiraidSettings) => {
+			guildSettings.forEach((settings: AntiraidGuildSettings) => {
 				const guild = Spudnik.Discord.guilds.find('id', settings.guildId);
 				if (guild) {
-					Spudnik.Config.Config.antiraid[settings.guildId] = new AntiraidSettings(guild, settings);
+					Spudnik.Config.antiraid[settings.guildId] = new AntiraidSettings(guild, settings);
 				}
 			});
 
 			return true;
 		});
-		*/
 
 		// Setup roles
 		guildAssignableRoles.find((err: any, guildSettings: object[]) => {
@@ -102,8 +100,6 @@ module.exports = (Spudnik: Spudnik) => {
 					}
 				}
 			});
-
-			console.dir(Spudnik.Config.welcomeMessages);
 
 			return true;
 		});
