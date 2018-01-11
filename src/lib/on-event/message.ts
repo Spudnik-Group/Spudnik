@@ -4,7 +4,9 @@ import { Message } from "discord.js";
 module.exports = (Spudnik: Spudnik) => {
 	function messageCallback(output: any, msg: Message, expires: boolean, delCalling: boolean) {
 		if (expires) {
-			return msg.channel.send(output).then(message => message.delete(5000)); // TODO: fix
+			return msg.channel.send(output).then(message => {
+				if (message instanceof Message) message.delete(5000)
+			});
 		}
 		if (delCalling) {
 			return msg.channel.send(output).then(() => msg.delete());
@@ -120,8 +122,9 @@ module.exports = (Spudnik: Spudnik) => {
 							description: 'Reloading commands...'
 						}
 					}).then(response => {
-						Spudnik.setupCommands();
-						response.delete(); // TODO: fix
+						// Spudnik.setupCommands();
+						if (response instanceof Message) response.delete();
+
 						msg.channel.send({
 							embed: {
 								color: Spudnik.Config.getDefaultEmbedColor(),
@@ -149,7 +152,9 @@ module.exports = (Spudnik: Spudnik) => {
 					msg.channel.send(msgTxt);
 				}
 			} else {
-				msg.channel.send(`${cmdTxt} not recognized as a command!`).then((message => message.delete(5000))); // TODO: fix
+				msg.channel.send(`${cmdTxt} not recognized as a command!`).then(message => {
+					if (message instanceof Message) message.delete(5000);
+				});
 			}
 		}
 	}
