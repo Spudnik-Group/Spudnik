@@ -10,7 +10,6 @@
 			}
 		}
 	},
-	"elizaEnabled": true,
 	"defaultEmbedColor": 5592405,
 	"pruneInterval": 10,
 	"pruneMax": 100

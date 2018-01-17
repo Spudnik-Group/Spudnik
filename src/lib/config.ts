@@ -1,7 +1,6 @@
-import * as fs from 'fs';
 import chalk from 'chalk';
+import * as fs from 'fs';
 import { JsonConvert, JsonObject, JsonProperty } from 'json2typescript';
-
 import { AntiraidSettings } from './antiraid-settings';
 import { SettingProviderConfig } from './setting-provider';
 
@@ -12,7 +11,6 @@ interface IConfig {
 	getDebug(): boolean;
 	getCommandPrefix(): string;
 	getDatabase(): SettingProviderConfig;
-	getElizaEnabled(): boolean;
 	getPruneInterval(): number;
 	getPruneMax(): number;
 	getDefaultEmbedColor(): number;
@@ -25,32 +23,29 @@ export class Role {
 
 @JsonObject
 export class Configuration implements IConfig {
-	@JsonProperty("debug", Boolean)
-	private _debug: boolean = false;
-
-	@JsonProperty("commandPrefix", String)
-	private _commandPrefix: string = '!';
-
-	@JsonProperty("database", SettingProviderConfig)
-	private _database: SettingProviderConfig = new SettingProviderConfig();
-
-	@JsonProperty("elizaEnabled", Boolean)
-	private _elizaEnabled: boolean = false;
-
-	@JsonProperty("pruneInterval", Number)
-	private _pruneInterval: number = 10;
-
-	@JsonProperty("pruneMax", Number)
-	private _pruneMax: number = 100;
-
-	@JsonProperty("defaultEmbedColor", Number)
-	private _defaultEmbedColor: number = 5592405;
-
 	public antiraid: { [index: string]: AntiraidSettings } = {};
 
 	public roles: { [index: string]: Role } = {};
 
 	public welcomeMessages: { [index: string]: string } = {};
+
+	@JsonProperty('debug', Boolean)
+	private _debug: boolean = false;
+
+	@JsonProperty('commandPrefix', String)
+	private _commandPrefix: string = '!';
+
+	@JsonProperty('database', SettingProviderConfig)
+	private _database: SettingProviderConfig = new SettingProviderConfig();
+
+	@JsonProperty('pruneInterval', Number)
+	private _pruneInterval: number = 10;
+
+	@JsonProperty('pruneMax', Number)
+	private _pruneMax: number = 100;
+
+	@JsonProperty('defaultEmbedColor', Number)
+	private _defaultEmbedColor: number = 5592405;
 
 	public getDebug() {
 		return this._debug;
@@ -62,10 +57,6 @@ export class Configuration implements IConfig {
 
 	public getDatabase() {
 		return this._database;
-	}
-
-	public getElizaEnabled() {
-		return this._elizaEnabled;
 	}
 
 	public getPruneInterval() {
@@ -90,10 +81,6 @@ export class Configuration implements IConfig {
 
 	protected setDatabase(database: SettingProviderConfig) {
 		this._database = database;
-	}
-
-	protected setElizaEnabled(enabled: boolean) {
-		this._elizaEnabled = enabled;
 	}
 
 	protected setPruneInterval(interval: number) {

@@ -15,7 +15,10 @@
 		"Joseph Moran III <joseph.moraniii@gmail.com> (https://josephmoran.co)",
 		"Jacob Smith <jacobthesmith@gmail.com>"
 	],
-	"main": "spudnik.js",
+	"main": "dist/spudnik.js",
+	"scripts": {
+		"launch": "node dist/spudnik.js"
+	},
 	"dependencies": {
 		"bufferutil": "^3.0.1",
 		"chalk": "^2.0.1",
@@ -43,28 +46,8 @@
 	"devDependencies": {
 		"@types/mongoose": "^4.7.32",
 		"@types/node": "^9.3.0",
-		"xo": "^0.18.2"
-	},
-	"xo": {
-		"rules": {
-			"linebreak-style": "off",
-			"no-prototype-builtins": "warn",
-			"radix": "warn",
-			"guard-for-in": "warn",
-			"import/no-unresolved": "off",
-			"camelcase": "off",
-			"no-negated-condition": "warn",
-			"object-curly-spacing": [
-				"error",
-				"always",
-				{
-					"arraysInObjects": false
-				}
-			]
-		}
-	},
-	"scripts": {
-		"launch": "node spudnik",
-		"test": "xo"
+		"@types/request": "^2.0.11",
+		"ts-loader": "^3.2.0",
+		"webpack": "^3.10.0"
 	}
 }

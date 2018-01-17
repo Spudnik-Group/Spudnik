@@ -1,4 +1,5 @@
 module.exports = {
+	//tslint:disable
 	smiff: [
 		`Will enjoys playing chess.`,
 		`As an early actor on 'The Fresh Prince of Bel-Air' Will would memorize the entire script and lip everyone's lines while filming.`,
@@ -106,8 +107,7 @@ module.exports = {
 		'You are doomed',
 		'You can\'t handle the truth'
 	],
-	coinflip: [
-		{
+	coinflip: [{
 			text: 'Heads',
 			image: 'https://i.imgur.com/pnyfjwd.png'
 		},

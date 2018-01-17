@@ -1,13 +1,19 @@
+import { Message, RichEmbed, VoiceChannel, VoiceConnection } from 'discord.js';
+import { Spudnik } from '../spudnik';
+
+//tslint:disable-next-line
 const m3u8stream = require('m3u8stream');
+//tslint:disable-next-line
 const ytdl = require('youtube-dl');
 
-module.exports = Spudnik => {
-	const options = false;
+module.exports = (Spudnik: Spudnik) => {
+	// tslint:disable:object-literal-sort-keys
+	const options: any = {};
 	const GLOBAL_QUEUE = (options && options.global) || false;
 	const MAX_QUEUE_SIZE = (options && options.maxQueueSize) || 20;
-	const queues = {};
+	const queues: any = {};
 
-	function getQueue(server) {
+	function getQueue(server: string) {
 		// Check if global queues are enabled.
 		if (GLOBAL_QUEUE) {
 			server = '_'; // Change to global queue.
@@ -21,14 +27,14 @@ module.exports = Spudnik => {
 		return queues[server];
 	}
 
-	function executeQueue(msg, queue) {
+	function executeQueue(msg: Message, queue: any) {
 		// If the queue is empty, finish.
 		if (queue.length === 0) {
 			msg.channel.send(createTextEmbed('Playback finished.'));
 
 			// Leave the voice channel.
 			const voiceConnection = Spudnik.Discord.voiceConnections.get(msg.guild.id);
-			if (voiceConnection !== null) {
+			if (voiceConnection !== undefined) {
 				if (voiceConnection.player.dispatcher) {
 					voiceConnection.player.dispatcher.end();
 				}
@@ -46,8 +52,8 @@ module.exports = Spudnik => {
 				// Check if the user is in a voice channel.
 				const voiceChannel = getAuthorVoiceChannel(msg);
 
-				if (voiceChannel !== null) {
-					voiceChannel.join().then(connection => {
+				if (voiceChannel !== undefined) {
+					voiceChannel.join().then((connection) => {
 						resolve(connection);
 					}).catch(console.error);
 				} else {
@@ -58,86 +64,78 @@ module.exports = Spudnik => {
 			} else {
 				resolve(voiceConnection);
 			}
-		}).then(connection => {
-			// Get the first item in the queue.
-			const video = queue[0];
+		}).then((connection) => {
+			if (connection instanceof VoiceConnection) {
+				// Get the first item in the queue.
+				const video = queue[0];
 
-			// Play the video.
-			msg.channel.send(createSongEmbed(video.title, video.webpage_url, video.thumbnail)).then(() => {
-				let dispatcher;
-				if (video.is_live === true) {
-					dispatcher = connection.playStream(m3u8stream(video.url));
-				} else {
-					dispatcher = connection.playStream(ytdl(video.url, ['-q', '--no-warnings', '--force-ipv4'], { filter: 'audioonly' }));
-				}
+				// Play the video.
+				msg.channel.send(createSongEmbed(video.title, video.webpage_url, video.thumbnail)).then(() => {
+					let dispatcher;
+					if (video.is_live === true) {
+						dispatcher = connection.playStream(m3u8stream(video.url));
+					} else {
+						dispatcher = connection.playStream(ytdl(video.url, ['-q', '--no-warnings', '--force-ipv4'], { filter: 'audioonly' }));
+					}
 
-				dispatcher.on('debug', i => console.log(`debug: ${i}`));
-				// Catch errors in the connection.
-				dispatcher.on('error', err => {
-					msg.channel.send(`fail: ${err}`);
-					// Skip to the next song.
-					queue.shift();
-					executeQueue(msg, queue);
-				});
-
-				// Catch the end event.
-				dispatcher.on('end', () => {
-					// Wait a second.
-					setTimeout(() => {
-						// Remove the song from the queue.
+					dispatcher.on('debug', (i: string) => console.log(`debug: ${i}`));
+					// Catch errors in the connection.
+					dispatcher.on('error', (err: Error) => {
+						msg.channel.send(`fail: ${err}`);
+						// Skip to the next song.
 						queue.shift();
-
-						// Play the next song in the queue.
 						executeQueue(msg, queue);
-					}, 1000);
-				});
-			}).catch(console.error);
+					});
+
+					// Catch the end event.
+					dispatcher.on('end', () => {
+						// Wait a second.
+						setTimeout(() => {
+							// Remove the song from the queue.
+							queue.shift();
+
+							// Play the next song in the queue.
+							executeQueue(msg, queue);
+						}, 1000);
+					});
+				}).catch(console.error);
+			}
 		}).catch(console.error);
 	}
 
-	function getAuthorVoiceChannel(msg) {
-		const voiceChannelArray = msg.guild.channels.filter(v => v.type.toLowerCase() === 'voice').filter(v => v.members.has(msg.author.id)).array();
-
-		if (voiceChannelArray.length === 0) {
-			return null;
-		}
-
-		return voiceChannelArray[0];
+	function getAuthorVoiceChannel(msg: Message): VoiceChannel {
+		return msg.member.voiceChannel;
 	}
 
-	function createSongEmbed(text, link, thumbnail) {
-		return {
-			embed: {
-				color: Spudnik.Config.defaultEmbedColor,
-				author: {
-					name: 'Music Player',
-					icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/twitter/103/multiple-musical-notes_1f3b6.png'
-				},
-				footer: {
-					text: 'powered by youtube-dl and m3u8stream'
-				},
-				description: `${text}\n\n${link}`,
-				thumbnail: {
-					url: thumbnail
-				}
-			}
-		};
+	function createSongEmbed(text: string, link: string, thumbnail: string) {
+		return new RichEmbed({
+			color: Spudnik.Config.getDefaultEmbedColor(),
+			author: {
+				name: 'Music Player',
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/twitter/103/multiple-musical-notes_1f3b6.png',
+			},
+			footer: {
+				text: 'powered by youtube-dl and m3u8stream',
+			},
+			description: `${text}\n\n${link}`,
+			thumbnail: {
+				url: thumbnail,
+			},
+		});
 	}
 
-	function createTextEmbed(text) {
-		return {
-			embed: {
-				color: Spudnik.Config.defaultEmbedColor,
-				author: {
-					name: 'Music Player',
-					icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/twitter/103/multiple-musical-notes_1f3b6.png'
-				},
-				footer: {
-					text: 'powered by youtube-dl and m3u8stream'
-				},
-				description: text
-			}
-		};
+	function createTextEmbed(text: string) {
+		return new RichEmbed({
+			color: Spudnik.Config.getDefaultEmbedColor(),
+			author: {
+				name: 'Music Player',
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/twitter/103/multiple-musical-notes_1f3b6.png',
+			},
+			footer: {
+				text: 'powered by youtube-dl and m3u8stream',
+			},
+			description: text,
+		});
 	}
 
 	return {
@@ -149,25 +147,21 @@ module.exports = Spudnik => {
 			'pause',
 			'resume',
 			'stop',
-			'volume'
+			'volume',
 		],
 		play: {
 			usage: '<search terms|URL>',
-			description: `Plays the given video in the user's voice channel. Supports YouTube and many others: <http://rg3.github.io/youtube-dl/supportedsites.html>`,
-			process: (msg, suffix, isEdit) => {
-				if (isEdit) {
-					return;
-				}
-
-				const arr = msg.guild.channels.filter(v => v.type === 'voice').filter(v => v.members.has(msg.author.id));
+			description: "Plays the given video in the user's voice channel. Supports YouTube and many others: <http://rg3.github.io/youtube-dl/supportedsites.html>",
+			process: (msg: Message, suffix: string) => {
+				const voiceChannel: VoiceChannel = msg.member.voiceChannel;
 				// Make sure the user is in a voice channel.
-				if (arr.length === 0) {
-					return msg.channel.send(createTextEmbed(`You're not in a voice channel.`));
+				if (voiceChannel === undefined) {
+					return Spudnik.processMessage(createTextEmbed("You're not in a voice channel."), msg, false, false);
 				}
 
 				// Make sure the suffix exists.
 				if (!suffix) {
-					return msg.channel.send(createTextEmbed('No video specified!'));
+					return Spudnik.processMessage(createTextEmbed('No video specified!'), msg, false, false);
 				}
 
 				// Get the queue.
@@ -175,40 +169,52 @@ module.exports = Spudnik => {
 
 				// Check if the queue has reached its maximum size.
 				if (queue.length >= MAX_QUEUE_SIZE) {
-					return msg.channel.send(createTextEmbed('Maximum queue size reached!'));
+					return Spudnik.processMessage(createTextEmbed('Maximum queue size reached!'), msg, false, false);
 				}
 
 				// Get the video information.
-				msg.channel.send(createTextEmbed('Searching...')).then(response => {
+				msg.channel.send(createTextEmbed('Searching...')).then((response) => {
 					// If the suffix doesn't start with 'http', assume it's a search.
 					if (!suffix.toLowerCase().startsWith('http')) {
 						suffix = `gvsearch1:${suffix}`;
 					}
 
 					// Get the video info from youtube-dl.
-					ytdl.getInfo(suffix, ['-q', '--no-warnings', '--force-ipv4'], (err, info) => {
+					ytdl.getInfo(suffix, ['-q', '--no-warnings', '--force-ipv4'], (err: Error, info: any) => {
 						// Verify the info.
-						if (err || info.format_id === undefined || info.format_id.startsWith('0')) {
-							return response.edit(createTextEmbed('Invalid video!'));
-						}
-
-						// Queue the video.
-						response.edit(createTextEmbed(`Queued: ${info.title}`)).then(resp => {
-							queue.push(info);
-
-							// Play if only one element in the queue.
-							if (queue.length === 1) {
-								executeQueue(msg, queue);
-								resp.delete(1000);
+						if (response instanceof Message) {
+							if (err || info.format_id === undefined || info.format_id.startsWith('0')) {
+								return response.edit(createTextEmbed('Invalid video!'));
 							}
-						}).catch(() => { });
+
+							// Queue the video.
+							response.edit(createTextEmbed(`Queued: ${info.title}`)).then((resp) => {
+								queue.push(info);
+
+								// Play if only one element in the queue.
+								if (queue.length === 1) {
+									executeQueue(msg, queue);
+									resp.delete(1000);
+								}
+							}).catch((error: Error) => {
+								if (Spudnik.Config.getDebug()) {
+									return Spudnik.processMessage(`Error: ${error}`, msg, false, false);
+								}
+								return console.error(error);
+							});
+						}
 					});
-				}).catch(() => { });
-			}
+				}).catch((error: Error) => {
+					if (Spudnik.Config.getDebug()) {
+						return Spudnik.processMessage(`Error: ${error}`, msg, false, false);
+					}
+					return console.error(error);
+				});
+			},
 		},
 		skip: {
 			description: 'skips to the next song in the playback queue',
-			process: (msg, suffix) => {
+			process: (msg: Message, suffix: string) => {
 				// Get the voice connection.
 				const voiceConnection = Spudnik.Discord.voiceConnections.get(msg.guild.id);
 				if (voiceConnection === null || voiceConnection === undefined) {
@@ -225,7 +231,7 @@ module.exports = Spudnik => {
 
 				// Get the number to skip.
 				let toSkip = 1; // Default 1.
-				if (!isNaN(suffix) && parseInt(suffix, 10) > 0) {
+				if (parseInt(suffix, 10) > 0) {
 					toSkip = parseInt(suffix, 10);
 				}
 				toSkip = Math.min(toSkip, queue.length);
@@ -241,33 +247,33 @@ module.exports = Spudnik => {
 				voiceConnection.player.dispatcher.end();
 
 				msg.channel.send(createTextEmbed(`Skipped ${toSkip}!`));
-			}
+			},
 		},
 		queue: {
 			description: 'prints the current music queue for this server',
-			process: msg => {
+			process: (msg: Message) => {
 				// Get the queue.
 				const queue = getQueue(msg.guild.id);
 
 				// Get the queue text.
-				const text = queue.map((video, index) => (`${(index + 1)}: ${video.title}`)).join('\n');
+				const text = queue.map((video: any, index: number) => (`${(index + 1)}: ${video.title}`)).join('\n');
 
 				// Get the status of the queue.
 				let queueStatus = 'Stopped';
 				const voiceConnection = Spudnik.Discord.voiceConnections.get(msg.guild.id);
 				if (voiceConnection !== null && voiceConnection !== undefined) {
-					queueStatus = voiceConnection.paused ? 'Paused' : 'Playing';
+					queueStatus = 'Playing';
 				}
 
 				// Send the queue and status.
 				msg.channel.send(createTextEmbed(`Queue (${queueStatus}):\n${text}`));
-			}
+			},
 		},
 		dequeue: {
 			description: 'Dequeues the given song index from the song queue. Use the queue command to get the list of songs in the queue.',
-			process: (msg, suffix) => {
+			process: (msg: Message, suffix: string) => {
 				// Define a usage string to print out on errors
-				const usageString = `The format is "${Spudnik.Config.commandPrefix}dequeue <index>". Use ${Spudnik.Config.commandPrefix}queue to find the indices of each song in the queue.`;
+				const usageString = `The format is "${Spudnik.Config.getCommandPrefix()}dequeue <index>". Use ${Spudnik.Config.getCommandPrefix()}queue to find the indices of each song in the queue.`;
 
 				// Get the queue.
 				const queue = getQueue(msg.guild.id);
@@ -297,11 +303,13 @@ module.exports = Spudnik => {
 						if (index === 0) {
 							// If it was the first one, skip it
 							const voiceConnection = Spudnik.Discord.voiceConnections.get(msg.guild.id);
-							if (voiceConnection.player.dispatcher) {
-								voiceConnection.player.dispatcher.resume();
-							}
+							if (voiceConnection !== undefined) {
+								if (voiceConnection.player.dispatcher) {
+									voiceConnection.player.dispatcher.resume();
+								}
 
-							voiceConnection.player.dispatcher.end();
+								voiceConnection.player.dispatcher.end();
+							}
 						} else {
 							// Otherwise, just remove it from the queue
 							queue.splice(index, 1);
@@ -315,14 +323,14 @@ module.exports = Spudnik => {
 
 				// Send the queue and status.
 				msg.channel.send(createTextEmbed(`Removed '${songRemoved}' (index ${split[0]}) from the queue.`));
-			}
+			},
 		},
 		pause: {
 			description: 'pauses music playback',
-			process: msg => {
+			process: (msg: Message) => {
 				// Get the voice connection.
 				const voiceConnection = Spudnik.Discord.voiceConnections.get(msg.guild.id);
-				if (voiceConnection === null) {
+				if (voiceConnection === undefined) {
 					return msg.channel.send(createTextEmbed('No music being played.'));
 				}
 
@@ -332,14 +340,14 @@ module.exports = Spudnik => {
 				if (voiceConnection.player.dispatcher) {
 					voiceConnection.player.dispatcher.pause();
 				}
-			}
+			},
 		},
 		resume: {
 			description: 'resumes music playback',
-			process: msg => {
+			process: (msg: Message) => {
 				// Get the voice connection.
 				const voiceConnection = Spudnik.Discord.voiceConnections.get(msg.guild.id);
-				if (voiceConnection === null) {
+				if (voiceConnection === undefined) {
 					return msg.channel.send(createTextEmbed('No music being played.'));
 				}
 
@@ -348,30 +356,33 @@ module.exports = Spudnik => {
 				if (voiceConnection.player.dispatcher) {
 					voiceConnection.player.dispatcher.resume();
 				}
-			}
+			},
 		},
 		stop: {
 			description: 'stops playback and removes everything from queue',
-			process: msg => {
+			process: (msg: Message) => {
 				const voiceConnection = Spudnik.Discord.voiceConnections.get(msg.guild.id);
 				const queue = getQueue(msg.guild.id);
 				// Clear Queue
 				queue.splice(0, queue.length);
 				// Resume and stop playing.
-				if (voiceConnection.player.dispatcher) {
-					voiceConnection.player.dispatcher.resume();
+
+				if (voiceConnection !== undefined) {
+					if (voiceConnection.player.dispatcher) {
+						voiceConnection.player.dispatcher.resume();
+					}
+					voiceConnection.player.dispatcher.end();
 				}
-				voiceConnection.player.dispatcher.end();
-			}
+			},
 		},
 		volume: {
 			usage: '<volume|volume%|volume dB>',
 			description: 'set music playback volume as a fraction, a percent, or in dB',
-			process: (msg, suffix) => {
+			process: (msg: Message, suffix: string) => {
 				// Get the voice connection.
 				const voiceConnection = Spudnik.Discord.voiceConnections.get(msg.guild.id);
 
-				if (voiceConnection === null) {
+				if (voiceConnection === undefined) {
 					return msg.channel.send(createTextEmbed('No music being played.'));
 				}
 
@@ -382,21 +393,22 @@ module.exports = Spudnik => {
 						msg.channel.send(createTextEmbed(`volume: ${displayVolume}%`));
 					} else if (suffix.toLowerCase().indexOf('db') === -1) {
 						if (suffix.indexOf('%') === -1) {
-							if (suffix > 1) {
-								suffix /= 100.0;
+							let num: number = +suffix;
+							if (num > 1) {
+								num /= 100.0;
 							}
 
-							voiceConnection.player.dispatcher.setVolumeLogarithmic(suffix);
+							voiceConnection.player.dispatcher.setVolumeLogarithmic(num);
 						} else {
-							const num = suffix.split('%')[0];
+							const num: number = +suffix.split('%')[0];
 							voiceConnection.player.dispatcher.setVolumeLogarithmic(num / 100.0);
 						}
 					} else {
-						const value = suffix.toLowerCase().split('db')[0];
+						const value: number = +suffix.toLowerCase().split('db')[0];
 						voiceConnection.player.dispatcher.setVolumeDecibels(value);
 					}
 				}
-			}
-		}
+			},
+		},
 	};
 };

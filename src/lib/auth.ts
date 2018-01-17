@@ -12,13 +12,13 @@ interface IAuth {
 
 @JsonObject
 export class Authorization implements IAuth {
-	@JsonProperty("token", String)
+	@JsonProperty('token', String)
 	private _token: string = '';
 
-	@JsonProperty("breweryDbApiKey", String)
+	@JsonProperty('breweryDbApiKey', String)
 	private _breweryDbApiKey: string = '';
 
-	@JsonProperty("dictionaryApiKey", String)
+	@JsonProperty('dictionaryApiKey', String)
 	private _dictionaryApiKey: string = '';
 
 	public getToken() {

@@ -37,14 +37,14 @@ List of included modules for you to include with your installation (if you wish)
 To write a Spudnik module, create a new file that exports an array named `commands` of triggers your bot will respond to. You can use a simple callback to display your message in both Slack and Discord, depending on the features you added:
 
 ```js
-module.exports = (Spudnik) => {
+module.exports = (Spudnik: Spudnik) => {
 	return {
 		commands: [
 			'hello'
 		],
 		hello: {
 			description: 'responds with hello!',
-			process: (msg, suffix, isEdit, cb) => { cb('hello!', msg); }
+			process: (msg: Message, suffix: string) => { Spudnik.processMessage('hello!', msg); }
 		}
 	};
 };

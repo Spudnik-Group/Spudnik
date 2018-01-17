@@ -1,4 +1,4 @@
-import { Spudnik } from "../spudnik";
+import { Spudnik } from '../spudnik';
 
 module.exports = (Spudnik: Spudnik) => {
 	require('./on-event/ready')(Spudnik);
@@ -8,4 +8,4 @@ module.exports = (Spudnik: Spudnik) => {
 	require('./on-event/guild-member-add')(Spudnik);
 	require('./on-event/guild-member-leave')(Spudnik);
 	require('./on-event/disconnected')(Spudnik);
-}
+};

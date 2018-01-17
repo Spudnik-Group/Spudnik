@@ -1,5 +1,5 @@
 import { Guild } from 'discord.js';
-import { JsonProperty, JsonObject } from 'json2typescript/src/json2typescript/json-convert-decorators';
+import { JsonObject, JsonProperty } from 'json2typescript/src/json2typescript/json-convert-decorators';
 
 interface ISettingProviderConfig {
 	getConnection(): string;
@@ -32,11 +32,11 @@ export class SettingProviderConfig implements ISettingProviderConfig {
 }
 
 export class SettingProvider {
-	get(guild: Guild, key: string, defaultVal: any) { throw new Error(`${this.constructor.name} doesn't have a get method.`); }
+	public get(guild: Guild, key: string, defaultVal: any) { throw new Error(`${this.constructor.name} doesn't have a get method.`); }
 
-	set(guild: Guild, key: string, val: any) { throw new Error(`${this.constructor.name} doesn't have a set method.`); }
+	public set(guild: Guild, key: string, val: any) { throw new Error(`${this.constructor.name} doesn't have a set method.`); }
 
-	remove(guild: Guild, key: string) { throw new Error(`${this.constructor.name} doesn't have a remove method.`); }
+	public remove(guild: Guild, key: string) { throw new Error(`${this.constructor.name} doesn't have a remove method.`); }
 
-	clear(guild: Guild) { throw new Error(`${this.constructor.name} doesn't have a clear method.`); }
+	public clear(guild: Guild) { throw new Error(`${this.constructor.name} doesn't have a clear method.`); }
 }

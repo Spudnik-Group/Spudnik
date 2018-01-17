@@ -1,22 +1,27 @@
+import { Message } from 'discord.js';
+import { Spudnik } from '../spudnik';
+
+//tslint:disable-next-line
 const d20 = require('d20');
 
-module.exports = Spudnik => {
+module.exports = (Spudnik: Spudnik) => {
 	return {
 		commands: [
-			'roll'
+			'roll',
 		],
+		// tslint:disable:object-literal-sort-keys
 		roll: {
 			usage: '[# of sides] or [# of dice]d[# of sides]( + [# of dice]d[# of sides] + ...)',
 			description: 'roll one die with x sides, or multiple dice using d20 syntax. Default value is 10',
-			process: (msg, suffix, isEdit, cb) => {
+			process: (msg: Message, suffix: string) => {
 				if (suffix.split('d').length <= 1) {
-					cb(`${msg.author} rolled a ${d20.roll(suffix || '10')}`, msg);
+					return Spudnik.processMessage(`${msg.author} rolled a ${d20.roll(suffix || '10')}`, msg, false, false);
 				} else if (suffix.split('d').length > 1) {
 					const eachDie = suffix.split('+');
 					let passing = 0;
 					let response = '';
-					for (let i = 0; i < eachDie.length; i++) {
-						if (eachDie[i].split('d')[0] < 50) {
+					for (const i in eachDie) {
+						if (+eachDie[i].split('d')[0] < 50) {
 							passing += 1;
 						}
 					}
@@ -26,14 +31,9 @@ module.exports = Spudnik => {
 						response = `${msg.author} tried to roll too many dice at once!`;
 					}
 
-					cb({
-						embed: {
-							color: Spudnik.Config.defaultEmbedColor,
-							description: `${response}`
-						}
-					}, msg);
+					return Spudnik.processMessage(Spudnik.defaultEmbed(`${response}`), msg, false, false);
 				}
-			}
-		}
+			},
+		},
 	};
 };

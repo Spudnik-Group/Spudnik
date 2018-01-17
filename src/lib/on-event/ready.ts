@@ -1,8 +1,7 @@
 import chalk from 'chalk';
-
-import { Spudnik } from "../../spudnik";
-import { Role } from '../config'
+import { Spudnik } from '../../spudnik';
 import { AntiraidSettings, GuildSettings as AntiraidGuildSettings } from '../antiraid-settings';
+import { Role } from '../config';
 
 // Import schemas need on ready
 import { GuildAntiraidSettingsSchema } from '../schemas/guild-antiraid-settings-schema';
@@ -18,7 +17,7 @@ module.exports = (Spudnik: Spudnik) => {
 
 	Spudnik.Discord.once('ready', () => {
 		console.log(`Logged into Discord! Serving in ${Spudnik.Discord.guilds.array().length} Discord servers`);
-		console.log(chalk.blue(`---Spudnik Launch Success---`));
+		console.log(chalk.blue('---Spudnik Launch Success---'));
 
 		// Update bot status
 		Spudnik.Discord.user.setPresence({ game: { name: `${Spudnik.Config.getCommandPrefix()}help | ${Spudnik.Discord.guilds.array().length} Servers` } });
@@ -68,7 +67,7 @@ module.exports = (Spudnik: Spudnik) => {
 				return false;
 			}
 
-			guildSettings.forEach(settings => {
+			guildSettings.forEach((settings) => {
 				const guild = Spudnik.Discord.guilds.find('id', settings.guildId);
 
 				if (guild) {
@@ -90,7 +89,7 @@ module.exports = (Spudnik: Spudnik) => {
 				return false;
 			}
 
-			guildSettings.forEach(settings => {
+			guildSettings.forEach((settings) => {
 				console.log(chalk.yellow(settings));
 				const guild = Spudnik.Discord.guilds.find('id', settings.guildId);
 

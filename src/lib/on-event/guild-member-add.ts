@@ -1,12 +1,10 @@
-import { Spudnik } from "../../spudnik";
-
 import chalk from 'chalk';
-
-import { Guild, TextChannel, GuildMember, } from 'discord.js'
+import { Guild, GuildMember, TextChannel } from 'discord.js';
+import { Spudnik } from '../../spudnik';
 import { AntiraidSettings } from '../antiraid-settings';
 
 module.exports = (Spudnik: Spudnik) => {
-	Spudnik.Discord.on('guildMemberAdd', member => {
+	Spudnik.Discord.on('guildMemberAdd', (member: GuildMember) => {
 		const guild = member.guild;
 		const guildId = guild.id;
 
@@ -50,7 +48,7 @@ module.exports = (Spudnik: Spudnik) => {
 			}
 
 			// To prevent the array from getting too long, remove the first member and add
-			// the last so we only show the people who caused the last threshold to be hit.
+			// The last so we only show the people who caused the last threshold to be hit.
 			antiraidSettings.recentMembers.shift();
 			antiraidSettings.recentMembers.push(member);
 			member.kick('Antiraid protection').then(() => {
@@ -77,7 +75,7 @@ module.exports = (Spudnik: Spudnik) => {
 
 		// Add default role to new user
 		if (Spudnik.Config.roles && (Object.keys(Spudnik.Config.roles).indexOf(guild.id) > -1) && Spudnik.Config.roles[guild.id].default) {
-			const role = guild.roles.filter(x => x.id === Spudnik.Config.roles[guild.id].default).first();
+			const role = guild.roles.filter((x) => x.id === Spudnik.Config.roles[guild.id].default).first();
 
 			if (role) {
 				console.log(chalk.blue(`Added default role ${role.name}:${role.id} to ${member.nickname}:${member.id} on ${guild.name}:${guild.id}`));

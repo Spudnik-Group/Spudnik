@@ -1,6 +1,6 @@
 import { Guild, GuildMember } from 'discord.js';
 
-import { GuildAntiraidSettingsSchema } from './schemas/guild-antiraid-settings-schema'
+import { GuildAntiraidSettingsSchema } from './schemas/guild-antiraid-settings-schema';
 
 export class AntiraidSettings {
 	public settings: GuildSettings;
@@ -12,7 +12,7 @@ export class AntiraidSettings {
 		this.recentMembers = [];
 		this.kicking = false;
 	}
-};
+}
 
 export class GuildSettings {
 	public channelId: string;
