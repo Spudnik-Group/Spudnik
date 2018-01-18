@@ -11,4 +11,5 @@ console.log(chalk.green(`LD - Node version: ${process.version}`));
 console.log(chalk.green(`LDA - Discord.js version: ${Discord.version}`));
 console.log(chalk.blue('---Spudnik Stage 2 Engaged.---'));
 
+process.chdir(__dirname);
 const bot: Spudnik = new Spudnik(Auth, Config);

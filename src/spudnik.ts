@@ -56,7 +56,7 @@ export class Spudnik {
 		});
 
 		try {
-			this._commandDirectory = 'dist/modules';
+			this._commandDirectory = `${__dirname}/modules`;
 			this._commandFiles = this.getFileArray(this._commandDirectory);
 		} catch (err) {
 			console.log(chalk.red(err));
@@ -67,7 +67,7 @@ export class Spudnik {
 
 	public require = (filePath: string) => {
 		delete require.cache[path.join('./', filePath)];
-		return require(path.join('./', filePath))(this);
+		return require(path.join('./', filePath));
 	}
 	public getFileContents = (filePath: string) => {
 		try {
@@ -155,7 +155,7 @@ export class Spudnik {
 		// Load more complex response commands from markdown files
 		let markdownCommands = [];
 		try {
-			markdownCommands = this.getJsonObject('config/markdown-commands.json');
+			markdownCommands = this.getJsonObject('../config/markdown-commands.json');
 		} catch (err) {
 			console.log(chalk.red(err));
 		}
@@ -214,7 +214,7 @@ export class Spudnik {
 		// Load simple commands from json file
 		let jsonCommands = [];
 		try {
-			jsonCommands = this.getJsonObject('config/commands.json');
+			jsonCommands = this.getJsonObject('../config/commands.json');
 		} catch (err) {
 			console.log(chalk.red(err));
 		}
@@ -233,5 +233,6 @@ export class Spudnik {
 				},
 			});
 		});
+		console.log(`Loaded ${Object.keys(this.Commands).length} commands`);
 	}
 }
