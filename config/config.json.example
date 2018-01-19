@@ -4,7 +4,7 @@
 	"databases": {
 		"default": "mongodb",
 		"mongodb": {
-			"connection": "localhost/test",
+			"connection": "mongodb://localhost/test",
 			"options": {
 				"useMongoClient": true
 			}

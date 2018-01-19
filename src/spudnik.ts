@@ -1,89 +1,49 @@
 import chalk from 'chalk';
-import * as Discord from 'discord.js';
 import { Client as DiscordClient, Message, RichEmbed } from 'discord.js';
+import { CommandoClient } from 'discord.js-commando';
 import * as fs from 'fs';
 import * as Mongoose from 'mongoose';
 import * as path from 'path';
 import { Auth, Authorization } from './lib/auth';
 import { Config, Configuration } from './lib/config';
-import { SettingProviderConfig } from './lib/setting-provider';
+import { MongoProvider } from './lib/providers/mongodb-provider';
+import { SettingProviderConfig } from './lib/providers/setting-provider-config';
 
 export class Spudnik {
 	public Auth: Authorization;
 	public Config: Configuration;
-	public Discord: DiscordClient;
 	public Database: Mongoose.Mongoose;
-	public Commands: { [index: string]: any } = {};
+	public Discord: CommandoClient;
 
-	private _commandFiles: string[];
-	private _commandDirectory: string;
 	private _uptime: number;
 
 	constructor(auth: Authorization, config: Configuration) {
 		this.Auth = auth;
 		this.Config = config;
-		this._uptime = new Date().getTime();
-
-		// Set up database
-		const databaseConfig = this.Config.getDatabase();
-
-		if (!databaseConfig) {
-			throw new Error('There are not any database settings specified in the config file.');
-		}
-
-		Mongoose.connect(`mongodb://${databaseConfig.getConnection()}`, (databaseConfig.getOptions() || {}), (err) => {
-			if (err) {
-				throw err;
-			}
-			console.log(chalk.magenta(`Successfully connected to MongoDB at ${databaseConfig.getConnection()}.`));
-		});
-
 		this.Database = Mongoose;
 
-		// Bot login
-		this.Database.connection.once('open', () => {
-			this.Discord = new Discord.Client();
-
-			if (this.Auth.getToken()) {
-				console.log(chalk.magenta('Logging in to Discord...'));
-				this.Discord.login(this.Auth.getToken());
-				require('./lib/on-event')(this);
-			} else {
-				console.log(chalk.red('ERROR: Spudnik must have a Discord bot token...'));
-			}
-
-			console.log(chalk.blue('---Spudnik MECO---'));
+		this.Discord = new CommandoClient({
+			commandPrefix: '!',
+			messageCacheLifetime: 30,
+			messageSweepInterval: 60,
+			owner: '',
 		});
 
-		try {
-			this._commandDirectory = `${__dirname}/modules`;
-			this._commandFiles = this.getFileArray(this._commandDirectory);
-		} catch (err) {
-			console.log(chalk.red(err));
-		}
+		this.setupDatabase();
+		this.login();
+
+		require('./lib/on-event')(this);
+		console.log(chalk.blue('---Spudnik MECO---'));
 
 		this.setupCommands();
 	}
 
-	public require = (filePath: string) => {
-		delete require.cache[path.join('./', filePath)];
-		return require(path.join('./', filePath));
-	}
 	public getFileContents = (filePath: string) => {
 		try {
 			return fs.readFileSync(filePath, 'utf-8');
 		} catch (err) {
 			console.log(chalk.red(err));
 			return '';
-		}
-	}
-	public getFileArray = (srcPath: string) => {
-		try {
-			srcPath = path.join('./', srcPath);
-			return fs.readdirSync(srcPath).filter((file) => fs.statSync(path.join(srcPath, file)).isFile());
-		} catch (err) {
-			console.log(chalk.red(err));
-			return [];
 		}
 	}
 	public getJsonObject = (filePath: string) => {
@@ -124,13 +84,6 @@ export class Spudnik {
 		}
 		return userid;
 	}
-	public addCommand = (commandName: string, commandObject: object) => {
-		try {
-			this.Commands[commandName] = commandObject;
-		} catch (err) {
-			console.log(err);
-		}
-	}
 	public defaultEmbed = (message: string) => {
 		return new RichEmbed({ color: this.Config.getDefaultEmbedColor(), description: message });
 	}
@@ -146,93 +99,40 @@ export class Spudnik {
 			}
 		});
 	}
-	public commandCount = () => {
-		return Object.keys(this.Commands).length;
-	}
 	public setupCommands = () => {
-		this.Commands = {};
-
-		// Load more complex response commands from markdown files
-		let markdownCommands = [];
-		try {
-			markdownCommands = this.getJsonObject('../config/markdown-commands.json');
-		} catch (err) {
-			console.log(chalk.red(err));
+		this.Discord.registry
+			.registerGroups([
+				['nsfw', 'Nsfw'],
+				['util', 'Util'],
+				['gifs', 'Gifs'],
+				['levels', 'Levels'],
+			])
+			.registerDefaults()
+			.registerCommandsIn(path.join(__dirname, 'modules'));
+	}
+	public setupDatabase = () => {
+		const databaseConfig = this.Config.getDatabase();
+		if (!databaseConfig) {
+			throw new Error('There are not any database settings specified in the config file.');
 		}
-		markdownCommands.forEach((markdownCommand: any) => {
-			const command = markdownCommand.command;
-			const description = markdownCommand.description;
-			const deleteRequest = markdownCommand.deleteRequest;
-			const channelRestriction = markdownCommand.channelRestriction;
-			const file = markdownCommand.file;
-			const messagesToSend = this.getFileContents(file);
-			if (messagesToSend) {
-				this.addCommand(command, {
-					description,
-					process: (msg: Message, suffix: string) => {
-						if (channelRestriction === undefined || (channelRestriction && msg.channel.id === channelRestriction)) {
-							if (deleteRequest) {
-								msg.delete();
-							}
 
-							const messages = messagesToSend.split('=====');
-							messages.forEach((message) => {
-								const msgSplit = message.split('-----');
-								// tslint:disable:object-literal-sort-keys
-								this.processMessage(new RichEmbed({
-									color: this.Config.getDefaultEmbedColor(),
-									title: msgSplit[0].trim(),
-									description: msgSplit[1].trim(),
-								}), msg, false, false);
-							});
-						}
-					},
-				});
-			}
+		this.Discord.setProvider(
+			Mongoose.connect(databaseConfig.getConnection()).then(() => new MongoProvider(Mongoose.connection)),
+		).catch((err: any) => {
+			console.error('Failed to connect to database.');
+			process.exit(-1);
 		});
+	}
+	public login = () => {
+		if (this.Auth.getToken()) {
+			console.log(chalk.magenta('Logging in to Discord...'));
 
-		// Load command files
-		this._commandFiles.forEach((commandFile: string) => {
-			try {
-				const file = this.require(`${path.join(this._commandDirectory, commandFile)}`);
+			this.Discord.login(this.Auth.getToken());
 
-				if (file) {
-					if (file.commands) {
-						file.commands.forEach((command: any) => {
-							if (command in file) {
-								this.addCommand(command, file[command]);
-							}
-						});
-					}
-				}
-			} catch (err) {
-				console.log(chalk.red(`Improper setup of the '${commandFile}' command file. : ${err}`));
-			}
-
-		});
-
-		// Load simple commands from json file
-		let jsonCommands = [];
-		try {
-			jsonCommands = this.getJsonObject('../config/commands.json');
-		} catch (err) {
-			console.log(chalk.red(err));
+			this._uptime = new Date().getTime();
+		} else {
+			console.error('Spudnik must have a Discord bot token...');
+			process.exit(-1);
 		}
-		jsonCommands.forEach((jsonCommand: any) => {
-			const command = jsonCommand.command;
-			const description = jsonCommand.description;
-			const response = jsonCommand.response;
-
-			this.addCommand(command, {
-				description,
-				process: (msg: Message, suffix: string) => {
-					this.processMessage(new RichEmbed({
-						color: this.Config.getDefaultEmbedColor(),
-						description: response,
-					}), msg, false, false);
-				},
-			});
-		});
-		console.log(`Loaded ${Object.keys(this.Commands).length} commands`);
 	}
 }
