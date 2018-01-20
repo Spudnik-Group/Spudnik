@@ -15,8 +15,6 @@ export class Spudnik {
 	public Database: Mongoose.Mongoose;
 	public Discord: CommandoClient;
 
-	private _uptime: number;
-
 	constructor(auth: Authorization, config: Configuration) {
 		this.Auth = auth;
 		this.Config = config;
@@ -26,7 +24,7 @@ export class Spudnik {
 			commandPrefix: '!',
 			messageCacheLifetime: 30,
 			messageSweepInterval: 60,
-			owner: '',
+			owner: '223806022588956673',
 		});
 
 		this.setupDatabase();
@@ -49,32 +47,6 @@ export class Spudnik {
 	public getJsonObject = (filePath: string) => {
 		return JSON.parse(this.getFileContents(filePath));
 	}
-	public getUptime = () => {
-		const now = Date.now();
-		let msec = now - this._uptime;
-		console.log(`Uptime is ${msec} milliseconds`);
-		const days = Math.floor(msec / 1000 / 60 / 60 / 24);
-		msec -= days * 1000 * 60 * 60 * 24;
-		const hours = Math.floor(msec / 1000 / 60 / 60);
-		msec -= hours * 1000 * 60 * 60;
-		const mins = Math.floor(msec / 1000 / 60);
-		msec -= mins * 1000 * 60;
-		const secs = Math.floor(msec / 1000);
-		let timestr = '';
-		if (days > 0) {
-			timestr += `${days} days `;
-		}
-		if (hours > 0) {
-			timestr += `${hours} hours `;
-		}
-		if (mins > 0) {
-			timestr += `${mins} minutes `;
-		}
-		if (secs > 0) {
-			timestr += `${secs} seconds `;
-		}
-		return timestr;
-	}
 	public resolveMention = (usertxt: string) => {
 		let userid = usertxt;
 		if (usertxt.startsWith('<@!')) {
@@ -83,9 +55,6 @@ export class Spudnik {
 			userid = usertxt.substr(2, usertxt.length - 3);
 		}
 		return userid;
-	}
-	public defaultEmbed = (message: string) => {
-		return new RichEmbed({ color: this.Config.getDefaultEmbedColor(), description: message });
 	}
 	public processMessage = (output: any, msg: Message, expires: boolean, delCalling: boolean) => {
 		return msg.channel.send(output).then((message) => {
@@ -128,8 +97,6 @@ export class Spudnik {
 			console.log(chalk.magenta('Logging in to Discord...'));
 
 			this.Discord.login(this.Auth.getToken());
-
-			this._uptime = new Date().getTime();
 		} else {
 			console.error('Spudnik must have a Discord bot token...');
 			process.exit(-1);

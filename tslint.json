@@ -5,15 +5,16 @@
 	],
 	"jsRules": {},
 	"rules": {
-		"no-console": false,
-		"max-line-length": false,
 		"indent": [
 			true,
 			"tabs"
 		],
+		"no-console": false,
+		"max-line-length": false,
 		"no-shadowed-variable": false,
 		"max-classes-per-file": false,
 		"forin": false,
+		"object-literal-sort-keys": false,
 		"variable-name": [
 			true,
 			"ban-keywords",

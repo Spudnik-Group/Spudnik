@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import * as fs from 'fs';
 import { JsonConvert, JsonObject, JsonProperty } from 'json2typescript';
 import { AntiraidSettings } from './antiraid-settings';
-import { SettingProviderConfig } from './setting-provider';
+import { SettingProviderConfig } from './providers/setting-provider-config';
 
 const configObj: object = JSON.parse(fs.readFileSync('./config/config.json', 'utf8'));
 const jsonConvert: JsonConvert = new JsonConvert();
@@ -13,7 +13,6 @@ interface IConfig {
 	getDatabase(): SettingProviderConfig;
 	getPruneInterval(): number;
 	getPruneMax(): number;
-	getDefaultEmbedColor(): number;
 }
 
 export class Role {
@@ -44,9 +43,6 @@ export class Configuration implements IConfig {
 	@JsonProperty('pruneMax', Number)
 	private _pruneMax: number = 100;
 
-	@JsonProperty('defaultEmbedColor', Number)
-	private _defaultEmbedColor: number = 5592405;
-
 	public getDebug() {
 		return this._debug;
 	}
@@ -67,10 +63,6 @@ export class Configuration implements IConfig {
 		return this._pruneMax;
 	}
 
-	public getDefaultEmbedColor() {
-		return this._defaultEmbedColor;
-	}
-
 	protected setDebug(debug: boolean) {
 		this._debug = debug;
 	}
@@ -89,10 +81,6 @@ export class Configuration implements IConfig {
 
 	protected setPruneMax(max: number) {
 		this._pruneMax = max;
-	}
-
-	protected setDefaultEmbedColor(color: number) {
-		this._defaultEmbedColor = color;
 	}
 }
 

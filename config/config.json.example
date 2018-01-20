@@ -1,16 +1,9 @@
 {
 	"debug": false,
-	"commandPrefix": "!",
 	"databases": {
-		"default": "mongodb",
-		"mongodb": {
-			"connection": "mongodb://localhost/test",
-			"options": {
-				"useMongoClient": true
-			}
+		"connection": "mongodb://localhost/test",
+		"options": {
+			"useMongoClient": true
 		}
-	},
-	"defaultEmbedColor": 5592405,
-	"pruneInterval": 10,
-	"pruneMax": 100
+	}
 }

@@ -1,0 +1,84 @@
+import { Message } from 'discord.js';
+import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+
+export function sendSimpleEmbededMessage(msg: CommandMessage, text: string, timeout?: number): Promise<Message | Message[]> {
+	const promise: Promise<Message | Message[]> = msg.embed({
+		author: {
+			icon_url: msg.author.displayAvatarURL,
+			name: `${msg.author.username} `,
+		},
+		color: 5592405,
+		description: `${text}`,
+	});
+
+	if (timeout) {
+		promise.then((reply: Message | Message[]) => {
+			if (reply instanceof Message) {
+				reply.delete(timeout).catch(() => undefined);
+			} else if (reply instanceof Array) {
+				msg.channel.bulkDelete(reply);
+			}
+		});
+	}
+	return promise;
+}
+
+export function sendSimpleEmbeddedError(msg: CommandMessage, text: string, timeout?: number): Promise<Message | Message[]> {
+	const promise: Promise<Message | Message[]> = msg.embed({
+		author: {
+			icon_url: msg.author.displayAvatarURL,
+			name: `${msg.author.username} `,
+		},
+		color: 16711680,
+		description: `${text}`,
+	});
+
+	if (timeout) {
+		promise.then((reply: Message | Message[]) => {
+			if (reply instanceof Message) {
+				reply.delete(timeout).catch(() => undefined);
+			} else if (reply instanceof Array) {
+				msg.channel.bulkDelete(reply);
+			}
+		});
+	}
+	return promise;
+}
+
+export function sendSimpleEmbeddedSuccess(msg: CommandMessage, text: string, timeout?: number): Promise<Message | Message[]> {
+	const promise: Promise<Message | Message[]> = msg.embed({
+		author: {
+			icon_url: msg.author.displayAvatarURL,
+			name: `${msg.author.username} `,
+		},
+		color: 3447003,
+		description: `${text}`,
+	});
+
+	if (timeout) {
+		promise.then((reply: Message | Message[]) => {
+			if (reply instanceof Message) {
+				reply.delete(timeout).catch(() => undefined);
+			} else if (reply instanceof Array) {
+				msg.channel.bulkDelete(reply);
+			}
+		});
+	}
+	return promise;
+}
+
+export function sendSimpleEmbeddedImage(msg: CommandMessage, url: string, description?: string): Promise<Message | Message[]> {
+	return msg.embed({
+		author: {
+			icon_url: msg.author.displayAvatarURL,
+			name: `${msg.author.username} `,
+		},
+		color: 3447003,
+		description,
+		image: { url },
+	});
+}
+
+export function getRandomInt(min: number, max: number): number {
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}

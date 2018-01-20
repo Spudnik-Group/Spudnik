@@ -11,7 +11,6 @@ module.exports = (Spudnik: Spudnik) => {
 			'prune',
 			'topic',
 		],
-		// tslint:disable:object-literal-sort-keys
 		ban: {
 			usage: '<user> [days of messages to delete] [reason]',
 			description: 'bans the user, optionally deleting messages from them in the last x days',
