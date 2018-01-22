@@ -1,5 +1,4 @@
-import { stripIndents } from 'common-tags';
-import { Guild, Message, TextChannel } from 'discord.js';
+import { Message, TextChannel } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 
 export default class TopicCommand extends Command {

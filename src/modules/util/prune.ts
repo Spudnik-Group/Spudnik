@@ -1,6 +1,6 @@
-import { Collection, GuildMember, Message, PartialGuild, User } from 'discord.js';
+import { Collection, GuildMember, Message, User } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedSuccess, sendSimpleEmbededMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbededMessage } from '../../lib/helpers';
 
 export default class PruneCommand extends Command {
 	constructor(client: CommandoClient) {

@@ -9,6 +9,7 @@
 			true,
 			"tabs"
 		],
+		"no-unused-variable": true,
 		"no-console": false,
 		"max-line-length": false,
 		"no-shadowed-variable": false,

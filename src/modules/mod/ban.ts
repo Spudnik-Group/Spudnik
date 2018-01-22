@@ -1,6 +1,6 @@
-import { Collection, GuildMember, Message, User, PartialGuild, MessageMentions } from 'discord.js';
+import { Message, MessageMentions } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedSuccess, sendSimpleEmbededMessage, resolveMention } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbededMessage } from '../../lib/helpers';
 
 export default class BanCommand extends Command {
 	constructor(client: CommandoClient) {

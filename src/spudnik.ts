@@ -39,10 +39,13 @@ export class Spudnik {
 	public setupCommands = () => {
 		this.Discord.registry
 			.registerGroups([
-				['nsfw', 'Nsfw'],
-				['util', 'Util'],
-				['gifs', 'Gifs'],
-				['levels', 'Levels'],
+				['util', 'Utiltiy'],
+				['mod', 'Moderation'],
+				['ref', 'Reference'],
+				['random', 'Random'],
+				['translate', 'Translate'],
+				['misc', 'Misc'],
+				['music', 'Music'],
 			])
 			.registerDefaults()
 			.registerCommandsIn(path.join(__dirname, 'modules'));

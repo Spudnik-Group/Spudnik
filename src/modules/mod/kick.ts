@@ -1,6 +1,6 @@
-import { Collection, GuildMember, Message, MessageMentions, PartialGuild, User } from 'discord.js';
+import { Message, MessageMentions } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { resolveMention, sendSimpleEmbeddedError, sendSimpleEmbeddedSuccess, sendSimpleEmbededMessage } from '../../lib/helpers';
+import { sendSimpleEmbededMessage } from '../../lib/helpers';
 
 export default class KickCommand extends Command {
 	constructor(client: CommandoClient) {
