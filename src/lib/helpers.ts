@@ -1,5 +1,7 @@
+import chalk from 'chalk';
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import * as fs from 'fs';
 
 export function sendSimpleEmbededMessage(msg: CommandMessage, text: string, timeout?: number): Promise<Message | Message[]> {
 	const promise: Promise<Message | Message[]> = msg.embed({
@@ -22,7 +24,6 @@ export function sendSimpleEmbededMessage(msg: CommandMessage, text: string, time
 	}
 	return promise;
 }
-
 export function sendSimpleEmbeddedError(msg: CommandMessage, text: string, timeout?: number): Promise<Message | Message[]> {
 	const promise: Promise<Message | Message[]> = msg.embed({
 		author: {
@@ -44,7 +45,6 @@ export function sendSimpleEmbeddedError(msg: CommandMessage, text: string, timeo
 	}
 	return promise;
 }
-
 export function sendSimpleEmbeddedSuccess(msg: CommandMessage, text: string, timeout?: number): Promise<Message | Message[]> {
 	const promise: Promise<Message | Message[]> = msg.embed({
 		author: {
@@ -66,7 +66,6 @@ export function sendSimpleEmbeddedSuccess(msg: CommandMessage, text: string, tim
 	}
 	return promise;
 }
-
 export function sendSimpleEmbeddedImage(msg: CommandMessage, url: string, description?: string): Promise<Message | Message[]> {
 	return msg.embed({
 		author: {
@@ -78,7 +77,26 @@ export function sendSimpleEmbeddedImage(msg: CommandMessage, url: string, descri
 		image: { url },
 	});
 }
-
 export function getRandomInt(min: number, max: number): number {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+export function getFileContents(filePath: string): string {
+	try {
+		return fs.readFileSync(filePath, 'utf-8');
+	} catch (err) {
+		console.log(chalk.red(err));
+		return '';
+	}
+}
+export function getJsonObject(filePath: string): any {
+	return JSON.parse(getFileContents(filePath));
+}
+export function resolveMention(usertxt: string): string {
+	let userid = usertxt;
+	if (usertxt.startsWith('<@!')) {
+		userid = usertxt.substr(3, usertxt.length - 4);
+	} else if (usertxt.startsWith('<@')) {
+		userid = usertxt.substr(2, usertxt.length - 3);
+	}
+	return userid;
 }

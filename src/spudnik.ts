@@ -36,38 +36,6 @@ export class Spudnik {
 		this.setupCommands();
 	}
 
-	public getFileContents = (filePath: string) => {
-		try {
-			return fs.readFileSync(filePath, 'utf-8');
-		} catch (err) {
-			console.log(chalk.red(err));
-			return '';
-		}
-	}
-	public getJsonObject = (filePath: string) => {
-		return JSON.parse(this.getFileContents(filePath));
-	}
-	public resolveMention = (usertxt: string) => {
-		let userid = usertxt;
-		if (usertxt.startsWith('<@!')) {
-			userid = usertxt.substr(3, usertxt.length - 4);
-		} else if (usertxt.startsWith('<@')) {
-			userid = usertxt.substr(2, usertxt.length - 3);
-		}
-		return userid;
-	}
-	public processMessage = (output: any, msg: Message, expires: boolean, delCalling: boolean) => {
-		return msg.channel.send(output).then((message) => {
-			if (expires) {
-				if (message instanceof Message) {
-					message.delete(5000);
-				}
-			}
-			if (delCalling) {
-				msg.delete();
-			}
-		});
-	}
 	public setupCommands = () => {
 		this.Discord.registry
 			.registerGroups([

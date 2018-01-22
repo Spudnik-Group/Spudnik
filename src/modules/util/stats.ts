@@ -36,7 +36,7 @@ export default class StatsCommand extends Command {
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
 		const duration: IDuration = moment.duration(this.client.uptime) as IDuration;
 		return msg.embed({
-			color: 3447003,
+			color: 5592405,
 			description: '**Spudnik Statistics**',
 			fields: [
 				{

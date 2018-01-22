@@ -85,15 +85,15 @@ export default class PruneCommand extends Command {
 				.catch((err: Error) => null);
 
 			return sendSimpleEmbededMessage(msg, `Pruned ${messagesToDelete.array.length} messages`, 5000);
-		} else {
-			const response = sendSimpleEmbededMessage(msg, `Pruning ${limit} messages.`);
-			const messages: Collection<string, Message> = await msg.channel.fetchMessages({ limit });
-
-			msg.channel.bulkDelete(messages.array().reverse())
-				.then(() => { if (response instanceof Message) { response.delete(); } })
-				.catch((err: Error) => null);
-
-			return sendSimpleEmbededMessage(msg, `Pruned ${messages.array.length} messages`, 5000);
 		}
+
+		const response = sendSimpleEmbededMessage(msg, `Pruning ${limit} messages.`);
+		const messages: Collection<string, Message> = await msg.channel.fetchMessages({ limit });
+
+		msg.channel.bulkDelete(messages.array().reverse())
+			.then(() => { if (response instanceof Message) { response.delete(); } })
+			.catch((err: Error) => null);
+
+		return sendSimpleEmbededMessage(msg, `Pruned ${messages.array.length} messages`, 5000);
 	}
 }
