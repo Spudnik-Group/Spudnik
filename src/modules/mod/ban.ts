@@ -35,44 +35,43 @@ export default class BanCommand extends Command {
 		const items = suffix.split(' ');
 		if (items.length > 0 && items[0]) {
 			const mentions = msg.mentions as MessageMentions;
-			const member = mentions.members.first();
+			const memberToBan = mentions.members.first();
 
-			if (member !== undefined) {
-				const mentions = msg.mentions as MessageMentions;
-				if (mentions.members.first() === member && !member.bannable) {
-					return sendSimpleEmbededMessage(msg, `I can't ban ${member}. Do they have the same or a higher role than me?`);
+			if (memberToBan !== undefined) {
+				if (!memberToBan.bannable || msg.member.highestRole.comparePositionTo(memberToBan.highestRole) > 0) {
+					return sendSimpleEmbededMessage(msg, `I can't ban ${memberToBan}. Do they have the same or a higher role than me?`);
 				}
 				if (items.length > 1) {
 					if (!isNaN(parseInt(items[1], 10))) {
 						if (items.length > 2) {
 							const days = items[1];
 							const reason = items.slice(2).join(' ');
-							msg.guild.ban(member, { days: parseFloat(days), reason }).then(() => {
-								return sendSimpleEmbededMessage(msg, `Banning ${member} from ${msg.guild} for ${reason}!`);
+							msg.guild.ban(memberToBan, { days: parseFloat(days), reason }).then(() => {
+								return sendSimpleEmbededMessage(msg, `Banning ${memberToBan} from ${msg.guild} for ${reason}!`);
 							}).catch(() => {
-								return sendSimpleEmbededMessage(msg, `Banning ${member} from ${msg.guild} failed!`);
+								return sendSimpleEmbededMessage(msg, `Banning ${memberToBan} from ${msg.guild} failed!`);
 							});
 						} else {
 							const days = items[1];
-							msg.guild.ban(member, { days: parseFloat(days) }).then(() => {
-								return sendSimpleEmbededMessage(msg, `Banning ${member} from ${msg.guild}!`);
+							msg.guild.ban(memberToBan, { days: parseFloat(days) }).then(() => {
+								return sendSimpleEmbededMessage(msg, `Banning ${memberToBan} from ${msg.guild}!`);
 							}).catch(() => {
-								return sendSimpleEmbededMessage(msg, `Banning ${member} from ${msg.guild} failed!`);
+								return sendSimpleEmbededMessage(msg, `Banning ${memberToBan} from ${msg.guild} failed!`);
 							});
 						}
 					} else {
 						const reason = items.slice(1).join(' ');
-						msg.guild.ban(member, { reason }).then(() => {
-							return sendSimpleEmbededMessage(msg, `Banning ${member} from ${msg.guild} for ${reason}!`);
+						msg.guild.ban(memberToBan, { reason }).then(() => {
+							return sendSimpleEmbededMessage(msg, `Banning ${memberToBan} from ${msg.guild} for ${reason}!`);
 						}).catch(() => {
-							return sendSimpleEmbededMessage(msg, `Banning ${member} from ${msg.guild} failed!`);
+							return sendSimpleEmbededMessage(msg, `Banning ${memberToBan} from ${msg.guild} failed!`);
 						});
 					}
 				} else {
-					msg.guild.ban(member).then(() => {
-						return sendSimpleEmbededMessage(msg, `Banning ${member} from ${msg.guild}!`);
+					msg.guild.ban(memberToBan).then(() => {
+						return sendSimpleEmbededMessage(msg, `Banning ${memberToBan} from ${msg.guild}!`);
 					}).catch(() => {
-						return sendSimpleEmbededMessage(msg, `Banning ${member} from ${msg.guild} failed!`);
+						return sendSimpleEmbededMessage(msg, `Banning ${memberToBan} from ${msg.guild} failed!`);
 					});
 				}
 			} else {

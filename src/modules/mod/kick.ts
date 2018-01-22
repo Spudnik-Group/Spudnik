@@ -29,22 +29,22 @@ export default class KickCommand extends Command {
 
 		if (items.length > 0 && items[0]) {
 			const mentions = msg.mentions as MessageMentions;
-			const member = mentions.members.first();
+			const memberToKick = mentions.members.first();
 
-			if (member !== undefined) {
-				if (!member.kickable) {
-					return sendSimpleEmbededMessage(msg, `I can't kick ${member}. Do they have the same or a higher role than me?`);
+			if (memberToKick !== undefined) {
+				if (!memberToKick.kickable || msg.member.highestRole.comparePositionTo(memberToKick.highestRole) > 0) {
+					return sendSimpleEmbededMessage(msg, `I can't kick ${memberToKick}. Do they have the same or a higher role than me?`);
 				}
 				if (items.length > 1) {
 					const reason = items.slice(1).join(' ');
-					member.kick(reason).then(() => {
-						return sendSimpleEmbededMessage(msg, `Kicking ${member} from ${msg.guild} for ${reason}!`);
-					}).catch(() => sendSimpleEmbededMessage(msg, `Kicking ${member} failed!`));
+					memberToKick.kick(reason).then(() => {
+						return sendSimpleEmbededMessage(msg, `Kicking ${memberToKick} from ${msg.guild} for ${reason}!`);
+					}).catch(() => sendSimpleEmbededMessage(msg, `Kicking ${memberToKick} failed!`));
 				} else {
-					member.kick().then(() => {
-						return sendSimpleEmbededMessage(msg, `Kicking ${member} from ${msg.guild}!`);
+					memberToKick.kick().then(() => {
+						return sendSimpleEmbededMessage(msg, `Kicking ${memberToKick} from ${msg.guild}!`);
 					}).catch(() => {
-						return sendSimpleEmbededMessage(msg, `Kicking ${member} failed!`);
+						return sendSimpleEmbededMessage(msg, `Kicking ${memberToKick} failed!`);
 					});
 				}
 			} else {
