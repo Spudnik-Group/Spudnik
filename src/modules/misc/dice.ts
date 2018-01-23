@@ -12,7 +12,7 @@ export default class RollCommand extends Command {
 			details: '[# of sides] or [# of dice]d[# of sides]( + [# of dice]d[# of sides] + ...)',
 			args: [
 				{
-					default: '10',
+					default: '6',
 					key: 'roll',
 					prompt: 'What die combo would you like to roll?',
 					type: 'string',
