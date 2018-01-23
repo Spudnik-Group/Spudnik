@@ -1,59 +1,57 @@
-import { Message, RichEmbed } from 'discord.js';
+import { Message } from 'discord.js';
+import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import * as request from 'request';
 import { RequestResponse } from 'request';
-import { Spudnik } from '../spudnik';
+import { sendSimpleEmbeddedError } from '../../lib/helpers';
 
-module.exports = (Spudnik: Spudnik) => {
-	return {
-		commands: [
-			'highnoon',
-			'xkcd',
-		],
-		// tslint:disable:object-literal-sort-keys
-		xkcd: {
-			usage: '[comic number]',
-			description: 'Displays a given XKCD comic number (or the latest if nothing specified',
-			process: (msg: Message, suffix: string) => {
-				let url: string = 'http://xkcd.com/';
-				if (suffix !== '') {
-					url += `${suffix}/`;
-				}
-				url += 'info.0.json';
-				request({ url }, (err: Error, res: RequestResponse, body: string) => {
-					try {
-						const comic = JSON.parse(body);
-						Spudnik.processMessage(new RichEmbed({
-							color: Spudnik.Config.getDefaultEmbedColor(),
-							title: `XKCD ${comic.num} ${comic.title}`,
-							image: {
-								url: comic.img,
-							},
-							footer: {
-								text: comic.alt,
-							},
-						}), msg, false, false);
-					} catch (err) {
-						Spudnik.processMessage(`Couldn't fetch an XKCD for ${suffix}`, msg, false, false);
-					}
-				});
+export default class XkcdCommand extends Command {
+	constructor(client: CommandoClient) {
+		super(client, {
+			description: 'Displays a given XKCD comic number (or the latest if nothing specified)',
+			details: '[comicNumber]',
+			group: 'misc',
+			guildOnly: true,
+			memberName: 'xkcd',
+			name: 'xkcd',
+			throttling: {
+				duration: 3,
+				usages: 2,
 			},
-		},
-		highnoon: {
-			process: (msg: Message, suffix: string) => {
-				request({
-					uri: 'http://imgs.xkcd.com/comics/now.png',
-					followAllRedirects: true,
-				}, (err: Error, resp: RequestResponse) => {
-					if (resp.request.uri.href) {
-						Spudnik.processMessage(new RichEmbed({
-							color: Spudnik.Config.getDefaultEmbedColor(),
-							image: {
-								url: resp.request.uri.href.toString(),
-							},
-						}), msg, false, false);
-					}
+			args: [
+				{
+					default: '',
+					key: 'comicNumber',
+					prompt: 'what comic number would you like to see?\n',
+					type: 'string',
+				},
+			],
+		});
+	}
+
+	public async run(msg: CommandMessage, args: { comicNumber: string }): Promise<Message | Message[]> {
+		let url: string = 'http://xkcd.com/';
+		if (args.comicNumber !== '') {
+			url += `${args.comicNumber}/`;
+		}
+		url += 'info.0.json';
+		request({ url }, (err: Error, res: RequestResponse, body: string) => {
+			try {
+				const comic = JSON.parse(body);
+				msg.delete();
+				return msg.embed({
+					color: 5592405,
+					title: `XKCD ${comic.num} ${comic.title}`,
+					image: {
+						url: comic.img,
+					},
+					footer: {
+						text: comic.alt,
+					},
 				});
-			},
-		},
-	};
-};
+			} catch (err) {
+				return sendSimpleEmbeddedError(msg, `Couldn't fetch an XKCD for ${args.comicNumber}`);
+			}
+		});
+		return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
+	}
+}
