@@ -48,13 +48,13 @@ export default class BanCommand extends Command {
 				return sendSimpleEmbededMessage(msg, `I can't ban ${memberToBan}. Do they have the same or a higher role than me?`);
 			}
 			if (args.daysOfMessages) {
-				msg.guild.ban(memberToBan, { days: args.daysOfMessages, reason: args.reason }).then(() => {
+				memberToBan.ban({ days: args.daysOfMessages, reason: args.reason }).then(() => {
 					return sendSimpleEmbededMessage(msg, `Banning ${memberToBan} from ${msg.guild} for ${args.reason}!`);
 				}).catch(() => {
 					return sendSimpleEmbededMessage(msg, `Banning ${memberToBan} from ${msg.guild} failed!`);
 				});
 			}
-			msg.guild.ban(memberToBan, { reason: args.reason }).then(() => {
+			memberToBan.ban({ reason: args.reason }).then(() => {
 				return sendSimpleEmbededMessage(msg, `Banning ${memberToBan} from ${msg.guild} for ${args.reason}!`);
 			}).catch(() => {
 				return sendSimpleEmbededMessage(msg, `Banning ${memberToBan} from ${msg.guild} failed!`);

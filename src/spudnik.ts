@@ -5,14 +5,15 @@ import { SpudnikClient } from './lib/client';
 import { Configuration } from './lib/config';
 import { MongoProvider } from './lib/providers/mongodb-provider';
 
+// tslint:disable-next-line:no-var-requires
+const { mongoDb }: { mongoDb: string } = require('../config/config.json');
+
 export class Spudnik {
 	public Config: Configuration;
-	public Database: Mongoose.Mongoose;
 	public Discord: SpudnikClient;
 
 	constructor(config: Configuration) {
 		this.Config = config;
-		this.Database = Mongoose;
 
 		this.Discord = new SpudnikClient({
 			commandPrefix: '!',
@@ -22,13 +23,13 @@ export class Spudnik {
 			config: this.Config,
 		});
 
+		this.setupCommands();
+
 		this.setupDatabase();
 		this.login();
 
 		require('./lib/on-event')(this);
 		console.log(chalk.blue('---Spudnik MECO---'));
-
-		this.setupCommands();
 	}
 
 	public setupCommands = () => {
@@ -46,15 +47,10 @@ export class Spudnik {
 			.registerCommandsIn(path.join(__dirname, 'modules'));
 	}
 	public setupDatabase = () => {
-		const databaseConfig = this.Config.getDatabase();
-		if (!databaseConfig) {
-			throw new Error('There are not any database settings specified in the config file.');
-		}
-
 		this.Discord.setProvider(
-			Mongoose.connect(databaseConfig.getConnection()).then(() => new MongoProvider(Mongoose.connection)),
-		).catch((err: any) => {
-			console.error('Failed to connect to database.');
+			Mongoose.connect(mongoDb).then(() => new MongoProvider(Mongoose.connection)),
+		).catch((err) => {
+			console.error(err);
 			process.exit(-1);
 		});
 	}

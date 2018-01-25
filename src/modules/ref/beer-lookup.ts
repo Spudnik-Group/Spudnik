@@ -1,4 +1,4 @@
-import { Message, RichEmbed } from 'discord.js';
+import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage } from 'discord.js-commando';
 import { RequestResponse } from 'request';
 import * as request from 'request';
@@ -29,7 +29,7 @@ export default class BrewCommand extends Command {
 	}
 
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
-		const brewEmbed: RichEmbed = new RichEmbed({
+		const brewEmbed: MessageEmbed = new MessageEmbed({
 			color: 5592405,
 			author: {
 				name: 'BreweryDB',

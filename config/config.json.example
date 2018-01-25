@@ -1,0 +1,14 @@
+{
+	"debug": true,
+	"commandPrefix": "$",
+	"database": {
+		"connection": "localhost/test",
+		"options": {
+			"useMongoClient": true
+		}
+	},
+	"token": "bot token",
+	"owner": "owner token",
+	"breweryDbApiKey": "brewery db api key",
+	"dictionaryApiKey": "dictionary api key"
+}

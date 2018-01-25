@@ -1,7 +1,6 @@
 import chalk from 'chalk';
-import { Guild, GuildMember, TextChannel } from 'discord.js';
+import { GuildMember } from 'discord.js';
 import { Spudnik } from '../../spudnik';
-import { AntiraidSettings } from '../antiraid-settings';
 
 module.exports = (Spudnik: Spudnik) => {
 	Spudnik.Discord.on('guildMemberAdd', (member: GuildMember) => {
@@ -13,6 +12,7 @@ module.exports = (Spudnik: Spudnik) => {
 		}
 
 		// Add the server to the list of watched guild
+		/*
 		let antiraidSettings = Spudnik.Config.antiraid[guildId];
 		if (!antiraidSettings) {
 			Spudnik.Config.antiraid[guildId] = new AntiraidSettings(guild, { channelId: guild.defaultChannel.id, limit: 10, seconds: 10 });
@@ -91,5 +91,6 @@ module.exports = (Spudnik: Spudnik) => {
 
 			member.send(message);
 		}
+		*/
 	});
 };
