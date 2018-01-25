@@ -5,6 +5,9 @@ import * as request from 'request';
 import { SpudnikClient } from '../../lib/client';
 import { sendSimpleEmbeddedError } from '../../lib/helpers';
 
+// tslint:disable-next-line:no-var-requires
+const { breweryDbApiKey }: { breweryDbApiKey: string } = require('../config/config.json');
+
 export default class BrewCommand extends Command {
 	constructor(client: SpudnikClient) {
 		super(client, {
@@ -43,7 +46,7 @@ export default class BrewCommand extends Command {
 			description: '',
 		});
 
-		request(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(args.query)}&key=${(msg.client as SpudnikClient).config.getBreweryDbApiKey()}`, (err: Error, res: RequestResponse, body: string) => {
+		request(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(args.query)}&key=${breweryDbApiKey}`, (err: Error, res: RequestResponse, body: string) => {
 			if (err !== undefined && err !== null) {
 				brewEmbed.description = 'Service unavailable!';
 			} else if (typeof body !== 'undefined') {

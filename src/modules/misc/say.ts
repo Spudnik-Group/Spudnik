@@ -7,6 +7,7 @@ export default class SayCommand extends Command {
 			name: 'say',
 			group: 'misc',
 			memberName: 'say',
+			guildOnly: true,
 			description: 'Replies with the text you provide.',
 			examples: ['say Hi there!'],
 			args: [

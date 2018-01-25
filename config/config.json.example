@@ -1,12 +1,6 @@
 {
 	"debug": true,
-	"commandPrefix": "$",
-	"database": {
-		"connection": "localhost/test",
-		"options": {
-			"useMongoClient": true
-		}
-	},
+	"mongoDb": "mongodb://127.0.0.1:27017/test",
 	"token": "bot token",
 	"owner": "owner token",
 	"breweryDbApiKey": "brewery db api key",

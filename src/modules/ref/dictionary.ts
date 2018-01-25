@@ -5,6 +5,9 @@ import { RequestResponse } from 'request';
 import { SpudnikClient } from '../../lib/client';
 import { sendSimpleEmbeddedError } from '../../lib/helpers';
 
+// tslint:disable-next-line:no-var-requires
+const { dictionaryApiKey }: { dictionaryApiKey: string } = require('../config/config.json');
+
 export default class DefineCommand extends Command {
 	constructor(client: SpudnikClient) {
 		super(client, {
@@ -30,7 +33,7 @@ export default class DefineCommand extends Command {
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
 		const word = args.query;
 
-		request(`http://www.dictionaryapi.com/api/v1/references/collegiate/xml/${word}?key=${(msg.client as SpudnikClient).config.getDictionaryApiKey()}`, (err: Error, res: RequestResponse, body: any) => {
+		request(`http://www.dictionaryapi.com/api/v1/references/collegiate/xml/${word}?key=${dictionaryApiKey}`, (err: Error, res: RequestResponse, body: any) => {
 			let definitionResult = '';
 			require('xml2js').Parser().parseString(body, (err: Error, result: any) => {
 				const wordList = result.entry_list.entry;

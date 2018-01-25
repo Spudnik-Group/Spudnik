@@ -15,6 +15,7 @@ interface IDurationSettings {
 	trim: boolean | 'left' | 'right';
 }
 
+// tslint:disable-next-line:no-var-requires
 const { version }: { version: string } = require('../../../package');
 
 export default class StatsCommand extends Command {

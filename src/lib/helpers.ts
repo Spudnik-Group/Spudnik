@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import { Message } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { CommandMessage } from 'discord.js-commando';
 import * as fs from 'fs';
 
 export function sendSimpleEmbededMessage(msg: CommandMessage, text: string, timeout?: number): Promise<Message | Message[]> {
@@ -16,7 +16,7 @@ export function sendSimpleEmbededMessage(msg: CommandMessage, text: string, time
 	if (timeout) {
 		promise.then((reply: Message | Message[]) => {
 			if (reply instanceof Message) {
-				reply.delete({ timeout }).catch(() => undefined);
+				reply.delete(timeout).catch(() => undefined);
 			} else if (reply instanceof Array) {
 				msg.channel.bulkDelete(reply);
 			}
@@ -37,7 +37,7 @@ export function sendSimpleEmbeddedError(msg: CommandMessage, text: string, timeo
 	if (timeout) {
 		promise.then((reply: Message | Message[]) => {
 			if (reply instanceof Message) {
-				reply.delete({ timeout }).catch(() => undefined);
+				reply.delete(timeout).catch(() => undefined);
 			} else if (reply instanceof Array) {
 				msg.channel.bulkDelete(reply);
 			}
@@ -58,7 +58,7 @@ export function sendSimpleEmbeddedSuccess(msg: CommandMessage, text: string, tim
 	if (timeout) {
 		promise.then((reply: Message | Message[]) => {
 			if (reply instanceof Message) {
-				reply.delete({ timeout }).catch(() => undefined);
+				reply.delete(timeout).catch(() => undefined);
 			} else if (reply instanceof Array) {
 				msg.channel.bulkDelete(reply);
 			}

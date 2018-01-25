@@ -8,6 +8,7 @@ export default class RollCommand extends Command {
 			name: 'roll',
 			group: 'misc',
 			memberName: 'roll',
+			guildOnly: true,
 			description: 'roll one die with x sides, or multiple dice using d20 syntax. Default value is 10',
 			details: '[# of sides] or [# of dice]d[# of sides]( + [# of dice]d[# of sides] + ...)',
 			args: [
