@@ -8,6 +8,7 @@ const jsonConvert: JsonConvert = new JsonConvert();
 interface IConfig {
 	getDebug(): boolean;
 	getDatabase(): SettingProviderConfig;
+	getToken(): string;
 	getOwner(): string;
 	getBreweryDbApiKey(): string;
 	getDictionaryApiKey(): string;
@@ -21,6 +22,9 @@ export class Configuration implements IConfig {
 
 	@JsonProperty('database', SettingProviderConfig)
 	private _database: SettingProviderConfig = new SettingProviderConfig();
+
+	@JsonProperty('token', String)
+	private _token: string = '';
 
 	@JsonProperty('owner', String)
 	private _owner: string = '';
@@ -37,6 +41,9 @@ export class Configuration implements IConfig {
 	public getDatabase() {
 		return this._database;
 	}
+	public getToken() {
+		return this._token;
+	}
 	public getOwner() {
 		return this._owner;
 	}
@@ -52,6 +59,9 @@ export class Configuration implements IConfig {
 	}
 	protected setDatabase(database: SettingProviderConfig) {
 		this._database = database;
+	}
+	protected setToken(token: string) {
+		this._token = token;
 	}
 	protected setOwner(owner: string) {
 		this._owner = owner;

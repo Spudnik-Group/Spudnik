@@ -1,19 +1,16 @@
 import chalk from 'chalk';
 import * as Mongoose from 'mongoose';
 import * as path from 'path';
-import { Authorization } from './lib/auth';
 import { SpudnikClient } from './lib/client';
 import { Configuration } from './lib/config';
 import { MongoProvider } from './lib/providers/mongodb-provider';
 
 export class Spudnik {
-	public Auth: Authorization;
 	public Config: Configuration;
 	public Database: Mongoose.Mongoose;
 	public Discord: SpudnikClient;
 
-	constructor(auth: Authorization, config: Configuration) {
-		this.Auth = auth;
+	constructor(config: Configuration) {
 		this.Config = config;
 		this.Database = Mongoose;
 
@@ -62,10 +59,10 @@ export class Spudnik {
 		});
 	}
 	public login = () => {
-		if (this.Auth.getToken()) {
+		if (this.Config.getToken()) {
 			console.log(chalk.magenta('Logging in to Discord...'));
 
-			this.Discord.login(this.Auth.getToken());
+			this.Discord.login(this.Config.getToken());
 		} else {
 			console.error('Spudnik must have a Discord bot token...');
 			process.exit(-1);

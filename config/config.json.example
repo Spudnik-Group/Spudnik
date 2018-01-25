@@ -1,9 +1,0 @@
-{
-	"debug": false,
-	"databases": {
-		"connection": "mongodb://localhost/test",
-		"options": {
-			"useMongoClient": true
-		}
-	}
-}
