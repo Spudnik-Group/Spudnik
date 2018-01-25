@@ -1,4 +1,4 @@
-import { GuildMember, Message, MessageMentions } from 'discord.js';
+import { GuildMember, Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbededMessage } from '../../lib/helpers';
 

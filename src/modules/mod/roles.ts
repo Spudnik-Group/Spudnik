@@ -1,11 +1,9 @@
 import chalk from 'chalk';
 import { Message, RichEmbed } from 'discord.js';
-import { Role } from '../lib/config';
-import { GuildAssignableRolesSchema } from '../lib/schemas/guild-assignable-roles-schema';
-import { Spudnik } from '../spudnik';
+import { GuildAssignableRolesSchema } from '../../lib/schemas/guild-assignable-roles-schema';
+import { Spudnik } from '../../spudnik';
 
 module.exports = (Spudnik: Spudnik) => {
-	// tslint:disable:object-literal-sort-keys
 	function createEmbed(info: string) {
 		return new RichEmbed({
 			color: Spudnik.Config.getDefaultEmbedColor(),

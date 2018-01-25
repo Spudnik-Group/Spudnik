@@ -1,11 +1,12 @@
 import { Message, RichEmbed } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandMessage } from 'discord.js-commando';
 import { RequestResponse } from 'request';
 import * as request from 'request';
+import { SpudnikClient } from '../../lib/client';
 import { sendSimpleEmbeddedError } from '../../lib/helpers';
 
 export default class BrewCommand extends Command {
-	constructor(client: CommandoClient) {
+	constructor(client: SpudnikClient) {
 		super(client, {
 			description: 'Used to retrieve specific information about a brewery or brew.',
 			group: 'ref',
@@ -42,7 +43,7 @@ export default class BrewCommand extends Command {
 			description: '',
 		});
 
-		request(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(args.query)}&key=${msg.client.provider.get(msg.guild, 'breweryDbApiKey')}`, (err: Error, res: RequestResponse, body: string) => {
+		request(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(args.query)}&key=${(msg.client as SpudnikClient).config.getBreweryDbApiKey()}`, (err: Error, res: RequestResponse, body: string) => {
 			if (err !== undefined && err !== null) {
 				brewEmbed.description = 'Service unavailable!';
 			} else if (typeof body !== 'undefined') {

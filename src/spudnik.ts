@@ -1,30 +1,28 @@
 import chalk from 'chalk';
-import { Client as DiscordClient, Message, RichEmbed } from 'discord.js';
-import { CommandoClient } from 'discord.js-commando';
-import * as fs from 'fs';
 import * as Mongoose from 'mongoose';
 import * as path from 'path';
-import { Auth, Authorization } from './lib/auth';
-import { Config, Configuration } from './lib/config';
+import { Authorization } from './lib/auth';
+import { SpudnikClient } from './lib/client';
+import { Configuration } from './lib/config';
 import { MongoProvider } from './lib/providers/mongodb-provider';
-import { SettingProviderConfig } from './lib/providers/setting-provider-config';
 
 export class Spudnik {
 	public Auth: Authorization;
 	public Config: Configuration;
 	public Database: Mongoose.Mongoose;
-	public Discord: CommandoClient;
+	public Discord: SpudnikClient;
 
 	constructor(auth: Authorization, config: Configuration) {
 		this.Auth = auth;
 		this.Config = config;
 		this.Database = Mongoose;
 
-		this.Discord = new CommandoClient({
+		this.Discord = new SpudnikClient({
 			commandPrefix: '!',
 			messageCacheLifetime: 30,
 			messageSweepInterval: 60,
-			owner: '223806022588956673',
+			owner: this.Config.getOwner(),
+			config: this.Config,
 		});
 
 		this.setupDatabase();

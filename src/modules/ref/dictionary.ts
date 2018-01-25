@@ -1,11 +1,12 @@
 import { Message } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandMessage } from 'discord.js-commando';
 import * as request from 'request';
 import { RequestResponse } from 'request';
+import { SpudnikClient } from '../../lib/client';
 import { sendSimpleEmbeddedError } from '../../lib/helpers';
 
 export default class DefineCommand extends Command {
-	constructor(client: CommandoClient) {
+	constructor(client: SpudnikClient) {
 		super(client, {
 			description: 'Looks up a word in the Merriam-Webster Collegiate Dictionary.',
 			group: 'ref',
@@ -29,7 +30,7 @@ export default class DefineCommand extends Command {
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
 		const word = args.query;
 
-		request(`http://www.dictionaryapi.com/api/v1/references/collegiate/xml/${word}?key=${msg.client.provider.get(msg.guild, 'dictionaryApiKey')}`, (err: Error, res: RequestResponse, body: any) => {
+		request(`http://www.dictionaryapi.com/api/v1/references/collegiate/xml/${word}?key=${(msg.client as SpudnikClient).config.getDictionaryApiKey()}`, (err: Error, res: RequestResponse, body: any) => {
 			let definitionResult = '';
 			require('xml2js').Parser().parseString(body, (err: Error, result: any) => {
 				const wordList = result.entry_list.entry;
