@@ -1,4 +1,3 @@
-import { Guild } from 'discord.js';
 import { JsonObject, JsonProperty } from 'json2typescript';
 
 interface ISettingProviderConfig {

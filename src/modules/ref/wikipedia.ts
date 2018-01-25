@@ -1,45 +1,50 @@
-import { Message, RichEmbed } from 'discord.js';
-import { Spudnik } from '../spudnik';
+import { Message } from 'discord.js';
+import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { sendSimpleEmbeddedError } from '../../lib/helpers';
 
-// tslint:disable-next-line
-const Wiki = require('wikijs').default;
-
-module.exports = (Spudnik: Spudnik) => {
-	return {
-		commands: [
-			'wiki',
-		],
-		// tslint:disable:object-literal-sort-keys
-		wiki: {
-			usage: '<search terms>',
-			description: 'Returns the summary of the first matching search result from Wikipedia',
-			process: (msg: Message, suffix: string) => {
-				const query = suffix;
-				if (!query) {
-					return Spudnik.processMessage(`Usage: ${Spudnik.Config.getCommandPrefix()}wiki search terms`, msg, false, false);
-				}
-
-				new Wiki().search(query, 1).then((data: any) => {
-					new Wiki().page(data.results[0]).then((page: any) => {
-						page.summary().then((summary: any) => {
-							const sumText = summary.toString().split('\n');
-							const continuation = () => {
-								const paragraph = sumText.shift();
-								if (paragraph) {
-									Spudnik.processMessage(new RichEmbed({
-										color: Spudnik.Config.getDefaultEmbedColor(),
-										title: page.title,
-										description: `${paragraph}\n\n${page.fullurl}`,
-									}), msg, false, false);
-								}
-							};
-							continuation();
-						});
-					});
-				}, (err: Error) => {
-					Spudnik.processMessage(err, msg, false, false);
-				});
+export default class WikiCommand extends Command {
+	constructor(client: CommandoClient) {
+		super(client, {
+			description: 'Returns the summary of the first matching search result from Wikipedia.',
+			group: 'ref',
+			guildOnly: true,
+			memberName: 'wiki',
+			name: 'wiki',
+			throttling: {
+				duration: 3,
+				usages: 2,
 			},
-		},
-	};
-};
+			args: [
+				{
+					key: 'query',
+					prompt: 'what Wiki article should I look up?\n',
+					type: 'string',
+				},
+			],
+		});
+	}
+
+	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
+		require('wikijs').default().search(args.query, 1).then((data: any) => {
+			require('wikijs').default().page(data.results[0]).then((page: any) => {
+				page.summary().then((summary: any) => {
+					const sumText = summary.toString().split('\n');
+					const continuation = () => {
+						const paragraph = sumText.shift();
+						if (paragraph) {
+							return msg.embed({
+								color: 5592405,
+								title: page.title,
+								description: `${paragraph}\n\n${page.fullurl}`,
+							});
+						}
+					};
+					continuation();
+				});
+			});
+		}, (err: Error) => {
+			return sendSimpleEmbeddedError(msg, err.toString());
+		});
+		return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
+	}
+}

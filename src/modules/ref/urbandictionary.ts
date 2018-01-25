@@ -1,45 +1,56 @@
-import { Message, RichEmbed } from 'discord.js';
-import { Spudnik } from '../spudnik';
+import { Message } from 'discord.js';
+import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { sendSimpleEmbeddedError } from '../../lib/helpers';
 
-// tslint:disable-next-line
-const urban = require('urban');
-
-module.exports = (Spudnik: Spudnik) => {
-	return {
-		commands: [
-			'urban',
-		],
-		// tslint:disable:object-literal-sort-keys
-		urban: {
-			usage: '<word>',
-			description: 'looks up a word on Urban Dictionary',
-			process: (msg: Message, suffix: string) => {
-				const targetWord = suffix === '' ? urban.random() : urban(suffix);
-				targetWord.first((json: any) => {
-					let title = `Urban Dictionary: ${suffix}`;
-					let message;
-					let example;
-
-					if (json) {
-						title = `Urban Dictionary: ${json.word}`;
-						message = `${json.definition}`;
-						if (json.example) {
-							example = `Example: ${json.example}`;
-						}
-					} else {
-						message = 'No matches found';
-					}
-
-					Spudnik.processMessage(new RichEmbed({
-						color: Spudnik.Config.getDefaultEmbedColor(),
-						title,
-						description: message,
-						footer: {
-							text: example,
-						},
-					}), msg, false, false);
-				});
+export default class UrbanCommand extends Command {
+	constructor(client: CommandoClient) {
+		super(client, {
+			description: 'Looks something up on Urban Dictionary. If no query is supplied, returns a random thing.',
+			group: 'ref',
+			guildOnly: true,
+			memberName: 'urban',
+			name: 'urban',
+			throttling: {
+				duration: 3,
+				usages: 2,
 			},
-		},
-	};
-};
+			args: [
+				{
+					default: '',
+					key: 'query',
+					prompt: 'what should I look up on Urban Dictionary?\n',
+					type: 'string',
+				},
+			],
+		});
+	}
+
+	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
+		const targetWord = args.query === '' ? require('urban').random() : require('urban')(args.query);
+		targetWord.first((json: any) => {
+			let title = `Urban Dictionary: ${args.query}`;
+			let message;
+			let example;
+
+			if (json) {
+				title = `Urban Dictionary: ${json.word}`;
+				message = `${json.definition}`;
+				if (json.example) {
+					example = `Example: ${json.example}`;
+				}
+			} else {
+				message = 'No matches found';
+			}
+
+			return msg.embed({
+				color: 5592405,
+				title,
+				description: message,
+				footer: {
+					text: example,
+				},
+			});
+		});
+		return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
+	}
+}
