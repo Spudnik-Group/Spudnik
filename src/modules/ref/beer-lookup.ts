@@ -1,15 +1,14 @@
 import { Message, MessageEmbed } from 'discord.js';
-import { Command, CommandMessage } from 'discord.js-commando';
+import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { RequestResponse } from 'request';
 import * as request from 'request';
-import { SpudnikClient } from '../../lib/client';
 import { sendSimpleEmbeddedError } from '../../lib/helpers';
 
 // tslint:disable-next-line:no-var-requires
 const { breweryDbApiKey }: { breweryDbApiKey: string } = require('../config/config.json');
 
 export default class BrewCommand extends Command {
-	constructor(client: SpudnikClient) {
+	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Used to retrieve specific information about a brewery or brew.',
 			group: 'ref',
