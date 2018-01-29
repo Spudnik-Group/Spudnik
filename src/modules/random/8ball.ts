@@ -1,6 +1,6 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { getRandomInt, sendSimpleEmbeddedError } from '../../lib/helpers';
+import { getRandomInt, sendSimpleEmbededError } from '../../lib/helpers';
 
 // tslint:disable-next-line:no-var-requires
 const { eightBall }: { eightBall: string[] } = require('../extras/data');
@@ -39,10 +39,10 @@ export default class EightBallCommand extends Command {
 					description: `:8ball: **${response}**`
 				}));
 			} else {
-				return sendSimpleEmbeddedError(msg, response);
+				return sendSimpleEmbededError(msg, response);
 			}
 		} else {
-			return sendSimpleEmbeddedError(msg, response);
+			return sendSimpleEmbededError(msg, response);
 		}
 	}
 }

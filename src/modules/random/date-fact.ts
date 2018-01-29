@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { RequestResponse } from 'request';
-import { sendSimpleEmbeddedError } from '../../lib/helpers';
+import { sendSimpleEmbededError } from '../../lib/helpers';
 
 export default class DateFactCommand extends Command {
 	constructor(client: CommandoClient) {
@@ -38,9 +38,9 @@ export default class DateFactCommand extends Command {
 				let msgTxt = 'command date-fact failed :disappointed_relieved:';
 				//TODO: add debug logging: msgTxt += `\n${err.stack}`;
 				console.log(chalk.red(err));
-				return sendSimpleEmbeddedError(msg, msgTxt);
+				return sendSimpleEmbededError(msg, msgTxt);
 			}
 		});
-		return sendSimpleEmbeddedError(msg, 'Error getting fact. Try again?');
+		return sendSimpleEmbededError(msg, 'Error getting fact. Try again?');
 	}
 }

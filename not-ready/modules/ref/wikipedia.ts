@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedError } from '../../lib/helpers';
+import { sendSimpleEmbededError } from '../../lib/helpers';
 
 export default class WikiCommand extends Command {
 	constructor(client: CommandoClient) {
@@ -43,8 +43,8 @@ export default class WikiCommand extends Command {
 				});
 			});
 		}, (err: Error) => {
-			return sendSimpleEmbeddedError(msg, err.toString());
+			return sendSimpleEmbededError(msg, err.toString());
 		});
-		return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
+		return sendSimpleEmbededError(msg, 'There was an error with the request. Try again?');
 	}
 }

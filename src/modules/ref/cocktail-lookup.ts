@@ -2,7 +2,7 @@ import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { RequestResponse } from 'request';
 import * as request from 'request';
-import { sendSimpleEmbeddedError } from '../../lib/helpers';
+import { sendSimpleEmbededError } from '../../lib/helpers';
 
 export default class CocktailCommand extends Command {
 	constructor(client: CommandoClient) {
@@ -40,7 +40,7 @@ export default class CocktailCommand extends Command {
 
 		request(`http://www.thecocktaildb.com/api/json/v1/1/search.php?s=${encodeURIComponent(args.query)}`, (err: Error, res: RequestResponse, body: any) => {
 			if (err !== undefined && err !== null) {
-				sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
+				sendSimpleEmbededError(msg, 'There was an error with the request. Try again?');
 			}
 			const response = JSON.parse(body);
 			if (typeof response !== 'undefined' && response.drinks !== null) {
@@ -98,6 +98,6 @@ export default class CocktailCommand extends Command {
 				return msg.embed(cocktailEmbed);
 			}
 		});
-		return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
+		return sendSimpleEmbededError(msg, 'There was an error with the request. Try again?');
 	}
 }

@@ -1,6 +1,6 @@
 import { GuildMember, Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedError, sendSimpleEmbededMessage } from '../../lib/helpers';
+import { sendSimpleEmbededError, sendSimpleEmbededMessage } from '../../lib/helpers';
 
 export default class BanCommand extends Command {
 	constructor(client: CommandoClient) {
@@ -60,6 +60,6 @@ export default class BanCommand extends Command {
 				return sendSimpleEmbededMessage(msg, `Banning ${memberToBan} from ${msg.guild} failed!`);
 			});
 		}
-		return sendSimpleEmbeddedError(msg, 'You must specify a valid user to ban.');
+		return sendSimpleEmbededError(msg, 'You must specify a valid user to ban.');
 	}
 }

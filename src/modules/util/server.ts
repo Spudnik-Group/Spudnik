@@ -1,6 +1,6 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { getJsonObject, sendSimpleEmbeddedError } from '../../lib/helpers';
+import { getJsonObject, sendSimpleEmbededError } from '../../lib/helpers';
 
 const servers = getJsonObject('../../config/servers.json');
 
@@ -46,6 +46,6 @@ export default class ServerCommand extends Command {
 				}));
 			}
 		}
-		return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
+		return sendSimpleEmbededError(msg, 'There was an error with the request. Try again?');
 	}
 }

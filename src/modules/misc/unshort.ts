@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedError, sendSimpleEmbededMessage } from '../../lib/helpers';
+import { sendSimpleEmbededError, sendSimpleEmbededMessage } from '../../lib/helpers';
 
 export default class UnshortCommand extends Command {
 	constructor(client: CommandoClient) {
@@ -31,8 +31,8 @@ export default class UnshortCommand extends Command {
 				msg.delete();
 				return sendSimpleEmbededMessage(msg, `Original url is: <${url}>`);
 			}
-			return sendSimpleEmbeddedError(msg, 'This url can\'t be expanded');
+			return sendSimpleEmbededError(msg, 'This url can\'t be expanded');
 		});
-		return sendSimpleEmbeddedError(msg, 'Error expanding url. Try again?');
+		return sendSimpleEmbededError(msg, 'Error expanding url. Try again?');
 	}
 }

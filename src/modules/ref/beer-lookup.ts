@@ -2,7 +2,7 @@ import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { RequestResponse } from 'request';
 import * as request from 'request';
-import { sendSimpleEmbeddedError } from '../../lib/helpers';
+import { sendSimpleEmbededError } from '../../lib/helpers';
 
 // tslint:disable-next-line:no-var-requires
 const { breweryDbApiKey }: { breweryDbApiKey: string } = require('../config/config.json');
@@ -47,7 +47,7 @@ export default class BrewCommand extends Command {
 
 		request(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(args.query)}&key=${breweryDbApiKey}`, (err: Error, res: RequestResponse, body: string) => {
 			if (err !== undefined && err !== null) {
-				sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
+				sendSimpleEmbededError(msg, 'There was an error with the request. Try again?');
 			} else if (typeof body !== 'undefined') {
 				const response = JSON.parse(body);
 				const result = response.data[0];
@@ -116,6 +116,6 @@ export default class BrewCommand extends Command {
 			}
 			return msg.embed(brewEmbed);
 		});
-		return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
+		return sendSimpleEmbededError(msg, 'There was an error with the request. Try again?');
 	}
 }

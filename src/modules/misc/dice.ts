@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedError, sendSimpleEmbededMessage } from '../../lib/helpers';
+import { sendSimpleEmbededError, sendSimpleEmbededMessage } from '../../lib/helpers';
 
 export default class RollCommand extends Command {
 	constructor(client: CommandoClient) {
@@ -40,6 +40,6 @@ export default class RollCommand extends Command {
 
 			return sendSimpleEmbededMessage(msg, `${response}`);
 		}
-		return sendSimpleEmbeddedError(msg, `Not a valid roll!`);
+		return sendSimpleEmbededError(msg, `Not a valid roll!`);
 	}
 }

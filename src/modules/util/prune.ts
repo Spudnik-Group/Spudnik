@@ -1,6 +1,6 @@
 import { Collection, GuildMember, Message, User } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedError, sendSimpleEmbededMessage } from '../../lib/helpers';
+import { sendSimpleEmbededError, sendSimpleEmbededMessage } from '../../lib/helpers';
 
 export default class PruneCommand extends Command {
 	constructor(client: CommandoClient) {
@@ -62,7 +62,7 @@ export default class PruneCommand extends Command {
 					const user: User = member.user;
 					messageFilter = (message: Message) => message.author.id === user.id;
 				} else {
-					return sendSimpleEmbeddedError(msg, `${msg.author}, you have to mention someone.`);
+					return sendSimpleEmbededError(msg, `${msg.author}, you have to mention someone.`);
 				}
 			} else if (filter === 'bots') {
 				messageFilter = (message: Message) => message.author.bot;
@@ -73,7 +73,7 @@ export default class PruneCommand extends Command {
 			} else if (filter === 'links') {
 				messageFilter = (message: Message) => message.content.search(/https?:\/\/[^ \/\.]+\.[^ \/\.]+/) !== -1;
 			} else {
-				return sendSimpleEmbeddedError(msg, `${msg.author}, that is not a valid filter. \`help clean\` for all available filters.`);
+				return sendSimpleEmbededError(msg, `${msg.author}, that is not a valid filter. \`help clean\` for all available filters.`);
 			}
 
 			const response = sendSimpleEmbededMessage(msg, `Pruning ${limit} messages.`);

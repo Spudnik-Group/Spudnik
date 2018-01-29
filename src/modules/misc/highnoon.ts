@@ -2,7 +2,7 @@ import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import * as request from 'request';
 import { RequestResponse } from 'request';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedImage } from '../../lib/helpers';
+import { sendSimpleEmbededError, sendSimpleEmbededImage } from '../../lib/helpers';
 
 export default class HighNoonCommand extends Command {
 	constructor(client: CommandoClient) {
@@ -25,9 +25,9 @@ export default class HighNoonCommand extends Command {
 			followAllRedirects: true,
 		}, (err: Error, resp: RequestResponse) => {
 			if (resp.request.uri.href) {
-				return sendSimpleEmbeddedImage(msg, resp.request.uri.href.toString());
+				return sendSimpleEmbededImage(msg, resp.request.uri.href.toString());
 			}
 		});
-		return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
+		return sendSimpleEmbededError(msg, 'There was an error with the request. Try again?');
 	}
 }

@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedError, sendSimpleEmbededMessage } from '../../lib/helpers';
+import { sendSimpleEmbededError, sendSimpleEmbededMessage } from '../../lib/helpers';
 
 export default class YodifyCommand extends Command {
 	constructor(client: CommandoClient) {
@@ -38,6 +38,6 @@ export default class YodifyCommand extends Command {
 				return sendSimpleEmbededMessage(msg, result.return);
 			});
 		});
-		return sendSimpleEmbeddedError(msg, 'Confused, I am. Disturbance in the force, there is. Hrmm...');
+		return sendSimpleEmbededError(msg, 'Confused, I am. Disturbance in the force, there is. Hrmm...');
 	}
 }

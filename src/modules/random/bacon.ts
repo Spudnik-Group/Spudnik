@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { getRandomInt, sendSimpleEmbeddedImage } from '../../lib/helpers';
+import { getRandomInt, sendSimpleEmbededImage } from '../../lib/helpers';
 
 // tslint:disable-next-line:no-var-requires
 const { bacon }: { bacon: string[] } = require('../extras/data');
@@ -21,6 +21,6 @@ export default class BaconCommand extends Command {
 	}
 
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
-		return sendSimpleEmbeddedImage(msg, bacon[getRandomInt(0, bacon.length)]);
+		return sendSimpleEmbededImage(msg, bacon[getRandomInt(0, bacon.length)]);
 	}
 }
