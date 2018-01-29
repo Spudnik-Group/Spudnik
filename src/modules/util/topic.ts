@@ -1,5 +1,6 @@
 import { Message, TextChannel } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { sendSimpleEmbeddedError } from '../../lib/helpers';
 
 export default class TopicCommand extends Command {
 	constructor(client: CommandoClient) {
@@ -31,6 +32,6 @@ export default class TopicCommand extends Command {
 				thumbnail: { url: this.client.user.avatarURL },
 			});
 		}
-		return null;
+		return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
 	}
 }

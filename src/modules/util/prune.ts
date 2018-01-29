@@ -77,7 +77,7 @@ export default class PruneCommand extends Command {
 			}
 
 			const response = sendSimpleEmbededMessage(msg, `Pruning ${limit} messages.`);
-			const messages: Collection<string, Message> = await msg.channel.fetchMessages({ limit });
+			const messages: Collection<string, Message> = await msg.channel.messages.fetch({ limit });
 			const messagesToDelete: Collection<string, Message> = messages.filter(messageFilter);
 
 			msg.channel.bulkDelete(messagesToDelete.array().reverse())
@@ -88,7 +88,7 @@ export default class PruneCommand extends Command {
 		}
 
 		const response = sendSimpleEmbededMessage(msg, `Pruning ${limit} messages.`);
-		const messages: Collection<string, Message> = await msg.channel.fetchMessages({ limit });
+		const messages: Collection<string, Message> = await msg.channel.messages.fetch({ limit });
 
 		msg.channel.bulkDelete(messages.array().reverse())
 			.then(() => { if (response instanceof Message) { response.delete(); } })

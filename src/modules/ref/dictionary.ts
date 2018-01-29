@@ -34,6 +34,9 @@ export default class DefineCommand extends Command {
 		const word = args.query;
 
 		request(`http://www.dictionaryapi.com/api/v1/references/collegiate/xml/${word}?key=${dictionaryApiKey}`, (err: Error, res: RequestResponse, body: any) => {
+			if (err !== undefined && err !== null) {
+				sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
+			}
 			let definitionResult = '';
 			require('xml2js').Parser().parseString(body, (err: Error, result: any) => {
 				const wordList = result.entry_list.entry;

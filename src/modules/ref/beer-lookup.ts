@@ -48,7 +48,7 @@ export default class BrewCommand extends Command {
 
 		request(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(args.query)}&key=${breweryDbApiKey}`, (err: Error, res: RequestResponse, body: string) => {
 			if (err !== undefined && err !== null) {
-				brewEmbed.description = 'Service unavailable!';
+				sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
 			} else if (typeof body !== 'undefined') {
 				const response = JSON.parse(body);
 				const result = response.data[0];

@@ -39,6 +39,9 @@ export default class CocktailCommand extends Command {
 		});
 
 		request(`http://www.thecocktaildb.com/api/json/v1/1/search.php?s=${encodeURIComponent(args.query)}`, (err: Error, res: RequestResponse, body: any) => {
+			if (err !== undefined && err !== null) {
+				sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
+			}
 			const response = JSON.parse(body);
 			if (typeof response !== 'undefined' && response.drinks !== null) {
 				const result = response.drinks[0];
