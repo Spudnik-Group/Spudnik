@@ -4,11 +4,11 @@ import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 // tslint:disable-next-line:no-var-requires
 const { defaultEmbedColor }: { defaultEmbedColor: string } = require('../config/config.json');
 
-export default class IAmNotCommand extends Command {
+export default class RoleManagementCommands extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Used to add a role to yourself.',
-			details: 'add <roll>|remove <role>|default <role>',
+			description: 'Used to add or remove a role to yourself, list available roles, and set the default role.',
+			details: 'add <roll>|remove <role>|list|default <role>',
 			group: 'roles',
 			guildOnly: true,
 			memberName: 'role',
@@ -20,6 +20,7 @@ export default class IAmNotCommand extends Command {
 					type: 'string',
 				},
 				{
+					default: '',
 					key: 'role',
 					prompt: 'what role do you want added to yourself?\n',
 					type: 'role',
@@ -40,8 +41,13 @@ export default class IAmNotCommand extends Command {
 		});
 
 		const guildAssignableRoles = msg.client.provider.get(msg.guild, 'assignableRoles', []);
+		const guildDefaultRole: string = msg.client.provider.get(msg.guild, 'defaultRole', '');
 		switch (args.subCommand.toLowerCase()) {
-			case 'add':
+			case 'add': {
+				if (args.role === undefined) {
+					roleEmbed.description = 'No role specified!';
+					return msg.embed(roleEmbed);
+				}
 				if (guildAssignableRoles.indexOf(args.role.id) === -1) {
 					guildAssignableRoles.push(args.role.id);
 
@@ -56,7 +62,12 @@ export default class IAmNotCommand extends Command {
 					roleEmbed.description = `Could not find role with name ${args.role.name} in the list of assignable roles for this guild.`;
 					return msg.embed(roleEmbed);
 				}
-			case 'remove':
+			}
+			case 'remove': {
+				if (args.role === undefined) {
+					roleEmbed.description = 'No role specified!';
+					return msg.embed(roleEmbed);
+				}
 				if (guildAssignableRoles.indexOf(args.role.id) !== -1) {
 					guildAssignableRoles.splice(args.role.id);
 
@@ -73,7 +84,47 @@ export default class IAmNotCommand extends Command {
 					roleEmbed.description = `Could not find role with name ${args.role.name} in the list of assignable roles for this guild.`;
 					return msg.embed(roleEmbed);
 				}
-			case 'default':
+			}
+			case 'list': {
+				if (guildAssignableRoles.length > 0) {
+					let roles: string[] = [];
+					for (const roleId in guildAssignableRoles) {
+						const role: Role = msg.guild.roles.find((r) => r.id === roleId);
+						if (role) {
+							roles.push(role.name);
+						}
+					}
+
+					roleEmbed.fields.push({
+						name: 'Assignable Roles',
+						value: roles.join('\n'),
+						inline: true,
+					});
+				}
+
+				if (guildDefaultRole !== '') {
+					const role: Role = msg.guild.roles.find((r) => r.id === guildDefaultRole);
+
+					if (role) {
+						roleEmbed.fields.push({
+							name: 'Default Role',
+							value: role.name,
+							inline: true,
+						});
+					}
+				}
+
+				if (roleEmbed.fields === []) {
+					roleEmbed.description = 'A default role and assignable roles are not set for this guild.';
+				}
+
+				return msg.embed(roleEmbed);
+			}
+			case 'default': {
+				if (args.role === undefined) {
+					roleEmbed.description = 'No role specified!';
+					return msg.embed(roleEmbed);
+				}
 				return msg.client.provider.set(msg.guild, 'defaultRole', args.role.id).then(() => {
 					return msg.client.provider.set(msg.guild, 'assignableRoles', { guildAssignableRoles }).then(() => {
 						roleEmbed.description = `Added default role '${args.role.name}'.`;
@@ -83,9 +134,11 @@ export default class IAmNotCommand extends Command {
 						return msg.embed(roleEmbed);
 					});
 				});
-			default:
+			}
+			default: {
 				roleEmbed.description = 'Invalid subcommand. Please see `help roles`.';
 				return msg.embed(roleEmbed);
+			}
 		}
 	}
 }
