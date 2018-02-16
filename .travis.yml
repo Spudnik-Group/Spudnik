@@ -3,6 +3,8 @@ node_js:
 - 8
 before_install:
 - npm install -g node-gyp
+after_install:
+- tsc
 branches:
   except:
   - hotfix
