@@ -1,12 +1,12 @@
 {
 	"name": "spudnik",
 	"description": "An awesome chat bot for Discord.",
-	"version": "0.0.1",
+	"version": "0.1.0.1",
 	"license": "Apache-2.0",
 	"readme": "README.md",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Richardson-Media-House/Spudnik.git"
+		"url": "git+https://github.com/Spudnik-Group/Spudnik.git"
 	},
 	"author": "Spudnik Group",
 	"contributors": [
@@ -15,7 +15,7 @@
 		"Joseph Moran III <joseph.moraniii@gmail.com> (https://josephmoran.co)",
 		"Jacob Smith <jacobthesmith@gmail.com>"
 	],
-	"main": "dist/spudnik.js",
+	"main": "dist/launch.js",
 	"scripts": {
 		"launch": "node dist/spudnik.js"
 	},
