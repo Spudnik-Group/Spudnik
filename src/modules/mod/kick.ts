@@ -38,7 +38,7 @@ export default class KickCommand extends Command {
 		const memberToKick = args.member;
 
 		if (memberToKick !== undefined) {
-			if (!memberToKick.kickable || msg.member.highestRole.comparePositionTo(memberToKick.highestRole) > 0) {
+			if (!memberToKick.kickable || msg.member.roles.highest.comparePositionTo(memberToKick.roles.highest) > 0) {
 				return sendSimpleEmbededMessage(msg, `I can't kick ${memberToKick}. Do they have the same or a higher role than me?`);
 			}
 			memberToKick.kick(args.reason).then(() => {

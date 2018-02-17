@@ -65,12 +65,12 @@ export default class CocktailCommand extends Command {
 					}
 					if (typeof ingredients !== 'undefined' && ingredients.length > 0) {
 						let ingredientsList = '';
-						ingredients.forEach((element: string, index: number) => {
-							if (element !== '' && element !== '\n' && element !== null) {
+						ingredients.forEach((value: any, index: number) => {
+							if (value !== '' && value !== '\n' && value !== null) {
 								if (ratios[index] !== '' && ratios[index] !== '\n' && ratios[index] !== null) {
-									ingredientsList += `* ${element} - ${ratios[index]}\n`;
+									ingredientsList += `* ${value} - ${ratios[index]}\n`;
 								} else {
-									ingredientsList += `* ${element}\n`;
+									ingredientsList += `* ${value}\n`;
 								}
 							}
 						});

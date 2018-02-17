@@ -1,7 +1,5 @@
-import chalk from 'chalk';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { Spudnik } from '../../spudnik';
 
 // tslint:disable-next-line:no-var-requires
 const { defaultEmbedColor }: { defaultEmbedColor: string } = require('../config/config.json');
@@ -39,7 +37,7 @@ export default class IAmNotCommand extends Command {
 
 		if (role && guildAssignableRoles) {
 			if (guildAssignableRoles.includes(role.id)) {
-				msg.member.removeRole(role.id);
+				msg.member.roles.remove(role.id);
 
 				roleEmbed.description = `Removed ${role.name} from your roles.`;
 

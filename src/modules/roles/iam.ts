@@ -37,7 +37,7 @@ export default class IAmNotCommand extends Command {
 
 		if (role && guildAssignableRoles) {
 			if (!guildAssignableRoles.includes(role.id)) {
-				msg.member.addRole(role.id);
+				msg.member.roles.add(role.id);
 
 				roleEmbed.description = `Added ${role.name} from your roles.`;
 

@@ -44,7 +44,7 @@ export default class BanCommand extends Command {
 		const memberToBan = args.member;
 
 		if (memberToBan !== undefined) {
-			if (!memberToBan.bannable || msg.member.highestRole.comparePositionTo(memberToBan.highestRole) > 0) {
+			if (!memberToBan.bannable || msg.member.roles.highest.comparePositionTo(memberToBan.roles.highest) > 0) {
 				return sendSimpleEmbededMessage(msg, `I can't ban ${memberToBan}. Do they have the same or a higher role than me?`);
 			}
 			if (args.daysOfMessages) {

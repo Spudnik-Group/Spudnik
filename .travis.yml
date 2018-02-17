@@ -3,11 +3,6 @@ node_js:
 - 8
 before_install:
 - npm install -g node-gyp
-after_install:
-- tsc
-branches:
-  except:
-  - hotfix
 before_script:
   - export AUTHOR_NAME="$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"
 after_success:
@@ -16,3 +11,9 @@ after_success:
 after_failure:
   - chmod +x fail.sh
   - ./fail.sh
+cache:
+  directories:
+    - "node_modules"
+branches:
+  except:
+  - hotfix

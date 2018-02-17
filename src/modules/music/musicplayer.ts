@@ -1,7 +1,5 @@
 import { Message, MessageEmbed, VoiceChannel, VoiceConnection } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import * as m3u8stream from 'm3u8stream';
-import * as ytdl from 'youtube-dl';
 
 // tslint:disable-next-line:no-var-requires
 const { defaultEmbedColor }: { defaultEmbedColor: string } = require('../config/config.json');
@@ -10,7 +8,7 @@ export default class MusicCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Used to play music. Supports YouTube and many others: <http://rg3.github.io/youtube-dl/supportedsites.html>',
-			details: 'play <search terms|URL>|queue|dequeue <index>|skip|stop|volume <number>',
+			details: 'play <search terms|URL>|queue|dequeue <index>|skip|stop',
 			group: 'music',
 			guildOnly: true,
 			memberName: 'music',
@@ -18,7 +16,7 @@ export default class MusicCommand extends Command {
 			args: [
 				{
 					key: 'subCommand',
-					prompt: 'play|stop|skip|queue|dequeue|volumen\n',
+					prompt: 'play|stop|skip|queue|dequeue\n',
 					type: 'string',
 				},
 				{
@@ -79,9 +77,9 @@ export default class MusicCommand extends Command {
 					msg.channel.send(createSongEmbed(video.title, video.webpage_url, video.thumbnail)).then(() => {
 						let dispatcher;
 						if (video.is_live === true) {
-							dispatcher = connection.play(m3u8stream(video.url));
+							dispatcher = connection.play(require('m3u8stream')(video.url));
 						} else {
-							dispatcher = connection.play(ytdl(video.url, ['-q', '--no-warnings', '--force-ipv4']));
+							dispatcher = connection.play(require('youtube-dl')(video.url, ['-q', '--no-warnings', '--force-ipv4']));
 						}
 
 						dispatcher.on('debug', (i: string) => console.log(`debug: ${i}`));
@@ -171,7 +169,7 @@ export default class MusicCommand extends Command {
 					}
 
 					// Get the video info from youtube-dl.
-					ytdl.getInfo(item, ['-q', '--no-warnings', '--force-ipv4'], (err: Error, info: any) => {
+					require('youtube-dl').getInfo(item, ['-q', '--no-warnings', '--force-ipv4'], (err: Error, info: any) => {
 						// Verify the info.
 						if (response instanceof Message) {
 							if (err || info.format_id === undefined || info.format_id.startsWith('0')) {
@@ -244,7 +242,6 @@ export default class MusicCommand extends Command {
 							if (voiceConnection !== undefined) {
 								voiceConnection.disconnect();
 								msg.client.provider.remove(msg.guild.id, 'musicQueue');
-								return null;
 							}
 						} else {
 							// Otherwise, just remove it from the queue
@@ -298,36 +295,6 @@ export default class MusicCommand extends Command {
 				if (voiceConnection !== undefined) {
 					voiceConnection.disconnect();
 					return msg.embed(createTextEmbed('Playback Stopped.'));
-				}
-			}
-			case 'volume': {
-				let item = args.item;
-				// Get the voice connection.
-				const voiceConnection = msg.client.voiceConnections.get(msg.guild.id);
-
-				if (voiceConnection === undefined) {
-					return msg.embed(createTextEmbed('No music being played.'));
-				}
-
-				// Set the volume
-				if (item === '') {
-					const displayVolume = Math.pow(voiceConnection.dispatcher.volume, 0.6020600085251697) * 100.0;
-					msg.channel.send(createTextEmbed(`volume: ${displayVolume}%`));
-				} else if (item.toLowerCase().indexOf('db') === -1) {
-					if (item.indexOf('%') === -1) {
-						let num: number = +item;
-						if (num > 1) {
-							num /= 100.0;
-						}
-
-						voiceConnection.dispatcher.setVolumeLogarithmic(num);
-					} else {
-						const num: number = +item.split('%')[0];
-						voiceConnection.dispatcher.setVolumeLogarithmic(num / 100.0);
-					}
-				} else {
-					const value: number = +item.toLowerCase().split('db')[0];
-					voiceConnection.dispatcher.setVolumeDecibels(value);
 				}
 			}
 			default: {

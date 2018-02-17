@@ -17,7 +17,8 @@
 	],
 	"main": "dist/launch.js",
 	"scripts": {
-		"launch": "node dist/spudnik.js"
+		"launch": "node dist/spudnik.js",
+		"lint": "tslint && tsc"
 	},
 	"dependencies": {
 		"@types/chalk": "^2.2.0",
