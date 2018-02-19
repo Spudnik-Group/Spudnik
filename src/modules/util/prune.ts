@@ -50,6 +50,7 @@ export default class PruneCommand extends Command {
 	}
 
 	public async run(msg: CommandMessage, args: { limit: number, filter: string, member: GuildMember }): Promise<Message | Message[]> {
+		msg.delete();
 		const { filter, limit } = args;
 		let messageFilter: (message: Message) => boolean;
 
@@ -73,27 +74,25 @@ export default class PruneCommand extends Command {
 			} else if (filter === 'links') {
 				messageFilter = (message: Message) => message.content.search(/https?:\/\/[^ \/\.]+\.[^ \/\.]+/) !== -1;
 			} else {
-				return sendSimpleEmbededError(msg, `${msg.author}, that is not a valid filter. \`help clean\` for all available filters.`);
+				return sendSimpleEmbededError(msg, `${msg.author}, that is not a valid filter. \`help prune\` for all available filters.`);
 			}
 
-			const response = sendSimpleEmbededMessage(msg, `Pruning ${limit} messages.`);
 			const messages: Collection<string, Message> = await msg.channel.messages.fetch({ limit });
 			const messagesToDelete: Collection<string, Message> = messages.filter(messageFilter);
-
-			msg.channel.bulkDelete(messagesToDelete.array().reverse())
-				.then(() => { if (response instanceof Message) { response.delete(); } })
-				.catch((err: Error) => null);
-
-			return sendSimpleEmbededMessage(msg, `Pruned ${messagesToDelete.array.length} messages`, 5000);
+			await sendSimpleEmbededMessage(msg, `Pruning ${limit} messages.`).then((response: Message | Message[]) => {
+				msg.channel.bulkDelete(messages.array().reverse())
+					.then(() => { if (response instanceof Message) { response.delete(); } })
+					.catch((err: Error) => null);
+			});
+			return sendSimpleEmbededMessage(msg, `Pruned ${limit} messages`, 5000);
 		}
 
-		const response = sendSimpleEmbededMessage(msg, `Pruning ${limit} messages.`);
 		const messages: Collection<string, Message> = await msg.channel.messages.fetch({ limit });
-
-		msg.channel.bulkDelete(messages.array().reverse())
-			.then(() => { if (response instanceof Message) { response.delete(); } })
-			.catch((err: Error) => null);
-
-		return sendSimpleEmbededMessage(msg, `Pruned ${messages.array.length} messages`, 5000);
+		await sendSimpleEmbededMessage(msg, `Pruning ${limit} messages.`).then((response: Message | Message[]) => {
+			msg.channel.bulkDelete(messages.array().reverse())
+				.then(() => { if (response instanceof Message) { response.delete(); } })
+				.catch((err: Error) => null);
+		});
+		return sendSimpleEmbededMessage(msg, `Pruned ${limit} messages`, 5000);
 	}
 }

@@ -22,7 +22,9 @@ export default class TopicCommand extends Command {
 		let response = '';
 		if (channel instanceof TextChannel) {
 			response = channel.topic;
-			if (channel.topic.trim() === '') {
+			if (response === null) {
+				response = "There doesn't seem to be a topic for this channel. Maybe ask the mods?";
+			} else if (response.trim() === '') {
 				response = "There doesn't seem to be a topic for this channel. Maybe ask the mods?";
 			}
 			return msg.embed({
