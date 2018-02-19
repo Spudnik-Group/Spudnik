@@ -2,13 +2,13 @@ import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getJsonObject, sendSimpleEmbededError } from '../../lib/helpers';
 
-const servers = getJsonObject('../../config/servers.json');
+const servers = getJsonObject('../config/servers.json');
 
 export default class ServerCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
 			aliases: ['servers'],
-			description: 'Shows the purpose of the chat channel.',
+			description: 'Shows available servers.',
 			details: `list|${servers.map((server: any) => server.key).join('|')}`,
 			group: 'util',
 			guildOnly: true,

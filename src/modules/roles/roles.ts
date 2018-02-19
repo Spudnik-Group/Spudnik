@@ -2,7 +2,7 @@ import { Message, MessageEmbed, Role } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 
 // tslint:disable-next-line:no-var-requires
-const { defaultEmbedColor }: { defaultEmbedColor: string } = require('../config/config.json');
+const { defaultEmbedColor }: { defaultEmbedColor: string } = require('../../../config/config.json');
 
 export default class RoleManagementCommands extends Command {
 	constructor(client: CommandoClient) {

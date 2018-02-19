@@ -17,7 +17,7 @@
 	],
 	"main": "dist/launch.js",
 	"scripts": {
-		"launch": "node dist/spudnik.js",
+		"launch": "node dist/launch.js",
 		"lint": "tslint && tsc"
 	},
 	"dependencies": {
@@ -44,6 +44,7 @@
 		"request": "^2.81.0",
 		"request-promise": "^4.2.2",
 		"soap": "^0.23.0",
+		"sodium": "^2.0.0",
 		"typescript": "^2.6.2",
 		"unshort": "^1.0.0",
 		"urban": "^0.3.1",
@@ -69,7 +70,6 @@
 		"gulp-typescript": "^3.2.4",
 		"nodemon": "^1.11.0",
 		"tslint": "^4.5.1",
-		"tslint-eslint-rules": "^3.5.1",
-		"typescript": "^2.2.1"
+		"tslint-eslint-rules": "^3.5.1"
 	}
 }

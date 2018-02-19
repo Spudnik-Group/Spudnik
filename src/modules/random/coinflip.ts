@@ -3,7 +3,7 @@ import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getRandomInt, sendSimpleEmbededImage } from '../../lib/helpers';
 
 // tslint:disable-next-line:no-var-requires
-const { coinflip }: { coinflip: any[] } = require('../extras/data');
+const { coinflip }: { coinflip: any[] } = require('../../extras/data');
 
 export default class CoinFlipCommand extends Command {
 	constructor(client: CommandoClient) {

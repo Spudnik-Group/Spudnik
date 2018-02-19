@@ -3,7 +3,7 @@ import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getRandomInt, sendSimpleEmbededImage } from '../../lib/helpers';
 
 // tslint:disable-next-line:no-var-requires
-const { bacon }: { bacon: string[] } = require('../extras/data');
+const { bacon }: { bacon: string[] } = require('../../extras/data');
 
 export default class BaconCommand extends Command {
 	constructor(client: CommandoClient) {

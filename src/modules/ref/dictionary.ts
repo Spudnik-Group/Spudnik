@@ -6,7 +6,7 @@ import { SpudnikClient } from '../../lib/client';
 import { sendSimpleEmbededError } from '../../lib/helpers';
 
 // tslint:disable-next-line:no-var-requires
-const { dictionaryApiKey }: { dictionaryApiKey: string } = require('../config/config.json');
+const { dictionaryApiKey }: { dictionaryApiKey: string } = require('../../../config/config.json');
 
 export default class DefineCommand extends Command {
 	constructor(client: SpudnikClient) {

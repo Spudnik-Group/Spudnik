@@ -3,7 +3,7 @@ import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getRandomInt, sendSimpleEmbededMessage } from '../../lib/helpers';
 
 // tslint:disable-next-line:no-var-requires
-const { smiff }: { smiff: string[] } = require('../extras/data');
+const { smiff }: { smiff: string[] } = require('../../extras/data');
 
 export default class SmiffFactCommand extends Command {
 	constructor(client: CommandoClient) {

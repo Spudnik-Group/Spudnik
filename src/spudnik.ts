@@ -35,13 +35,14 @@ export class Spudnik {
 	public setupCommands = () => {
 		this.Discord.registry
 			.registerGroups([
-				['util', 'Utiltiy'],
-				['mod', 'Moderation'],
-				['ref', 'Reference'],
-				['random', 'Random'],
-				['translate', 'Translate'],
 				['misc', 'Misc'],
 				['music', 'Music'],
+				['mod', 'Moderation'],
+				['util', 'Utility'],
+				['random', 'Random'],
+				['ref', 'Reference'],
+				['roles', 'Roles'],
+				['translate', 'Translate'],
 			])
 			.registerDefaults()
 			.registerCommandsIn(path.join(__dirname, 'modules'));

@@ -5,7 +5,7 @@ import * as request from 'request';
 import { sendSimpleEmbededError } from '../../lib/helpers';
 
 // tslint:disable-next-line:no-var-requires
-const { breweryDbApiKey }: { breweryDbApiKey: string } = require('../config/config.json');
+const { breweryDbApiKey }: { breweryDbApiKey: string } = require('../../../config/config.json');
 
 export default class BrewCommand extends Command {
 	constructor(client: CommandoClient) {

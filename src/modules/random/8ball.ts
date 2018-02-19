@@ -3,7 +3,7 @@ import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getRandomInt, sendSimpleEmbededError } from '../../lib/helpers';
 
 // tslint:disable-next-line:no-var-requires
-const { eightBall }: { eightBall: string[] } = require('../extras/data');
+const { eightBall }: { eightBall: string[] } = require('../../extras/data');
 
 export default class EightBallCommand extends Command {
 	constructor(client: CommandoClient) {

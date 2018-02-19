@@ -2,16 +2,16 @@ import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 
 // tslint:disable-next-line:no-var-requires
-const { defaultEmbedColor }: { defaultEmbedColor: string } = require('../config/config.json');
+const { defaultEmbedColor }: { defaultEmbedColor: string } = require('../../../config/config.json');
 
 export default class IAmNotCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Used to retrieve specific information about a brewery or brew.',
+			description: 'Used to add a role to yourself.',
 			group: 'roles',
 			guildOnly: true,
-			memberName: 'iamnot',
-			name: 'iamnot',
+			memberName: 'iam',
+			name: 'iam',
 			args: [
 				{
 					default: '',
