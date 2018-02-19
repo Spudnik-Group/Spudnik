@@ -25,14 +25,14 @@ export default class UnshortCommand extends Command {
 		});
 	}
 
-	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
-		require('unshort')(args.query, (err: Error, url: string) => {
-			if (url) {
-				msg.delete();
-				return sendSimpleEmbededMessage(msg, `Original url is: <${url}>`);
-			}
-			return sendSimpleEmbededError(msg, 'This url can\'t be expanded');
-		});
-		return sendSimpleEmbededError(msg, 'Error expanding url. Try again?');
+	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[] | any> {
+		require('url-unshort')().expand(args.query)
+			.then((url: string) => {
+				if (url) {
+					msg.delete();
+					return sendSimpleEmbededMessage(msg, `Original url is: <${url}>`);
+				}
+				return sendSimpleEmbededError(msg, 'This url can\'t be expanded. Make sure the protocol exists (Http/Https) and try again.');
+			});
 	}
 }

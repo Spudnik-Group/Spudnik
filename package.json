@@ -46,7 +46,7 @@
 		"soap": "^0.23.0",
 		"sodium": "^2.0.0",
 		"typescript": "^2.6.2",
-		"unshort": "^1.0.0",
+		"url-unshort": "^5.0.0",
 		"urban": "^0.3.1",
 		"uws": "^9.14.0",
 		"wikijs": "^4.5.0",

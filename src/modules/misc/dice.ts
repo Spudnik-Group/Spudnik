@@ -22,9 +22,9 @@ export default class RollCommand extends Command {
 		});
 	}
 
-	public async run(msg: CommandMessage, args: { text: string }): Promise<Message | Message[]> {
-		if (args.text.split('d').length > 1) {
-			const eachDie = args.text.split('+');
+	public async run(msg: CommandMessage, args: { roll: string }): Promise<Message | Message[]> {
+		if (args.roll.split('d').length > 1) {
+			const eachDie = args.roll.split('+');
 			let passing = 0;
 			let response = '';
 			for (const i in eachDie) {
@@ -33,13 +33,13 @@ export default class RollCommand extends Command {
 				}
 			}
 			if (passing === eachDie.length) {
-				response = `${msg.author} rolled a ${require('d20').roll(args.text)}`;
+				response = `${msg.author} rolled a ${require('d20').roll(args.roll)}`;
 			} else {
 				response = `${msg.author} tried to roll too many dice at once!`;
 			}
 
 			return sendSimpleEmbededMessage(msg, `${response}`);
 		}
-		return sendSimpleEmbededError(msg, `Not a valid roll!`);
+		return sendSimpleEmbededError(msg, `${msg.author} rolled a ${require('d20').roll(args.roll)}`);
 	}
 }
