@@ -46,6 +46,5 @@ export default class ServerCommand extends Command {
 				}));
 			}
 		}
-		return null;
 	}
 }

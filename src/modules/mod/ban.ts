@@ -40,12 +40,12 @@ export default class BanCommand extends Command {
 		return this.client.isOwner(msg.author) || msg.member.hasPermission('BAN_MEMBERS');
 	}
 
-	public async run(msg: CommandMessage, args: { member: GuildMember, reason: string, daysOfMessages: number }): Promise<Message | Message[]> {
+	public async run(msg: CommandMessage, args: { member: GuildMember, reason: string, daysOfMessages: number }): Promise<Message | Message[] | any> {
 		const memberToBan = args.member;
 
 		if (memberToBan !== undefined) {
-			if (!memberToBan.bannable || msg.member.roles.highest.comparePositionTo(memberToBan.roles.highest) > 0) {
-				return sendSimpleEmbededMessage(msg, `I can't ban ${memberToBan}. Do they have the same or a higher role than me?`);
+			if (!memberToBan.bannable || !(msg.member.roles.highest.comparePositionTo(memberToBan.roles.highest) > 0)) {
+				return sendSimpleEmbededMessage(msg, `I can't ban ${memberToBan}. Do they have the same or a higher role than me or you?`);
 			}
 			if (args.daysOfMessages) {
 				memberToBan.ban({ days: args.daysOfMessages, reason: args.reason }).then(() => {
@@ -59,7 +59,8 @@ export default class BanCommand extends Command {
 			}).catch(() => {
 				return sendSimpleEmbededMessage(msg, `Banning ${memberToBan} from ${msg.guild} failed!`);
 			});
+		} else {
+			return sendSimpleEmbededError(msg, 'You must specify a valid user to ban.');
 		}
-		return sendSimpleEmbededError(msg, 'You must specify a valid user to ban.');
 	}
 }

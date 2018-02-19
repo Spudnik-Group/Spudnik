@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbededError, sendSimpleEmbededMessage } from '../../lib/helpers';
+import { sendSimpleEmbededMessage } from '../../lib/helpers';
 
 export default class YodifyCommand extends Command {
 	constructor(client: CommandoClient) {
@@ -24,7 +24,7 @@ export default class YodifyCommand extends Command {
 		});
 	}
 
-	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
+	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[] | any> {
 		require('soap').createClient('http://www.yodaspeak.co.uk/webservice/yodatalk.php?wsdl', (err: Error, client: any) => {
 			if (err) {
 				return sendSimpleEmbededMessage(msg, 'Lost, I am. Not found, the web service is. Hrmm...');
@@ -38,6 +38,5 @@ export default class YodifyCommand extends Command {
 				return sendSimpleEmbededMessage(msg, result.return);
 			});
 		});
-		return sendSimpleEmbededError(msg, 'Confused, I am. Disturbance in the force, there is. Hrmm...');
 	}
 }
