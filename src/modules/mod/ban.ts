@@ -1,6 +1,6 @@
 import { GuildMember, Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbededError, sendSimpleEmbededMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 export default class BanCommand extends Command {
 	constructor(client: CommandoClient) {
@@ -45,22 +45,22 @@ export default class BanCommand extends Command {
 
 		if (memberToBan !== undefined) {
 			if (!memberToBan.bannable || !(msg.member.roles.highest.comparePositionTo(memberToBan.roles.highest) > 0)) {
-				return sendSimpleEmbededMessage(msg, `I can't ban ${memberToBan}. Do they have the same or a higher role than me or you?`);
+				return sendSimpleEmbeddedMessage(msg, `I can't ban ${memberToBan}. Do they have the same or a higher role than me or you?`);
 			}
 			if (args.daysOfMessages) {
 				memberToBan.ban({ days: args.daysOfMessages, reason: args.reason }).then(() => {
-					return sendSimpleEmbededMessage(msg, `Banning ${memberToBan} from ${msg.guild} for ${args.reason}!`);
+					return sendSimpleEmbeddedMessage(msg, `Banning ${memberToBan} from ${msg.guild} for ${args.reason}!`);
 				}).catch(() => {
-					return sendSimpleEmbededMessage(msg, `Banning ${memberToBan} from ${msg.guild} failed!`);
+					return sendSimpleEmbeddedMessage(msg, `Banning ${memberToBan} from ${msg.guild} failed!`);
 				});
 			}
 			memberToBan.ban({ reason: args.reason }).then(() => {
-				return sendSimpleEmbededMessage(msg, `Banning ${memberToBan} from ${msg.guild} for ${args.reason}!`);
+				return sendSimpleEmbeddedMessage(msg, `Banning ${memberToBan} from ${msg.guild} for ${args.reason}!`);
 			}).catch(() => {
-				return sendSimpleEmbededMessage(msg, `Banning ${memberToBan} from ${msg.guild} failed!`);
+				return sendSimpleEmbeddedMessage(msg, `Banning ${memberToBan} from ${msg.guild} failed!`);
 			});
 		} else {
-			return sendSimpleEmbededError(msg, 'You must specify a valid user to ban.');
+			return sendSimpleEmbeddedError(msg, 'You must specify a valid user to ban.');
 		}
 	}
 }

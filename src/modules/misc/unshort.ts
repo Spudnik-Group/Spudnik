@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbededError, sendSimpleEmbededMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 export default class UnshortCommand extends Command {
 	constructor(client: CommandoClient) {
@@ -25,14 +25,15 @@ export default class UnshortCommand extends Command {
 		});
 	}
 
-	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[] | any> {
+	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
 		require('url-unshort')().expand(args.query)
 			.then((url: string) => {
 				if (url) {
 					msg.delete();
-					return sendSimpleEmbededMessage(msg, `Original url is: <${url}>`);
+					return sendSimpleEmbeddedMessage(msg, `Original url is: <${url}>`);
 				}
-				return sendSimpleEmbededError(msg, 'This url can\'t be expanded. Make sure the protocol exists (Http/Https) and try again.');
+				return sendSimpleEmbeddedError(msg, 'This url can\'t be expanded. Make sure the protocol exists (Http/Https) and try again.');
 			});
+		return sendSimpleEmbeddedMessage(msg, 'Loading...');
 	}
 }

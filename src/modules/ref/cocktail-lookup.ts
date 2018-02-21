@@ -2,7 +2,7 @@ import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { RequestResponse } from 'request';
 import * as request from 'request';
-import { sendSimpleEmbededError } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 export default class CocktailCommand extends Command {
 	constructor(client: CommandoClient) {
@@ -40,7 +40,7 @@ export default class CocktailCommand extends Command {
 
 		request(`http://www.thecocktaildb.com/api/json/v1/1/search.php?s=${encodeURIComponent(args.query)}`, (err: Error, res: RequestResponse, body: any) => {
 			if (err !== undefined && err !== null) {
-				sendSimpleEmbededError(msg, 'There was an error with the request. Try again?');
+				sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
 			}
 			const response = JSON.parse(body);
 			if (typeof response !== 'undefined' && response.drinks !== null) {
@@ -86,7 +86,7 @@ export default class CocktailCommand extends Command {
 					});
 
 					cocktailEmbed.title = `__${result.strDrink}__`;
-					cocktailEmbed.thumbnail = { url: thumbnail };
+					cocktailEmbed.thumbnail = { url: `http://${thumbnail}` };
 					cocktailEmbed.fields = fields;
 					return msg.embed(cocktailEmbed);
 				} else {
@@ -98,6 +98,6 @@ export default class CocktailCommand extends Command {
 				return msg.embed(cocktailEmbed);
 			}
 		});
-		return sendSimpleEmbededError(msg, 'There was an error with the request. Try again?');
+		return sendSimpleEmbeddedMessage(msg, 'Loading...');
 	}
 }

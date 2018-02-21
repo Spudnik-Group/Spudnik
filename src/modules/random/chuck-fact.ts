@@ -3,7 +3,7 @@ import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import * as request from 'request';
 import { RequestResponse } from 'request';
-import { sendSimpleEmbededError } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 export default class ChuckFactCommand extends Command {
 	constructor(client: CommandoClient) {
@@ -25,7 +25,7 @@ export default class ChuckFactCommand extends Command {
 		request('http://api.icndb.com/jokes/random', (err: Error, res: RequestResponse, body: string) => {
 			try {
 				if (err) {
-					throw err;
+					return sendSimpleEmbeddedError(msg, 'Error getting fact. Try again?');
 				}
 
 				const data = JSON.parse(body);
@@ -40,9 +40,9 @@ export default class ChuckFactCommand extends Command {
 				let msgTxt = 'failed to retrieve Chuck Norris fact. He probably kicked it. :disappointed_relieved:';
 				//TODO: add debug logging: msgTxt += `\n${err.stack}`;
 				console.log(chalk.red(err));
-				sendSimpleEmbededError(msg, msgTxt);
+				sendSimpleEmbeddedError(msg, msgTxt);
 			}
 		});
-		return sendSimpleEmbededError(msg, 'Error getting fact. Try again?');
+		return sendSimpleEmbeddedMessage(msg, 'Loading...');
 	}
 }

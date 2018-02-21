@@ -3,7 +3,7 @@ import { Command, CommandMessage } from 'discord.js-commando';
 import * as request from 'request';
 import { RequestResponse } from 'request';
 import { SpudnikClient } from '../../lib/client';
-import { sendSimpleEmbededError } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 // tslint:disable-next-line:no-var-requires
 const { dictionaryApiKey }: { dictionaryApiKey: string } = require('../../../config/config.json');
@@ -35,7 +35,7 @@ export default class DefineCommand extends Command {
 
 		request(`http://www.dictionaryapi.com/api/v1/references/collegiate/xml/${word}?key=${dictionaryApiKey}`, (err: Error, res: RequestResponse, body: any) => {
 			if (err !== undefined && err !== null) {
-				sendSimpleEmbededError(msg, 'There was an error with the request. Try again?');
+				sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
 			}
 			let definitionResult = '';
 			require('xml2js').Parser().parseString(body, (err: Error, result: any) => {
@@ -84,6 +84,6 @@ export default class DefineCommand extends Command {
 				});
 			});
 		});
-		return sendSimpleEmbededError(msg, 'There was an error with the request. Try again?');
+		return sendSimpleEmbeddedMessage(msg, 'Loading...');
 	}
 }

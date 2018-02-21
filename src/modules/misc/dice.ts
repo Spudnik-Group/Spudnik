@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbededError, sendSimpleEmbededMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 export default class RollCommand extends Command {
 	constructor(client: CommandoClient) {
@@ -38,8 +38,8 @@ export default class RollCommand extends Command {
 				response = `${msg.author} tried to roll too many dice at once!`;
 			}
 
-			return sendSimpleEmbededMessage(msg, `${response}`);
+			return sendSimpleEmbeddedMessage(msg, `${response}`);
 		}
-		return sendSimpleEmbededError(msg, `${msg.author} rolled a ${require('d20').roll(args.roll)}`);
+		return sendSimpleEmbeddedError(msg, `${msg.author} rolled a ${require('d20').roll(args.roll)}`);
 	}
 }

@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbededMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 export default class YodifyCommand extends Command {
 	constructor(client: CommandoClient) {
@@ -24,19 +24,20 @@ export default class YodifyCommand extends Command {
 		});
 	}
 
-	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[] | any> {
+	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
 		require('soap').createClient('http://www.yodaspeak.co.uk/webservice/yodatalk.php?wsdl', (err: Error, client: any) => {
 			if (err) {
-				return sendSimpleEmbededMessage(msg, 'Lost, I am. Not found, the web service is. Hrmm...');
+				return sendSimpleEmbeddedMessage(msg, 'Lost, I am. Not found, the web service is. Hrmm...');
 			}
 
 			client.yodaTalk({ inputText: args.query }, (err: Error, result: any) => {
 				if (err) {
-					return sendSimpleEmbededMessage(msg, 'Confused, I am. Disturbance in the force, there is. Hrmm...');
+					return sendSimpleEmbeddedMessage(msg, 'Confused, I am. Disturbance in the force, there is. Hrmm...');
 				}
 				msg.delete();
-				return sendSimpleEmbededMessage(msg, result.return);
+				return sendSimpleEmbeddedMessage(msg, result.return);
 			});
 		});
+		return sendSimpleEmbeddedMessage(msg, 'Loading...');
 	}
 }

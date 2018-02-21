@@ -3,7 +3,7 @@ import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import * as request from 'request';
 import { RequestResponse } from 'request';
-import { sendSimpleEmbededError } from '../../lib/helpers';
+import { sendSimpleEmbeddedError } from '../../lib/helpers';
 
 export default class YearFactCommand extends Command {
 	constructor(client: CommandoClient) {
@@ -39,9 +39,9 @@ export default class YearFactCommand extends Command {
 				let msgTxt = 'command year-fact failed :disappointed_relieved:';
 				//TODO: add debug logging: msgTxt += `\n${err.stack}`;
 				console.log(chalk.red(err));
-				return sendSimpleEmbededError(msg, msgTxt);
+				return sendSimpleEmbeddedError(msg, msgTxt);
 			}
 		});
-		return sendSimpleEmbededError(msg, 'Error getting fact. Try again?');
+		return sendSimpleEmbeddedError(msg, 'Error getting fact. Try again?');
 	}
 }

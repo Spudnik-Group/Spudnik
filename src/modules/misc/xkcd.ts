@@ -2,7 +2,7 @@ import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import * as request from 'request';
 import { RequestResponse } from 'request';
-import { sendSimpleEmbededError } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 export default class XkcdCommand extends Command {
 	constructor(client: CommandoClient) {
@@ -49,9 +49,9 @@ export default class XkcdCommand extends Command {
 					},
 				});
 			} catch (err) {
-				return sendSimpleEmbededError(msg, `Couldn't fetch an XKCD for ${args.comicNumber}`);
+				return sendSimpleEmbeddedError(msg, `Couldn't fetch an XKCD for ${args.comicNumber}`);
 			}
 		});
-		return sendSimpleEmbededError(msg, 'There was an error with the request. Try again?');
+		return sendSimpleEmbeddedMessage(msg, 'Loading...');;
 	}
 }

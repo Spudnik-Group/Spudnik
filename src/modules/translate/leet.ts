@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbededMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 export default class LeetCommand extends Command {
 	constructor(client: CommandoClient) {
@@ -26,6 +26,6 @@ export default class LeetCommand extends Command {
 
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
 		msg.delete();
-		return sendSimpleEmbededMessage(msg, require('leet').convert(args.query));
+		return sendSimpleEmbeddedMessage(msg, require('leet').convert(args.query));
 	}
 }

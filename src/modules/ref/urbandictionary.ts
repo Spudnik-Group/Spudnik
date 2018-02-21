@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbededError } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 export default class UrbanCommand extends Command {
 	constructor(client: CommandoClient) {
@@ -28,6 +28,7 @@ export default class UrbanCommand extends Command {
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
 		const targetWord = args.query === '' ? require('urban').random() : require('urban')(args.query);
 		targetWord.first((json: any) => {
+			return sendSimpleEmbeddedMessage(msg, 'Loading...');
 			let title = `Urban Dictionary: ${args.query}`;
 			let message;
 			let example;
@@ -51,6 +52,6 @@ export default class UrbanCommand extends Command {
 				},
 			});
 		});
-		return sendSimpleEmbededError(msg, 'There was an error with the request. Try again?');
+		return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
 	}
 }

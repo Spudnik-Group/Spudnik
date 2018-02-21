@@ -1,6 +1,6 @@
 import { Collection, GuildMember, Message, User } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbededError, sendSimpleEmbededMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 export default class PruneCommand extends Command {
 	constructor(client: CommandoClient) {
@@ -63,7 +63,7 @@ export default class PruneCommand extends Command {
 					const user: User = member.user;
 					messageFilter = (message: Message) => message.author.id === user.id;
 				} else {
-					return sendSimpleEmbededError(msg, `${msg.author}, you have to mention someone.`);
+					return sendSimpleEmbeddedError(msg, `${msg.author}, you have to mention someone.`);
 				}
 			} else if (filter === 'bots') {
 				messageFilter = (message: Message) => message.author.bot;
@@ -74,25 +74,25 @@ export default class PruneCommand extends Command {
 			} else if (filter === 'links') {
 				messageFilter = (message: Message) => message.content.search(/https?:\/\/[^ \/\.]+\.[^ \/\.]+/) !== -1;
 			} else {
-				return sendSimpleEmbededError(msg, `${msg.author}, that is not a valid filter. \`help prune\` for all available filters.`);
+				return sendSimpleEmbeddedError(msg, `${msg.author}, that is not a valid filter. \`help prune\` for all available filters.`);
 			}
 
 			const messages: Collection<string, Message> = await msg.channel.messages.fetch({ limit });
 			const messagesToDelete: Collection<string, Message> = messages.filter(messageFilter);
-			await sendSimpleEmbededMessage(msg, `Pruning ${limit} messages.`).then((response: Message | Message[]) => {
-				msg.channel.bulkDelete(messages.array().reverse())
+			await sendSimpleEmbeddedMessage(msg, `Pruning ${limit} messages.`).then((response: Message | Message[]) => {
+				msg.channel.bulkDelete(messagesToDelete.array().reverse())
 					.then(() => { if (response instanceof Message) { response.delete(); } })
 					.catch((err: Error) => null);
 			});
-			return sendSimpleEmbededMessage(msg, `Pruned ${limit} messages`, 5000);
+			return sendSimpleEmbeddedMessage(msg, `Pruned ${limit} messages`, 5000);
 		}
 
 		const messages: Collection<string, Message> = await msg.channel.messages.fetch({ limit });
-		await sendSimpleEmbededMessage(msg, `Pruning ${limit} messages.`).then((response: Message | Message[]) => {
+		await sendSimpleEmbeddedMessage(msg, `Pruning ${limit} messages.`).then((response: Message | Message[]) => {
 			msg.channel.bulkDelete(messages.array().reverse())
 				.then(() => { if (response instanceof Message) { response.delete(); } })
 				.catch((err: Error) => null);
 		});
-		return sendSimpleEmbededMessage(msg, `Pruned ${limit} messages`, 5000);
+		return sendSimpleEmbeddedMessage(msg, `Pruned ${limit} messages`, 5000);
 	}
 }

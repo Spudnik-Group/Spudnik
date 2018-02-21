@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { RequestResponse } from 'request';
-import { sendSimpleEmbededError } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 export default class DateFactCommand extends Command {
 	constructor(client: CommandoClient) {
@@ -23,7 +23,7 @@ export default class DateFactCommand extends Command {
 		require('request')('http://numbersapi.com/random/date?json', (err: Error, res: RequestResponse, body: string) => {
 			try {
 				if (err) {
-					throw err;
+					return sendSimpleEmbeddedError(msg, 'Error getting fact. Try again?');
 				}
 
 				const data = JSON.parse(body);
@@ -38,9 +38,9 @@ export default class DateFactCommand extends Command {
 				let msgTxt = 'command date-fact failed :disappointed_relieved:';
 				//TODO: add debug logging: msgTxt += `\n${err.stack}`;
 				console.log(chalk.red(err));
-				return sendSimpleEmbededError(msg, msgTxt);
+				return sendSimpleEmbeddedError(msg, msgTxt);
 			}
 		});
-		return sendSimpleEmbededError(msg, 'Error getting fact. Try again?');
+		return sendSimpleEmbeddedMessage(msg, 'Loading...');
 	}
 }

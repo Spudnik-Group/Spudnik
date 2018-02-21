@@ -3,7 +3,7 @@ import { Message } from 'discord.js';
 import { CommandMessage } from 'discord.js-commando';
 import * as fs from 'fs';
 
-export function sendSimpleEmbededMessage(msg: CommandMessage, text: string, timeout?: number): Promise<Message | Message[]> {
+export function sendSimpleEmbeddedMessage(msg: CommandMessage, text: string, timeout?: number): Promise<Message | Message[]> {
 	const promise: Promise<Message | Message[]> = msg.embed({
 		author: {
 			icon_url: msg.author.displayAvatarURL,
@@ -24,7 +24,7 @@ export function sendSimpleEmbededMessage(msg: CommandMessage, text: string, time
 	}
 	return promise;
 }
-export function sendSimpleEmbededError(msg: CommandMessage, text: string, timeout?: number): Promise<Message | Message[]> {
+export function sendSimpleEmbeddedError(msg: CommandMessage, text: string, timeout?: number): Promise<Message | Message[]> {
 	const promise: Promise<Message | Message[]> = msg.embed({
 		author: {
 			icon_url: msg.author.displayAvatarURL,
@@ -45,7 +45,7 @@ export function sendSimpleEmbededError(msg: CommandMessage, text: string, timeou
 	}
 	return promise;
 }
-export function sendSimpleEmbededSuccess(msg: CommandMessage, text: string, timeout?: number): Promise<Message | Message[]> {
+export function sendSimpleEmbeddedSuccess(msg: CommandMessage, text: string, timeout?: number): Promise<Message | Message[]> {
 	const promise: Promise<Message | Message[]> = msg.embed({
 		author: {
 			icon_url: msg.author.displayAvatarURL,
@@ -66,7 +66,7 @@ export function sendSimpleEmbededSuccess(msg: CommandMessage, text: string, time
 	}
 	return promise;
 }
-export function sendSimpleEmbededImage(msg: CommandMessage, url: string, description?: string): Promise<Message | Message[]> {
+export function sendSimpleEmbeddedImage(msg: CommandMessage, url: string, description?: string): Promise<Message | Message[]> {
 	return msg.embed({
 		author: {
 			icon_url: msg.author.displayAvatarURL,

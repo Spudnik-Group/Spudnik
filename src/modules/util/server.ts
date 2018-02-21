@@ -1,6 +1,6 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { getJsonObject, sendSimpleEmbededError } from '../../lib/helpers';
+import { getJsonObject } from '../../lib/helpers';
 
 const servers = getJsonObject('../config/servers.json');
 

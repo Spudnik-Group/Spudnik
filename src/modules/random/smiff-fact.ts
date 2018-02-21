@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { getRandomInt, sendSimpleEmbededMessage } from '../../lib/helpers';
+import { getRandomInt, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 // tslint:disable-next-line:no-var-requires
 const { smiff }: { smiff: string[] } = require('../../extras/data');
@@ -22,6 +22,6 @@ export default class SmiffFactCommand extends Command {
 	}
 
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
-		return sendSimpleEmbededMessage(msg, smiff[getRandomInt(0, smiff.length) - 1]);
+		return sendSimpleEmbeddedMessage(msg, smiff[getRandomInt(0, smiff.length) - 1]);
 	}
 }

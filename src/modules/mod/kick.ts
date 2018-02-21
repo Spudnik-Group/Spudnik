@@ -1,6 +1,6 @@
 import { GuildMember, Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbededMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 export default class KickCommand extends Command {
 	constructor(client: CommandoClient) {
@@ -39,13 +39,13 @@ export default class KickCommand extends Command {
 
 		if (memberToKick !== undefined) {
 			if (!memberToKick.kickable || !(msg.member.roles.highest.comparePositionTo(memberToKick.roles.highest) > 0)) {
-				return sendSimpleEmbededMessage(msg, `I can't kick ${memberToKick}. Do they have the same or a higher role than me or you?`);
+				return sendSimpleEmbeddedMessage(msg, `I can't kick ${memberToKick}. Do they have the same or a higher role than me or you?`);
 			}
 			memberToKick.kick(args.reason).then(() => {
-				return sendSimpleEmbededMessage(msg, `Kicking ${memberToKick} from ${msg.guild} for ${args.reason}!`);
-			}).catch(() => sendSimpleEmbededMessage(msg, `Kicking ${memberToKick} failed!`));
+				return sendSimpleEmbeddedMessage(msg, `Kicking ${memberToKick} from ${msg.guild} for ${args.reason}!`);
+			}).catch(() => sendSimpleEmbeddedMessage(msg, `Kicking ${memberToKick} failed!`));
 		} else {
-			return sendSimpleEmbededMessage(msg, 'You must specify a valid user to kick.');
+			return sendSimpleEmbeddedMessage(msg, 'You must specify a valid user to kick.');
 		}
 	}
 }
