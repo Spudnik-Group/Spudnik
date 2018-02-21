@@ -28,7 +28,6 @@ export default class UrbanCommand extends Command {
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
 		const targetWord = args.query === '' ? require('urban').random() : require('urban')(args.query);
 		targetWord.first((json: any) => {
-			return sendSimpleEmbeddedMessage(msg, 'Loading...');
 			let title = `Urban Dictionary: ${args.query}`;
 			let message;
 			let example;
