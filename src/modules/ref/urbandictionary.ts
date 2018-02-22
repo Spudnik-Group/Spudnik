@@ -27,30 +27,34 @@ export default class UrbanCommand extends Command {
 
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
 		const targetWord = args.query === '' ? require('urban').random() : require('urban')(args.query);
-		targetWord.first((json: any) => {
-			let title = `Urban Dictionary: ${args.query}`;
-			let message;
-			let example;
+		try {
+			targetWord.first((json: any) => {
+				let title = `Urban Dictionary: ${args.query}`;
+				let message;
+				let example;
 
-			if (json) {
-				title = `Urban Dictionary: ${json.word}`;
-				message = `${json.definition}`;
-				if (json.example) {
-					example = `Example: ${json.example}`;
+				if (json) {
+					title = `Urban Dictionary: ${json.word}`;
+					message = `${json.definition}`;
+					if (json.example) {
+						example = `Example: ${json.example}`;
+					}
+				} else {
+					message = 'No matches found';
 				}
-			} else {
-				message = 'No matches found';
-			}
 
-			return msg.embed({
-				color: 5592405,
-				title,
-				description: message,
-				footer: {
-					text: example,
-				},
+				return msg.embed({
+					color: 5592405,
+					title,
+					description: message,
+					footer: {
+						text: example,
+					},
+				});
 			});
-		});
-		return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
+		} catch (err) {
+			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
+		}
+		return sendSimpleEmbeddedMessage(msg, 'Loading...');
 	}
 }

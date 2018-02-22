@@ -61,7 +61,9 @@ export default class BrewCommand extends Command {
 					if (typeof result.images !== 'undefined') {
 						thumbnail = result.images.squareMedium;
 					}
-
+					if (typeof result.name !== 'undefined') {
+						brewEmbed.title = result.name;
+					}
 					if (typeof result.style !== 'undefined') {
 						fields.push({
 							name: `Style: ${result.style.name}`,

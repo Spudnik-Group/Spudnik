@@ -34,8 +34,8 @@ export default class WikiCommand extends Command {
 						if (paragraph) {
 							return msg.embed({
 								color: 5592405,
-								title: page.title,
-								description: `${paragraph}\n\n${page.fullurl}`,
+								title: page.raw.title,
+								description: `${paragraph}\n\n${page.raw.fullurl}`,
 							});
 						}
 					};
