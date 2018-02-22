@@ -3,7 +3,7 @@ import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import * as request from 'request';
 import { RequestResponse } from 'request';
-import { sendSimpleEmbeddedError } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 export default class YearFactCommand extends Command {
 	constructor(client: CommandoClient) {
@@ -24,7 +24,7 @@ export default class YearFactCommand extends Command {
 		request('http://numbersapi.com/random/year?json', (err: Error, res: RequestResponse, body: string) => {
 			try {
 				if (err) {
-					throw err;
+					return sendSimpleEmbeddedError(msg, 'Error getting fact. Try again?');
 				}
 
 				const data = JSON.parse(body);
@@ -42,6 +42,6 @@ export default class YearFactCommand extends Command {
 				return sendSimpleEmbeddedError(msg, msgTxt);
 			}
 		});
-		return sendSimpleEmbeddedError(msg, 'Error getting fact. Try again?');
+		return sendSimpleEmbeddedMessage(msg, 'Loading...');
 	}
 }

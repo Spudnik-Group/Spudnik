@@ -1,8 +1,7 @@
 import chalk from 'chalk';
 import * as Discord from 'discord.js';
-import * as fs from 'fs';
 import { Config } from './lib/config';
-import { Spudnik } from './spudnik';
+import { Spudnik } from './lib/spudnik';
 
 console.log(chalk.blue('3...\n2...\n1...\nLAUNCH'));
 console.log(chalk.blue('---Spudnik Stage 1 Engaged.---'));

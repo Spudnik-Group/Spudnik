@@ -1,11 +1,8 @@
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbededError, sendSimpleEmbededMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
-// tslint:disable-next-line:no-var-requires
-const { defaultEmbedColor }: { defaultEmbedColor: string } = require('../config/config.json');
-
-export default class IAmNotCommand extends Command {
+export default class WelcomeCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Used to set the private welcome message for a new user.',
@@ -27,9 +24,9 @@ export default class IAmNotCommand extends Command {
 	}
 	public async run(msg: CommandMessage, args: { subCommand: string, message: string }): Promise<Message | Message[]> {
 		return msg.client.provider.set(msg.guild, 'welcomeMessage', args.message).then(() => {
-			return sendSimpleEmbededMessage(msg, `Successfully set welcome message for ${msg.guild.name}.`);
+			return sendSimpleEmbeddedMessage(msg, `Successfully set welcome message for ${msg.guild.name}.`);
 		}).catch(() => {
-			return sendSimpleEmbededError(msg, `There was an error processing the request.`);
+			return sendSimpleEmbeddedError(msg, `There was an error processing the request.`);
 		});
 	}
 }
