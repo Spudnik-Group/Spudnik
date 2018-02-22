@@ -32,6 +32,10 @@ export default class ChooseCommand extends Command {
 	public async run(msg: CommandMessage, args: { choice1: string, choice2: string }): Promise<Message | Message[]> {
 		const options: string[] = [args.choice1, args.choice2];
 		return msg.embed({
+			author: {
+				icon_url: msg.guild.me.user.displayAvatarURL,
+				name: `${msg.guild.me.user.username}`,
+			},
 			color: 5592405,
 			title: ':thinking:',
 			description: `I choose ${options[getRandomInt(0, 1)]}`,

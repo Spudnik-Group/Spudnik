@@ -31,7 +31,7 @@ export default class DogFactCommand extends Command {
 				if (data && data.facts && data.facts[0]) {
 					return msg.embed(new MessageEmbed({
 						color: 5592405,
-						title: 'Dog Fact',
+						title: ':dog: Fact',
 						description: data.facts[0],
 					}));
 				}
