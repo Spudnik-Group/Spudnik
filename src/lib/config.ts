@@ -30,7 +30,7 @@ export class Configuration implements IConfig {
 	@JsonProperty('breweryDbApiKey', String)
 	private _breweryDbApiKey: string = '';
 
-	@JsonProperty('breweryDbApiKey', String)
+	@JsonProperty('dictionaryApiKey', String)
 	private _dictionaryApiKey: string = '';
 
 	public getDebug() {

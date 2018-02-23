@@ -1,15 +1,14 @@
 import { Message } from 'discord.js';
-import { Command, CommandMessage } from 'discord.js-commando';
+import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import * as request from 'request';
 import { RequestResponse } from 'request';
-import { SpudnikClient } from '../../lib/client';
+import { Config } from '../../lib/config';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
-// tslint:disable-next-line:no-var-requires
-const { dictionaryApiKey }: { dictionaryApiKey: string } = require('../../../config/config.json');
+const dictionaryApiKey: string = Config.getDictionaryApiKey();
 
 export default class DefineCommand extends Command {
-	constructor(client: SpudnikClient) {
+	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Looks up a word in the Merriam-Webster Collegiate Dictionary.',
 			group: 'ref',

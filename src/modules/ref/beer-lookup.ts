@@ -2,10 +2,10 @@ import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { RequestResponse } from 'request';
 import * as request from 'request';
+import { Config } from '../../lib/config';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
-// tslint:disable-next-line:no-var-requires
-const { breweryDbApiKey }: { breweryDbApiKey: string } = require('../../../config/config.json');
+const breweryDbApiKey: string = Config.getBreweryDbApiKey();
 
 export default class BrewCommand extends Command {
 	constructor(client: CommandoClient) {
