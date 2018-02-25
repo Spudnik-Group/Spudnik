@@ -19,17 +19,16 @@ export default class GitGudCommand extends Command {
 					default: '',
 					key: 'mention',
 					prompt: 'Who should gitgud?',
-					type: 'user',
+					type: 'string',
 				},
 			],
 		});
 	}
 
-	public async run(msg: CommandMessage, args: { mention: UserResolvable }): Promise<Message | Message[]> {
+	public async run(msg: CommandMessage, args: { mention: string }): Promise<Message | Message[]> {
 		if (args.mention && args.mention !== null) {
-			return msg.reply(msg, {
-				reply: args.mention,
-				embed: { image: { url: 'http://i.imgur.com/NqpPXHu.jpg' } },
+			return msg.embed({ image: { url: 'http://i.imgur.com/NqpPXHu.jpg' } }, '', {
+				reply: resolveMention(args.mention),
 			});
 		}
 		return sendSimpleEmbeddedImage(msg, 'http://i.imgur.com/NqpPXHu.jpg');
