@@ -4,16 +4,38 @@ node_js:
 before_install:
 - npm install -g node-gyp
 before_script:
-  - export AUTHOR_NAME="$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"
+- export AUTHOR_NAME="$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"
 after_success:
-  - chmod +x success.sh
-  - ./success.sh
+- chmod +x success.sh
+- "./success.sh"
 after_failure:
-  - chmod +x fail.sh
-  - ./fail.sh
+- zip -r dist dist/*
+- mkdir -p deploy_upload
+- mv dist.zip deploy_upload/dist.zip
+- chmod +x fail.sh
+- "./fail.sh"
 cache:
   directories:
-    - "node_modules"
+  - node_modules
 branches:
   except:
   - hotfix
+deploy:
+  - provider: s3
+    access_key_id: AKIAJHHSK7AW3C3LKHYQ
+    secret_access_key:
+      secure: uP1fG763BisJATuzKPYe3MDL5pQPR2I8V52UcFtR1XgKcmPvo6u8HWn5pDGAzqYqLZDH5qsiQh+C/73mw2RAKslOOrDTPgGHOxBiTQGa0GVc3rluHck9ZLmrv9ZkELL31pvfGJu6KL+dODUmrNI9WvIDeG50RITB/YBm3kZhHQeGOqzC/AeGqhHuQYIhSSreRtIewODUQLiqUy8X2PmLRzAwDiCnibKpptWCyw436IC5q5YlmCt9d914axnF8ma+Ii8byFkGTICS9gP+ectNJz7yLAC0lqFWZZfF7t7PiTBE+Z8uXkImacz1d/LWjom/k0gbEYrSIGTrd8XxH9WJEVT7K7y3WMTeiIq2+2jqktwgee1gICDXZZiK+2LXHlH9g29pDYLXN3INi1ZB+CRfeQlLY1Wb+3XxYdmgkVgQkrNvbhpqmlyPODx2eYy5f6YPA75EkShuwmufOEzs2PkJ+jqlE4GtOtnB0EWtFJIL+kWFhCKlOWjUK+Fjm/fjV/W0QVdPJOcBDR5pQoM/MM5GTxIashQ7JLr5iL2NWu1Y67/ZNfdjpM7Vi31gwvv0Ua8zLTIaZCDadlZ7PCRZh9nxuAxN/XXeuE3IY1X6LDqmCxnyx5X28udZUjeqZ2ynkieGYmE2+yjzouVWBP1uHbqI5Rg9aj5O/XkfWLnT3OJx+as=
+    bucket: spudnik
+    skip_cleanup: true
+    local_dir: deploy_upload
+  - provider: codedeploy
+    access_key_id: AKIAJHHSK7AW3C3LKHYQ
+    secret_access_key:
+      secure: uP1fG763BisJATuzKPYe3MDL5pQPR2I8V52UcFtR1XgKcmPvo6u8HWn5pDGAzqYqLZDH5qsiQh+C/73mw2RAKslOOrDTPgGHOxBiTQGa0GVc3rluHck9ZLmrv9ZkELL31pvfGJu6KL+dODUmrNI9WvIDeG50RITB/YBm3kZhHQeGOqzC/AeGqhHuQYIhSSreRtIewODUQLiqUy8X2PmLRzAwDiCnibKpptWCyw436IC5q5YlmCt9d914axnF8ma+Ii8byFkGTICS9gP+ectNJz7yLAC0lqFWZZfF7t7PiTBE+Z8uXkImacz1d/LWjom/k0gbEYrSIGTrd8XxH9WJEVT7K7y3WMTeiIq2+2jqktwgee1gICDXZZiK+2LXHlH9g29pDYLXN3INi1ZB+CRfeQlLY1Wb+3XxYdmgkVgQkrNvbhpqmlyPODx2eYy5f6YPA75EkShuwmufOEzs2PkJ+jqlE4GtOtnB0EWtFJIL+kWFhCKlOWjUK+Fjm/fjV/W0QVdPJOcBDR5pQoM/MM5GTxIashQ7JLr5iL2NWu1Y67/ZNfdjpM7Vi31gwvv0Ua8zLTIaZCDadlZ7PCRZh9nxuAxN/XXeuE3IY1X6LDqmCxnyx5X28udZUjeqZ2ynkieGYmE2+yjzouVWBP1uHbqI5Rg9aj5O/XkfWLnT3OJx+as=
+    bucket: spudnik
+    key: 'dist'
+    bundle_type: 'zip'
+    application: Spudnik
+    deployment_group: Spudnik
+    on:
+      repo: Spudnik-Group/Spudnik
