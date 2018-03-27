@@ -10,16 +10,20 @@ branches:
   except:
   - hotfix
 before_install:
-- npm install -g node-gyp
+- npm install -g node-gyp typescript
+install:
+- npm install
+- tsc
 before_script:
 - export AUTHOR_NAME="$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"
 after_success:
-- chmod +x success.sh
-- "./success.sh"
+- chmod +x ./scripts/build_success.sh
+- "./scripts/build_success.sh"
 after_failure:
-- chmod +x fail.sh
-- "./fail.sh"
+- chmod +x ./scripts/build_fail.sh
+- "./scripts/build_fail.sh"
 before_deploy:
+- zip -r dist dist/*
 - mkdir -p dpl_cd_upload
 - mv dist.zip dpl_cd_upload/dist.zip
 deploy:

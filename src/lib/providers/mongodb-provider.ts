@@ -23,7 +23,7 @@ export class MongoProvider extends SettingProvider {
 
 	constructor(db: Connection) {
 		super();
-
+		this.client = new CommandoClient();
 		this.db = db;
 		this.settings = new Map<string, any>();
 		this.listeners = new Map<string, any>();
