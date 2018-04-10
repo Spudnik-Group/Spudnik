@@ -10,6 +10,9 @@ branches:
   except:
   - hotfix
 before_install:
+- openssl aes-256-cbc -K $encrypted_fbba68adb586_key -iv $encrypted_fbba68adb586_iv
+  -in client-secret.json.enc -out client-secret.json -d
+- ssh-keygen -q -N "" -f ~/.ssh/google_compute_engine
 - npm install -g node-gyp typescript
 install:
 - npm install
@@ -27,21 +30,7 @@ before_deploy:
 - mkdir -p dpl_cd_upload
 - mv dist.zip dpl_cd_upload/dist.zip
 deploy:
-- provider: s3
-  access_key_id: AKIAI3OPAW5KAMDKGL7A
-  secret_access_key: &1
-    secure: Nx/FjywfCriIwmmfmLK+QDT+s94gEuVtfr5HwnDiwzvLyDWT42G5xyqRJpB2QxETSKiqJh0L6CXLfZwPYGEH90KJNiMAbwnTdM/VCUErXIficigzviUQU+r6mVTpsShcwcJcHniCzfeOPjJh78B5XDy/URSu1P/xghr1KkUBLLmuta+LWCh41xV1zKyerqBC5Sg9DcbWMHOjmmz2yKCgn4SyqYrKjhlYX0rulbHB2vUaXoWO/5yG6ADPiP/SOYf0/pZmQGDWUDzMaVg1KSx7w1GIN8BN/G9ZhcqKACyJjt1U9TGDNJ2AI03nx4YrI4fD76DbCqjDtanaHkDaEOO1bgvLrwHhSj3LdSChsG30U3tmb8nNIhBwTV8S58kRd0FbOz9hTlk6nUFNiQKobGjm22C3ecaRpbug+77ZaB9CvUxRxlCqM4gMKbtjaUvXNVU9fUGUXMzR/mMFC7c9Dch6OsCJZyZ5zeEKLQ0wathn1/aZFvyQFxvIh21fLmgxtSAEepZUiNdWf3Ubc0sXAjiE5FzwprpC36tfX2TDyM4RpXq/hllcfp6qpUEDLa467TMqn9/ekvJc84/Gh6DbLINLNpEKxXl4U+Z1zTE+2cA0IFEgT1p3lIH0FXEVwQvvLl9vU48vjAL4b4v6cy3md8jb91EBZTjsGgD0gVgiCR/GmRk=
-  local_dir: dpl_cd_upload
+- provider: gae
   skip_cleanup: true
-  on: &2
-    repo: Spudnik-Group/Spudnik
-  bucket: spudnik
-- provider: codedeploy
-  access_key_id: AKIAI3OPAW5KAMDKGL7A
-  secret_access_key: *1
-  bucket: spudnik
-  key: dist.zip
-  bundle_type: zip
-  application: Spudnik
-  deployment_group: Spudnik
-  on: *2
+  keyfile: client-secret.json
+  project: spudnik-bot

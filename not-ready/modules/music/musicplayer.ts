@@ -30,6 +30,7 @@ export default class MusicCommand extends Command {
 	}
 	public async run(msg: CommandMessage, args: { subCommand: string, item: string }): Promise<Message | Message[]> {
 		const MAX_QUEUE_SIZE = 20;
+		let item = args.item;
 
 		function getQueue(server: string) {
 			const { queue } = msg.client.provider.get(server, 'musicQueue', { queue: [] });
@@ -142,7 +143,6 @@ export default class MusicCommand extends Command {
 		switch (args.subCommand.toLowerCase()) {
 			case 'play': {
 				const voiceChannel: VoiceChannel = msg.member.voiceChannel;
-				let item = args.item;
 				// Make sure the user is in a voice channel.
 				if (voiceChannel === undefined) {
 					return msg.embed(createTextEmbed("You're not in a voice channel."));

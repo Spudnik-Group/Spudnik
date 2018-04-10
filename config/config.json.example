@@ -1,8 +1,7 @@
 {
-	"debug": true,
+	"debug": false,
 	"mongoDb": "mongodb://127.0.0.1:27017/test",
 	"token": "bot token",
-	"defaultEmbedColor": 5592405,
 	"owner": "owner token",
 	"breweryDbApiKey": "brewery db api key",
 	"dictionaryApiKey": "dictionary api key"
