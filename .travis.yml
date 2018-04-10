@@ -12,10 +12,6 @@ branches:
 before_install:
 - openssl aes-256-cbc -K $encrypted_779d3215c08a_key -iv $encrypted_779d3215c08a_iv
   -in client-secret.json.enc -out client-secret.json -d
-- openssl aes-256-cbc -K $encrypted_8ce681ad0d13_key -iv $encrypted_8ce681ad0d13_iv
-  -in client-secret.json.enc -out client-secret.json -d
-- openssl aes-256-cbc -K $encrypted_fbba68adb586_key -iv $encrypted_fbba68adb586_iv
-  -in client-secret.json.enc -out client-secret.json -d
 - ssh-keygen -q -N "" -f ~/.ssh/google_compute_engine
 - npm install -g node-gyp typescript
 install:
