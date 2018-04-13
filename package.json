@@ -4,6 +4,9 @@
 	"version": "0.1.1",
 	"license": "Apache-2.0",
 	"readme": "README.md",
+	"engines": {
+		"node": "8.x"
+	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/Spudnik-Group/Spudnik.git"
@@ -17,7 +20,7 @@
 	],
 	"main": "dist/launch.js",
 	"scripts": {
-		"launch": "node dist/launch.js",
+		"start": "node dist/launch.js",
 		"lint": "tslint && tsc"
 	},
 	"dependencies": {
