@@ -1,0 +1,27 @@
+import { Message } from 'discord.js';
+import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { getRandomInt, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+
+// tslint:disable-next-line:no-var-requires
+const { smiff }: { smiff: string[] } = require('../../extras/data');
+
+export default class SmiffFactCommand extends Command {
+	constructor(client: CommandoClient) {
+		super(client, {
+			aliases: ['smith-fact', 'willsmith'],
+			description: 'Gives a Random Will Smith Fact.',
+			group: 'random',
+			guildOnly: true,
+			memberName: 'smiff-fact',
+			name: 'smiff-fact',
+			throttling: {
+				duration: 3,
+				usages: 2,
+			},
+		});
+	}
+
+	public async run(msg: CommandMessage): Promise<Message | Message[]> {
+		return sendSimpleEmbeddedMessage(msg, smiff[getRandomInt(0, smiff.length) - 1]);
+	}
+}

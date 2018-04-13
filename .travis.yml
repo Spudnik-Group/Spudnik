@@ -1,0 +1,35 @@
+language: node_js
+node_js:
+- 8
+cache:
+  directories:
+  - node_modules
+branches:
+  except:
+  - hotfix
+before_install:
+- export AUTHOR_NAME="$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"
+- npm install -g node-gyp typescript
+install:
+- npm install
+- tsc
+after_success:
+- chmod +x ./scripts/build_success.sh
+- "./scripts/build_success.sh"
+after_failure:
+- chmod +x ./scripts/build_fail.sh
+- "./scripts/build_fail.sh"
+before_deploy:
+# Zip up release package
+- zip -r release.zip dist/ config/ package.json README.md LICENSE
+- mkdir -p dpl_cd_upload
+- mv release.zip dpl_cd_upload/release.zip
+# Grab deployment configs
+- mv assets/prod/config.json config/config.json
+- mv assets/servers.json config/servers.json
+deploy:
+- provider: gae
+  skip_cleanup: true
+  default: true
+  keyfile: assets/gae-auth.json
+  project: spudnik-bot
