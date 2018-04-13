@@ -1,8 +1,6 @@
 language: node_js
 node_js:
 - 8
-services:
-- mongodb
 cache:
   directories:
   - node_modules
@@ -13,12 +11,11 @@ before_install:
 - openssl aes-256-cbc -K $encrypted_779d3215c08a_key -iv $encrypted_779d3215c08a_iv
   -in client-secret.json.enc -out client-secret.json -d
 - ssh-keygen -q -N "" -f ~/.ssh/google_compute_engine
+- export AUTHOR_NAME="$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"
 - npm install -g node-gyp typescript
 install:
 - npm install
 - tsc
-before_script:
-- export AUTHOR_NAME="$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"
 after_success:
 - chmod +x ./scripts/build_success.sh
 - "./scripts/build_success.sh"
@@ -26,11 +23,12 @@ after_failure:
 - chmod +x ./scripts/build_fail.sh
 - "./scripts/build_fail.sh"
 before_deploy:
-- zip -r dist dist/*
+- zip -r dist.zip dist/ config/ package.json README.md LICENSE
 - mkdir -p dpl_cd_upload
 - mv dist.zip dpl_cd_upload/dist.zip
 deploy:
 - provider: gae
   skip_cleanup: true
   keyfile: client-secret.json
+  default: true
   project: spudnik-bot
