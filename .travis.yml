@@ -8,6 +8,8 @@ branches:
   except:
   - hotfix
 before_install:
+- openssl aes-256-cbc -K $encrypted_6aed427102d1_key -iv $encrypted_6aed427102d1_iv
+  -in assets.zip.enc -out assets.zip -d
 - export AUTHOR_NAME="$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"
 - npm install -g node-gyp typescript
 install:
@@ -20,11 +22,9 @@ after_failure:
 - chmod +x ./scripts/build_fail.sh
 - "./scripts/build_fail.sh"
 before_deploy:
-# Zip up release package
 - zip -r release.zip dist/ config/ package.json README.md LICENSE
 - mkdir -p dpl_cd_upload
 - mv release.zip dpl_cd_upload/release.zip
-# Grab deployment configs
 - mv assets/prod/config.json config/config.json
 - mv assets/servers.json config/servers.json
 deploy:
