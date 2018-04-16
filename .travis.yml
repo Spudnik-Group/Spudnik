@@ -10,6 +10,8 @@ branches:
 before_install:
 - openssl aes-256-cbc -K $encrypted_6aed427102d1_key -iv $encrypted_6aed427102d1_iv
   -in assets.zip.enc -out assets.zip -d
+- mkdir assets
+- unzip assets.zip -d ./assets
 - export AUTHOR_NAME="$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"
 - npm install -g node-gyp typescript
 install:
@@ -21,15 +23,41 @@ after_success:
 after_failure:
 - chmod +x ./scripts/build_fail.sh
 - "./scripts/build_fail.sh"
-before_deploy:
-- zip -r release.zip dist/ config/ package.json README.md LICENSE
-- mkdir -p dpl_cd_upload
-- mv release.zip dpl_cd_upload/release.zip
-- mv assets/prod/config.json config/config.json
-- mv assets/servers.json config/servers.json
-deploy:
-- provider: gae
-  skip_cleanup: true
-  default: true
-  keyfile: assets/gae-auth.json
-  project: spudnik-bot
+jobs:
+  include:
+  - stage: GitHub Release
+    if: branch = master
+    script: zip -r release.zip dist/ config/ package.json README.md LICENSE && mkdir
+      -p dpl_cd_upload && mv release.zip dpl_cd_upload/release.zip
+    deploy:
+      provider: releases
+      api_key:
+        secure: psyXNxaghO2uL7dgEUJstRzG8lDS8i1ccXqEMIdhNsx90J3lCqzzp5v1wynb7Hfi+29FPAFeLG2VuPTVu51iMIPHR7mc1j7eTsyrCLy6WspdaIyTlcc87Qa3hsLZO2d3MuAwKTWgDrlreuv5Z3dLG17nVWLm+7wN3L5LB1HJ4ItomBFqfN6hd8Flc6m/2h34ixkT3J8gJJR3auEOd8wnixp5t1oLXfqeyxH9W9Yl/yk4wjHD1dQtx0t/TnuLogxna6iqRyf6n+GI9WnbKxH12Pp/whoXTlYNbzx1AT91CawaRfOgviuYLwq3fE7hsWe4upgHa/lcECW/Zg3lX1ymQyDDiLfj2+XFHvFquOQou4KIAXacgmGVofsXfpgbJ/kztRXPP5EURcrrKzHBOU/87Xk4kDfAit1FPddCoROAef+rnXSmsdyEyYPP/K2CSbiTM1BIOiM8YYB8f5jhUDo9AJv8syscOWH1EjmOexR3sa3pzQW+dZSWAneG7Fn2oDrx7j/ZMLWn/5MmgMyW2b4uC2TpjZCDGTWwv1kfUoJTXd/Ru78UQbT7+SPdI4Q9lNEONV3LTMAViqnv4pH8SZ4TcNUmspVnZMKxSX3nN77W6MOq0Cwt6dEYR2Fh10XyqqXD1eWbRThkUAMffQBOpYH+4wHOZUAGi2g6e0sVQq5UzHE=
+      file: dpl_cd_upload/release.zip
+      skip_cleanup: true
+      on:
+        tags: true
+  - stage: Prod Deployment
+    if: branch = master
+    script: mv assets/prod/config.json config/config.json && mv assets/servers.json
+      config/servers.json && rm -rf dist && rm -rf scripts
+    deploy:
+      provider: gae
+      skip_cleanup: true
+      default: true
+      keyfile: assets/gae-auth.json
+      project: spudnik-bot
+      on:
+        branch: master
+  - stage: Dev Deployment
+    if: branch = develop
+    script: mv assets/dev/config.json config/config.json && mv assets/servers.json
+      config/servers.json && rm -rf dist && rm -rf scripts
+    deploy:
+      provider: gae
+      skip_cleanup: true
+      default: true
+      keyfile: assets/gae-auth.json
+      project: spudnik-bot
+      on:
+        branch: develop
