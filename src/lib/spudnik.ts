@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { Guild, GuildMember } from 'discord.js';
+import { Guild, GuildMember, TextChannel } from 'discord.js';
 import { CommandoClient } from 'discord.js-commando';
 import * as Mongoose from 'mongoose';
 import * as path from 'path';
@@ -52,12 +52,7 @@ export class Spudnik {
 		});
 	}
 	private setupEvents = () => {
-		/*const guildAssignableRoles = Spudnik.Database.model('GuildAssignableRolesSchema', GuildAssignableRolesSchema);
-		const guildDefaultRoles = Spudnik.Database.model('GuildDefaultRoles', GuildDefaultRoleSchema);
-		const guildWelcomeMessages = Spudnik.Database.model('GuildWelcomeMessages', GuildWelcomeMessagesSchema);*/
-
 		this.Discord
-
 			.once('ready', () => {
 				console.log(chalk.magenta(`Logged into Discord! Serving in ${this.Discord.guilds.array().length} Discord servers`));
 				console.log(chalk.blue('---Spudnik Launch Success---'));
@@ -137,37 +132,34 @@ export class Spudnik {
 			})
 			.on('guildMemberAdd', (member: GuildMember) => {
 				const guild = member.guild;
-				const guildId = guild.id;
+				const welcomeChannel = this.Discord.provider.get(guild, 'welcomeChannel', guild.systemChannelID);
+				const welcomeMessage = this.Discord.provider.get(guild, 'welcomeMessage', '@here, please Welcome {user} to {guild}!');
+				const welcomeEnabled = this.Discord.provider.get(guild, 'welcomeEnabled', false);
 
-				if (!guild) {
-					console.log(chalk.red(`A member joined a guild Spudnik is not a part of ('id': ${guildId})`));
-				}
-
-				/*
-				// Add default role to new user
-				if (Spudnik.Config.roles && (Object.keys(Spudnik.Config.roles).indexOf(guild.id) > -1) && Spudnik.Config.roles[guild.id].default) {
-					const role = guild.roles.filter((x) => x.id === Spudnik.Config.roles[guild.id].default).first();
-	
-					if (role) {
-						console.log(chalk.blue(`Added default role ${role.name}:${role.id} to ${member.nickname}:${member.id} on ${guild.name}:${guild.id}`));
-						member.addRole(role);
+				if (welcomeEnabled) {
+					const message = welcomeMessage.replace('{guild}', guild.name).replace('{user}', member.displayName);
+					const channel = guild.channels.get(welcomeChannel);
+					if (channel && channel.type === 'text') {
+						(channel as TextChannel).send(message);
 					} else {
-						console.log(chalk.red(`Default role for ${guild.name}:${guild.id} is not configured properly.`));
+						console.log(chalk.red(`There was an error trying to welcome a new guild member to ${guild}, the channel may not exist or was set to a non-text channel`));
 					}
 				}
-	
-				// Welcome new user
-				if (Spudnik.Config.welcomeMessages && Spudnik.Config.welcomeMessages[guild.id]) {
-					const message = Spudnik.Config.welcomeMessages[guild.id].replace('{guild}', guild.name).replace('{user}', member.displayName);
-	
-					member.send(message);
-				}
-				*/
 			})
 			.on('guildMemberRemove', (member: GuildMember) => {
 				const guild = member.guild;
-				if (guild.systemChannel) {
-					guild.systemChannel.send(`${member.user.username} has left the server.`);
+				const goodbyeChannel = this.Discord.provider.get(guild, 'goodbyeChannel', guild.systemChannelID);
+				const goodbyeMessage = this.Discord.provider.get(guild, 'goodbyeMessage', '{user} has left the server.');
+				const goodbyeEnabled = this.Discord.provider.get(guild, 'goodbyeEnabled', false);
+
+				if (goodbyeEnabled) {
+					const message = goodbyeMessage.replace('{guild}', guild.name).replace('{user}', member.displayName);
+					const channel = guild.channels.get(goodbyeChannel);
+					if (channel && channel.type === 'text') {
+						(channel as TextChannel).send(message);
+					} else {
+						console.log(chalk.red(`There was an error trying to say goodbye a former guild member in ${guild}, the channel may not exist or was set to a non-text channel`));
+					}
 				}
 			})
 			.on('guildCreate', () => {
