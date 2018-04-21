@@ -5,6 +5,13 @@ import { getRandomInt, sendSimpleEmbeddedImage } from '../../lib/helpers';
 // tslint:disable-next-line:no-var-requires
 const { coinflip }: { coinflip: any[] } = require('../../extras/data');
 
+/**
+ * Simulate a coin flip.
+ * 
+ * @export
+ * @class CoinFlipCommand
+ * @extends {Command}
+ */
 export default class CoinFlipCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
@@ -20,6 +27,13 @@ export default class CoinFlipCommand extends Command {
 		});
 	}
 
+	/**
+	 * Run the "coinflip" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @returns {(Promise<Message | Message[]>)} 
+	 * @memberof CoinFlipCommand
+	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
 		return sendSimpleEmbeddedImage(msg, coinflip[getRandomInt(0, 1)].image);
 	}

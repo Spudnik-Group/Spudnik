@@ -7,6 +7,13 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 
 const dictionaryApiKey: string = Config.getDictionaryApiKey();
 
+/**
+ * Post the definition of a word.
+ * 
+ * @export
+ * @class DefineCommand
+ * @extends {Command}
+ */
 export default class DefineCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
@@ -29,6 +36,14 @@ export default class DefineCommand extends Command {
 		});
 	}
 
+	/**
+	 * Run the "define" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @param {{ query: string }} args 
+	 * @returns {(Promise<Message | Message[]>)} 
+	 * @memberof DefineCommand
+	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
 		const word = args.query;
 

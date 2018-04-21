@@ -5,6 +5,13 @@ import * as request from 'request';
 import { RequestResponse } from 'request';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
+/**
+ * Post a random fact about the year.
+ * 
+ * @export
+ * @class YearFactCommand
+ * @extends {Command}
+ */
 export default class YearFactCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
@@ -20,6 +27,13 @@ export default class YearFactCommand extends Command {
 		});
 	}
 
+	/**
+	 * Run the "year-fact" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @returns {(Promise<Message | Message[]>)} 
+	 * @memberof YearFactCommand
+	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
 		request('http://numbersapi.com/random/year?json', (err: Error, res: RequestResponse, body: string) => {
 			try {

@@ -13,6 +13,13 @@ interface IConfig {
 	getDictionaryApiKey(): string;
 }
 
+/**
+ * Holds the configuration for a bot instance.
+ * 
+ * @export
+ * @class Configuration
+ * @implements {IConfig}
+ */
 @JsonObject
 export class Configuration implements IConfig {
 	@JsonProperty('debug', Boolean)

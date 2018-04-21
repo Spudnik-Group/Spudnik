@@ -1,6 +1,13 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 
+/**
+ * Manage notifications when someone leaves the guild.
+ * 
+ * @export
+ * @class GoodbyeCommand
+ * @extends {Command}
+ */
 export default class GoodbyeCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
@@ -29,9 +36,26 @@ export default class GoodbyeCommand extends Command {
 			},
 		});
 	}
+
+	/**
+	 * Determine if a member has permission to run the "goodbye" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @returns {boolean} 
+	 * @memberof GoodbyeCommand
+	 */
 	public hasPermission(msg: CommandMessage): boolean {
 		return this.client.isOwner(msg.author) || msg.member.hasPermission('ADMINISTRATOR');
 	}
+
+	/**
+	 * Run the "goodbye" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @param {{ subCommand: string, content: string }} args 
+	 * @returns {(Promise<Message | Message[]>)} 
+	 * @memberof GoodbyeCommand
+	 */
 	public async run(msg: CommandMessage, args: { subCommand: string, content: string }): Promise<Message | Message[]> {
 		const goodbyeEmbed = new MessageEmbed({
 			color: 5592405,

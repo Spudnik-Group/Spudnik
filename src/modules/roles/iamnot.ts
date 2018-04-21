@@ -4,6 +4,13 @@ import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 // tslint:disable-next-line:no-var-requires
 const { defaultEmbedColor }: { defaultEmbedColor: string } = require('../../../config/config.json');
 
+/**
+ * Allows a member to unassign a role from themselves.
+ * 
+ * @export
+ * @class IAmNotCommand
+ * @extends {Command}
+ */
 export default class IAmNotCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
@@ -23,6 +30,14 @@ export default class IAmNotCommand extends Command {
 		});
 	}
 
+	/**
+	 * Run the "iamnot" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @param {{ query: string }} args 
+	 * @returns {(Promise<Message | Message[]>)} 
+	 * @memberof IAmNotCommand
+	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
 		const roleEmbed = new MessageEmbed({
 			color: defaultEmbedColor,

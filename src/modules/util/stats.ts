@@ -18,6 +18,13 @@ interface IDurationSettings {
 // tslint:disable-next-line:no-var-requires
 const { version }: { version: string } = require('../../../package');
 
+/**
+ * Post statistics about the bot.
+ * 
+ * @export
+ * @class StatsCommand
+ * @extends {Command}
+ */
 export default class StatsCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
@@ -34,6 +41,13 @@ export default class StatsCommand extends Command {
 		});
 	}
 
+	/**
+	 * Run the "stats" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @returns {(Promise<Message | Message[]>)} 
+	 * @memberof StatsCommand
+	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
 		const duration: IDuration = moment.duration(this.client.uptime) as IDuration;
 		return msg.embed({

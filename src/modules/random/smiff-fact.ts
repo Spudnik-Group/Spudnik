@@ -5,6 +5,13 @@ import { getRandomInt, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 // tslint:disable-next-line:no-var-requires
 const { smiff }: { smiff: string[] } = require('../../extras/data');
 
+/**
+ * Post a random Will Smith fact.
+ * 
+ * @export
+ * @class SmiffFactCommand
+ * @extends {Command}
+ */
 export default class SmiffFactCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
@@ -21,6 +28,13 @@ export default class SmiffFactCommand extends Command {
 		});
 	}
 
+	/**
+	 * Run the "smiff-fact" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @returns {(Promise<Message | Message[]>)} 
+	 * @memberof SmiffFactCommand
+	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
 		return sendSimpleEmbeddedMessage(msg, smiff[getRandomInt(0, smiff.length) - 1]);
 	}

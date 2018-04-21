@@ -2,6 +2,13 @@ import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
+/**
+ * Post an Urban Dictionary definition.
+ * 
+ * @export
+ * @class UrbanCommand
+ * @extends {Command}
+ */
 export default class UrbanCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
@@ -25,6 +32,14 @@ export default class UrbanCommand extends Command {
 		});
 	}
 
+	/**
+	 * Run the "urban" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @param {{ query: string }} args 
+	 * @returns {(Promise<Message | Message[]>)} 
+	 * @memberof UrbanCommand
+	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
 		const targetWord = args.query === '' ? require('urban').random() : require('urban')(args.query);
 		try {

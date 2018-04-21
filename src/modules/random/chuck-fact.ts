@@ -5,6 +5,13 @@ import * as request from 'request';
 import { RequestResponse } from 'request';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
+/**
+ * Post a random chuck norris fact.
+ * 
+ * @export
+ * @class ChuckFactCommand
+ * @extends {Command}
+ */
 export default class ChuckFactCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
@@ -21,6 +28,13 @@ export default class ChuckFactCommand extends Command {
 		});
 	}
 
+	/**
+	 * Run the "chuck-fact" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @returns {(Promise<Message | Message[]>)} 
+	 * @memberof ChuckFactCommand
+	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
 		request('http://api.icndb.com/jokes/random', (err: Error, res: RequestResponse, body: string) => {
 			try {

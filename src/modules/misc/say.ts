@@ -1,6 +1,13 @@
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 
+/**
+ * States a message as the bot.
+ * 
+ * @export
+ * @class SayCommand
+ * @extends {Command}
+ */
 export default class SayCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
@@ -20,6 +27,14 @@ export default class SayCommand extends Command {
 		});
 	}
 
+	/**
+	 * Run the "say" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @param {{ text: string }} args 
+	 * @returns {(Promise<Message | Message[]>)} 
+	 * @memberof SayCommand
+	 */
 	public async run(msg: CommandMessage, args: { text: string }): Promise<Message | Message[]> {
 		msg.delete();
 		return msg.say(args.text);

@@ -14,6 +14,13 @@ const settingsSchema: Schema = new Schema({
 	settings: String,
 });
 
+/**
+ * Manages guild bot settings with MongoDB.
+ * 
+ * @export
+ * @class MongoProvider
+ * @extends {SettingProvider}
+ */
 export class MongoProvider extends SettingProvider {
 	private db: Connection;
 	private settings: Map<string, any>;
@@ -30,6 +37,13 @@ export class MongoProvider extends SettingProvider {
 		this.model = model<ISettingsModel>('guildsettings', settingsSchema);
 	}
 
+	/**
+	 * Initializes the provider.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @returns {Promise<void>} 
+	 * @memberof MongoProvider
+	 */
 	public async init(client: CommandoClient): Promise<void> {
 		this.client = client;
 
@@ -80,6 +94,15 @@ export class MongoProvider extends SettingProvider {
 		for (const [event, listener] of this.listeners) { client.on(event, listener); }
 	}
 
+	/**
+	 * Set a value for guild setting.
+	 * 
+	 * @param {string} guild 
+	 * @param {string} key 
+	 * @param {*} val 
+	 * @returns {Promise<void>} 
+	 * @memberof MongoProvider
+	 */
 	public async set(guild: string, key: string, val: any): Promise<void> {
 		guild = (this.constructor as any).getGuildID(guild);
 		let settings: any = this.settings.get(guild);
@@ -93,16 +116,39 @@ export class MongoProvider extends SettingProvider {
 		if (guild === 'global') { this.updateOtherShards(key, val); }
 	}
 
+	/**
+	 * Destroy the provider.
+	 * 
+	 * @returns {Promise<void>} 
+	 * @memberof MongoProvider
+	 */
 	public async destroy(): Promise<void> {
 		for (const [event, listener] of this.listeners) { this.client.removeListener(event, listener); }
 		this.listeners.clear();
 	}
 
+	/**
+	 * Get a value for a guild setting.
+	 * 
+	 * @param {string} guild 
+	 * @param {string} key 
+	 * @param {*} defVal 
+	 * @returns {*} 
+	 * @memberof MongoProvider
+	 */
 	public get(guild: string, key: string, defVal: any): any {
 		const settings: any = this.settings.get((this.constructor as any).getGuildID(guild));
 		return settings ? typeof settings[key] !== 'undefined' ? settings[key] : defVal : defVal;
 	}
 
+	/**
+	 * Remove a setting for a guild.
+	 * 
+	 * @param {string} guild 
+	 * @param {string} key 
+	 * @returns {Promise<string>} 
+	 * @memberof MongoProvider
+	 */
 	public async remove(guild: string, key: string): Promise<string> {
 		guild = (this.constructor as any).getGuildID(guild);
 		const settings: any = this.settings.get(guild);
@@ -122,6 +168,13 @@ export class MongoProvider extends SettingProvider {
 		return '';
 	}
 
+	/**
+	 * Clear all settings for a guild.
+	 * 
+	 * @param {string} guild 
+	 * @returns {Promise<void>} 
+	 * @memberof MongoProvider
+	 */
 	public async clear(guild: string): Promise<void> {
 		guild = (this.constructor as any).getGuildID(guild);
 		if (!this.settings.has(guild)) { return; }
@@ -129,6 +182,13 @@ export class MongoProvider extends SettingProvider {
 		await this.model.findOneAndRemove({ guild: guild !== 'global' ? guild : '0' });
 	}
 
+	/**
+	 * Set up a guild's initial settings.
+	 * 
+	 * @param {string} guild 
+	 * @param {*} settings 
+	 * @memberof MongoProvider
+	 */
 	public setupGuild(guild: string, settings: any): void {
 		if (typeof guild !== 'string') {
 			throw new TypeError('The guild must be a guild ID or "global".');
@@ -149,6 +209,15 @@ export class MongoProvider extends SettingProvider {
 		}
 	}
 
+	/**
+	 * Setup a command to be used by a guild.
+	 * 
+	 * @param {Guild} guild 
+	 * @param {Command} command 
+	 * @param {*} settings 
+	 * @returns {void} 
+	 * @memberof MongoProvider
+	 */
 	public setupGuildCommand(guild: Guild, command: Command, settings: any): void {
 		if (typeof settings[`cmd-${command.name}`] === 'undefined') { return; }
 		if (guild) {
@@ -159,6 +228,15 @@ export class MongoProvider extends SettingProvider {
 		}
 	}
 
+	/**
+	 * Setup the groups for a guild.
+	 * 
+	 * @param {Guild} guild 
+	 * @param {CommandGroup} group 
+	 * @param {*} settings 
+	 * @returns {void} 
+	 * @memberof MongoProvider
+	 */
 	public setupGuildGroup(guild: Guild, group: CommandGroup, settings: any): void {
 		if (typeof settings[`grp-${group.id}`] === 'undefined') { return; }
 		if (guild) {
@@ -169,6 +247,14 @@ export class MongoProvider extends SettingProvider {
 		}
 	}
 
+	/**
+	 * Update settings for all shards.
+	 * 
+	 * @param {string} key 
+	 * @param {*} val 
+	 * @returns {void} 
+	 * @memberof MongoProvider
+	 */
 	public updateOtherShards(key: string, val: any): void {
 		if (!this.client.shard) { return; }
 		key = JSON.stringify(key);

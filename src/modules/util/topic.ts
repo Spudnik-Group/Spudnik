@@ -2,6 +2,13 @@ import { Message, TextChannel } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError } from '../../lib/helpers';
 
+/**
+ * Posts the topic of a channel.
+ * 
+ * @export
+ * @class TopicCommand
+ * @extends {Command}
+ */
 export default class TopicCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
@@ -17,6 +24,13 @@ export default class TopicCommand extends Command {
 		});
 	}
 
+	/**
+	 * Run the "topic" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @returns {(Promise<Message | Message[]>)} 
+	 * @memberof TopicCommand
+	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
 		const channel = msg.channel;
 		let response = '';

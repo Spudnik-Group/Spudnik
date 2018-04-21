@@ -5,6 +5,13 @@ import * as request from 'request';
 import { RequestResponse } from 'request';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
+/**
+ * Post a random cat fact.
+ * 
+ * @export
+ * @class CatFactCommand
+ * @extends {Command}
+ */
 export default class CatFactCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
@@ -20,6 +27,13 @@ export default class CatFactCommand extends Command {
 		});
 	}
 
+	/**
+	 * Run the "cat-fact" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @returns {(Promise<Message | Message[]>)} 
+	 * @memberof CatFactCommand
+	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
 		request('https://catfact.ninja/fact', (err: Error, res: RequestResponse, body: string) => {
 			try {

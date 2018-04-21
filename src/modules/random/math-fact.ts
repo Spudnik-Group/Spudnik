@@ -5,6 +5,13 @@ import * as request from 'request';
 import { RequestResponse } from 'request';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
+/**
+ * Post a random math fact.
+ * 
+ * @export
+ * @class MathFactCommand
+ * @extends {Command}
+ */
 export default class MathFactCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
@@ -20,6 +27,13 @@ export default class MathFactCommand extends Command {
 		});
 	}
 
+	/**
+	 * Run the "math-fact" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @returns {(Promise<Message | Message[]>)} 
+	 * @memberof MathFactCommand
+	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
 		request('http://numbersapi.com/random/math?json', (err: Error, res: RequestResponse, body: string) => {
 			try {

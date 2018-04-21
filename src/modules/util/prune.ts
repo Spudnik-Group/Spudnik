@@ -2,6 +2,13 @@ import { Collection, GuildMember, Message, User } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
+/**
+ * Deletes previous messages.
+ * 
+ * @export
+ * @class PruneCommand
+ * @extends {Command}
+ */
 export default class PruneCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
@@ -45,10 +52,25 @@ export default class PruneCommand extends Command {
 		});
 	}
 
+	/**
+	 * Determine if a member has permission to run the "prune" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @returns {boolean} 
+	 * @memberof PruneCommand
+	 */
 	public hasPermission(msg: CommandMessage): boolean {
 		return this.client.isOwner(msg.author) || msg.member.hasPermission('MANAGE_MESSAGES');
 	}
 
+	/**
+	 * Run the "prune" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @param {{ limit: number, filter: string, member: GuildMember }} args 
+	 * @returns {(Promise<Message | Message[]>)} 
+	 * @memberof PruneCommand
+	 */
 	public async run(msg: CommandMessage, args: { limit: number, filter: string, member: GuildMember }): Promise<Message | Message[]> {
 		msg.delete();
 		const { filter, limit } = args;

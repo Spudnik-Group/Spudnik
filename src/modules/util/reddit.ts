@@ -2,6 +2,13 @@ import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
+/**
+ * Post a link to the GReY Reddit.
+ * 
+ * @export
+ * @class RedditCommand
+ * @extends {Command}
+ */
 export default class RedditCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
@@ -17,6 +24,13 @@ export default class RedditCommand extends Command {
 		});
 	}
 
+	/**
+	 * Run the "reddit" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @returns {(Promise<Message | Message[]>)} 
+	 * @memberof RedditCommand
+	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
 		return sendSimpleEmbeddedMessage(msg, 'https://on.grey.gg/reddit');
 	}

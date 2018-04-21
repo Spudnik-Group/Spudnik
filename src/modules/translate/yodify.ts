@@ -2,6 +2,13 @@ import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
+/**
+ * Convert a statement to be structured as Yoda speaks.
+ * 
+ * @export
+ * @class YodifyCommand
+ * @extends {Command}
+ */
 export default class YodifyCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
@@ -24,6 +31,14 @@ export default class YodifyCommand extends Command {
 		});
 	}
 
+	/**
+	 * Run the "yodify" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @param {{ query: string }} args 
+	 * @returns {(Promise<Message | Message[]>)} 
+	 * @memberof YodifyCommand
+	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
 		require('soap').createClient('http://www.yodaspeak.co.uk/webservice/yodatalk.php?wsdl', (err: Error, client: any) => {
 			if (err) {

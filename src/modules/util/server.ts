@@ -4,6 +4,13 @@ import { getJsonObject } from '../../lib/helpers';
 
 const servers = getJsonObject('../config/servers.json');
 
+/**
+ * Posts information about the guild's servers.
+ * 
+ * @export
+ * @class ServerCommand
+ * @extends {Command}
+ */
 export default class ServerCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
@@ -29,6 +36,14 @@ export default class ServerCommand extends Command {
 		});
 	}
 
+	/**
+	 * Run the "servers" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @param {{ query: string }} args 
+	 * @returns {(Promise<Message | Message[] | any>)} 
+	 * @memberof ServerCommand
+	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[] | any> {
 		if (args.query.toLowerCase() === 'list') {
 			return msg.embed(new MessageEmbed({

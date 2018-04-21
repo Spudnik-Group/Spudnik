@@ -5,6 +5,13 @@ interface ISettingProviderConfig {
 	getOptions(): object;
 }
 
+/**
+ * Holds configuration values for settings.
+ * 
+ * @export
+ * @class SettingProviderConfig
+ * @implements {ISettingProviderConfig}
+ */
 @JsonObject
 export class SettingProviderConfig implements ISettingProviderConfig {
 	@JsonProperty('connection', String)

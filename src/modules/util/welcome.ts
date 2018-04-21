@@ -1,6 +1,13 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 
+/**
+ * Manage notifications when someone joins the guild.
+ * 
+ * @export
+ * @class WelcomeCommand
+ * @extends {Command}
+ */
 export default class WelcomeCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
@@ -29,9 +36,26 @@ export default class WelcomeCommand extends Command {
 			},
 		});
 	}
+
+	/**
+	 * Determine if a member has permission to run the "welcome" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @returns {boolean} 
+	 * @memberof WelcomeCommand
+	 */
 	public hasPermission(msg: CommandMessage): boolean {
 		return this.client.isOwner(msg.author) || msg.member.hasPermission('ADMINISTRATOR');
 	}
+
+	/**
+	 * Run the "welcome" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @param {{ subCommand: string, content: string }} args 
+	 * @returns {(Promise<Message | Message[]>)} 
+	 * @memberof WelcomeCommand
+	 */
 	public async run(msg: CommandMessage, args: { subCommand: string, content: string }): Promise<Message | Message[]> {
 		const welcomeEmbed = new MessageEmbed({
 			color: 5592405,

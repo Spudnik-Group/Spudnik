@@ -2,10 +2,17 @@ import { Message, GuildMemberResolvable, User, UserResolvable } from 'discord.js
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { resolveMention, sendSimpleEmbeddedImage } from '../../lib/helpers';
 
+/**
+ * Post the "gitgud" image at someone.
+ * 
+ * @export
+ * @class GitGudCommand
+ * @extends {Command}
+ */
 export default class GitGudCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Blesses you with a random bacon gif.',
+			description: 'Informs someone that they should "git gud".',
 			group: 'random',
 			guildOnly: true,
 			memberName: 'gitgud',
@@ -25,6 +32,14 @@ export default class GitGudCommand extends Command {
 		});
 	}
 
+	/**
+	 * Run the "gitgud" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @param {{ mention: string }} args 
+	 * @returns {(Promise<Message | Message[]>)} 
+	 * @memberof GitGudCommand
+	 */
 	public async run(msg: CommandMessage, args: { mention: string }): Promise<Message | Message[]> {
 		if (args.mention && args.mention !== null) {
 			return msg.embed({ image: { url: 'http://i.imgur.com/NqpPXHu.jpg' } }, '', {
