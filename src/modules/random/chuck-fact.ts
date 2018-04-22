@@ -13,6 +13,12 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
  * @extends {Command}
  */
 export default class ChuckFactCommand extends Command {
+	/**
+	 * Creates an instance of ChuckFactCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof ChuckFactCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			aliases: ['chucknorris', 'norrisfact', 'chuck-norris'],

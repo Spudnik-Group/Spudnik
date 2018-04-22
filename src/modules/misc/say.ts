@@ -9,6 +9,12 @@ import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
  * @extends {Command}
  */
 export default class SayCommand extends Command {
+	/**
+	 * Creates an instance of SayCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof SayCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			name: 'say',

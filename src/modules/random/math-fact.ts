@@ -13,6 +13,12 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
  * @extends {Command}
  */
 export default class MathFactCommand extends Command {
+	/**
+	 * Creates an instance of MathFactCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof MathFactCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Gives a Random Math Fact.',

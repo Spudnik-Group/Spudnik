@@ -10,6 +10,12 @@ import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
  * @extends {Command}
  */
 export default class LeetCommand extends Command {
+	/**
+	 * Creates an instance of LeetCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof LeetCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Converts boring regular text to 1337.',

@@ -10,6 +10,12 @@ import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
  * @extends {Command}
  */
 export default class DonateCommand extends Command {
+	/**
+	 * Creates an instance of DonateCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof DonateCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Donate to help support the ongoing hosting and development of the bot.',

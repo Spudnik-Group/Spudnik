@@ -10,6 +10,12 @@ import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
  * @extends {Command}
  */
 export default class YodifyCommand extends Command {
+	/**
+	 * Creates an instance of YodifyCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof YodifyCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Translate to Yoda speak.',

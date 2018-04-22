@@ -12,6 +12,12 @@ const servers = getJsonObject('../config/servers.json');
  * @extends {Command}
  */
 export default class ServerCommand extends Command {
+	/**
+	 * Creates an instance of ServerCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof ServerCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			aliases: ['servers'],

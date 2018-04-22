@@ -10,6 +10,12 @@ import { getRandomInt } from '../../lib/helpers';
  * @extends {Command}
  */
 export default class ChooseCommand extends Command {
+	/**
+	 * Creates an instance of ChooseCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof ChooseCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Have the bot choose for you.',

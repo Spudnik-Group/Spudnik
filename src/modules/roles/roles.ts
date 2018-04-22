@@ -9,6 +9,12 @@ import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
  * @extends {Command}
  */
 export default class RoleManagementCommands extends Command {
+	/**
+	 * Creates an instance of RoleManagementCommands.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof RoleManagementCommands
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Used to add or remove a role to yourself, list available roles, and set the default role.',

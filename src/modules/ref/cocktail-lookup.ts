@@ -12,6 +12,12 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
  * @extends {Command}
  */
 export default class CocktailCommand extends Command {
+	/**
+	 * Creates an instance of CocktailCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof CocktailCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Used to retrieve information about a cocktail.',

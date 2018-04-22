@@ -13,6 +13,12 @@ const { bacon }: { bacon: string[] } = require('../../extras/data');
  * @extends {Command}
  */
 export default class BaconCommand extends Command {
+	/**
+	 * Creates an instance of BaconCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof BaconCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Blesses you with a random bacon gif.',

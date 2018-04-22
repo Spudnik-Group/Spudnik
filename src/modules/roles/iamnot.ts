@@ -12,6 +12,12 @@ const { defaultEmbedColor }: { defaultEmbedColor: string } = require('../../../c
  * @extends {Command}
  */
 export default class IAmNotCommand extends Command {
+	/**
+	 * Creates an instance of IAmNotCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof IAmNotCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Used to remove a role to yourself.',

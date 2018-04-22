@@ -10,6 +10,12 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
  * @extends {Command}
  */
 export default class UnshortCommand extends Command {
+	/**
+	 * Creates an instance of UnshortCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof UnshortCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			aliases: ['unshorten'],

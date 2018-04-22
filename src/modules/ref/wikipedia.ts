@@ -10,6 +10,12 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
  * @extends {Command}
  */
 export default class WikiCommand extends Command {
+	/**
+	 * Creates an instance of WikiCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof WikiCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Returns the summary of the first matching search result from Wikipedia.',

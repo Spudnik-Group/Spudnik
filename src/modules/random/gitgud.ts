@@ -10,6 +10,12 @@ import { resolveMention, sendSimpleEmbeddedImage } from '../../lib/helpers';
  * @extends {Command}
  */
 export default class GitGudCommand extends Command {
+	/**
+	 * Creates an instance of GitGudCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof GitGudCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Informs someone that they should "git gud".',

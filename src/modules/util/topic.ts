@@ -10,6 +10,12 @@ import { sendSimpleEmbeddedError } from '../../lib/helpers';
  * @extends {Command}
  */
 export default class TopicCommand extends Command {
+	/**
+	 * Creates an instance of TopicCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof TopicCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Shows the purpose of the chat channel.',

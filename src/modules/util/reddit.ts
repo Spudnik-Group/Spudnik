@@ -10,6 +10,12 @@ import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
  * @extends {Command}
  */
 export default class RedditCommand extends Command {
+	/**
+	 * Creates an instance of RedditCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof RedditCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Link to the GReY Reddit!',

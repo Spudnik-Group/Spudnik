@@ -12,6 +12,12 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
  * @extends {Command}
  */
 export default class DateFactCommand extends Command {
+	/**
+	 * Creates an instance of DateFactCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof DateFactCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Gives a Random Date Fact.',

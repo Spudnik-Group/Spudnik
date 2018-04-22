@@ -26,6 +26,12 @@ const { version }: { version: string } = require('../../../package');
  * @extends {Command}
  */
 export default class StatsCommand extends Command {
+	/**
+	 * Creates an instance of StatsCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof StatsCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			aliases: ['statistics'],

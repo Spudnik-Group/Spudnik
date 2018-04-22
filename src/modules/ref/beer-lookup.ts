@@ -15,6 +15,12 @@ const breweryDbApiKey: string = Config.getBreweryDbApiKey();
  * @extends {Command}
  */
 export default class BrewCommand extends Command {
+	/**
+	 * Creates an instance of BrewCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof BrewCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Used to retrieve specific information about a brewery or brew.',

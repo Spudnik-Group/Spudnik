@@ -13,6 +13,12 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
  * @extends {Command}
  */
 export default class CatFactCommand extends Command {
+	/**
+	 * Creates an instance of CatFactCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof CatFactCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Gives a Random Cat Fact.',

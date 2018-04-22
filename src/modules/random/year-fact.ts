@@ -13,6 +13,12 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
  * @extends {Command}
  */
 export default class YearFactCommand extends Command {
+	/**
+	 * Creates an instance of YearFactCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof YearFactCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Gives a Random Year Fact.',

@@ -28,6 +28,12 @@ export class MongoProvider extends SettingProvider {
 	private client: CommandoClient;
 	private model: Model<ISettingsModel>;
 
+	/**
+	 * Creates an instance of MongoProvider.
+	 * 
+	 * @param {Connection} db 
+	 * @memberof MongoProvider
+	 */
 	constructor(db: Connection) {
 		super();
 		this.client = new CommandoClient();

@@ -10,6 +10,12 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
  * @extends {Command}
  */
 export default class RollCommand extends Command {
+	/**
+	 * Creates an instance of RollCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof RollCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			name: 'roll',

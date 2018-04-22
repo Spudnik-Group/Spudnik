@@ -10,6 +10,12 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
  * @extends {Command}
  */
 export default class UrbanCommand extends Command {
+	/**
+	 * Creates an instance of UrbanCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof UrbanCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Looks something up on Urban Dictionary. If no query is supplied, returns a random thing.',

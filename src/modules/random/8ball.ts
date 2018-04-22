@@ -13,6 +13,12 @@ const { eightBall }: { eightBall: string[] } = require('../../extras/data');
  * @extends {Command}
  */
 export default class EightBallCommand extends Command {
+	/**
+	 * Creates an instance of EightBallCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof EightBallCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Ask the magic 8 ball a question.',

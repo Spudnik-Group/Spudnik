@@ -12,6 +12,12 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedImage, sendSimpleEmbeddedMes
  * @extends {Command}
  */
 export default class HighNoonCommand extends Command {
+	/**
+	 * Creates an instance of HighNoonCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof HighNoonCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Displays the High Noon XKCD comic.',

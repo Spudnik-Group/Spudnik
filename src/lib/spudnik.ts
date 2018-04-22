@@ -16,6 +16,12 @@ export class Spudnik {
 	public Config: Configuration;
 	public Discord: CommandoClient;
 
+	/**
+	 * Creates an instance of Spudnik.
+	 * 
+	 * @param {Configuration} config 
+	 * @memberof Spudnik
+	 */
 	constructor(config: Configuration) {
 		this.Config = config;
 

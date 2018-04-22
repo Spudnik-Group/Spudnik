@@ -10,6 +10,12 @@ import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
  * @extends {Command}
  */
 export default class LmgtfyCommand extends Command {
+	/**
+	 * Creates an instance of LmgtfyCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof LmgtfyCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Let Me Google that for You.',

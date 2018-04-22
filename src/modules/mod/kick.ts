@@ -10,6 +10,12 @@ import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
  * @extends {Command}
  */
 export default class KickCommand extends Command {
+	/**
+	 * Creates an instance of KickCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof KickCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Kicks the user.',

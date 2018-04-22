@@ -10,6 +10,12 @@ import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
  * @extends {Command}
  */
 export default class SourceCommand extends Command {
+	/**
+	 * Creates an instance of SourceCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof SourceCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Link to my source code!',

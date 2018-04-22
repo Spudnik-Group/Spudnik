@@ -10,6 +10,12 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
  * @extends {Command}
  */
 export default class PruneCommand extends Command {
+	/**
+	 * Creates an instance of PruneCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof PruneCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			aliases: ['clean', 'purge', 'clear'],

@@ -13,6 +13,12 @@ const { smiff }: { smiff: string[] } = require('../../extras/data');
  * @extends {Command}
  */
 export default class SmiffFactCommand extends Command {
+	/**
+	 * Creates an instance of SmiffFactCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof SmiffFactCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			aliases: ['smith-fact', 'willsmith'],

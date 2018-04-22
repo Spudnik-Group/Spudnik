@@ -12,6 +12,12 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
  * @extends {Command}
  */
 export default class XkcdCommand extends Command {
+	/**
+	 * Creates an instance of XkcdCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof XkcdCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Displays a given XKCD comic number (or the latest if nothing specified)',

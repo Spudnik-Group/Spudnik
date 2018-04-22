@@ -15,6 +15,12 @@ const dictionaryApiKey: string = Config.getDictionaryApiKey();
  * @extends {Command}
  */
 export default class DefineCommand extends Command {
+	/**
+	 * Creates an instance of DefineCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof DefineCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Looks up a word in the Merriam-Webster Collegiate Dictionary.',

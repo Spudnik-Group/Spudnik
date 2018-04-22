@@ -10,6 +10,12 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
  * @extends {Command}
  */
 export default class BanCommand extends Command {
+	/**
+	 * Creates an instance of BanCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof BanCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Bans the user, optionally deleting messages from them in the last x days.',

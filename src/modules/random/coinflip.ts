@@ -13,6 +13,12 @@ const { coinflip }: { coinflip: any[] } = require('../../extras/data');
  * @extends {Command}
  */
 export default class CoinFlipCommand extends Command {
+	/**
+	 * Creates an instance of CoinFlipCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof CoinFlipCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Flips a coin for you.',
