@@ -5,7 +5,20 @@ import * as request from 'request';
 import { RequestResponse } from 'request';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
+/**
+ * Post a random dog fact.
+ * 
+ * @export
+ * @class DogFactCommand
+ * @extends {Command}
+ */
 export default class DogFactCommand extends Command {
+	/**
+	 * Creates an instance of DogFactCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof DogFactCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Gives a Random Dog Fact.',
@@ -20,6 +33,13 @@ export default class DogFactCommand extends Command {
 		});
 	}
 
+	/**
+	 * Run the "dog-fact" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @returns {(Promise<Message | Message[]>)} 
+	 * @memberof DogFactCommand
+	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
 		request('https://dog-api.kinduff.com/api/facts', (err: Error, res: RequestResponse, body: string) => {
 			try {

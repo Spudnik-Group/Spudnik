@@ -2,7 +2,20 @@ import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
+/**
+ * Post a summary from Wikipedia.
+ * 
+ * @export
+ * @class WikiCommand
+ * @extends {Command}
+ */
 export default class WikiCommand extends Command {
+	/**
+	 * Creates an instance of WikiCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof WikiCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Returns the summary of the first matching search result from Wikipedia.',
@@ -24,6 +37,14 @@ export default class WikiCommand extends Command {
 		});
 	}
 
+	/**
+	 * Run the "wiki" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @param {{ query: string }} args 
+	 * @returns {(Promise<Message | Message[]>)} 
+	 * @memberof WikiCommand
+	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
 		require('wikijs').default().search(args.query, 1).then((data: any) => {
 			require('wikijs').default().page(data.results[0]).then((page: any) => {

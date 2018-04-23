@@ -1,7 +1,20 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 
+/**
+ * Manage notifications when someone leaves the guild.
+ * 
+ * @export
+ * @class GoodbyeCommand
+ * @extends {Command}
+ */
 export default class GoodbyeCommand extends Command {
+	/**
+	 * Creates an instance of GoodbyeCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof GoodbyeCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Used to set the message to be sent to the guild when someone leaves, show the current goodbye message, changes the channel for the message to be shown, and enables or disables the message; use {guild} for guild name, and {user} to reference the user that left',
@@ -29,9 +42,26 @@ export default class GoodbyeCommand extends Command {
 			},
 		});
 	}
+
+	/**
+	 * Determine if a member has permission to run the "goodbye" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @returns {boolean} 
+	 * @memberof GoodbyeCommand
+	 */
 	public hasPermission(msg: CommandMessage): boolean {
 		return this.client.isOwner(msg.author) || msg.member.hasPermission('ADMINISTRATOR');
 	}
+
+	/**
+	 * Run the "goodbye" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @param {{ subCommand: string, content: string }} args 
+	 * @returns {(Promise<Message | Message[]>)} 
+	 * @memberof GoodbyeCommand
+	 */
 	public async run(msg: CommandMessage, args: { subCommand: string, content: string }): Promise<Message | Message[]> {
 		const goodbyeEmbed = new MessageEmbed({
 			color: 5592405,

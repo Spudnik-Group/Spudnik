@@ -2,7 +2,20 @@ import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
+/**
+ * Simulate dice rolling.
+ * 
+ * @export
+ * @class RollCommand
+ * @extends {Command}
+ */
 export default class RollCommand extends Command {
+	/**
+	 * Creates an instance of RollCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof RollCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			name: 'roll',
@@ -22,6 +35,14 @@ export default class RollCommand extends Command {
 		});
 	}
 
+	/**
+	 * Run the "roll" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @param {{ roll: string }} args 
+	 * @returns {(Promise<Message | Message[]>)} 
+	 * @memberof RollCommand
+	 */
 	public async run(msg: CommandMessage, args: { roll: string }): Promise<Message | Message[]> {
 		if (args.roll.split('d').length > 1) {
 			const eachDie = args.roll.split('+');

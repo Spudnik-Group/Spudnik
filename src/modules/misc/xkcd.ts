@@ -4,7 +4,20 @@ import * as request from 'request';
 import { RequestResponse } from 'request';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
+/**
+ * Post an XKCD comic.
+ * 
+ * @export
+ * @class XkcdCommand
+ * @extends {Command}
+ */
 export default class XkcdCommand extends Command {
+	/**
+	 * Creates an instance of XkcdCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof XkcdCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Displays a given XKCD comic number (or the latest if nothing specified)',
@@ -28,6 +41,14 @@ export default class XkcdCommand extends Command {
 		});
 	}
 
+	/**
+	 * Run the "xkcd" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @param {{ comicNumber: string }} args 
+	 * @returns {(Promise<Message | Message[]>)} 
+	 * @memberof XkcdCommand
+	 */
 	public async run(msg: CommandMessage, args: { comicNumber: string }): Promise<Message | Message[]> {
 		let url: string = 'http://xkcd.com/';
 		if (args.comicNumber !== '') {

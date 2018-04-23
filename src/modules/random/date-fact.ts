@@ -4,7 +4,20 @@ import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { RequestResponse } from 'request';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
+/**
+ * Post a fact about the current date.
+ * 
+ * @export
+ * @class DateFactCommand
+ * @extends {Command}
+ */
 export default class DateFactCommand extends Command {
+	/**
+	 * Creates an instance of DateFactCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof DateFactCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Gives a Random Date Fact.',
@@ -19,6 +32,13 @@ export default class DateFactCommand extends Command {
 		});
 	}
 
+	/**
+	 * Run the "date-fact" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @returns {(Promise<Message | Message[]>)} 
+	 * @memberof DateFactCommand
+	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
 		require('request')('http://numbersapi.com/random/date?json', (err: Error, res: RequestResponse, body: string) => {
 			try {

@@ -6,10 +6,22 @@ import * as path from 'path';
 import { Configuration } from './config';
 import { MongoProvider } from './providers/mongodb-provider';
 
+/**
+ * The Spudnik Discord Bot.
+ * 
+ * @export
+ * @class Spudnik
+ */
 export class Spudnik {
 	public Config: Configuration;
 	public Discord: CommandoClient;
 
+	/**
+	 * Creates an instance of Spudnik.
+	 * 
+	 * @param {Configuration} config 
+	 * @memberof Spudnik
+	 */
 	constructor(config: Configuration) {
 		this.Config = config;
 
@@ -28,6 +40,12 @@ export class Spudnik {
 		console.log(chalk.blue('---Spudnik MECO---'));
 	}
 
+	/**
+	 * Sets up commands for the bot.
+	 * 
+	 * @private
+	 * @memberof Spudnik
+	 */
 	private setupCommands = () => {
 		this.Discord.registry
 			.registerGroups([
@@ -43,6 +61,13 @@ export class Spudnik {
 			.registerDefaults()
 			.registerCommandsIn(path.join(__dirname, '../modules'));
 	}
+
+	/**
+	 * Sets up the database.
+	 * 
+	 * @private
+	 * @memberof Spudnik
+	 */
 	private setupDatabase = () => {
 		this.Discord.setProvider(
 			Mongoose.connect(this.Config.getDatabaseConnection()).then(() => new MongoProvider(Mongoose.connection)),
@@ -51,6 +76,13 @@ export class Spudnik {
 			process.exit(-1);
 		});
 	}
+
+	/**
+	 * Sets up the bot events watchers.
+	 * 
+	 * @private
+	 * @memberof Spudnik
+	 */
 	private setupEvents = () => {
 		this.Discord
 			.once('ready', () => {
@@ -182,6 +214,13 @@ export class Spudnik {
 				console.error(`Error in command ${cmd.groupID}:${cmd.memberName}`, err);
 			});
 	}
+
+	/**
+	 * Log the bot into discord.
+	 * 
+	 * @private
+	 * @memberof Spudnik
+	 */
 	private login = () => {
 		if (this.Config.getToken()) {
 			console.log(chalk.magenta('Logging in to Discord...'));

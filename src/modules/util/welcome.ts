@@ -1,7 +1,20 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 
+/**
+ * Manage notifications when someone joins the guild.
+ * 
+ * @export
+ * @class WelcomeCommand
+ * @extends {Command}
+ */
 export default class WelcomeCommand extends Command {
+	/**
+	 * Creates an instance of WelcomeCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof WelcomeCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Used to set the message to be sent to new users when they join your guild, show the current welcome message, changes the channel for the message to be shown, and enables or disables the message; use {guild} for guild name, and {user} to reference the user joining',
@@ -29,9 +42,26 @@ export default class WelcomeCommand extends Command {
 			},
 		});
 	}
+
+	/**
+	 * Determine if a member has permission to run the "welcome" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @returns {boolean} 
+	 * @memberof WelcomeCommand
+	 */
 	public hasPermission(msg: CommandMessage): boolean {
 		return this.client.isOwner(msg.author) || msg.member.hasPermission('ADMINISTRATOR');
 	}
+
+	/**
+	 * Run the "welcome" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @param {{ subCommand: string, content: string }} args 
+	 * @returns {(Promise<Message | Message[]>)} 
+	 * @memberof WelcomeCommand
+	 */
 	public async run(msg: CommandMessage, args: { subCommand: string, content: string }): Promise<Message | Message[]> {
 		const welcomeEmbed = new MessageEmbed({
 			color: 5592405,

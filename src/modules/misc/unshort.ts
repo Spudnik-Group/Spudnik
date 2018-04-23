@@ -2,7 +2,20 @@ import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
+/**
+ * Unshorten a url.
+ * 
+ * @export
+ * @class UnshortCommand
+ * @extends {Command}
+ */
 export default class UnshortCommand extends Command {
+	/**
+	 * Creates an instance of UnshortCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof UnshortCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			aliases: ['unshorten'],
@@ -25,6 +38,14 @@ export default class UnshortCommand extends Command {
 		});
 	}
 
+	/**
+	 * Run the "unshorten" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @param {{ query: string }} args 
+	 * @returns {(Promise<Message | Message[]>)} 
+	 * @memberof UnshortCommand
+	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
 		require('url-unshort')().expand(args.query)
 			.then((url: string) => {

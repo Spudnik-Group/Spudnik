@@ -1,7 +1,20 @@
 import { Message, MessageEmbed, Role } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 
+/**
+ * Manage roles including self-assigning, listing, and setting a default role.
+ * 
+ * @export
+ * @class RoleManagementCommands
+ * @extends {Command}
+ */
 export default class RoleManagementCommands extends Command {
+	/**
+	 * Creates an instance of RoleManagementCommands.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof RoleManagementCommands
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Used to add or remove a role to yourself, list available roles, and set the default role.',
@@ -25,9 +38,26 @@ export default class RoleManagementCommands extends Command {
 			],
 		});
 	}
+
+	/**
+	 * Determine if a member has permission to run the "role" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @returns {boolean} 
+	 * @memberof RoleManagementCommands
+	 */
 	public hasPermission(msg: CommandMessage): boolean {
 		return this.client.isOwner(msg.author) || msg.member.hasPermission('ADMINISTRATOR');
 	}
+
+	/**
+	 * Run the "role" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @param {{ subCommand: string, role: Role }} args 
+	 * @returns {(Promise<Message | Message[]>)} 
+	 * @memberof RoleManagementCommands
+	 */
 	public async run(msg: CommandMessage, args: { subCommand: string, role: Role }): Promise<Message | Message[]> {
 		const roleEmbed = new MessageEmbed({
 			color: 5592405,

@@ -4,7 +4,20 @@ import { RequestResponse } from 'request';
 import * as request from 'request';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
+/**
+ * Post information about a cocktail.
+ * 
+ * @export
+ * @class CocktailCommand
+ * @extends {Command}
+ */
 export default class CocktailCommand extends Command {
+	/**
+	 * Creates an instance of CocktailCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof CocktailCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Used to retrieve information about a cocktail.',
@@ -27,6 +40,14 @@ export default class CocktailCommand extends Command {
 		});
 	}
 
+	/**
+	 * Run the "cocktail" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @param {{ query: string }} args 
+	 * @returns {(Promise<Message | Message[]>)} 
+	 * @memberof CocktailCommand
+	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
 		const cocktailEmbed: MessageEmbed = new MessageEmbed({
 			color: 5592405,

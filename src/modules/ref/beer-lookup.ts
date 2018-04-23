@@ -7,7 +7,20 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 
 const breweryDbApiKey: string = Config.getBreweryDbApiKey();
 
+/**
+ * Post information about an alcoholic brew.
+ * 
+ * @export
+ * @class BrewCommand
+ * @extends {Command}
+ */
 export default class BrewCommand extends Command {
+	/**
+	 * Creates an instance of BrewCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof BrewCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Used to retrieve specific information about a brewery or brew.',
@@ -30,6 +43,14 @@ export default class BrewCommand extends Command {
 		});
 	}
 
+	/**
+	 * Run the "brew" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @param {{ query: string }} args 
+	 * @returns {(Promise<Message | Message[]>)} 
+	 * @memberof BrewCommand
+	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
 		const brewEmbed: MessageEmbed = new MessageEmbed({
 			color: 5592405,

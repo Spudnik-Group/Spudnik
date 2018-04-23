@@ -2,7 +2,20 @@ import { GuildMember, Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
+/**
+ * Ban a member and optionally delete past messages.
+ * 
+ * @export
+ * @class BanCommand
+ * @extends {Command}
+ */
 export default class BanCommand extends Command {
+	/**
+	 * Creates an instance of BanCommand.
+	 * 
+	 * @param {CommandoClient} client 
+	 * @memberof BanCommand
+	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Bans the user, optionally deleting messages from them in the last x days.',
@@ -36,10 +49,25 @@ export default class BanCommand extends Command {
 		});
 	}
 
+	/**
+	 * Determine if a member has permission to run the "ban" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @returns {boolean} 
+	 * @memberof BanCommand
+	 */
 	public hasPermission(msg: CommandMessage): boolean {
 		return this.client.isOwner(msg.author) || msg.member.hasPermission('BAN_MEMBERS');
 	}
 
+	/**
+	 * Run the "ban" command.
+	 * 
+	 * @param {CommandMessage} msg 
+	 * @param {{ member: GuildMember, reason: string, daysOfMessages: number }} args 
+	 * @returns {(Promise<Message | Message[] | any>)} 
+	 * @memberof BanCommand
+	 */
 	public async run(msg: CommandMessage, args: { member: GuildMember, reason: string, daysOfMessages: number }): Promise<Message | Message[] | any> {
 		const memberToBan = args.member;
 
