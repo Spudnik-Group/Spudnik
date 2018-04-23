@@ -43,7 +43,7 @@ export class Configuration implements IConfig {
 	/**
 	 * Get the debug flag.
 	 * 
-	 * @returns 
+	 * @returns {boolean}
 	 * @memberof Configuration
 	 */
 	public getDebug() {
@@ -53,7 +53,7 @@ export class Configuration implements IConfig {
 	/**
 	 * Get the database connection.
 	 * 
-	 * @returns 
+	 * @returns {string}
 	 * @memberof Configuration
 	 */
 	public getDatabaseConnection() {
@@ -63,7 +63,7 @@ export class Configuration implements IConfig {
 	/**
 	 * Get the token.
 	 * 
-	 * @returns 
+	 * @returns {string}
 	 * @memberof Configuration
 	 */
 	public getToken() {
@@ -73,7 +73,7 @@ export class Configuration implements IConfig {
 	/**
 	 * Get the owner.
 	 * 
-	 * @returns 
+	 * @returns {string}
 	 * @memberof Configuration
 	 */
 	public getOwner() {
@@ -83,7 +83,7 @@ export class Configuration implements IConfig {
 	/**
 	 * Get the brewerydb API key
 	 * 
-	 * @returns 
+	 * @returns {string}
 	 * @memberof Configuration
 	 */
 	public getBreweryDbApiKey() {
@@ -93,7 +93,7 @@ export class Configuration implements IConfig {
 	/**
 	 * Get the dictionary API key
 	 * 
-	 * @returns 
+	 * @returns {string}
 	 * @memberof Configuration
 	 */
 	public getDictionaryApiKey() {
