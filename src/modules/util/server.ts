@@ -43,6 +43,17 @@ export default class ServerCommand extends Command {
 	}
 
 	/**
+	 * Determine if a member has permission to run the "servers" command.
+	 *
+	 * @param {CommandMessage} msg
+	 * @returns {boolean}
+	 * @memberof ServerCommand
+	 */
+	public hasPermission(msg: CommandMessage): boolean {
+		return msg.guild.id === '223806376596602880';
+	}
+
+	/**
 	 * Run the "servers" command.
 	 *
 	 * @param {CommandMessage} msg

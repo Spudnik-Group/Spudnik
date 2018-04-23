@@ -31,6 +31,17 @@ export default class RedditCommand extends Command {
 	}
 
 	/**
+	 * Determine if a member has permission to run the "reddit" command.
+	 *
+	 * @param {CommandMessage} msg
+	 * @returns {boolean}
+	 * @memberof RedditCommand
+	 */
+	public hasPermission(msg: CommandMessage): boolean {
+		return msg.guild.id === '223806376596602880';
+	}
+
+	/**
 	 * Run the "reddit" command.
 	 *
 	 * @param {CommandMessage} msg
