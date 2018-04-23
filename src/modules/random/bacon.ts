@@ -7,7 +7,7 @@ const { bacon }: { bacon: string[] } = require('../../extras/data');
 
 /**
  * Post a random bacon gif.
- * 
+ *
  * @export
  * @class BaconCommand
  * @extends {Command}
@@ -15,8 +15,8 @@ const { bacon }: { bacon: string[] } = require('../../extras/data');
 export default class BaconCommand extends Command {
 	/**
 	 * Creates an instance of BaconCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof BaconCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -35,9 +35,9 @@ export default class BaconCommand extends Command {
 
 	/**
 	 * Run the "bacon" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof BaconCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {

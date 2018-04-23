@@ -1,10 +1,10 @@
-import { Message, GuildMemberResolvable, User, UserResolvable } from 'discord.js';
+import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { resolveMention, sendSimpleEmbeddedImage } from '../../lib/helpers';
 
 /**
  * Post the "gitgud" image at someone.
- * 
+ *
  * @export
  * @class GitGudCommand
  * @extends {Command}
@@ -12,8 +12,8 @@ import { resolveMention, sendSimpleEmbeddedImage } from '../../lib/helpers';
 export default class GitGudCommand extends Command {
 	/**
 	 * Creates an instance of GitGudCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof GitGudCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -40,10 +40,10 @@ export default class GitGudCommand extends Command {
 
 	/**
 	 * Run the "gitgud" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @param {{ mention: string }} args 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @param {{ mention: string }} args
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof GitGudCommand
 	 */
 	public async run(msg: CommandMessage, args: { mention: string }): Promise<Message | Message[]> {

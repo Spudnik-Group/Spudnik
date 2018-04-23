@@ -6,7 +6,7 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedImage, sendSimpleEmbeddedMes
 
 /**
  * Show the XKCD "Now" comic.
- * 
+ *
  * @export
  * @class HighNoonCommand
  * @extends {Command}
@@ -14,8 +14,8 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedImage, sendSimpleEmbeddedMes
 export default class HighNoonCommand extends Command {
 	/**
 	 * Creates an instance of HighNoonCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof HighNoonCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -34,9 +34,9 @@ export default class HighNoonCommand extends Command {
 
 	/**
 	 * Run the "highnoon" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof HighNoonCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {

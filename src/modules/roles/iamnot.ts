@@ -6,7 +6,7 @@ const { defaultEmbedColor }: { defaultEmbedColor: string } = require('../../../c
 
 /**
  * Allows a member to unassign a role from themselves.
- * 
+ *
  * @export
  * @class IAmNotCommand
  * @extends {Command}
@@ -14,8 +14,8 @@ const { defaultEmbedColor }: { defaultEmbedColor: string } = require('../../../c
 export default class IAmNotCommand extends Command {
 	/**
 	 * Creates an instance of IAmNotCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof IAmNotCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -38,10 +38,10 @@ export default class IAmNotCommand extends Command {
 
 	/**
 	 * Run the "iamnot" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @param {{ query: string }} args 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @param {{ query: string }} args
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof IAmNotCommand
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {

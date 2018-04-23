@@ -20,7 +20,7 @@ const { version }: { version: string } = require('../../../package');
 
 /**
  * Post statistics about the bot.
- * 
+ *
  * @export
  * @class StatsCommand
  * @extends {Command}
@@ -28,8 +28,8 @@ const { version }: { version: string } = require('../../../package');
 export default class StatsCommand extends Command {
 	/**
 	 * Creates an instance of StatsCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof StatsCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -49,9 +49,9 @@ export default class StatsCommand extends Command {
 
 	/**
 	 * Run the "stats" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof StatsCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {

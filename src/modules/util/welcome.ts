@@ -3,7 +3,7 @@ import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 
 /**
  * Manage notifications when someone joins the guild.
- * 
+ *
  * @export
  * @class WelcomeCommand
  * @extends {Command}
@@ -11,8 +11,8 @@ import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 export default class WelcomeCommand extends Command {
 	/**
 	 * Creates an instance of WelcomeCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof WelcomeCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -45,9 +45,9 @@ export default class WelcomeCommand extends Command {
 
 	/**
 	 * Determine if a member has permission to run the "welcome" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @returns {boolean} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @returns {boolean}
 	 * @memberof WelcomeCommand
 	 */
 	public hasPermission(msg: CommandMessage): boolean {
@@ -56,10 +56,10 @@ export default class WelcomeCommand extends Command {
 
 	/**
 	 * Run the "welcome" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @param {{ subCommand: string, content: string }} args 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @param {{ subCommand: string, content: string }} args
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof WelcomeCommand
 	 */
 	public async run(msg: CommandMessage, args: { subCommand: string, content: string }): Promise<Message | Message[]> {

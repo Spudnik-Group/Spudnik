@@ -7,7 +7,7 @@ const { eightBall }: { eightBall: string[] } = require('../../extras/data');
 
 /**
  * Post a random "Magic 8-ball" response to a question.
- * 
+ *
  * @export
  * @class EightBallCommand
  * @extends {Command}
@@ -15,8 +15,8 @@ const { eightBall }: { eightBall: string[] } = require('../../extras/data');
 export default class EightBallCommand extends Command {
 	/**
 	 * Creates an instance of EightBallCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof EightBallCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -42,10 +42,10 @@ export default class EightBallCommand extends Command {
 
 	/**
 	 * Run the "8ball" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @param {{ query: string }} args 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @param {{ query: string }} args
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof EightBallCommand
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
@@ -57,7 +57,7 @@ export default class EightBallCommand extends Command {
 				return msg.embed(new MessageEmbed({
 					color: 5592405,
 					title: args.query,
-					description: `:8ball: **${response}**`
+					description: `:8ball: **${response}**`,
 				}));
 			} else {
 				return sendSimpleEmbeddedError(msg, response);

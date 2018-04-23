@@ -5,12 +5,12 @@ import * as fs from 'fs';
 
 /**
  * Post a message.
- * 
+ *
  * @export
- * @param {CommandMessage} msg 
- * @param {string} text 
- * @param {number} [timeout] 
- * @returns {(Promise<Message | Message[]>)} 
+ * @param {CommandMessage} msg
+ * @param {string} text
+ * @param {number} [timeout]
+ * @returns {(Promise<Message | Message[]>)}
  */
 export function sendSimpleEmbeddedMessage(msg: CommandMessage, text: string, timeout?: number): Promise<Message | Message[]> {
 	const promise: Promise<Message | Message[]> = msg.embed({
@@ -36,12 +36,12 @@ export function sendSimpleEmbeddedMessage(msg: CommandMessage, text: string, tim
 
 /**
  * Post an error message.
- * 
+ *
  * @export
- * @param {CommandMessage} msg 
- * @param {string} text 
- * @param {number} [timeout] 
- * @returns {(Promise<Message | Message[]>)} 
+ * @param {CommandMessage} msg
+ * @param {string} text
+ * @param {number} [timeout]
+ * @returns {(Promise<Message | Message[]>)}
  */
 export function sendSimpleEmbeddedError(msg: CommandMessage, text: string, timeout?: number): Promise<Message | Message[]> {
 	const promise: Promise<Message | Message[]> = msg.embed({
@@ -67,12 +67,12 @@ export function sendSimpleEmbeddedError(msg: CommandMessage, text: string, timeo
 
 /**
  * Send a success message.
- * 
+ *
  * @export
- * @param {CommandMessage} msg 
- * @param {string} text 
- * @param {number} [timeout] 
- * @returns {(Promise<Message | Message[]>)} 
+ * @param {CommandMessage} msg
+ * @param {string} text
+ * @param {number} [timeout]
+ * @returns {(Promise<Message | Message[]>)}
  */
 export function sendSimpleEmbeddedSuccess(msg: CommandMessage, text: string, timeout?: number): Promise<Message | Message[]> {
 	const promise: Promise<Message | Message[]> = msg.embed({
@@ -98,12 +98,12 @@ export function sendSimpleEmbeddedSuccess(msg: CommandMessage, text: string, tim
 
 /**
  * Post an image.
- * 
+ *
  * @export
- * @param {CommandMessage} msg 
- * @param {string} url 
- * @param {string} [description] 
- * @returns {(Promise<Message | Message[]>)} 
+ * @param {CommandMessage} msg
+ * @param {string} url
+ * @param {string} [description]
+ * @returns {(Promise<Message | Message[]>)}
  */
 export function sendSimpleEmbeddedImage(msg: CommandMessage, url: string, description?: string): Promise<Message | Message[]> {
 	return msg.embed({
@@ -119,11 +119,11 @@ export function sendSimpleEmbeddedImage(msg: CommandMessage, url: string, descri
 
 /**
  * Get a random integer.
- * 
+ *
  * @export
- * @param {number} min 
- * @param {number} max 
- * @returns {number} 
+ * @param {number} min
+ * @param {number} max
+ * @returns {number}
  */
 export function getRandomInt(min: number, max: number): number {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -131,10 +131,10 @@ export function getRandomInt(min: number, max: number): number {
 
 /**
  * Get file contents.
- * 
+ *
  * @export
- * @param {string} filePath 
- * @returns {string} 
+ * @param {string} filePath
+ * @returns {string}
  */
 export function getFileContents(filePath: string): string {
 	try {
@@ -147,10 +147,10 @@ export function getFileContents(filePath: string): string {
 
 /**
  * Get json from a file.
- * 
+ *
  * @export
- * @param {string} filePath 
- * @returns {*} 
+ * @param {string} filePath
+ * @returns {*}
  */
 export function getJsonObject(filePath: string): any {
 	return JSON.parse(getFileContents(filePath));
@@ -158,10 +158,10 @@ export function getJsonObject(filePath: string): any {
 
 /**
  * Find the user id being mentioned.
- * 
+ *
  * @export
- * @param {string} usertxt 
- * @returns {string} 
+ * @param {string} usertxt
+ * @returns {string}
  */
 export function resolveMention(usertxt: string): string {
 	let userid = usertxt;

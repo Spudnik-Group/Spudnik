@@ -8,7 +8,7 @@ import { MongoProvider } from './providers/mongodb-provider';
 
 /**
  * The Spudnik Discord Bot.
- * 
+ *
  * @export
  * @class Spudnik
  */
@@ -18,8 +18,8 @@ export class Spudnik {
 
 	/**
 	 * Creates an instance of Spudnik.
-	 * 
-	 * @param {Configuration} config 
+	 *
+	 * @param {Configuration} config
 	 * @memberof Spudnik
 	 */
 	constructor(config: Configuration) {
@@ -42,7 +42,7 @@ export class Spudnik {
 
 	/**
 	 * Sets up commands for the bot.
-	 * 
+	 *
 	 * @private
 	 * @memberof Spudnik
 	 */
@@ -64,7 +64,7 @@ export class Spudnik {
 
 	/**
 	 * Sets up the database.
-	 * 
+	 *
 	 * @private
 	 * @memberof Spudnik
 	 */
@@ -79,7 +79,7 @@ export class Spudnik {
 
 	/**
 	 * Sets up the bot events watchers.
-	 * 
+	 *
 	 * @private
 	 * @memberof Spudnik
 	 */
@@ -217,7 +217,7 @@ export class Spudnik {
 
 	/**
 	 * Log the bot into discord.
-	 * 
+	 *
 	 * @private
 	 * @memberof Spudnik
 	 */

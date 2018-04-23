@@ -4,7 +4,7 @@ import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 /**
  * Post a donate link.
- * 
+ *
  * @export
  * @class DonateCommand
  * @extends {Command}
@@ -12,8 +12,8 @@ import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
 export default class DonateCommand extends Command {
 	/**
 	 * Creates an instance of DonateCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof DonateCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -32,9 +32,9 @@ export default class DonateCommand extends Command {
 
 	/**
 	 * Run the "donate" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof DonateCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {

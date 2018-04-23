@@ -6,7 +6,7 @@ const servers = getJsonObject('../config/servers.json');
 
 /**
  * Posts information about the guild's servers.
- * 
+ *
  * @export
  * @class ServerCommand
  * @extends {Command}
@@ -14,8 +14,8 @@ const servers = getJsonObject('../config/servers.json');
 export default class ServerCommand extends Command {
 	/**
 	 * Creates an instance of ServerCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof ServerCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -44,10 +44,10 @@ export default class ServerCommand extends Command {
 
 	/**
 	 * Run the "servers" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @param {{ query: string }} args 
-	 * @returns {(Promise<Message | Message[] | any>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @param {{ query: string }} args
+	 * @returns {(Promise<Message | Message[] | any>)}
 	 * @memberof ServerCommand
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[] | any> {

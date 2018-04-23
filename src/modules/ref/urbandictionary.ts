@@ -4,7 +4,7 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 
 /**
  * Post an Urban Dictionary definition.
- * 
+ *
  * @export
  * @class UrbanCommand
  * @extends {Command}
@@ -12,8 +12,8 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 export default class UrbanCommand extends Command {
 	/**
 	 * Creates an instance of UrbanCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof UrbanCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -40,10 +40,10 @@ export default class UrbanCommand extends Command {
 
 	/**
 	 * Run the "urban" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @param {{ query: string }} args 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @param {{ query: string }} args
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof UrbanCommand
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {

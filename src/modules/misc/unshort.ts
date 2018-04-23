@@ -4,7 +4,7 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 
 /**
  * Unshorten a url.
- * 
+ *
  * @export
  * @class UnshortCommand
  * @extends {Command}
@@ -12,8 +12,8 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 export default class UnshortCommand extends Command {
 	/**
 	 * Creates an instance of UnshortCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof UnshortCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -40,10 +40,10 @@ export default class UnshortCommand extends Command {
 
 	/**
 	 * Run the "unshorten" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @param {{ query: string }} args 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @param {{ query: string }} args
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof UnshortCommand
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {

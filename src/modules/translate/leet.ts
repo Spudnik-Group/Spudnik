@@ -4,7 +4,7 @@ import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 /**
  * Convert text to 1337 speak.
- * 
+ *
  * @export
  * @class LeetCommand
  * @extends {Command}
@@ -12,8 +12,8 @@ import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
 export default class LeetCommand extends Command {
 	/**
 	 * Creates an instance of LeetCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof LeetCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -39,10 +39,10 @@ export default class LeetCommand extends Command {
 
 	/**
 	 * Run the "leet" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @param {{ query: string }} args 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @param {{ query: string }} args
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof LeetCommand
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {

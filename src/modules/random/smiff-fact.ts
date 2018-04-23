@@ -7,7 +7,7 @@ const { smiff }: { smiff: string[] } = require('../../extras/data');
 
 /**
  * Post a random Will Smith fact.
- * 
+ *
  * @export
  * @class SmiffFactCommand
  * @extends {Command}
@@ -15,8 +15,8 @@ const { smiff }: { smiff: string[] } = require('../../extras/data');
 export default class SmiffFactCommand extends Command {
 	/**
 	 * Creates an instance of SmiffFactCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof SmiffFactCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -36,9 +36,9 @@ export default class SmiffFactCommand extends Command {
 
 	/**
 	 * Run the "smiff-fact" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof SmiffFactCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {

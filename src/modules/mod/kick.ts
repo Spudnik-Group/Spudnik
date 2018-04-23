@@ -4,7 +4,7 @@ import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 /**
  * Kick a member from the guild.
- * 
+ *
  * @export
  * @class KickCommand
  * @extends {Command}
@@ -12,8 +12,8 @@ import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
 export default class KickCommand extends Command {
 	/**
 	 * Creates an instance of KickCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof KickCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -45,9 +45,9 @@ export default class KickCommand extends Command {
 
 	/**
 	 * Determine if a member has permission to run the "kick" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @returns {boolean} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @returns {boolean}
 	 * @memberof KickCommand
 	 */
 	public hasPermission(msg: CommandMessage): boolean {
@@ -56,10 +56,10 @@ export default class KickCommand extends Command {
 
 	/**
 	 * Run the "kick" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @param {{ member: GuildMember, reason: string }} args 
-	 * @returns {(Promise<Message | Message[] | any>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @param {{ member: GuildMember, reason: string }} args
+	 * @returns {(Promise<Message | Message[] | any>)}
 	 * @memberof KickCommand
 	 */
 	public async run(msg: CommandMessage, args: { member: GuildMember, reason: string }): Promise<Message | Message[] | any> {

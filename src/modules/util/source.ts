@@ -4,7 +4,7 @@ import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 /**
  * Post a link to the Spudnik code repository.
- * 
+ *
  * @export
  * @class SourceCommand
  * @extends {Command}
@@ -12,8 +12,8 @@ import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
 export default class SourceCommand extends Command {
 	/**
 	 * Creates an instance of SourceCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof SourceCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -32,9 +32,9 @@ export default class SourceCommand extends Command {
 
 	/**
 	 * Run the "source" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof SourceCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {

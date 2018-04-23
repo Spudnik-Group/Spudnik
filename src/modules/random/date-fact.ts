@@ -6,7 +6,7 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 
 /**
  * Post a fact about the current date.
- * 
+ *
  * @export
  * @class DateFactCommand
  * @extends {Command}
@@ -14,8 +14,8 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 export default class DateFactCommand extends Command {
 	/**
 	 * Creates an instance of DateFactCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof DateFactCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -34,9 +34,9 @@ export default class DateFactCommand extends Command {
 
 	/**
 	 * Run the "date-fact" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof DateFactCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
@@ -55,7 +55,7 @@ export default class DateFactCommand extends Command {
 					}));
 				}
 			} catch (err) {
-				let msgTxt = 'command date-fact failed :disappointed_relieved:';
+				const msgTxt = 'command date-fact failed :disappointed_relieved:';
 				//TODO: add debug logging: msgTxt += `\n${err.stack}`;
 				console.log(chalk.red(err));
 				return sendSimpleEmbeddedError(msg, msgTxt);

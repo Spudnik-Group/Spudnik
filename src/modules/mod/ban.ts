@@ -4,7 +4,7 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 
 /**
  * Ban a member and optionally delete past messages.
- * 
+ *
  * @export
  * @class BanCommand
  * @extends {Command}
@@ -12,8 +12,8 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 export default class BanCommand extends Command {
 	/**
 	 * Creates an instance of BanCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof BanCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -51,9 +51,9 @@ export default class BanCommand extends Command {
 
 	/**
 	 * Determine if a member has permission to run the "ban" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @returns {boolean} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @returns {boolean}
 	 * @memberof BanCommand
 	 */
 	public hasPermission(msg: CommandMessage): boolean {
@@ -62,10 +62,10 @@ export default class BanCommand extends Command {
 
 	/**
 	 * Run the "ban" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @param {{ member: GuildMember, reason: string, daysOfMessages: number }} args 
-	 * @returns {(Promise<Message | Message[] | any>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @param {{ member: GuildMember, reason: string, daysOfMessages: number }} args
+	 * @returns {(Promise<Message | Message[] | any>)}
 	 * @memberof BanCommand
 	 */
 	public async run(msg: CommandMessage, args: { member: GuildMember, reason: string, daysOfMessages: number }): Promise<Message | Message[] | any> {

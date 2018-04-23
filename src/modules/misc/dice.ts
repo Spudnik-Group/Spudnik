@@ -4,7 +4,7 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 
 /**
  * Simulate dice rolling.
- * 
+ *
  * @export
  * @class RollCommand
  * @extends {Command}
@@ -12,8 +12,8 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 export default class RollCommand extends Command {
 	/**
 	 * Creates an instance of RollCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof RollCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -37,10 +37,10 @@ export default class RollCommand extends Command {
 
 	/**
 	 * Run the "roll" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @param {{ roll: string }} args 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @param {{ roll: string }} args
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof RollCommand
 	 */
 	public async run(msg: CommandMessage, args: { roll: string }): Promise<Message | Message[]> {

@@ -3,7 +3,7 @@ import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 
 /**
  * Manage notifications when someone leaves the guild.
- * 
+ *
  * @export
  * @class GoodbyeCommand
  * @extends {Command}
@@ -11,8 +11,8 @@ import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 export default class GoodbyeCommand extends Command {
 	/**
 	 * Creates an instance of GoodbyeCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof GoodbyeCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -45,9 +45,9 @@ export default class GoodbyeCommand extends Command {
 
 	/**
 	 * Determine if a member has permission to run the "goodbye" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @returns {boolean} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @returns {boolean}
 	 * @memberof GoodbyeCommand
 	 */
 	public hasPermission(msg: CommandMessage): boolean {
@@ -56,10 +56,10 @@ export default class GoodbyeCommand extends Command {
 
 	/**
 	 * Run the "goodbye" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @param {{ subCommand: string, content: string }} args 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @param {{ subCommand: string, content: string }} args
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof GoodbyeCommand
 	 */
 	public async run(msg: CommandMessage, args: { subCommand: string, content: string }): Promise<Message | Message[]> {

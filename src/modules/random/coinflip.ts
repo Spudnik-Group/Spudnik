@@ -7,7 +7,7 @@ const { coinflip }: { coinflip: any[] } = require('../../extras/data');
 
 /**
  * Simulate a coin flip.
- * 
+ *
  * @export
  * @class CoinFlipCommand
  * @extends {Command}
@@ -15,8 +15,8 @@ const { coinflip }: { coinflip: any[] } = require('../../extras/data');
 export default class CoinFlipCommand extends Command {
 	/**
 	 * Creates an instance of CoinFlipCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof CoinFlipCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -35,9 +35,9 @@ export default class CoinFlipCommand extends Command {
 
 	/**
 	 * Run the "coinflip" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof CoinFlipCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {

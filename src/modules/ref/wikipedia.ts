@@ -4,7 +4,7 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 
 /**
  * Post a summary from Wikipedia.
- * 
+ *
  * @export
  * @class WikiCommand
  * @extends {Command}
@@ -12,8 +12,8 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 export default class WikiCommand extends Command {
 	/**
 	 * Creates an instance of WikiCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof WikiCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -39,10 +39,10 @@ export default class WikiCommand extends Command {
 
 	/**
 	 * Run the "wiki" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @param {{ query: string }} args 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @param {{ query: string }} args
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof WikiCommand
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {

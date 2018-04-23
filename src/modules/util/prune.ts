@@ -4,7 +4,7 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 
 /**
  * Deletes previous messages.
- * 
+ *
  * @export
  * @class PruneCommand
  * @extends {Command}
@@ -12,8 +12,8 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 export default class PruneCommand extends Command {
 	/**
 	 * Creates an instance of PruneCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof PruneCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -60,9 +60,9 @@ export default class PruneCommand extends Command {
 
 	/**
 	 * Determine if a member has permission to run the "prune" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @returns {boolean} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @returns {boolean}
 	 * @memberof PruneCommand
 	 */
 	public hasPermission(msg: CommandMessage): boolean {
@@ -71,10 +71,10 @@ export default class PruneCommand extends Command {
 
 	/**
 	 * Run the "prune" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @param {{ limit: number, filter: string, member: GuildMember }} args 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @param {{ limit: number, filter: string, member: GuildMember }} args
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof PruneCommand
 	 */
 	public async run(msg: CommandMessage, args: { limit: number, filter: string, member: GuildMember }): Promise<Message | Message[]> {

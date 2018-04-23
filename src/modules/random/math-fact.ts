@@ -7,7 +7,7 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 
 /**
  * Post a random math fact.
- * 
+ *
  * @export
  * @class MathFactCommand
  * @extends {Command}
@@ -15,8 +15,8 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 export default class MathFactCommand extends Command {
 	/**
 	 * Creates an instance of MathFactCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof MathFactCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -35,9 +35,9 @@ export default class MathFactCommand extends Command {
 
 	/**
 	 * Run the "math-fact" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof MathFactCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
@@ -56,7 +56,7 @@ export default class MathFactCommand extends Command {
 					}));
 				}
 			} catch (err) {
-				let msgTxt = 'command math-fact failed :disappointed_relieved:';
+				const msgTxt = 'command math-fact failed :disappointed_relieved:';
 				//TODO: add debug logging: msgTxt += `\n${err.stack}`;
 				console.log(chalk.red(err));
 				return sendSimpleEmbeddedError(msg, msgTxt);

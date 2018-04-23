@@ -4,7 +4,7 @@ import { getRandomInt } from '../../lib/helpers';
 
 /**
  * Post a random choice of 2 options.
- * 
+ *
  * @export
  * @class ChooseCommand
  * @extends {Command}
@@ -12,8 +12,8 @@ import { getRandomInt } from '../../lib/helpers';
 export default class ChooseCommand extends Command {
 	/**
 	 * Creates an instance of ChooseCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof ChooseCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -44,10 +44,10 @@ export default class ChooseCommand extends Command {
 
 	/**
 	 * Run the "choose" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @param {{ choice1: string, choice2: string }} args 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @param {{ choice1: string, choice2: string }} args
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof ChooseCommand
 	 */
 	public async run(msg: CommandMessage, args: { choice1: string, choice2: string }): Promise<Message | Message[]> {

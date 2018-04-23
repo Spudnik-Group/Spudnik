@@ -7,7 +7,7 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 
 /**
  * Post a random fact about the year.
- * 
+ *
  * @export
  * @class YearFactCommand
  * @extends {Command}
@@ -15,8 +15,8 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 export default class YearFactCommand extends Command {
 	/**
 	 * Creates an instance of YearFactCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof YearFactCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -35,9 +35,9 @@ export default class YearFactCommand extends Command {
 
 	/**
 	 * Run the "year-fact" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof YearFactCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
@@ -56,7 +56,7 @@ export default class YearFactCommand extends Command {
 					}));
 				}
 			} catch (err) {
-				let msgTxt = 'command year-fact failed :disappointed_relieved:';
+				const msgTxt = 'command year-fact failed :disappointed_relieved:';
 				//TODO: add debug logging: msgTxt += `\n${err.stack}`;
 				console.log(chalk.red(err));
 				return sendSimpleEmbeddedError(msg, msgTxt);

@@ -16,7 +16,7 @@ const settingsSchema: Schema = new Schema({
 
 /**
  * Manages guild bot settings with MongoDB.
- * 
+ *
  * @export
  * @class MongoProvider
  * @extends {SettingProvider}
@@ -30,8 +30,8 @@ export class MongoProvider extends SettingProvider {
 
 	/**
 	 * Creates an instance of MongoProvider.
-	 * 
-	 * @param {Connection} db 
+	 *
+	 * @param {Connection} db
 	 * @memberof MongoProvider
 	 */
 	constructor(db: Connection) {
@@ -45,9 +45,9 @@ export class MongoProvider extends SettingProvider {
 
 	/**
 	 * Initializes the provider.
-	 * 
-	 * @param {CommandoClient} client 
-	 * @returns {Promise<void>} 
+	 *
+	 * @param {CommandoClient} client
+	 * @returns {Promise<void>}
 	 * @memberof MongoProvider
 	 */
 	public async init(client: CommandoClient): Promise<void> {
@@ -102,11 +102,11 @@ export class MongoProvider extends SettingProvider {
 
 	/**
 	 * Set a value for guild setting.
-	 * 
-	 * @param {string} guild 
-	 * @param {string} key 
-	 * @param {*} val 
-	 * @returns {Promise<void>} 
+	 *
+	 * @param {string} guild
+	 * @param {string} key
+	 * @param {*} val
+	 * @returns {Promise<void>}
 	 * @memberof MongoProvider
 	 */
 	public async set(guild: string, key: string, val: any): Promise<void> {
@@ -124,8 +124,8 @@ export class MongoProvider extends SettingProvider {
 
 	/**
 	 * Destroy the provider.
-	 * 
-	 * @returns {Promise<void>} 
+	 *
+	 * @returns {Promise<void>}
 	 * @memberof MongoProvider
 	 */
 	public async destroy(): Promise<void> {
@@ -135,11 +135,11 @@ export class MongoProvider extends SettingProvider {
 
 	/**
 	 * Get a value for a guild setting.
-	 * 
-	 * @param {string} guild 
-	 * @param {string} key 
-	 * @param {*} defVal 
-	 * @returns {*} 
+	 *
+	 * @param {string} guild
+	 * @param {string} key
+	 * @param {*} defVal
+	 * @returns {*}
 	 * @memberof MongoProvider
 	 */
 	public get(guild: string, key: string, defVal: any): any {
@@ -149,10 +149,10 @@ export class MongoProvider extends SettingProvider {
 
 	/**
 	 * Remove a setting for a guild.
-	 * 
-	 * @param {string} guild 
-	 * @param {string} key 
-	 * @returns {Promise<string>} 
+	 *
+	 * @param {string} guild
+	 * @param {string} key
+	 * @returns {Promise<string>}
 	 * @memberof MongoProvider
 	 */
 	public async remove(guild: string, key: string): Promise<string> {
@@ -176,9 +176,9 @@ export class MongoProvider extends SettingProvider {
 
 	/**
 	 * Clear all settings for a guild.
-	 * 
-	 * @param {string} guild 
-	 * @returns {Promise<void>} 
+	 *
+	 * @param {string} guild
+	 * @returns {Promise<void>}
 	 * @memberof MongoProvider
 	 */
 	public async clear(guild: string): Promise<void> {
@@ -190,9 +190,9 @@ export class MongoProvider extends SettingProvider {
 
 	/**
 	 * Set up a guild's initial settings.
-	 * 
-	 * @param {string} guild 
-	 * @param {*} settings 
+	 *
+	 * @param {string} guild
+	 * @param {*} settings
 	 * @memberof MongoProvider
 	 */
 	public setupGuild(guild: string, settings: any): void {
@@ -217,11 +217,11 @@ export class MongoProvider extends SettingProvider {
 
 	/**
 	 * Setup a command to be used by a guild.
-	 * 
-	 * @param {Guild} guild 
-	 * @param {Command} command 
-	 * @param {*} settings 
-	 * @returns {void} 
+	 *
+	 * @param {Guild} guild
+	 * @param {Command} command
+	 * @param {*} settings
+	 * @returns {void}
 	 * @memberof MongoProvider
 	 */
 	public setupGuildCommand(guild: Guild, command: Command, settings: any): void {
@@ -236,11 +236,11 @@ export class MongoProvider extends SettingProvider {
 
 	/**
 	 * Setup the groups for a guild.
-	 * 
-	 * @param {Guild} guild 
-	 * @param {CommandGroup} group 
-	 * @param {*} settings 
-	 * @returns {void} 
+	 *
+	 * @param {Guild} guild
+	 * @param {CommandGroup} group
+	 * @param {*} settings
+	 * @returns {void}
 	 * @memberof MongoProvider
 	 */
 	public setupGuildGroup(guild: Guild, group: CommandGroup, settings: any): void {
@@ -255,10 +255,10 @@ export class MongoProvider extends SettingProvider {
 
 	/**
 	 * Update settings for all shards.
-	 * 
-	 * @param {string} key 
-	 * @param {*} val 
-	 * @returns {void} 
+	 *
+	 * @param {string} key
+	 * @param {*} val
+	 * @returns {void}
 	 * @memberof MongoProvider
 	 */
 	public updateOtherShards(key: string, val: any): void {

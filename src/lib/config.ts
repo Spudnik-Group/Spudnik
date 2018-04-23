@@ -15,7 +15,7 @@ interface IConfig {
 
 /**
  * Holds the configuration for a bot instance.
- * 
+ *
  * @export
  * @class Configuration
  * @implements {IConfig}
@@ -42,7 +42,7 @@ export class Configuration implements IConfig {
 
 	/**
 	 * Get the debug flag.
-	 * 
+	 *
 	 * @returns {boolean}
 	 * @memberof Configuration
 	 */
@@ -52,7 +52,7 @@ export class Configuration implements IConfig {
 
 	/**
 	 * Get the database connection.
-	 * 
+	 *
 	 * @returns {string}
 	 * @memberof Configuration
 	 */
@@ -62,7 +62,7 @@ export class Configuration implements IConfig {
 
 	/**
 	 * Get the token.
-	 * 
+	 *
 	 * @returns {string}
 	 * @memberof Configuration
 	 */
@@ -72,7 +72,7 @@ export class Configuration implements IConfig {
 
 	/**
 	 * Get the owner.
-	 * 
+	 *
 	 * @returns {string}
 	 * @memberof Configuration
 	 */
@@ -82,7 +82,7 @@ export class Configuration implements IConfig {
 
 	/**
 	 * Get the brewerydb API key
-	 * 
+	 *
 	 * @returns {string}
 	 * @memberof Configuration
 	 */
@@ -92,7 +92,7 @@ export class Configuration implements IConfig {
 
 	/**
 	 * Get the dictionary API key
-	 * 
+	 *
 	 * @returns {string}
 	 * @memberof Configuration
 	 */
@@ -102,9 +102,9 @@ export class Configuration implements IConfig {
 
 	/**
 	 * Set the debug flag.
-	 * 
+	 *
 	 * @protected
-	 * @param {boolean} debug 
+	 * @param {boolean} debug
 	 * @memberof Configuration
 	 */
 	protected setDebug(debug: boolean) {
@@ -113,9 +113,9 @@ export class Configuration implements IConfig {
 
 	/**
 	 * Set the database connection.
-	 * 
+	 *
 	 * @protected
-	 * @param {string} mongoDb 
+	 * @param {string} mongoDb
 	 * @memberof Configuration
 	 */
 	protected setDatabaseConnection(mongoDb: string) {
@@ -124,9 +124,9 @@ export class Configuration implements IConfig {
 
 	/**
 	 * Set the token.
-	 * 
+	 *
 	 * @protected
-	 * @param {string} token 
+	 * @param {string} token
 	 * @memberof Configuration
 	 */
 	protected setToken(token: string) {
@@ -135,9 +135,9 @@ export class Configuration implements IConfig {
 
 	/**
 	 * Set the owner.
-	 * 
+	 *
 	 * @protected
-	 * @param {string} owner 
+	 * @param {string} owner
 	 * @memberof Configuration
 	 */
 	protected setOwner(owner: string) {
@@ -146,9 +146,9 @@ export class Configuration implements IConfig {
 
 	/**
 	 * Set the brewerydb API key.
-	 * 
+	 *
 	 * @protected
-	 * @param {string} breweryDbApiKey 
+	 * @param {string} breweryDbApiKey
 	 * @memberof Configuration
 	 */
 	protected setBreweryDbApiKey(breweryDbApiKey: string) {
@@ -157,9 +157,9 @@ export class Configuration implements IConfig {
 
 	/**
 	 * Set the dictionary API key.
-	 * 
+	 *
 	 * @protected
-	 * @param {string} dictionaryApiKey 
+	 * @param {string} dictionaryApiKey
 	 * @memberof Configuration
 	 */
 	protected setDictionaryApiKey(dictionaryApiKey: string) {

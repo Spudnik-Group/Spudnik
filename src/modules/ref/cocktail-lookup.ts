@@ -6,7 +6,7 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 
 /**
  * Post information about a cocktail.
- * 
+ *
  * @export
  * @class CocktailCommand
  * @extends {Command}
@@ -14,8 +14,8 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 export default class CocktailCommand extends Command {
 	/**
 	 * Creates an instance of CocktailCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof CocktailCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -42,10 +42,10 @@ export default class CocktailCommand extends Command {
 
 	/**
 	 * Run the "cocktail" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @param {{ query: string }} args 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @param {{ query: string }} args
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof CocktailCommand
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {

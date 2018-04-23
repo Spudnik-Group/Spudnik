@@ -4,7 +4,7 @@ import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 /**
  * Generates a "Let Me Google That For You" link.
- * 
+ *
  * @export
  * @class LmgtfyCommand
  * @extends {Command}
@@ -12,8 +12,8 @@ import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
 export default class LmgtfyCommand extends Command {
 	/**
 	 * Creates an instance of LmgtfyCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof LmgtfyCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -39,10 +39,10 @@ export default class LmgtfyCommand extends Command {
 
 	/**
 	 * Run the "lmgtfy" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @param {{ query: string }} args 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @param {{ query: string }} args
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof LmgtfyCommand
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {

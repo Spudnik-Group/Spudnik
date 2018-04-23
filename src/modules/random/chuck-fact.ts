@@ -7,7 +7,7 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 
 /**
  * Post a random chuck norris fact.
- * 
+ *
  * @export
  * @class ChuckFactCommand
  * @extends {Command}
@@ -15,8 +15,8 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 export default class ChuckFactCommand extends Command {
 	/**
 	 * Creates an instance of ChuckFactCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof ChuckFactCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -36,9 +36,9 @@ export default class ChuckFactCommand extends Command {
 
 	/**
 	 * Run the "chuck-fact" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof ChuckFactCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
@@ -57,7 +57,7 @@ export default class ChuckFactCommand extends Command {
 					}));
 				}
 			} catch (err) {
-				let msgTxt = 'failed to retrieve Chuck Norris fact. He probably kicked it. :disappointed_relieved:';
+				const msgTxt = 'failed to retrieve Chuck Norris fact. He probably kicked it. :disappointed_relieved:';
 				//TODO: add debug logging: msgTxt += `\n${err.stack}`;
 				console.log(chalk.red(err));
 				sendSimpleEmbeddedError(msg, msgTxt);

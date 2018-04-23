@@ -7,7 +7,7 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 
 /**
  * Post a random cat fact.
- * 
+ *
  * @export
  * @class CatFactCommand
  * @extends {Command}
@@ -15,8 +15,8 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 export default class CatFactCommand extends Command {
 	/**
 	 * Creates an instance of CatFactCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof CatFactCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -35,9 +35,9 @@ export default class CatFactCommand extends Command {
 
 	/**
 	 * Run the "cat-fact" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof CatFactCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
@@ -56,7 +56,7 @@ export default class CatFactCommand extends Command {
 					}));
 				}
 			} catch (err) {
-				let msgTxt = 'command cat-fact failed :disappointed_relieved:';
+				const msgTxt = 'command cat-fact failed :disappointed_relieved:';
 				//TODO: add debug logging: msgTxt += `\n${err.stack}`;
 				console.log(chalk.red(err));
 				sendSimpleEmbeddedError(msg, msgTxt);

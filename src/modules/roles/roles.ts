@@ -3,7 +3,7 @@ import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 
 /**
  * Manage roles including self-assigning, listing, and setting a default role.
- * 
+ *
  * @export
  * @class RoleManagementCommands
  * @extends {Command}
@@ -11,8 +11,8 @@ import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 export default class RoleManagementCommands extends Command {
 	/**
 	 * Creates an instance of RoleManagementCommands.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof RoleManagementCommands
 	 */
 	constructor(client: CommandoClient) {
@@ -41,9 +41,9 @@ export default class RoleManagementCommands extends Command {
 
 	/**
 	 * Determine if a member has permission to run the "role" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @returns {boolean} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @returns {boolean}
 	 * @memberof RoleManagementCommands
 	 */
 	public hasPermission(msg: CommandMessage): boolean {
@@ -52,10 +52,10 @@ export default class RoleManagementCommands extends Command {
 
 	/**
 	 * Run the "role" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @param {{ subCommand: string, role: Role }} args 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @param {{ subCommand: string, role: Role }} args
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof RoleManagementCommands
 	 */
 	public async run(msg: CommandMessage, args: { subCommand: string, role: Role }): Promise<Message | Message[]> {
@@ -114,7 +114,7 @@ export default class RoleManagementCommands extends Command {
 			}
 			case 'list': {
 				if (guildAssignableRoles.length > 0) {
-					let roles: string[] = [];
+					const roles: string[] = [];
 					for (const roleId in guildAssignableRoles) {
 						const role: Role = msg.guild.roles.find((r) => r.id === roleId);
 						if (role) {

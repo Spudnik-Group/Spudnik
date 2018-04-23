@@ -9,7 +9,7 @@ const breweryDbApiKey: string = Config.getBreweryDbApiKey();
 
 /**
  * Post information about an alcoholic brew.
- * 
+ *
  * @export
  * @class BrewCommand
  * @extends {Command}
@@ -17,8 +17,8 @@ const breweryDbApiKey: string = Config.getBreweryDbApiKey();
 export default class BrewCommand extends Command {
 	/**
 	 * Creates an instance of BrewCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof BrewCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -45,10 +45,10 @@ export default class BrewCommand extends Command {
 
 	/**
 	 * Run the "brew" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @param {{ query: string }} args 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @param {{ query: string }} args
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof BrewCommand
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {

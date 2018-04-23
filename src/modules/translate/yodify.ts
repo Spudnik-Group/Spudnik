@@ -4,7 +4,7 @@ import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 /**
  * Convert a statement to be structured as Yoda speaks.
- * 
+ *
  * @export
  * @class YodifyCommand
  * @extends {Command}
@@ -12,8 +12,8 @@ import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
 export default class YodifyCommand extends Command {
 	/**
 	 * Creates an instance of YodifyCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof YodifyCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -39,10 +39,10 @@ export default class YodifyCommand extends Command {
 
 	/**
 	 * Run the "yodify" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @param {{ query: string }} args 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @param {{ query: string }} args
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof YodifyCommand
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {

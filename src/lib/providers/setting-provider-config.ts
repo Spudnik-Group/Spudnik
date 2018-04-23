@@ -7,7 +7,7 @@ interface ISettingProviderConfig {
 
 /**
  * Holds configuration values for settings.
- * 
+ *
  * @export
  * @class SettingProviderConfig
  * @implements {ISettingProviderConfig}
@@ -22,7 +22,7 @@ export class SettingProviderConfig implements ISettingProviderConfig {
 
 	/**
 	 * Get the connection.
-	 * 
+	 *
 	 * @returns {string}
 	 * @memberof SettingProviderConfig
 	 */
@@ -32,7 +32,7 @@ export class SettingProviderConfig implements ISettingProviderConfig {
 
 	/**
 	 * Get the options.
-	 * 
+	 *
 	 * @returns {object}
 	 * @memberof SettingProviderConfig
 	 */
@@ -42,9 +42,9 @@ export class SettingProviderConfig implements ISettingProviderConfig {
 
 	/**
 	 * Set the connection.
-	 * 
+	 *
 	 * @protected
-	 * @param {string} connection 
+	 * @param {string} connection
 	 * @memberof SettingProviderConfig
 	 */
 	protected setConnection(connection: string) {
@@ -53,9 +53,9 @@ export class SettingProviderConfig implements ISettingProviderConfig {
 
 	/**
 	 * Set the options.
-	 * 
+	 *
 	 * @protected
-	 * @param {object} options 
+	 * @param {object} options
 	 * @memberof SettingProviderConfig
 	 */
 	protected setOptions(options: object) {

@@ -4,7 +4,7 @@ import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 /**
  * Post a link to the GReY Reddit.
- * 
+ *
  * @export
  * @class RedditCommand
  * @extends {Command}
@@ -12,8 +12,8 @@ import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
 export default class RedditCommand extends Command {
 	/**
 	 * Creates an instance of RedditCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof RedditCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -32,9 +32,9 @@ export default class RedditCommand extends Command {
 
 	/**
 	 * Run the "reddit" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof RedditCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {

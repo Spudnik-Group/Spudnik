@@ -9,7 +9,7 @@ const dictionaryApiKey: string = Config.getDictionaryApiKey();
 
 /**
  * Post the definition of a word.
- * 
+ *
  * @export
  * @class DefineCommand
  * @extends {Command}
@@ -17,8 +17,8 @@ const dictionaryApiKey: string = Config.getDictionaryApiKey();
 export default class DefineCommand extends Command {
 	/**
 	 * Creates an instance of DefineCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof DefineCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -44,10 +44,10 @@ export default class DefineCommand extends Command {
 
 	/**
 	 * Run the "define" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @param {{ query: string }} args 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @param {{ query: string }} args
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof DefineCommand
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {

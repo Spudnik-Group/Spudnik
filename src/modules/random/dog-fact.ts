@@ -7,7 +7,7 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 
 /**
  * Post a random dog fact.
- * 
+ *
  * @export
  * @class DogFactCommand
  * @extends {Command}
@@ -15,8 +15,8 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 export default class DogFactCommand extends Command {
 	/**
 	 * Creates an instance of DogFactCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof DogFactCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -35,9 +35,9 @@ export default class DogFactCommand extends Command {
 
 	/**
 	 * Run the "dog-fact" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof DogFactCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
@@ -56,7 +56,7 @@ export default class DogFactCommand extends Command {
 					}));
 				}
 			} catch (err) {
-				let msgTxt = 'command dog-fact failed :disappointed_relieved:';
+				const msgTxt = 'command dog-fact failed :disappointed_relieved:';
 				//TODO: add debug logging: msgTxt += `\n${err.stack}`;
 				console.log(chalk.red(err));
 				return sendSimpleEmbeddedError(msg, msgTxt);

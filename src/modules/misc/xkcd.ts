@@ -6,7 +6,7 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 
 /**
  * Post an XKCD comic.
- * 
+ *
  * @export
  * @class XkcdCommand
  * @extends {Command}
@@ -14,8 +14,8 @@ import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/he
 export default class XkcdCommand extends Command {
 	/**
 	 * Creates an instance of XkcdCommand.
-	 * 
-	 * @param {CommandoClient} client 
+	 *
+	 * @param {CommandoClient} client
 	 * @memberof XkcdCommand
 	 */
 	constructor(client: CommandoClient) {
@@ -43,10 +43,10 @@ export default class XkcdCommand extends Command {
 
 	/**
 	 * Run the "xkcd" command.
-	 * 
-	 * @param {CommandMessage} msg 
-	 * @param {{ comicNumber: string }} args 
-	 * @returns {(Promise<Message | Message[]>)} 
+	 *
+	 * @param {CommandMessage} msg
+	 * @param {{ comicNumber: string }} args
+	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof XkcdCommand
 	 */
 	public async run(msg: CommandMessage, args: { comicNumber: string }): Promise<Message | Message[]> {
@@ -73,6 +73,6 @@ export default class XkcdCommand extends Command {
 				return sendSimpleEmbeddedError(msg, `Couldn't fetch an XKCD for ${args.comicNumber}`);
 			}
 		});
-		return sendSimpleEmbeddedMessage(msg, 'Loading...');;
+		return sendSimpleEmbeddedMessage(msg, 'Loading...');
 	}
 }
