@@ -23,7 +23,7 @@ export class SettingProviderConfig implements ISettingProviderConfig {
 	/**
 	 * Get the connection.
 	 * 
-	 * @returns 
+	 * @returns {string}
 	 * @memberof SettingProviderConfig
 	 */
 	public getConnection() {
@@ -33,7 +33,7 @@ export class SettingProviderConfig implements ISettingProviderConfig {
 	/**
 	 * Get the options.
 	 * 
-	 * @returns 
+	 * @returns {object}
 	 * @memberof SettingProviderConfig
 	 */
 	public getOptions() {
