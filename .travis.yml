@@ -9,8 +9,7 @@ branches:
   - hotfix
 before_install:
 - openssl aes-256-cbc -K $encrypted_6aed427102d1_key -iv $encrypted_6aed427102d1_iv -in assets.zip.enc -out assets.zip -d
-- mkdir assets
-- unzip assets.zip -d ./assets
+- unzip assets.zip -d ./
 - export AUTHOR_NAME="$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"
 - npm install -g node-gyp typescript
 install:
