@@ -29,6 +29,7 @@ export class Spudnik {
 			commandPrefix: '!',
 			messageCacheLifetime: 30,
 			messageSweepInterval: 60,
+			unknownCommandResponse: false,
 			owner: this.Config.getOwner(),
 		});
 
