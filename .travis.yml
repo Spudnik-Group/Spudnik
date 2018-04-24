@@ -27,7 +27,6 @@ before_deploy:
 - mv release.zip dpl_cd_upload/release.zip
 - mv assets/prod/config.json config/config.json
 - mv assets/servers.json config/servers.json
-- rm -rf dist && rm -rf scripts
 deploy:
   - provider: releases
     api_key:
