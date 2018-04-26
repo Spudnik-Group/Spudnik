@@ -67,7 +67,7 @@ export default class RoleManagementCommands extends Command {
 			},
 		});
 
-		const guildAssignableRoles = msg.client.provider.get(msg.guild, 'assignableRoles', []);
+		let guildAssignableRoles: string[] = msg.client.provider.get(msg.guild, 'assignableRoles', []);
 		const guildDefaultRole: string = msg.client.provider.get(msg.guild, 'defaultRole', '');
 		switch (args.subCommand.toLowerCase()) {
 			case 'add': {
@@ -75,11 +75,11 @@ export default class RoleManagementCommands extends Command {
 					roleEmbed.description = 'No role specified!';
 					return msg.embed(roleEmbed);
 				}
-				if (guildAssignableRoles.indexOf(args.role.id) === -1) {
+				if (!guildAssignableRoles.includes(args.role.id)) {
 					guildAssignableRoles.push(args.role.id);
 
 					return msg.client.provider.set(msg.guild, 'assignableRoles', { guildAssignableRoles }).then(() => {
-						roleEmbed.description = `Added role '${args.role.name}' from the list of assignable roles.`;
+						roleEmbed.description = `Added role '${args.role.name}' to the list of assignable roles.`;
 						return msg.embed(roleEmbed);
 					}).catch(() => {
 						roleEmbed.description = 'There was an error processing the request.';
@@ -95,8 +95,8 @@ export default class RoleManagementCommands extends Command {
 					roleEmbed.description = 'No role specified!';
 					return msg.embed(roleEmbed);
 				}
-				if (guildAssignableRoles.indexOf(args.role.id) !== -1) {
-					guildAssignableRoles.splice(args.role.id);
+				if (guildAssignableRoles.includes(args.role.id)) {
+					guildAssignableRoles = guildAssignableRoles.filter((i: string) => i !== args.role.id);
 
 					return msg.client.provider.set(msg.guild, 'assignableRoles', { guildAssignableRoles }).then(() => {
 						return msg.client.provider.set(msg.guild, 'assignableRoles', { guildAssignableRoles }).then(() => {
