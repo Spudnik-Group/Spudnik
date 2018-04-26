@@ -63,7 +63,7 @@ export default class StatsCommand extends Command {
 				{
 					inline: true,
 					name: '❯ Uptime',
-					value: duration.format('d[ days], h[ hours], m[ minutes, and ]s[ seconds]'),
+					value: duration.format('d[ d] h[ h] m[ m] s[ s]'),
 				},
 				{
 					inline: true,

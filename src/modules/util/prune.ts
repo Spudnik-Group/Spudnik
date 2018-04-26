@@ -39,6 +39,10 @@ export default class PruneCommand extends Command {
 					key: 'limit',
 					max: 100,
 					prompt: 'how many messages would you like to delete?\n',
+					validate: (limit: number) => {
+						if (!isNaN(Number(limit)) && limit > 0) { return true; };
+						return 'Invalid number of messages to delete.';
+					},
 					type: 'integer',
 				},
 				{
