@@ -2,7 +2,7 @@
 	"debug": false,
 	"mongoDb": "mongodb://127.0.0.1:27017/test",
 	"token": "bot token",
-	"owner": "owner token",
+	"owner": ["owner id", "other owner id"],
 	"breweryDbApiKey": "brewery db api key",
 	"dictionaryApiKey": "dictionary api key"
 }

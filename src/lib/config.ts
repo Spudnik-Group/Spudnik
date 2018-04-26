@@ -8,7 +8,7 @@ interface IConfig {
 	getDebug(): boolean;
 	getDatabaseConnection(): string;
 	getToken(): string;
-	getOwner(): string;
+	getOwner(): string[];
 	getBreweryDbApiKey(): string;
 	getDictionaryApiKey(): string;
 }
@@ -31,8 +31,8 @@ export class Configuration implements IConfig {
 	@JsonProperty('token', String)
 	private _token: string = '';
 
-	@JsonProperty('owner', String)
-	private _owner: string = '';
+	@JsonProperty('owner', Array)
+	private _owner: string[] = [''];
 
 	@JsonProperty('breweryDbApiKey', String)
 	private _breweryDbApiKey: string = '';
@@ -73,7 +73,7 @@ export class Configuration implements IConfig {
 	/**
 	 * Get the owner.
 	 *
-	 * @returns {string}
+	 * @returns {string[]}
 	 * @memberof Configuration
 	 */
 	public getOwner() {
@@ -137,10 +137,10 @@ export class Configuration implements IConfig {
 	 * Set the owner.
 	 *
 	 * @protected
-	 * @param {string} owner
+	 * @param {string[]} owner
 	 * @memberof Configuration
 	 */
-	protected setOwner(owner: string) {
+	protected setOwner(owner: string[]) {
 		this._owner = owner;
 	}
 
