@@ -1,9 +1,6 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 
-// tslint:disable-next-line:no-var-requires
-const { defaultEmbedColor }: { defaultEmbedColor: string } = require('../../../config/config.json');
-
 /**
  * Allows a member to unassign a role from themselves.
  *
@@ -46,7 +43,7 @@ export default class IAmNotCommand extends Command {
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
 		const roleEmbed = new MessageEmbed({
-			color: defaultEmbedColor,
+			color: 5592405,
 			author: {
 				name: 'Role Manager',
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/110/lock_1f512.png',
@@ -54,7 +51,7 @@ export default class IAmNotCommand extends Command {
 		});
 
 		const role = msg.guild.roles.find((r) => r.name.toLowerCase() === args.query.toLowerCase());
-		const { guildAssignableRoles } = msg.client.provider.get(msg.guild, 'assignableRoles', { guildAssignableRoles: [] });
+		const guildAssignableRoles: string[] = msg.client.provider.get(msg.guild, 'assignableRoles', []);
 
 		if (role && guildAssignableRoles) {
 			if (guildAssignableRoles.includes(role.id)) {

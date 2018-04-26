@@ -26,7 +26,7 @@ export default class RoleManagementCommands extends Command {
 			args: [
 				{
 					key: 'subCommand',
-					prompt: 'add|remove|default\n',
+					prompt: 'add|remove|list|default\n',
 					type: 'string',
 				},
 				{
@@ -69,17 +69,43 @@ export default class RoleManagementCommands extends Command {
 
 		let guildAssignableRoles: string[] = msg.client.provider.get(msg.guild, 'assignableRoles', []);
 		const guildDefaultRole: string = msg.client.provider.get(msg.guild, 'defaultRole', '');
+
 		switch (args.subCommand.toLowerCase()) {
 			case 'add': {
 				if (args.role === undefined) {
 					roleEmbed.description = 'No role specified!';
 					return msg.embed(roleEmbed);
 				}
+
+				if (!Array.isArray(guildAssignableRoles)) {
+					guildAssignableRoles = [];
+				}
+
 				if (!guildAssignableRoles.includes(args.role.id)) {
 					guildAssignableRoles.push(args.role.id);
 
-					return msg.client.provider.set(msg.guild, 'assignableRoles', { guildAssignableRoles }).then(() => {
+					return msg.client.provider.set(msg.guild, 'assignableRoles', guildAssignableRoles).then(() => {
 						roleEmbed.description = `Added role '${args.role.name}' to the list of assignable roles.`;
+						return msg.embed(roleEmbed);
+					}).catch(() => {
+						roleEmbed.description = 'There was an error processing the request.';
+						return msg.embed(roleEmbed);
+					});
+				} else {
+					roleEmbed.description = `${args.role.name} is already in the list of assignable roles for this guild.`;
+					return msg.embed(roleEmbed);
+				}
+			}
+			case 'remove': {
+				if (args.role === undefined) {
+					roleEmbed.description = 'No role specified!';
+					return msg.embed(roleEmbed);
+				}
+				if (Array.isArray(guildAssignableRoles) && guildAssignableRoles.includes(args.role.id)) {
+					guildAssignableRoles = guildAssignableRoles.filter((i: string) => i !== args.role.id);
+
+					return msg.client.provider.set(msg.guild, 'assignableRoles', guildAssignableRoles).then(() => {
+						roleEmbed.description = `Removed role '${args.role.name}' from the list of assignable roles.`;
 						return msg.embed(roleEmbed);
 					}).catch(() => {
 						roleEmbed.description = 'There was an error processing the request.';
@@ -90,43 +116,20 @@ export default class RoleManagementCommands extends Command {
 					return msg.embed(roleEmbed);
 				}
 			}
-			case 'remove': {
-				if (args.role === undefined) {
-					roleEmbed.description = 'No role specified!';
-					return msg.embed(roleEmbed);
-				}
-				if (guildAssignableRoles.includes(args.role.id)) {
-					guildAssignableRoles = guildAssignableRoles.filter((i: string) => i !== args.role.id);
-
-					return msg.client.provider.set(msg.guild, 'assignableRoles', { guildAssignableRoles }).then(() => {
-						return msg.client.provider.set(msg.guild, 'assignableRoles', { guildAssignableRoles }).then(() => {
-							roleEmbed.description = `Removed role '${args.role.name}' from the list of assignable roles.`;
-							return msg.embed(roleEmbed);
-						}).catch(() => {
-							roleEmbed.description = 'There was an error processing the request.';
-							return msg.embed(roleEmbed);
-						});
-					});
-				} else {
-					roleEmbed.description = `Could not find role with name ${args.role.name} in the list of assignable roles for this guild.`;
-					return msg.embed(roleEmbed);
-				}
-			}
 			case 'list': {
-				if (guildAssignableRoles.length > 0) {
-					const roles: string[] = [];
-					for (const roleId in guildAssignableRoles) {
-						const role: Role = msg.guild.roles.find((r) => r.id === roleId);
-						if (role) {
-							roles.push(role.name);
-						}
-					}
+				if (Array.isArray(guildAssignableRoles) && guildAssignableRoles.length > 0) {
+					const roles: string[] = msg.guild.roles.filter((role) => guildAssignableRoles.includes(role.id)).reduce((list: string[], role: Role) => {
+						list.push(role.name);
+						return list;
+					}, []);
 
-					roleEmbed.fields.push({
-						name: 'Assignable Roles',
-						value: roles.join('\n'),
-						inline: true,
-					});
+					if (roles.length > 0) {
+						roleEmbed.fields.push({
+							name: 'Assignable Roles',
+							value: roles.join('\n'),
+							inline: true,
+						});
+					}
 				}
 
 				if (guildDefaultRole !== '') {
@@ -141,25 +144,28 @@ export default class RoleManagementCommands extends Command {
 					}
 				}
 
-				if (roleEmbed.fields === []) {
+				if (Array.isArray(roleEmbed.fields) && roleEmbed.fields.length === 0) {
 					roleEmbed.description = 'A default role and assignable roles are not set for this guild.';
 				}
 
 				return msg.embed(roleEmbed);
 			}
 			case 'default': {
-				if (args.role === undefined) {
-					roleEmbed.description = 'No role specified!';
-					return msg.embed(roleEmbed);
-				}
-				return msg.client.provider.set(msg.guild, 'defaultRole', args.role.id).then(() => {
-					return msg.client.provider.set(msg.guild, 'assignableRoles', { guildAssignableRoles }).then(() => {
-						roleEmbed.description = `Added default role '${args.role.name}'.`;
+				if (args.role.name === undefined) {
+					return msg.client.provider.set(msg.guild, 'defaultRole', null).then(() => {
+						roleEmbed.description = 'Removed default role.';
 						return msg.embed(roleEmbed);
 					}).catch(() => {
 						roleEmbed.description = 'There was an error processing the request.';
 						return msg.embed(roleEmbed);
 					});
+				}
+				return msg.client.provider.set(msg.guild, 'defaultRole', args.role.id).then(() => {
+					roleEmbed.description = `Added default role '${args.role.name}'.`;
+					return msg.embed(roleEmbed);
+				}).catch(() => {
+					roleEmbed.description = 'There was an error processing the request.';
+					return msg.embed(roleEmbed);
 				});
 			}
 			default: {
