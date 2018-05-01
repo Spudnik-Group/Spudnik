@@ -31,8 +31,8 @@ export class Configuration implements IConfig {
 	@JsonProperty('token', String)
 	private _token: string = '';
 
-	@JsonProperty('owner', Array)
-	private _owner: string[] = [''];
+	@JsonProperty('owner', [String])
+	private _owner: string[] = [];
 
 	@JsonProperty('breweryDbApiKey', String)
 	private _breweryDbApiKey: string = '';
