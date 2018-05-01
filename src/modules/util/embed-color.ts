@@ -21,8 +21,8 @@ export default class EmbedColorCommand extends Command {
 			description: 'Change the default embed color the bot uses for responses.',
 			group: 'util',
 			guildOnly: true,
-			memberName: 'embedColor',
-			name: 'embedColor',
+			memberName: 'embedcolor',
+			name: 'embedcolor',
 			args: [
 				{
 					default: '',
