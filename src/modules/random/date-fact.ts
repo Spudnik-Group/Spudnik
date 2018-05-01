@@ -2,6 +2,7 @@ import chalk from 'chalk';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { RequestResponse } from 'request';
+import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 /**
@@ -49,7 +50,7 @@ export default class DateFactCommand extends Command {
 				const data = JSON.parse(body);
 				if (data && data.text) {
 					return msg.embed(new MessageEmbed({
-						color: 5592405,
+						color: getEmbedColor(msg),
 						title: 'Date Fact',
 						description: data.text,
 					}));

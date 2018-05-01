@@ -1,5 +1,6 @@
 import { Message, TextChannel } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError } from '../../lib/helpers';
 
 /**
@@ -48,7 +49,7 @@ export default class TopicCommand extends Command {
 				response = "There doesn't seem to be a topic for this channel. Maybe ask the mods?";
 			}
 			return msg.embed({
-				color: 5592405,
+				color: getEmbedColor(msg),
 				description: response,
 				title: channel.name,
 				thumbnail: { url: this.client.user.avatarURL },

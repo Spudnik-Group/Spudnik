@@ -2,6 +2,7 @@ import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import * as request from 'request';
 import { RequestResponse } from 'request';
+import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 /**
@@ -60,7 +61,7 @@ export default class XkcdCommand extends Command {
 				const comic = JSON.parse(body);
 				msg.delete();
 				return msg.embed({
-					color: 5592405,
+					color: getEmbedColor(msg),
 					title: `XKCD ${comic.num} ${comic.title}`,
 					image: {
 						url: comic.img,

@@ -3,6 +3,7 @@ import { Guild, Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import * as moment from 'moment';
 import 'moment-duration-format';
+import { getEmbedColor } from '../../lib/custom-helpers';
 
 interface IDuration extends moment.Duration {
 	format: (template?: string, precision?: number, settings?: IDurationSettings) => string;
@@ -57,7 +58,7 @@ export default class StatsCommand extends Command {
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
 		const duration: IDuration = moment.duration(this.client.uptime) as IDuration;
 		return msg.embed({
-			color: 5592405,
+			color: getEmbedColor(msg),
 			description: '**Spudnik Statistics**',
 			fields: [
 				{

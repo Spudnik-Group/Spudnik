@@ -1,5 +1,6 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { getEmbedColor } from '../../lib/custom-helpers';
 
 /**
  * Manage notifications when someone joins the guild.
@@ -64,7 +65,7 @@ export default class WelcomeCommand extends Command {
 	 */
 	public async run(msg: CommandMessage, args: { subCommand: string, content: string }): Promise<Message | Message[]> {
 		const welcomeEmbed = new MessageEmbed({
-			color: 5592405,
+			color: getEmbedColor(msg),
 			author: {
 				name: 'Server Welcome Message',
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png',

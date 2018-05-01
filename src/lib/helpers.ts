@@ -2,6 +2,7 @@ import chalk from 'chalk';
 import { Message } from 'discord.js';
 import { CommandMessage } from 'discord.js-commando';
 import * as fs from 'fs';
+import { getEmbedColor } from './custom-helpers';
 
 /**
  * Post a message.
@@ -18,7 +19,7 @@ export function sendSimpleEmbeddedMessage(msg: CommandMessage, text: string, tim
 			icon_url: msg.guild.me.user.displayAvatarURL,
 			name: `${msg.guild.me.user.username}`,
 		},
-		color: 5592405,
+		color: getEmbedColor(msg),
 		description: `${text}`,
 	});
 

@@ -1,5 +1,6 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { getEmbedColor } from '../../lib/custom-helpers';
 import { getJsonObject } from '../../lib/helpers';
 
 const servers = getJsonObject('../config/servers.json');
@@ -66,7 +67,7 @@ export default class ServerCommand extends Command {
 			return msg.embed(new MessageEmbed({
 				title: `${msg.guild.name} Servers`,
 				description: servers.map((server: any) => server.key).sort().join('\n'),
-				color: 5592405,
+				color: getEmbedColor(msg),
 			}));
 		} else {
 			const info = servers.filter((server: any) => server.key.toLowerCase() === args.query.toLowerCase())[0];
@@ -74,7 +75,7 @@ export default class ServerCommand extends Command {
 				return msg.embed(new MessageEmbed({
 					title: info.title,
 					description: info.description,
-					color: 5592405,
+					color: getEmbedColor(msg),
 				}));
 			}
 		}

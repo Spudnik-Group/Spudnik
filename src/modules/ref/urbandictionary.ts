@@ -1,5 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 /**
@@ -65,7 +66,7 @@ export default class UrbanCommand extends Command {
 				}
 
 				return msg.embed({
-					color: 5592405,
+					color: getEmbedColor(msg),
 					title,
 					description: message,
 					footer: {

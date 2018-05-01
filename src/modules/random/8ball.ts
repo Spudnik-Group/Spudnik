@@ -1,5 +1,6 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { getEmbedColor } from '../../lib/custom-helpers';
 import { getRandomInt, sendSimpleEmbeddedError } from '../../lib/helpers';
 
 // tslint:disable-next-line:no-var-requires
@@ -55,7 +56,7 @@ export default class EightBallCommand extends Command {
 			if (eightBall.length > 0) {
 				response = eightBall[getRandomInt(0, eightBall.length) - 1];
 				return msg.embed(new MessageEmbed({
-					color: 5592405,
+					color: getEmbedColor(msg),
 					title: args.query,
 					description: `:8ball: **${response}**`,
 				}));
