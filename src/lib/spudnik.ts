@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { Guild, GuildMember, TextChannel } from 'discord.js';
+import { Channel, Guild, GuildChannel, GuildMember, Message, MessageAttachment, MessageEmbed, MessageReaction, TextChannel } from 'discord.js';
 import { CommandoClient } from 'discord.js-commando';
 import * as Mongoose from 'mongoose';
 import * as path from 'path';
@@ -98,6 +98,89 @@ export class Spudnik {
 						url: 'https://www.spudnik.io',
 					},
 				});
+			})
+			.on('raw', async (event: any) => {
+				if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(event.t)) {
+					return;
+				}
+
+				const { d: data } = event;
+				const channel: Channel | undefined = this.Discord.channels.get(data.channel_id);
+				const message: Message = await (channel as TextChannel).messages.fetch(data.message_id);
+				const emojiKey: any = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
+				const reaction: MessageReaction | undefined = message.reactions.get(emojiKey);
+				const starboardEnabled: boolean = await this.Discord.provider.get(message.guild.id, 'starboardEnabled', false);
+				const starboard: GuildChannel | undefined = await message.guild.channels.get(this.Discord.provider.get(message.guild.id, 'starboardChannel'));
+				const starboardTrigger = await this.Discord.provider.get(message.guild.id, 'starboardTrigger', '⭐');
+				const starred: any[] = await this.Discord.provider.get(message.guild.id, 'starboard', []);
+				const stars = await message.reactions.find((mReaction: MessageReaction) => mReaction.emoji.name === starboardTrigger).users.fetch();
+
+				if (message.author.id === data.user_id && !this.Discord.owners.includes(data.user_id)) {
+					return (channel as TextChannel)
+						.send(`⚠ You cannot star your own messages, **<@${data.user_id}>**!`)
+						.then((reply: Message | Message[]) => {
+							if (reply instanceof Message) {
+								reply.delete({ timeout: 3000 }).catch(() => undefined);
+							}
+						});
+				}
+
+				if ((channel as TextChannel).nsfw) {
+					return;
+				}
+
+				if (starboardEnabled && starboard) {
+					// Check for 'star' (or customized starboard reaction)
+					if (starboardTrigger === (reaction as MessageReaction).emoji.name) {
+						// Check for presence of post in starboard channel
+						if (!starred.some((star: any) => star.messageId === message.id)) {
+							// Fresh star, add to starboard and starboard tracking in DB
+							(starboard as TextChannel).send({
+								embed: new MessageEmbed()
+									.setAuthor(message.guild.name, message.guild.iconURL())
+									.setThumbnail(message.author.displayAvatarURL())
+									.addField('Author', message.author.toString(), true)
+									.addField('Channel', (channel as TextChannel).toString(), true)
+									.addField('Message', !message.content.length ? '' : message.content, true)
+									.setImage((message.attachments as any).filter((atchmt: MessageAttachment) => atchmt.attachment) ? (message.attachments as any).filter((atchmt: any) => atchmt.attachment).attachment : null)
+									.setColor(await this.Discord.provider.get(message.guild.id, 'embedColor', 5592405))
+									.setTimestamp()
+									.setFooter(`⭐ ${stars.size} | ${message.id} `),
+							}).then((item) => {
+								starred.push({
+									messageId: message.id,
+									embedId: (item as Message).id,
+									channelId: (channel as TextChannel).id,
+								});
+								this.Discord.provider.set(message.guild.id, 'starboard', starred);
+							}).catch((err) => {
+								(starboard as TextChannel).send(`Failed to send embed of message ID: ${message.id}`);
+							});
+						} else {
+							// Old star, update star count
+							const starredMsg = await starred.find((msg) => msg.messageId === message.id && msg.channelId === (channel as TextChannel).id);
+							const starredEmbed = await (starboard as TextChannel).messages.fetch(starredMsg.embedId);
+							if (starredEmbed) {
+								starredEmbed.edit({
+									embed: new MessageEmbed()
+										.setAuthor(message.guild.name, message.guild.iconURL())
+										.setThumbnail(message.author.displayAvatarURL())
+										.addField('Author', message.author.toString(), true)
+										.addField('Channel', (channel as TextChannel).toString(), true)
+										.addField('Message', !message.content.length ? '' : message.content, true)
+										.setImage((message.attachments as any).filter((atchmt: MessageAttachment) => atchmt.attachment) ? (message.attachments as any).filter((atchmt: any) => atchmt.attachment).attachment : null)
+										.setColor(this.Discord.provider.get(message.guild.id, 'embedColor', 5592405))
+										.setTimestamp()
+										.setFooter(`⭐ ${stars.size} | ${message.id} `),
+								}).catch((err) => {
+									(starboard as TextChannel).send(`Failed to send embed of message ID: ${message.id}`);
+								});
+							}
+						}
+					}
+				} else {
+					return;
+				}
 			})
 			.on('guildMemberAdd', (member: GuildMember) => {
 				const guild = member.guild;
