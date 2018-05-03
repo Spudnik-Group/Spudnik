@@ -39,7 +39,7 @@ export default class PlayingCommand extends Command {
 	}
 
 	/**
-	 * Run the "accept" command.
+	 * Run the "playing" command.
 	 *
 	 * @param {CommandMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
@@ -47,14 +47,7 @@ export default class PlayingCommand extends Command {
 	 */
 	public async run(msg: CommandMessage, args: { game: string }): Promise<Message | Message[]> {
 		const gameSearch = args.game.toLowerCase();
-		const playingMembers = msg.guild.members.filter((member) => {
-			return !member.user.bot &&
-				member.presence.activity &&
-				member.presence.activity.name.toLowerCase().indexOf(gameSearch) > -1;
-		});
-		return sendSimpleEmbeddedMessage(
-			msg,
-			playingMembers.map((member) => `<@${member.id}> - ${member.presence.activity.name}`).sort().join('\n'),
-		);
+		const playingMembers = msg.guild.members.filter((member) => !member.user.bot && member.presence.activity && member.presence.activity.name.toLowerCase().indexOf(gameSearch) > -1);
+		return sendSimpleEmbeddedMessage(msg, playingMembers.map((member) => `<@${member.id}> - ${member.presence.activity.name}`).sort().join('\n'));
 	}
 }
