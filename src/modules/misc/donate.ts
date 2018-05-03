@@ -19,7 +19,7 @@ export default class DonateCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Donate to help support the ongoing hosting and development of the bot.',
-			group: 'util',
+			group: 'misc',
 			guildOnly: true,
 			memberName: 'donate',
 			name: 'donate',
