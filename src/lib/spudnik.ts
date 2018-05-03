@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { Channel, Guild, GuildChannel, GuildMember, Message, MessageAttachment, MessageEmbed, MessageReaction, TextChannel } from 'discord.js';
+import { Channel, GuildChannel, GuildMember, Message, MessageAttachment, MessageEmbed, MessageReaction, TextChannel } from 'discord.js';
 import { CommandoClient } from 'discord.js-commando';
 import * as Mongoose from 'mongoose';
 import * as path from 'path';
@@ -87,17 +87,29 @@ export class Spudnik {
 	private setupEvents = () => {
 		this.Discord
 			.once('ready', () => {
-				console.log(chalk.magenta(`Logged into Discord! Serving in ${this.Discord.guilds.array().length} Discord servers`));
-				console.log(chalk.blue('---Spudnik Launch Success---'));
-
-				// Update bot status
-				this.Discord.user.setPresence({
-					activity: {
+				const statuses: any[] = [
+					{
 						type: 'STREAMING',
 						name: `${this.Discord.commandPrefix}help | ${this.Discord.guilds.array().length} Servers`,
 						url: 'https://www.spudnik.io',
 					},
-				});
+					{
+						type: 'PLAYING',
+						name: 'spudnik.io',
+					},
+				];
+				let statusIndex = -1;
+				console.log(chalk.magenta(`Logged into Discord! Serving in ${this.Discord.guilds.array().length} Discord servers`));
+				console.log(chalk.blue('---Spudnik Launch Success---'));
+
+				// Update bot status, using array of possible statuses
+				setInterval(() => {
+					++statusIndex;
+					if (statusIndex >= statuses.length) {
+						statusIndex = 0;
+					}
+					this.Discord.user.setPresence({ activity: statuses[statusIndex] });
+				}, 15000);
 			})
 			.on('raw', async (event: any) => {
 				if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(event.t)) {
@@ -213,12 +225,6 @@ export class Spudnik {
 						console.log(chalk.red(`There was an error trying to say goodbye a former guild member in ${guild}, the channel may not exist or was set to a non-text channel`));
 					}
 				}
-			})
-			.on('guildCreate', () => {
-				this.Discord.user.setActivity(`${this.Discord.commandPrefix}help | ${this.Discord.guilds.array().length} Servers`);
-			})
-			.on('guildDelete', (guild: Guild) => {
-				this.Discord.user.setActivity(`${this.Discord.commandPrefix}help | ${this.Discord.guilds.array().length} Servers`);
 			})
 			.on('disconnected', () => {
 				console.log(chalk.red('Disconnected from Discord!'));
