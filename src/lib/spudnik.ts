@@ -193,6 +193,23 @@ export class Spudnik {
 					return;
 				}
 			})
+			.on('message', (message: Message) => {
+				if (this.Discord.provider.get(message.guild.id, 'adblockEnabled', false)) {
+					if (message.content.search(/(discord\.gg\/.+|discordapp\.com\/invite\/.+)/i) !== -1) {
+						message.delete();
+						message.channel.send({
+							embed: new MessageEmbed()
+								.setAuthor('🛑 Adblock')
+								.setDescription('Only mods may paste invites to other servers!'),
+						}).then((reply: Message | Message[]) => {
+							if (reply instanceof Message) {
+								reply.delete({ timeout: 3000 }).catch(() => undefined);
+							}
+						});
+					}
+				}
+				return;
+			})
 			.on('guildMemberAdd', (member: GuildMember) => {
 				const guild = member.guild;
 				const welcomeChannel = this.Discord.provider.get(guild, 'welcomeChannel', guild.systemChannelID);
