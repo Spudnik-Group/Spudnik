@@ -51,7 +51,7 @@ export default class KickCommand extends Command {
 	 * @memberof KickCommand
 	 */
 	public hasPermission(msg: CommandMessage): boolean {
-		return this.client.isOwner(msg.author) || msg.member.hasPermission('KICK_MEMBERS');
+		return this.client.isOwner(msg.author) || msg.member.hasPermission(['ADMINISTRATOR', 'KICK_MEMBERS'], { checkAdmin: true, checkOwner: true });
 	}
 
 	/**

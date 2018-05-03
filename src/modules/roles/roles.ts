@@ -48,7 +48,7 @@ export default class RoleManagementCommands extends Command {
 	 * @memberof RoleManagementCommands
 	 */
 	public hasPermission(msg: CommandMessage): boolean {
-		return this.client.isOwner(msg.author) || msg.member.hasPermission('ADMINISTRATOR');
+		return this.client.isOwner(msg.author) || msg.member.hasPermission(['ADMINISTRATOR', 'MANAGE_GUILD', 'MANAGE_ROLES'], { checkAdmin: true, checkOwner: true });
 	}
 
 	/**

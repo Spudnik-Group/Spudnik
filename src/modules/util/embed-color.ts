@@ -54,7 +54,7 @@ export default class EmbedColorCommand extends Command {
 	 * @memberof EmbedColorCommand
 	 */
 	public hasPermission(msg: CommandMessage): boolean {
-		return this.client.isOwner(msg.author) || msg.member.hasPermission('ADMINISTRATOR');
+		return this.client.isOwner(msg.author) || msg.member.hasPermission(['ADMINISTRATOR', 'MANAGE_GUILD'], { checkAdmin: true, checkOwner: true });
 	}
 
 	/**

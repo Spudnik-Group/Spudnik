@@ -57,7 +57,7 @@ export default class BanCommand extends Command {
 	 * @memberof BanCommand
 	 */
 	public hasPermission(msg: CommandMessage): boolean {
-		return this.client.isOwner(msg.author) || msg.member.hasPermission('BAN_MEMBERS');
+		return this.client.isOwner(msg.author) || msg.member.hasPermission(['ADMINISTRATOR', 'BAN_MEMBERS'], { checkAdmin: true, checkOwner: true });
 	}
 
 	/**

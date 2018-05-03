@@ -52,7 +52,7 @@ export default class GoodbyeCommand extends Command {
 	 * @memberof GoodbyeCommand
 	 */
 	public hasPermission(msg: CommandMessage): boolean {
-		return this.client.isOwner(msg.author) || msg.member.hasPermission('ADMINISTRATOR');
+		return this.client.isOwner(msg.author) || msg.member.hasPermission(['ADMINISTRATOR', 'MANAGE_GUILD'], { checkAdmin: true, checkOwner: true });
 	}
 
 	/**
