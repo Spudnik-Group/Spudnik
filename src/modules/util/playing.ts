@@ -48,7 +48,8 @@ export default class PlayingCommand extends Command {
 	public async run(msg: CommandMessage, args: { game: string }): Promise<Message | Message[]> {
 		const gameSearch = args.game.toLowerCase();
 		const playingMembers = msg.guild.members.filter((member) => {
-			return member.presence.activity &&
+			return !member.user.bot &&
+				member.presence.activity &&
 				member.presence.activity.name.toLowerCase().indexOf(gameSearch) > -1;
 		});
 		return sendSimpleEmbeddedMessage(
