@@ -76,5 +76,5 @@ export default class DdgCommand extends Command {
 			return msg.embed(ddgEmbed);
 		});
 		return sendSimpleEmbeddedMessage(msg, 'Loading...');
-	};
+	}
 }

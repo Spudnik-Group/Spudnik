@@ -35,7 +35,7 @@ export default class EmbedColorCommand extends Command {
 						} else if (color === '') {
 							return true;
 						}
-						return 'You provided an invalid color hex number. Please try again.'
+						return 'You provided an invalid color hex number. Please try again.';
 					},
 				},
 			],
