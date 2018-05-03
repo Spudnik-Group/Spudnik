@@ -89,9 +89,8 @@ export class Spudnik {
 			.once('ready', () => {
 				const statuses: any[] = [
 					{
-						type: 'STREAMING',
+						type: 'PLAYING',
 						name: `${this.Discord.commandPrefix}help | ${this.Discord.guilds.array().length} Servers`,
-						url: 'https://www.spudnik.io',
 					},
 					{
 						type: 'PLAYING',
