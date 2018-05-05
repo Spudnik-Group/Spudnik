@@ -75,7 +75,7 @@ export default class CocktailCommand extends Command {
 					let thumbnail = '';
 					if (typeof result.strDrinkThumb !== 'undefined' && result.strDrinkThumb !== '' && result.strDrinkThumb !== null) {
 						thumbnail = result.strDrinkThumb;
-					} else if (thumbnail === '') {
+					} else {
 						thumbnail = 'https://emojipedia-us.s3.amazonaws.com/thumbs/240/twitter/103/tropical-drink_1f379.png';
 					}
 					if (typeof result.strGlass !== 'undefined' && result.strGlass !== '' && result.strGlass !== null) {
@@ -108,7 +108,7 @@ export default class CocktailCommand extends Command {
 					});
 
 					cocktailEmbed.title = `__${result.strDrink}__`;
-					cocktailEmbed.thumbnail = { url: `http://${thumbnail}` };
+					cocktailEmbed.thumbnail = { url: thumbnail };
 					cocktailEmbed.fields = fields;
 					return msg.embed(cocktailEmbed);
 				} else {
