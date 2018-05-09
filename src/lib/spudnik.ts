@@ -217,7 +217,7 @@ export class Spudnik {
 				const welcomeEnabled = this.Discord.provider.get(guild, 'welcomeEnabled', false);
 
 				if (welcomeEnabled) {
-					const message = welcomeMessage.replace('{guild}', guild.name).replace('{user}', member.displayName);
+					const message = welcomeMessage.replace('{guild}', guild.name).replace('{user}', `<@${member.id}>`);
 					const channel = guild.channels.get(welcomeChannel);
 					if (channel && channel.type === 'text') {
 						(channel as TextChannel).send(message);
@@ -233,7 +233,7 @@ export class Spudnik {
 				const goodbyeEnabled = this.Discord.provider.get(guild, 'goodbyeEnabled', false);
 
 				if (goodbyeEnabled) {
-					const message = goodbyeMessage.replace('{guild}', guild.name).replace('{user}', member.displayName);
+					const message = goodbyeMessage.replace('{guild}', guild.name).replace('{user}', `<@${member.id}>`);
 					const channel = guild.channels.get(goodbyeChannel);
 					if (channel && channel.type === 'text') {
 						(channel as TextChannel).send(message);
