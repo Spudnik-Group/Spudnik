@@ -82,7 +82,7 @@ export default class PruneCommand extends Command {
 	 * @memberof PruneCommand
 	 */
 	public async run(msg: CommandMessage, args: { limit: number, filter: string, member: GuildMember }): Promise<Message | Message[]> {
-		msg.delete();
+		await msg.delete();
 		const { filter, limit } = args;
 		let messageFilter: (message: Message) => boolean;
 
