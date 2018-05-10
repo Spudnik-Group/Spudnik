@@ -19,7 +19,7 @@ export default class RoleManagementCommands extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Used to add or remove a role to yourself, list available roles, and set the default role.',
-			details: 'add <roll>|remove <role>|list|default <role>',
+			details: 'add <role>|remove <role>|list|default <role>',
 			group: 'roles',
 			guildOnly: true,
 			memberName: 'role',
