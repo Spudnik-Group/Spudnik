@@ -51,6 +51,7 @@ export default class XkcdCommand extends Command {
 	 * @memberof XkcdCommand
 	 */
 	public async run(msg: CommandMessage, args: { comicNumber: string }): Promise<Message | Message[]> {
+		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
 		let url: string = 'http://xkcd.com/';
 		if (args.comicNumber !== '') {
 			url += `${args.comicNumber}/`;
@@ -71,9 +72,11 @@ export default class XkcdCommand extends Command {
 					},
 				});
 			} catch (err) {
-				return sendSimpleEmbeddedError(msg, `Couldn't fetch an XKCD for ${args.comicNumber}`);
+				msg.delete();
+				return sendSimpleEmbeddedError(msg, `Couldn't fetch an XKCD for ${args.comicNumber}`, 5000);
 			}
 		});
-		return sendSimpleEmbeddedMessage(msg, 'Loading...');
+
+		return response;
 	}
 }
