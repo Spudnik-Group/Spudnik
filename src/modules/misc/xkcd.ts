@@ -37,6 +37,10 @@ export default class XkcdCommand extends Command {
 					key: 'comicNumber',
 					prompt: 'what comic number would you like to see?\n',
 					type: 'string',
+					validate: (comicNumber: number) => {
+						if (!isNaN(Number(comicNumber)) && Number.isInteger(Number(comicNumber)) && comicNumber > 0) { return true; }
+						return 'Invalid comic number.';
+					},
 				},
 			],
 		});
