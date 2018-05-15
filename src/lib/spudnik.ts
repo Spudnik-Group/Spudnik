@@ -97,14 +97,22 @@ export class Spudnik {
 		this.Discord
 			.once('ready', () => {
 				const dbl = new dblApi(this.Config.getDblApiKey(), this.Discord);
+				dbl.getBot('398591330806398989').then((bot: any) => {
+					this.Discord.provider.set('0', 'dblUpvotes', bot.votes);
+				});
+				let upvotes = this.Discord.provider.get('0', 'dblUpvotes');
 				const statuses: any[] = [
 					{
 						type: 'PLAYING',
 						name: `${this.Discord.commandPrefix}help | ${this.Discord.guilds.array().length} Servers`,
 					},
 					{
-						type: 'PLAYING',
+						type: 'STREAMING',
 						name: 'spudnik.io',
+					},
+					{
+						type: 'PLAYING',
+						name: `Upvoted ${upvotes} times on discordbots.org`
 					},
 				];
 				let statusIndex = -1;
@@ -123,6 +131,10 @@ export class Spudnik {
 				// Send updates to Bot Listings
 				setInterval(() => {
 					dbl.postStats(this.Discord.guilds.size);
+
+					dbl.getBot('398591330806398989').then((bot: any) => {
+						this.Discord.provider.set('0', 'dblUpvotes', bot.votes);
+					});
 				}, 1800000);
 			})
 			.on('raw', async (event: any) => {
