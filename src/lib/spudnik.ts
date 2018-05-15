@@ -31,6 +31,8 @@ export class Spudnik {
 	constructor(config: Configuration) {
 		this.Config = config;
 
+		console.log(chalk.blue('---Spudnik Stage 2 Engaged.---'));
+
 		this.Discord = new CommandoClient({
 			commandPrefix: '!',
 			messageCacheLifetime: 30,
@@ -46,6 +48,7 @@ export class Spudnik {
 		this.login();
 		this.startHeart();
 
+		honeyBadger.notify(chalk.blue('---Spudnik MECO---'));
 		console.log(chalk.blue('---Spudnik MECO---'));
 	}
 
@@ -117,7 +120,9 @@ export class Spudnik {
 				];
 				let statusIndex = -1;
 				console.log(chalk.magenta(`Logged into Discord! Serving in ${this.Discord.guilds.array().length} Discord servers`));
+				honeyBadger.notify(chalk.magenta(`Logged into Discord! Serving in ${this.Discord.guilds.array().length} Discord servers`));
 				console.log(chalk.blue('---Spudnik Launch Success---'));
+				honeyBadger.notify(chalk.blue('---Spudnik Launch Success---'));
 
 				// Update bot status, using array of possible statuses
 				setInterval(() => {
@@ -249,6 +254,7 @@ export class Spudnik {
 					if (channel && channel.type === 'text') {
 						(channel as TextChannel).send(message);
 					} else {
+						honeyBadger.notify(chalk.red(`There was an error trying to welcome a new guild member to ${guild}, the channel may not exist or was set to a non-text channel`));
 						console.log(chalk.red(`There was an error trying to welcome a new guild member to ${guild}, the channel may not exist or was set to a non-text channel`));
 					}
 				}
@@ -265,12 +271,13 @@ export class Spudnik {
 					if (channel && channel.type === 'text') {
 						(channel as TextChannel).send(message);
 					} else {
+						honeyBadger.notify(chalk.red(`There was an error trying to say goodbye a former guild member in ${guild}, the channel may not exist or was set to a non-text channel`));
 						console.log(chalk.red(`There was an error trying to say goodbye a former guild member in ${guild}, the channel may not exist or was set to a non-text channel`));
 					}
 				}
 			})
 			.on('disconnected', (err: Error) => {
-				honeyBadger.notify(err);
+				honeyBadger.notify(chalk.red(`Disconnected from Discord!\nError: ${err}`));
 				console.log(chalk.red('Disconnected from Discord!'));
 			})
 			.on('error', (err: Error) => {
@@ -284,7 +291,7 @@ export class Spudnik {
 			.on('debug', (err: Error) => {
 				if (this.Config.getDebug()) {
 					honeyBadger.notify(err);
-					console.error(err);
+					console.info(err);
 				}
 			})
 			.on('commandError', (cmd, err) => {
@@ -302,7 +309,6 @@ export class Spudnik {
 	private login = () => {
 		if (this.Config.getToken()) {
 			console.log(chalk.magenta('Logging in to Discord...'));
-
 			this.Discord.login(this.Config.getToken());
 		} else {
 			console.error('Spudnik must have a Discord bot token...');
