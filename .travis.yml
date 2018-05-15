@@ -43,3 +43,6 @@ deploy:
   project: spudnik-bot
   on:
     branch: master
+after_deploy:
+- chmod +x ./scripts/deploy_success.sh
+- "./scripts/deploy_success.sh"
