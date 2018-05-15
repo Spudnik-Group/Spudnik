@@ -11,6 +11,7 @@ interface IConfig {
 	getOwner(): string[];
 	getBreweryDbApiKey(): string;
 	getDictionaryApiKey(): string;
+	getDblApiKey(): string;
 }
 
 /**
@@ -39,6 +40,9 @@ export class Configuration implements IConfig {
 
 	@JsonProperty('dictionaryApiKey', String)
 	private _dictionaryApiKey: string = '';
+
+	@JsonProperty('dblApiKey', String)
+	private _dblApiKey: string = '';
 
 	/**
 	 * Get the debug flag.
@@ -98,6 +102,16 @@ export class Configuration implements IConfig {
 	 */
 	public getDictionaryApiKey() {
 		return this._dictionaryApiKey;
+	}
+
+	/**
+	 * Get the dbl API key
+	 *
+	 * @returns {string}
+	 * @memberof Configuration
+	 */
+	public getDblApiKey() {
+		return this._dblApiKey;
 	}
 
 	/**
@@ -164,6 +178,17 @@ export class Configuration implements IConfig {
 	 */
 	protected setDictionaryApiKey(dictionaryApiKey: string) {
 		this._dictionaryApiKey = dictionaryApiKey;
+	}
+
+	/**
+	 * Set the dbl API key.
+	 *
+	 * @protected
+	 * @param {string} dblApiKey
+	 * @memberof Configuration
+	 */
+	protected setDblApiKey(dblApiKey: string) {
+		this._dblApiKey = dblApiKey;
 	}
 }
 

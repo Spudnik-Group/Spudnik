@@ -4,5 +4,6 @@
 	"token": "bot token",
 	"owner": ["owner id", "other owner id"],
 	"breweryDbApiKey": "brewery db api key",
-	"dictionaryApiKey": "dictionary api key"
+	"dictionaryApiKey": "dictionary api key",
+	"dblApiKey": "discord bot list api key"
 }

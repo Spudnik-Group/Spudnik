@@ -7,8 +7,10 @@ import * as path from 'path';
 import { Configuration } from './config';
 import { MongoProvider } from './providers/mongodb-provider';
 
-// tslint:disable-next-line:no-var-requires
+// tslint:disable:no-var-requires
 const honeyBadger = require('honeybadger');
+const dblApi = require('dblapi.js');
+// tslint:enable:no-var-requires
 
 /**
  * The Spudnik Discord Bot.
@@ -94,6 +96,7 @@ export class Spudnik {
 	private setupEvents = () => {
 		this.Discord
 			.once('ready', () => {
+				const dbl = new dblApi(this.Config.getDblApiKey(), this.Discord);
 				const statuses: any[] = [
 					{
 						type: 'PLAYING',
@@ -116,6 +119,11 @@ export class Spudnik {
 					}
 					this.Discord.user.setPresence({ activity: statuses[statusIndex] });
 				}, 15000);
+
+				// Send updates to Bot Listings
+				setInterval(() => {
+					dbl.postStats(this.Discord.guilds.size);
+				}, 1800000);
 			})
 			.on('raw', async (event: any) => {
 				if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(event.t)) {
