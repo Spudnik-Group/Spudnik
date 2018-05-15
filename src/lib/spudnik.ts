@@ -1,10 +1,14 @@
 import chalk from 'chalk';
 import { Channel, GuildChannel, GuildMember, Message, MessageAttachment, MessageEmbed, MessageReaction, TextChannel } from 'discord.js';
 import { CommandoClient } from 'discord.js-commando';
+import * as http from 'http';
 import * as Mongoose from 'mongoose';
 import * as path from 'path';
 import { Configuration } from './config';
 import { MongoProvider } from './providers/mongodb-provider';
+
+// tslint:disable-next-line:no-var-requires
+const honeyBadger = require('honeybadger');
 
 /**
  * The Spudnik Discord Bot.
@@ -31,12 +35,14 @@ export class Spudnik {
 			messageSweepInterval: 60,
 			unknownCommandResponse: false,
 			owner: this.Config.getOwner(),
+			invite: 'https://spudnik.io/support',
 		});
 
 		this.setupCommands();
 		this.setupEvents();
 		this.setupDatabase();
 		this.login();
+		this.startHeart();
 
 		console.log(chalk.blue('---Spudnik MECO---'));
 	}
@@ -73,6 +79,7 @@ export class Spudnik {
 		this.Discord.setProvider(
 			Mongoose.connect(this.Config.getDatabaseConnection()).then(() => new MongoProvider(Mongoose.connection)),
 		).catch((err) => {
+			honeyBadger.notify(err);
 			console.error(err);
 			process.exit(-1);
 		});
@@ -242,17 +249,26 @@ export class Spudnik {
 					}
 				}
 			})
-			.on('disconnected', () => {
+			.on('disconnected', (err: Error) => {
+				honeyBadger.notify(err);
 				console.log(chalk.red('Disconnected from Discord!'));
 			})
-			.on('error', console.error)
-			.on('warn', console.warn)
+			.on('error', (err: Error) => {
+				honeyBadger.notify(err);
+				console.error(err);
+			})
+			.on('warn', (err: Error) => {
+				honeyBadger.notify(err);
+				console.warn(err);
+			})
 			.on('debug', (err: Error) => {
 				if (this.Config.getDebug()) {
-					console.log(err);
+					honeyBadger.notify(err);
+					console.error(err);
 				}
 			})
 			.on('commandError', (cmd, err) => {
+				honeyBadger.notify(err, { component: cmd.groupID, action: cmd.memberName });
 				console.error(`Error in command ${cmd.groupID}:${cmd.memberName}`, err);
 			});
 	}
@@ -272,5 +288,21 @@ export class Spudnik {
 			console.error('Spudnik must have a Discord bot token...');
 			process.exit(-1);
 		}
+	}
+
+	/**
+	 * Starts heartbeat service.
+	 * 
+	 * @private
+	 * @memberof Spudnik
+	 */
+	private startHeart = () => {
+		http.createServer((request, response) => {
+			response.writeHead(200, { 'Content-Type': 'text/plain' });
+			response.end('Ok!');
+		}).listen(1337);
+
+		// Print URL for accessing server
+		console.log('Heartbeat running on port 1337');
 	}
 }
