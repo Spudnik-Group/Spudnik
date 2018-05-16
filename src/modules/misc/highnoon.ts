@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import * as request from 'request';
+import * as rp from 'request-promise';
 import { RequestResponse } from 'request';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedImage, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
@@ -40,16 +40,30 @@ export default class HighNoonCommand extends Command {
 	 * @memberof HighNoonCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
-		request({
+		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
+		const options = {
+			method: 'GET',
 			uri: 'http://imgs.xkcd.com/comics/now.png',
 			followAllRedirects: true,
-		}, (err: Error, resp: RequestResponse) => {
-			if (resp.request.uri.href) {
-				return sendSimpleEmbeddedImage(msg, resp.request.uri.href.toString());
-			} else {
-				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
-			}
-		});
-		return sendSimpleEmbeddedMessage(msg, 'Loading...');
+			json: true,
+		};
+
+		rp(options)
+			.then((resp) => {
+				if (resp.uri.href) {
+					msg.delete();
+					return sendSimpleEmbeddedImage(msg, resp.uri.href.toString());
+				} else {
+					msg.delete();
+					msg.client.emit('warn', `Unsuccessful request.\nCommand: 'highnoon'\nContext: ${resp}`);
+					return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 300);
+				}
+			})
+			.catch((err) => {
+				msg.delete();
+				msg.client.emit('error', `Error with command 'highnoon'\nError: ${err}`);
+				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 300);
+			});
+		return response;
 	}
 }
