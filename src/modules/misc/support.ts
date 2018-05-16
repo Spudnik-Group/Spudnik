@@ -38,6 +38,6 @@ export default class SupportCommand extends Command {
 	 * @memberof SupportCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
-		return sendSimpleEmbeddedMessage(msg, 'https://discord.gg/jDc3N3G');
+		return sendSimpleEmbeddedMessage(msg, 'https://spudnik.io/support');
 	}
 }

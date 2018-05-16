@@ -21,6 +21,7 @@ const dblApi = require('dblapi.js');
 export class Spudnik {
 	public Config: Configuration;
 	public Discord: CommandoClient;
+	public dbl: any;
 
 	/**
 	 * Creates an instance of Spudnik.
@@ -41,6 +42,10 @@ export class Spudnik {
 			owner: this.Config.getOwner(),
 			invite: 'https://spudnik.io/support',
 		});
+
+		if (this.Config.getDblApiKey() !== '') {
+			this.dbl = new dblApi(this.Config.getDblApiKey(), this.Discord);
+		}
 
 		this.setupCommands();
 		this.setupEvents();
@@ -99,11 +104,6 @@ export class Spudnik {
 	private setupEvents = () => {
 		this.Discord
 			.once('ready', () => {
-				const dbl = new dblApi(this.Config.getDblApiKey(), this.Discord);
-				dbl.getBot('398591330806398989').then((bot: any) => {
-					this.Discord.provider.set('0', 'dblUpvotes', bot.votes);
-				});
-				let upvotes = this.Discord.provider.get('0', 'dblUpvotes');
 				const statuses: any[] = [
 					{
 						type: 'PLAYING',
@@ -113,16 +113,34 @@ export class Spudnik {
 						type: 'STREAMING',
 						name: 'spudnik.io',
 					},
-					{
-						type: 'PLAYING',
-						name: `Upvoted ${upvotes} times on discordbots.org`
-					},
 				];
 				let statusIndex = -1;
 				console.log(chalk.magenta(`Logged into Discord! Serving in ${this.Discord.guilds.array().length} Discord servers`));
 				honeyBadger.notify(chalk.magenta(`Logged into Discord! Serving in ${this.Discord.guilds.array().length} Discord servers`));
 				console.log(chalk.blue('---Spudnik Launch Success---'));
 				honeyBadger.notify(chalk.blue('---Spudnik Launch Success---'));
+
+				if (this.Config.getDblApiKey() !== '') {
+					this.dbl.getBot('398591330806398989').then((bot: any) => {
+						this.Discord.provider.set('0', 'dblUpvotes', bot.votes);
+					});
+					let upvotes = this.Discord.provider.get('0', 'dblUpvotes');
+					statuses.push({
+						type: 'PLAYING',
+						name: `Upvoted ${upvotes} times on discordbots.org`
+					});
+
+					// Bot Listing Interval Events
+					setInterval(() => {
+						// Post stats
+						this.dbl.postStats(this.Discord.guilds.size);
+
+						// Update database with latest upvote count
+						this.dbl.getBot('398591330806398989').then((bot: any) => {
+							this.Discord.provider.set('0', 'dblUpvotes', bot.votes);
+						});
+					}, 1800000);
+				}
 
 				// Update bot status, using array of possible statuses
 				setInterval(() => {
@@ -132,15 +150,6 @@ export class Spudnik {
 					}
 					this.Discord.user.setPresence({ activity: statuses[statusIndex] });
 				}, 15000);
-
-				// Send updates to Bot Listings
-				setInterval(() => {
-					dbl.postStats(this.Discord.guilds.size);
-
-					dbl.getBot('398591330806398989').then((bot: any) => {
-						this.Discord.provider.set('0', 'dblUpvotes', bot.votes);
-					});
-				}, 1800000);
 			})
 			.on('raw', async (event: any) => {
 				if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(event.t)) {

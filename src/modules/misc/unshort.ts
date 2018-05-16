@@ -53,7 +53,11 @@ export default class UnshortCommand extends Command {
 					msg.delete();
 					return sendSimpleEmbeddedMessage(msg, `Original url is: <${url}>`);
 				}
-				return sendSimpleEmbeddedError(msg, 'This url can\'t be expanded. Make sure the protocol exists (Http/Https) and try again.');
+				return sendSimpleEmbeddedError(msg, 'This url can\'t be expanded. Make sure the protocol exists (Http/Https) and try again.', 3000);
+			})
+			.catch((err: Error) => {
+				msg.client.emit('error', `Error with command 'unshort'\nError: ${err}`);
+				return sendSimpleEmbeddedError(msg, 'There was an error with the request. The url may not be valid. Try again?', 3000);
 			});
 		return sendSimpleEmbeddedMessage(msg, 'Loading...');
 	}
