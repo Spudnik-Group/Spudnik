@@ -52,6 +52,17 @@ export default class TermsOfServiceCommand extends Command {
 	}
 
 	/**
+ 	* Determine if a member has permission to run the "accept" command.
+	*
+ 	* @param {CommandMessage} msg
+ 	* @returns {boolean}
+ 	* @memberof TermsOfServiceCommand
+ 	*/
+	public hasPermission(msg: CommandMessage): boolean {
+		return msg.member.hasPermission('MANAGE_GUILD');
+	}
+
+	/**
 	 * Run the "tos" command.
 	 *
 	 * @param {CommandMessage} msg
