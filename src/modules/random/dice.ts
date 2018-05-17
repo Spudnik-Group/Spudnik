@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 /**
  * Simulate dice rolling.
@@ -19,7 +19,7 @@ export default class RollCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
 			name: 'roll',
-			group: 'misc',
+			group: 'random',
 			memberName: 'roll',
 			guildOnly: true,
 			description: 'roll one die with x sides, or multiple dice using d20 syntax. Default value is 10',

@@ -18,7 +18,7 @@ export default class StarboardCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Used to set the emoji to trigger saving a message to the starboard, show the current starboard settings, change the starboard channel, and enables or disables the starboard',
+			description: 'Used to set the emoji to trigger saving a message to the starboard, show the current starboard settings, change the starboard channel, and enables or disables the starboard.',
 			details: 'trigger <emoji to save messages to starboard (leave blank to show current)> | channel | enable | disable',
 			group: 'util',
 			guildOnly: true,

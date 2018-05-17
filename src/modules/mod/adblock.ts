@@ -18,8 +18,8 @@ export default class AdblockCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'enable or disable the adblock feature',
-			group: 'util',
+			description: 'Enable or disable the adblock feature.',
+			group: 'mod',
 			guildOnly: true,
 			memberName: 'adblock',
 			name: 'adblock',

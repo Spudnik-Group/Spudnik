@@ -19,7 +19,7 @@ export default class PlayingCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'List people playing games.',
-			group: 'util',
+			group: 'misc',
 			guildOnly: true,
 			memberName: 'playing',
 			name: 'playing',

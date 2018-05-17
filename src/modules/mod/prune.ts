@@ -26,7 +26,7 @@ export default class PruneCommand extends Command {
 				__bots:__ Messages sent by bots
 				__uploads:__ Messages containing an attachment
 				__links:__ Messages containing a link`,
-			group: 'util',
+			group: 'mod',
 			guildOnly: true,
 			memberName: 'prune',
 			name: 'prune',

@@ -23,7 +23,7 @@ export default class ChuckFactCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
 			aliases: ['chucknorris', 'norrisfact', 'chuck-norris'],
-			description: 'Gives a Random Year Fact.',
+			description: 'Gives a Random Chuck Norris Fact.',
 			group: 'random',
 			guildOnly: true,
 			memberName: 'chuck-fact',

@@ -18,7 +18,7 @@ export default class NickCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'change the bot\'s nickname on your server, or reset it',
+			description: 'Change the bot\'s nickname on your server, or reset it.',
 			group: 'util',
 			guildOnly: true,
 			memberName: 'nick',

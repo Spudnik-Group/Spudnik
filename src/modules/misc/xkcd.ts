@@ -77,7 +77,7 @@ export default class XkcdCommand extends Command {
 				});
 			} catch (err) {
 				msg.delete();
-				return sendSimpleEmbeddedError(msg, `Couldn't fetch an XKCD for ${args.comicNumber}`, 5000);
+				return sendSimpleEmbeddedError(msg, `Couldn't fetch an XKCD for ${args.comicNumber}`, 3000);
 			}
 		});
 

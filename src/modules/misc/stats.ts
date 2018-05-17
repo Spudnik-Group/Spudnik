@@ -37,7 +37,7 @@ export default class StatsCommand extends Command {
 		super(client, {
 			aliases: ['statistics'],
 			description: 'Displays statistics about the bot.',
-			group: 'util',
+			group: 'misc',
 			guildOnly: true,
 			memberName: 'stats',
 			name: 'stats',

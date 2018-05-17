@@ -20,7 +20,7 @@ export default class TopicCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Shows the purpose of the chat channel.',
-			group: 'util',
+			group: 'misc',
 			guildOnly: true,
 			memberName: 'topic',
 			name: 'topic',

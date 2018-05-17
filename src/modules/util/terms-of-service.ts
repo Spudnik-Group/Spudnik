@@ -159,7 +159,7 @@ export default class TermsOfServiceCommand extends Command {
 						return msg.embed(tosEmbed);
 					});
 				default:
-					return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
+					return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			}
 		} else {
 			if (tosChannel && tosChannel === msg.channel.id) {

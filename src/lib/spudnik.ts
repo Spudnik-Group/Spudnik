@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { Channel, GuildChannel, GuildMember, Message, MessageAttachment, MessageEmbed, MessageReaction, TextChannel } from 'discord.js';
+import { Channel, GuildChannel, GuildMember, Message, MessageAttachment, MessageEmbed, MessageReaction, TextChannel, Guild } from 'discord.js';
 import { CommandoClient } from 'discord.js-commando';
 import * as http from 'http';
 import * as Mongoose from 'mongoose';
@@ -66,14 +66,14 @@ export class Spudnik {
 	private setupCommands = () => {
 		this.Discord.registry
 			.registerGroups([
+				['custom', 'Custom'],
 				['misc', 'Misc'],
-				['music', 'Music'],
 				['mod', 'Moderation'],
-				['util', 'Utility'],
 				['random', 'Random'],
 				['ref', 'Reference'],
 				['roles', 'Roles'],
 				['translate', 'Translate'],
+				['util', 'Utility'],
 			])
 			.registerDefaults()
 			.registerCommandsIn(path.join(__dirname, '../modules'));
@@ -104,7 +104,9 @@ export class Spudnik {
 	private setupEvents = () => {
 		this.Discord
 			.once('ready', () => {
-				const statuses: any[] = [
+				// tslint:disable-next-line:no-var-requires
+				const { version }: { version: string } = require('../../../package');
+				let statuses: any[] = [
 					{
 						type: 'PLAYING',
 						name: `${this.Discord.commandPrefix}help | ${this.Discord.guilds.array().length} Servers`,
@@ -112,6 +114,22 @@ export class Spudnik {
 					{
 						type: 'STREAMING',
 						name: 'spudnik.io',
+					},
+					{
+						type: 'PLAYING',
+						name: '!donate 💕',
+					},
+					{
+						type: 'STREAMING',
+						name: `Version: ${version} | ${this.Discord.commandPrefix}help`,
+					},
+					{
+						type: 'PLAYING',
+						name: 'spudnik.io/support | !support',
+					},
+					{
+						type: 'STREAMING',
+						name: 'docs.spudnik.io',
 					},
 				];
 				let statusIndex = -1;
@@ -121,23 +139,50 @@ export class Spudnik {
 				honeyBadger.notify(chalk.blue('---Spudnik Launch Success---'));
 
 				if (this.Config.getDblApiKey() !== '') {
+					let upvotes: number = 0;
+					let users = this.Discord.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b);
+					let guilds = this.Discord.guilds.values.length;
 					this.dbl.getBot('398591330806398989').then((bot: any) => {
 						this.Discord.provider.set('0', 'dblUpvotes', bot.votes);
+						upvotes = bot.votes;
 					});
-					let upvotes = this.Discord.provider.get('0', 'dblUpvotes');
 					statuses.push({
-						type: 'PLAYING',
-						name: `Upvoted ${upvotes} times on discordbots.org`
+						type: 'WATCHING',
+						name: `Upvoted ${upvotes} times on discordbots.org`,
+					});
+					statuses.push({
+						type: 'WATCHING',
+						name: `Assisting ${users} users on ${guilds} servers`,
 					});
 
 					// Bot Listing Interval Events
 					setInterval(() => {
+						let upvotes = this.Discord.provider.get('0', 'dblUpvotes');
+						let users = this.Discord.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b);
+						let guilds = this.Discord.guilds.values.length;
+
 						// Post stats
 						this.dbl.postStats(this.Discord.guilds.size);
 
 						// Update database with latest upvote count
 						this.dbl.getBot('398591330806398989').then((bot: any) => {
 							this.Discord.provider.set('0', 'dblUpvotes', bot.votes);
+						});
+
+						// Update Statuses
+						statuses = statuses.filter((item) => {
+							if (item.type !== 'WATCHING') {
+								return true;
+							}
+							return false;
+						})
+						statuses.push({
+							type: 'WATCHING',
+							name: `Upvoted ${upvotes} times on discordbots.org`,
+						});
+						statuses.push({
+							type: 'WATCHING',
+							name: `Assisting ${users} users on ${guilds} servers`,
 						});
 					}, 1800000);
 				}
@@ -235,21 +280,22 @@ export class Spudnik {
 				}
 			})
 			.on('message', (message: Message) => {
-				if (this.Discord.provider.get(message.guild.id, 'adblockEnabled', false)) {
-					if (message.content.search(/(discord\.gg\/.+|discordapp\.com\/invite\/.+)/i) !== -1) {
-						message.delete();
-						message.channel.send({
-							embed: new MessageEmbed()
-								.setAuthor('🛑 Adblock')
-								.setDescription('Only mods may paste invites to other servers!'),
-						}).then((reply: Message | Message[]) => {
-							if (reply instanceof Message) {
-								reply.delete({ timeout: 3000 }).catch(() => undefined);
-							}
-						});
+				if (message.guild) {
+					if (this.Discord.provider.get(message.guild.id, 'adblockEnabled', false)) {
+						if (message.content.search(/(discord\.gg\/.+|discordapp\.com\/invite\/.+)/i) !== -1) {
+							message.delete();
+							message.channel.send({
+								embed: new MessageEmbed()
+									.setAuthor('🛑 Adblock')
+									.setDescription('Only mods may paste invites to other servers!'),
+							}).then((reply: Message | Message[]) => {
+								if (reply instanceof Message) {
+									reply.delete({ timeout: 3000 }).catch(() => undefined);
+								}
+							});
+						}
 					}
 				}
-				return;
 			})
 			.on('guildMemberAdd', (member: GuildMember) => {
 				const guild = member.guild;

@@ -18,7 +18,7 @@ export default class GoodbyeCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Used to set the message to be sent to the guild when someone leaves, show the current goodbye message, changes the channel for the message to be shown, and enables or disables the message; use {guild} for guild name, and {user} to reference the user that left',
+			description: 'Used to set the message to be sent to the guild when someone leaves, show the current goodbye message, changes the channel for the message to be shown, and enables or disables the message; use {guild} for guild name, and {user} to reference the user that left.',
 			details: 'message <text to say goodbye (leave blank to show current)> | channel | enable | disable',
 			group: 'util',
 			guildOnly: true,

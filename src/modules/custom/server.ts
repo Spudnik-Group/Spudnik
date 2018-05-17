@@ -24,7 +24,7 @@ export default class ServerCommand extends Command {
 			aliases: ['servers'],
 			description: 'Shows available servers.',
 			details: `list|${servers.map((server: any) => server.key).join('|')}`,
-			group: 'misc',
+			group: 'custom',
 			guildOnly: true,
 			memberName: 'server',
 			name: 'server',
