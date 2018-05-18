@@ -117,7 +117,7 @@ export class Spudnik {
 					},
 					{
 						type: 'PLAYING',
-						name: '!donate 💕',
+						name: `${this.Discord.commandPrefix}donate 💕`,
 					},
 					{
 						type: 'STREAMING',
@@ -125,7 +125,7 @@ export class Spudnik {
 					},
 					{
 						type: 'PLAYING',
-						name: 'spudnik.io/support | !support',
+						name: `spudnik.io/support | ${this.Discord.commandPrefix}support`,
 					},
 					{
 						type: 'STREAMING',
