@@ -105,7 +105,7 @@ export class Spudnik {
 		this.Discord
 			.once('ready', () => {
 				// tslint:disable-next-line:no-var-requires
-				const { version }: { version: string } = require('../../../package');
+				const { version }: { version: string } = require('../../package');
 				let statuses: any[] = [
 					{
 						type: 'PLAYING',
