@@ -1,6 +1,7 @@
-import { Message } from 'discord.js';
+import { Channel, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { getEmbedColor } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError } from '../../lib/helpers';
 
 /**
  * Accept the guild rules, and be auto-assigned the default role.
@@ -27,6 +28,14 @@ export default class AcceptCommand extends Command {
 				duration: 3,
 				usages: 2,
 			},
+			args: [
+				{
+					key: 'channel',
+					prompt: 'Please provide a channel to allow the Terms of Service command to be used in.',
+					type: 'channel',
+					default: '',
+				},
+			],
 		});
 	}
 
@@ -38,7 +47,10 @@ export default class AcceptCommand extends Command {
 	 * @memberof AcceptCommand
 	 */
 	public hasPermission(msg: CommandMessage): boolean {
-		return msg.guild.id === '223806376596602880';
+		const defaultRoleId: string = msg.client.provider.get(msg.guild, 'defaultRole');
+		const tosChannelId: string = msg.client.provider.get(msg.guild, 'tosChannel');
+
+		return defaultRoleId !== undefined && msg.guild.roles.has(defaultRoleId) && tosChannelId !== undefined && tosChannelId === msg.channel.id;
 	}
 
 	/**
@@ -48,15 +60,44 @@ export default class AcceptCommand extends Command {
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof AcceptCommand
 	 */
-	public async run(msg: CommandMessage): Promise<Message | Message[]> {
-		//!accept enable #channel @rolename
-		const acceptRole = msg.client.provider.get(msg.guild, 'defaultRole');
-		if (!msg.member.guild.roles.has(acceptRole)) {
-			msg.delete();
-			msg.member.guild.roles.add(acceptRole);
-			return sendSimpleEmbeddedMessage(msg, 'Rules accepted. Enjoy your stay!');
+	public async run(msg: CommandMessage, args: { channel: Channel }): Promise<Message | Message[]> {
+		const acceptEmbed = new MessageEmbed({
+			color: getEmbedColor(msg),
+			author: {
+				name: 'Accept',
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/ballot-box-with-check_2611.png',
+			},
+		});
+
+		if (msg.member.hasPermission('MANAGE_ROLES') && args.channel instanceof Channel) {
+			return msg.client.provider.set(msg.guild, 'tosChannel', args.channel.id).then(() => {
+				acceptEmbed.description = `Accept channel set to <#${args.channel.id}>.`;
+
+				msg.delete();
+				return msg.embed(acceptEmbed);
+			}).catch(() => {
+				acceptEmbed.description = 'There was an error processing the request.';
+
+				msg.delete();
+				return msg.embed(acceptEmbed);
+			});
+		} else if (args.channel === undefined) {
+			const acceptRole: string = msg.client.provider.get(msg.guild, 'defaultRole');
+
+			if (msg.guild.roles.has(acceptRole) && !msg.member.roles.has(acceptRole)) {
+				msg.member.roles.add(acceptRole).catch((context) => {
+					msg.client.emit('error', `Unsuccessful setting of permission.\nCommand: 'accept'\nContext: ${context}`);
+					sendSimpleEmbeddedError(msg, 'Failed to assign default role.', 5000);
+
+					return msg.delete();
+				});
+
+				return msg.delete();
+			} else {
+				return msg.delete();
+			}
 		} else {
-			return sendSimpleEmbeddedMessage(msg, '');
+			return msg.delete();
 		}
 	}
 }
