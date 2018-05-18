@@ -121,7 +121,7 @@ export class Spudnik {
 					},
 					{
 						type: 'STREAMING',
-						name: `Version: ${version} | ${this.Discord.commandPrefix}help`,
+						name: `Version: v${version} | ${this.Discord.commandPrefix}help`,
 					},
 					{
 						type: 'PLAYING',
