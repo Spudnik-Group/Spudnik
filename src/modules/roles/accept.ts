@@ -1,4 +1,4 @@
-import { Channel, Message, MessageEmbed } from 'discord.js';
+import { Channel, Message, MessageEmbed, Role } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError } from '../../lib/helpers';
@@ -83,9 +83,11 @@ export default class AcceptCommand extends Command {
 			});
 		} else if (args.channel === undefined) {
 			const acceptRole: string = msg.client.provider.get(msg.guild, 'defaultRole');
-
-			if (msg.guild.roles.has(acceptRole) && !msg.member.roles.has(acceptRole)) {
-				msg.member.roles.add(acceptRole).catch((context) => {
+			const role: Role | undefined = msg.guild.roles.get(acceptRole);
+			if (role && !msg.member.roles.has(acceptRole)) {
+				msg.member.roles.add(acceptRole).then((member) => {
+					member.send(`The default role of ${role.name} for the guild ${msg.guild.name} has been applied.`);
+				}).catch((context) => {
 					msg.client.emit('error', `Unsuccessful setting of permission.\nCommand: 'accept'\nContext: ${context}`);
 					sendSimpleEmbeddedError(msg, 'Failed to assign default role.', 5000);
 
