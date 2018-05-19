@@ -11,12 +11,10 @@
 		"type": "git",
 		"url": "git+https://github.com/Spudnik-Group/Spudnik.git"
 	},
-	"author": "Spudnik Group",
+	"author": "Spudnik Group <comrades@spudnik.io> (https://spudnik.io)",
 	"contributors": [
 		"Nate Richardson <hello@naterichardson.com> (https://naterichardson.com)",
 		"Matt Carroll <admin@develogix.com> (https://develogix.com)",
-		"Joseph Moran III <joseph.moraniii@gmail.com> (https://josephmoran.co)",
-		"Jacob Smith <jacobthesmith@gmail.com>"
 	],
 	"main": "dist/launch.js",
 	"scripts": {
