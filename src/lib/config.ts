@@ -12,6 +12,7 @@ interface IConfig {
 	getBreweryDbApiKey(): string;
 	getDictionaryApiKey(): string;
 	getDblApiKey(): string;
+	getHbApiKey(): string;
 }
 
 /**
@@ -43,6 +44,9 @@ export class Configuration implements IConfig {
 
 	@JsonProperty('dblApiKey', String)
 	private _dblApiKey: string = '';
+
+	@JsonProperty('honeybadgerApiKey', String)
+	private _honeybadgerApiKey: string = '';
 
 	/**
 	 * Get the debug flag.
@@ -112,6 +116,16 @@ export class Configuration implements IConfig {
 	 */
 	public getDblApiKey() {
 		return this._dblApiKey;
+	}
+
+	/**
+	 * Get the Honeybadger API key
+	 *
+	 * @returns {string}
+	 * @memberof Configuration
+	 */
+	public getHbApiKey() {
+		return this._honeybadgerApiKey;
 	}
 
 	/**
@@ -189,6 +203,17 @@ export class Configuration implements IConfig {
 	 */
 	protected setDblApiKey(dblApiKey: string) {
 		this._dblApiKey = dblApiKey;
+	}
+
+	/**
+	 * Set the Honeybadger API key.
+	 *
+	 * @protected
+	 * @param {string} honeybadgerApiKey
+	 * @memberof Configuration
+	 */
+	protected setHbApiKey(honeybadgerApiKey: string) {
+		this._honeybadgerApiKey = honeybadgerApiKey;
 	}
 }
 

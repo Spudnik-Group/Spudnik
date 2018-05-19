@@ -61,7 +61,7 @@ export default class ChuckFactCommand extends Command {
 				const msgTxt = 'failed to retrieve Chuck Norris fact. He probably kicked it. :disappointed_relieved:';
 				//TODO: add debug logging: msgTxt += `\n${err.stack}`;
 				console.log(chalk.red(err));
-				sendSimpleEmbeddedError(msg, msgTxt);
+				return sendSimpleEmbeddedError(msg, msgTxt, 3000);
 			}
 		});
 		return sendSimpleEmbeddedMessage(msg, 'Loading...');

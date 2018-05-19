@@ -21,7 +21,8 @@ const dblApi = require('dblapi.js');
 export class Spudnik {
 	public Config: Configuration;
 	public Discord: CommandoClient;
-	public dbl: any;
+	private dbl: any;
+	private Honeybadger: any;
 
 	/**
 	 * Creates an instance of Spudnik.
@@ -33,7 +34,9 @@ export class Spudnik {
 		this.Config = config;
 
 		console.log(chalk.blue('---Spudnik Stage 2 Engaged.---'));
-
+		this.Honeybadger = require('honeybadger').configure({
+			apiKey: this.Config.getHbApiKey(),
+		});
 		this.Discord = new CommandoClient({
 			commandPrefix: '!',
 			messageCacheLifetime: 30,
@@ -309,8 +312,7 @@ export class Spudnik {
 					if (channel && channel.type === 'text') {
 						(channel as TextChannel).send(message);
 					} else {
-						honeyBadger.notify(chalk.red(`There was an error trying to welcome a new guild member to ${guild}, the channel may not exist or was set to a non-text channel`));
-						console.log(chalk.red(`There was an error trying to welcome a new guild member to ${guild}, the channel may not exist or was set to a non-text channel`));
+						this.Discord.emit('error', `There was an error trying to welcome a new guild member in ${guild}, the channel may not exist or was set to a non-text channel`);
 					}
 				}
 			})
@@ -326,8 +328,7 @@ export class Spudnik {
 					if (channel && channel.type === 'text') {
 						(channel as TextChannel).send(message);
 					} else {
-						honeyBadger.notify(chalk.red(`There was an error trying to say goodbye a former guild member in ${guild}, the channel may not exist or was set to a non-text channel`));
-						console.log(chalk.red(`There was an error trying to say goodbye a former guild member in ${guild}, the channel may not exist or was set to a non-text channel`));
+						this.Discord.emit('error', `There was an error trying to say goodbye a former guild member in ${guild}, the channel may not exist or was set to a non-text channel`);
 					}
 				}
 			})
