@@ -33,9 +33,11 @@ export class Spudnik {
 		this.Config = config;
 
 		console.log(chalk.blue('---Spudnik Stage 2 Engaged.---'));
+
 		this.Honeybadger = require('honeybadger').configure({
 			apiKey: this.Config.getHbApiKey(),
 		});
+
 		this.Discord = new CommandoClient({
 			commandPrefix: '!',
 			messageCacheLifetime: 30,
@@ -368,6 +370,12 @@ export class Spudnik {
 		console.log('Heartbeat running on port 1337');
 	}
 
+	/**
+	 * Updates discord bot list stats and status messages on interval
+	 *
+	 * @private
+	 * @memberof Spudnik
+	 */
 	private updateDiscordBotList = (config: Configuration, client: CommandoClient, statuses: PresenceData[]) => {
 		const dbl: DBLAPI = new DBLAPI(config.getDblApiKey(), client);
 		let upvotes = client.provider.get('0', 'dblUpvotes');
@@ -406,6 +414,12 @@ export class Spudnik {
 		});
 	}
 
+	/**
+	 * Updates bot status on interval
+	 *
+	 * @private
+	 * @memberof Spudnik
+	 */
 	private updateStatus = (client: CommandoClient, statuses: PresenceData[], statusIndex: number) => {
 		++statusIndex;
 		if (statusIndex >= statuses.length) {
