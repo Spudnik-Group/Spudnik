@@ -14,7 +14,7 @@
 	"author": "Spudnik Group <comrades@spudnik.io> (https://spudnik.io)",
 	"contributors": [
 		"Nate Richardson <hello@naterichardson.com> (https://naterichardson.com)",
-		"Matt Carroll <admin@develogix.com> (https://develogix.com)",
+		"Matt Carroll <admin@develogix.com> (https://develogix.com)"
 	],
 	"main": "dist/launch.js",
 	"scripts": {
