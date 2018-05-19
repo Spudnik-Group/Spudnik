@@ -56,7 +56,6 @@ export class Spudnik {
 		this.login();
 		this.startHeart();
 
-		honeyBadger.notify(chalk.blue('---Spudnik MECO---'));
 		console.log(chalk.blue('---Spudnik MECO---'));
 	}
 
@@ -137,9 +136,9 @@ export class Spudnik {
 				];
 				let statusIndex = -1;
 				console.log(chalk.magenta(`Logged into Discord! Serving in ${this.Discord.guilds.array().length} Discord servers`));
-				honeyBadger.notify(chalk.magenta(`Logged into Discord! Serving in ${this.Discord.guilds.array().length} Discord servers`));
 				console.log(chalk.blue('---Spudnik Launch Success---'));
-				honeyBadger.notify(chalk.blue('---Spudnik Launch Success---'));
+
+				const self: Spudnik = this;
 
 				if (this.Config.getDblApiKey() !== '') {
 					let upvotes: number = 0;
@@ -160,16 +159,16 @@ export class Spudnik {
 
 					// Bot Listing Interval Events
 					setInterval(() => {
-						let upvotes = this.Discord.provider.get('0', 'dblUpvotes');
-						let users = this.Discord.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b);
-						let guilds = this.Discord.guilds.values.length;
+						let upvotes = self.Discord.provider.get('0', 'dblUpvotes');
+						let users = self.Discord.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b);
+						let guilds = self.Discord.guilds.array().length;
 
 						// Post stats
-						this.dbl.postStats(this.Discord.guilds.size);
+						self.dbl.postStats(self.Discord.guilds.size);
 
 						// Update database with latest upvote count
-						this.dbl.getBot('398591330806398989').then((bot: any) => {
-							this.Discord.provider.set('0', 'dblUpvotes', bot.votes);
+						self.dbl.getBot('398591330806398989').then((bot: any) => {
+							self.Discord.provider.set('0', 'dblUpvotes', bot.votes);
 						});
 
 						// Update Statuses
@@ -178,11 +177,13 @@ export class Spudnik {
 								return true;
 							}
 							return false;
-						})
+						});
+
 						statuses.push({
 							type: 'WATCHING',
 							name: `Upvoted ${upvotes} times on discordbots.org`,
 						});
+
 						statuses.push({
 							type: 'WATCHING',
 							name: `Assisting ${users} users on ${guilds} servers`,
@@ -196,8 +197,8 @@ export class Spudnik {
 					if (statusIndex >= statuses.length) {
 						statusIndex = 0;
 					}
-					this.Discord.user.setPresence({ activity: statuses[statusIndex] });
-				}, 15000);
+					self.Discord.user.setPresence({ activity: statuses[statusIndex] });
+				}, 30000);
 			})
 			.on('raw', async (event: any) => {
 				if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(event.t)) {
@@ -346,7 +347,6 @@ export class Spudnik {
 			})
 			.on('debug', (err: Error) => {
 				if (this.Config.getDebug()) {
-					honeyBadger.notify(err);
 					console.info(err);
 				}
 			})
