@@ -1,5 +1,6 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { getEmbedColor } from '../../lib/custom-helpers';
 
 /**
  * Manage notifications when someone joins the guild.
@@ -17,7 +18,7 @@ export default class WelcomeCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Used to set the message to be sent to new users when they join your guild, show the current welcome message, changes the channel for the message to be shown, and enables or disables the message; use {guild} for guild name, and {user} to reference the user joining',
+			description: 'Used to set the message to be sent to new users when they join your guild, show the current welcome message, changes the channel for the message to be shown, and enables or disables the message; use {guild} for guild name, and {user} to reference the user joining.',
 			details: 'message <text to welcome/heckle (leave blank to show current)> | channel | enable | disable',
 			group: 'util',
 			guildOnly: true,
@@ -51,7 +52,7 @@ export default class WelcomeCommand extends Command {
 	 * @memberof WelcomeCommand
 	 */
 	public hasPermission(msg: CommandMessage): boolean {
-		return this.client.isOwner(msg.author) || msg.member.hasPermission('ADMINISTRATOR');
+		return this.client.isOwner(msg.author) || msg.member.hasPermission(['ADMINISTRATOR', 'MANAGE_GUILD'], { checkAdmin: true, checkOwner: true });
 	}
 
 	/**
@@ -64,7 +65,7 @@ export default class WelcomeCommand extends Command {
 	 */
 	public async run(msg: CommandMessage, args: { subCommand: string, content: string }): Promise<Message | Message[]> {
 		const welcomeEmbed = new MessageEmbed({
-			color: 5592405,
+			color: getEmbedColor(msg),
 			author: {
 				name: 'Server Welcome Message',
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png',

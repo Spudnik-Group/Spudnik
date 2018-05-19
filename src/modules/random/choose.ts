@@ -1,5 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { getEmbedColor } from '../../lib/custom-helpers';
 import { getRandomInt } from '../../lib/helpers';
 
 /**
@@ -57,7 +58,7 @@ export default class ChooseCommand extends Command {
 				icon_url: msg.guild.me.user.displayAvatarURL,
 				name: `${msg.guild.me.user.username}`,
 			},
-			color: 5592405,
+			color: getEmbedColor(msg),
 			title: ':thinking:',
 			description: `I choose ${options[getRandomInt(0, 1)]}`,
 		});

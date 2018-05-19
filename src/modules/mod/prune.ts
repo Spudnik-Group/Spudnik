@@ -26,7 +26,7 @@ export default class PruneCommand extends Command {
 				__bots:__ Messages sent by bots
 				__uploads:__ Messages containing an attachment
 				__links:__ Messages containing a link`,
-			group: 'util',
+			group: 'mod',
 			guildOnly: true,
 			memberName: 'prune',
 			name: 'prune',
@@ -40,7 +40,7 @@ export default class PruneCommand extends Command {
 					max: 100,
 					prompt: 'how many messages would you like to delete?\n',
 					validate: (limit: number) => {
-						if (!isNaN(Number(limit)) && limit > 0) { return true; };
+						if (!isNaN(Number(limit)) && limit > 0) { return true; }
 						return 'Invalid number of messages to delete.';
 					},
 					type: 'integer',
@@ -82,7 +82,7 @@ export default class PruneCommand extends Command {
 	 * @memberof PruneCommand
 	 */
 	public async run(msg: CommandMessage, args: { limit: number, filter: string, member: GuildMember }): Promise<Message | Message[]> {
-		msg.delete();
+		await msg.delete();
 		const { filter, limit } = args;
 		let messageFilter: (message: Message) => boolean;
 
