@@ -178,13 +178,7 @@ export class Spudnik {
 
 				// Update bot status, using array of possible statuses
 				let statusIndex: number = -1;
-				setInterval(() => {
-					++statusIndex;
-					if (statusIndex >= statuses.length) {
-						statusIndex = 0;
-					}
-					this.Discord.user.setPresence(statuses[statusIndex]);
-				}, 30000);
+				setInterval(() => this.updateStatus(this.Discord, statuses, statusIndex), 30000);
 			})
 			.on('raw', async (event: any) => {
 				if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(event.t)) {
@@ -412,5 +406,11 @@ export class Spudnik {
 		});
 	}
 
-	private updateStatus = (client: CommandoClient, statuses: )
+	private updateStatus = (client: CommandoClient, statuses: PresenceData[], statusIndex: number) => {
+		++statusIndex;
+		if (statusIndex >= statuses.length) {
+			statusIndex = 0;
+		}
+		client.user.setPresence(statuses[statusIndex]);
+	}
 }
