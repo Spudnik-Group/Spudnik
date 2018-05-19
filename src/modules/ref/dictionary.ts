@@ -3,6 +3,7 @@ import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import * as request from 'request';
 import { RequestResponse } from 'request';
 import { Config } from '../../lib/config';
+import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 const dictionaryApiKey: string = Config.getDictionaryApiKey();
@@ -94,7 +95,7 @@ export default class DefineCommand extends Command {
 				});
 
 				return msg.embed({
-					color: 5592405,
+					color: getEmbedColor(msg),
 					title: word,
 					description: definitionResult,
 					footer: {

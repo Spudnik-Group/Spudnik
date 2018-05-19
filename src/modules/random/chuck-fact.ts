@@ -3,6 +3,7 @@ import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import * as request from 'request';
 import { RequestResponse } from 'request';
+import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 /**
@@ -22,7 +23,7 @@ export default class ChuckFactCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
 			aliases: ['chucknorris', 'norrisfact', 'chuck-norris'],
-			description: 'Gives a Random Year Fact.',
+			description: 'Gives a Random Chuck Norris Fact.',
 			group: 'random',
 			guildOnly: true,
 			memberName: 'chuck-fact',
@@ -51,7 +52,7 @@ export default class ChuckFactCommand extends Command {
 				const data = JSON.parse(body);
 				if (data && data.value && data.value.joke) {
 					msg.embed(new MessageEmbed({
-						color: 5592405,
+						color: getEmbedColor(msg),
 						title: 'Chuck Norris Fact',
 						description: data.value.joke,
 					}));
@@ -60,7 +61,7 @@ export default class ChuckFactCommand extends Command {
 				const msgTxt = 'failed to retrieve Chuck Norris fact. He probably kicked it. :disappointed_relieved:';
 				//TODO: add debug logging: msgTxt += `\n${err.stack}`;
 				console.log(chalk.red(err));
-				sendSimpleEmbeddedError(msg, msgTxt);
+				return sendSimpleEmbeddedError(msg, msgTxt, 3000);
 			}
 		});
 		return sendSimpleEmbeddedMessage(msg, 'Loading...');

@@ -1,5 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 /**
@@ -54,7 +55,7 @@ export default class WikiCommand extends Command {
 						const paragraph = sumText.shift();
 						if (paragraph) {
 							return msg.embed({
-								color: 5592405,
+								color: getEmbedColor(msg),
 								title: page.raw.title,
 								description: `${paragraph}\n\n${page.raw.fullurl}`,
 							});
