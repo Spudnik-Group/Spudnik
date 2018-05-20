@@ -4,3 +4,6 @@ env: flex
 threadsafe: true
 manual_scaling:
   instances: 1
+network:
+  forwarded_ports:
+    - 1337/tcp
