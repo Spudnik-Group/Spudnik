@@ -19,7 +19,7 @@ export default class RedditCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Link to the GReY Reddit!',
-			group: 'util',
+			group: 'custom',
 			guildOnly: true,
 			memberName: 'reddit',
 			name: 'reddit',

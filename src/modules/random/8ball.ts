@@ -1,5 +1,6 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { getEmbedColor } from '../../lib/custom-helpers';
 import { getRandomInt, sendSimpleEmbeddedError } from '../../lib/helpers';
 
 // tslint:disable-next-line:no-var-requires
@@ -50,20 +51,15 @@ export default class EightBallCommand extends Command {
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
 		let response = 'Error getting answer. Try again later?';
-		if (eightBall) {
-			response = 'I don\'t know what to tell you. I\'m all out of answers.';
-			if (eightBall.length > 0) {
-				response = eightBall[getRandomInt(0, eightBall.length) - 1];
-				return msg.embed(new MessageEmbed({
-					color: 5592405,
-					title: args.query,
-					description: `:8ball: **${response}**`,
-				}));
-			} else {
-				return sendSimpleEmbeddedError(msg, response);
-			}
+		if (eightBall && eightBall.length > 0) {
+			response = eightBall[getRandomInt(0, eightBall.length) - 1];
+			return msg.embed(new MessageEmbed({
+				color: getEmbedColor(msg),
+				title: args.query,
+				description: `:8ball: **${response}**`,
+			}));
 		} else {
-			return sendSimpleEmbeddedError(msg, response);
+			return sendSimpleEmbeddedError(msg, response, 3000);
 		}
 	}
 }

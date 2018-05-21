@@ -8,9 +8,11 @@ interface IConfig {
 	getDebug(): boolean;
 	getDatabaseConnection(): string;
 	getToken(): string;
-	getOwner(): string;
+	getOwner(): string[];
 	getBreweryDbApiKey(): string;
 	getDictionaryApiKey(): string;
+	getDblApiKey(): string;
+	getHbApiKey(): string;
 }
 
 /**
@@ -31,14 +33,20 @@ export class Configuration implements IConfig {
 	@JsonProperty('token', String)
 	private _token: string = '';
 
-	@JsonProperty('owner', String)
-	private _owner: string = '';
+	@JsonProperty('owner', [String])
+	private _owner: string[] = [];
 
 	@JsonProperty('breweryDbApiKey', String)
 	private _breweryDbApiKey: string = '';
 
 	@JsonProperty('dictionaryApiKey', String)
 	private _dictionaryApiKey: string = '';
+
+	@JsonProperty('dblApiKey', String)
+	private _dblApiKey: string = '';
+
+	@JsonProperty('honeybadgerApiKey', String)
+	private _honeybadgerApiKey: string = '';
 
 	/**
 	 * Get the debug flag.
@@ -73,7 +81,7 @@ export class Configuration implements IConfig {
 	/**
 	 * Get the owner.
 	 *
-	 * @returns {string}
+	 * @returns {string[]}
 	 * @memberof Configuration
 	 */
 	public getOwner() {
@@ -98,6 +106,26 @@ export class Configuration implements IConfig {
 	 */
 	public getDictionaryApiKey() {
 		return this._dictionaryApiKey;
+	}
+
+	/**
+	 * Get the dbl API key
+	 *
+	 * @returns {string}
+	 * @memberof Configuration
+	 */
+	public getDblApiKey() {
+		return this._dblApiKey;
+	}
+
+	/**
+	 * Get the Honeybadger API key
+	 *
+	 * @returns {string}
+	 * @memberof Configuration
+	 */
+	public getHbApiKey() {
+		return this._honeybadgerApiKey;
 	}
 
 	/**
@@ -137,10 +165,10 @@ export class Configuration implements IConfig {
 	 * Set the owner.
 	 *
 	 * @protected
-	 * @param {string} owner
+	 * @param {string[]} owner
 	 * @memberof Configuration
 	 */
-	protected setOwner(owner: string) {
+	protected setOwner(owner: string[]) {
 		this._owner = owner;
 	}
 
@@ -164,6 +192,28 @@ export class Configuration implements IConfig {
 	 */
 	protected setDictionaryApiKey(dictionaryApiKey: string) {
 		this._dictionaryApiKey = dictionaryApiKey;
+	}
+
+	/**
+	 * Set the dbl API key.
+	 *
+	 * @protected
+	 * @param {string} dblApiKey
+	 * @memberof Configuration
+	 */
+	protected setDblApiKey(dblApiKey: string) {
+		this._dblApiKey = dblApiKey;
+	}
+
+	/**
+	 * Set the Honeybadger API key.
+	 *
+	 * @protected
+	 * @param {string} honeybadgerApiKey
+	 * @memberof Configuration
+	 */
+	protected setHbApiKey(honeybadgerApiKey: string) {
+		this._honeybadgerApiKey = honeybadgerApiKey;
 	}
 }
 
