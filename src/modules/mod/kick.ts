@@ -1,7 +1,7 @@
 import { GuildMember, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedMessage, sendSimpleEmbeddedError } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 /**
  * Kick a member from the guild.
@@ -27,20 +27,20 @@ export default class KickCommand extends Command {
 			name: 'kick',
 			throttling: {
 				duration: 3,
-				usages: 2,
+				usages: 2
 			},
 			args: [
 				{
 					key: 'member',
 					prompt: 'who needs the boot?\n',
-					type: 'member',
+					type: 'member'
 				},
 				{
 					key: 'reason',
 					prompt: 'why do you want to kick this noob?\n',
-					type: 'string',
-				},
-			],
+					type: 'string'
+				}
+			]
 		});
 	}
 
@@ -65,13 +65,13 @@ export default class KickCommand extends Command {
 	 */
 	public async run(msg: CommandMessage, args: { member: GuildMember, reason: string }): Promise<Message | Message[] | any> {
 		const memberToKick: GuildMember = args.member;
-		let kickEmbed: MessageEmbed = new MessageEmbed({
+		const kickEmbed: MessageEmbed = new MessageEmbed({
 			color: getEmbedColor(msg),
 			author: {
 				name: 'Das Boot',
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/eject-symbol_23cf.png',
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/eject-symbol_23cf.png'
 			},
-			description: '',
+			description: ''
 		});
 
 		if (!memberToKick.kickable || !(msg.member.roles.highest.comparePositionTo(memberToKick.roles.highest) > 0)) {
@@ -84,7 +84,7 @@ export default class KickCommand extends Command {
 			})
 			.catch((err: Error) => {
 				msg.client.emit('error', `Error with command 'ban'\nBanning ${memberToKick} from ${msg.guild} failed!\nError: ${err}`);
-				return sendSimpleEmbeddedMessage(msg, `Kicking ${memberToKick} failed!`)
+				return sendSimpleEmbeddedMessage(msg, `Kicking ${memberToKick} failed!`);
 			});
 		return sendSimpleEmbeddedMessage(msg, 'Loading...');
 	}

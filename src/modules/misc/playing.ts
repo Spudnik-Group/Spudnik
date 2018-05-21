@@ -25,16 +25,16 @@ export default class PlayingCommand extends Command {
 			name: 'playing',
 			throttling: {
 				duration: 3,
-				usages: 2,
+				usages: 2
 			},
 			args: [
 				{
 					default: '',
 					key: 'game',
 					prompt: 'What game are you looking for players for?\n',
-					type: 'string',
-				},
-			],
+					type: 'string'
+				}
+			]
 		});
 	}
 

@@ -28,15 +28,15 @@ export default class RoleManagementCommands extends Command {
 				{
 					key: 'subCommand',
 					prompt: 'add|remove|list|default\n',
-					type: 'string',
+					type: 'string'
 				},
 				{
 					default: '',
 					key: 'role',
 					prompt: 'what role do you want added to yourself?\n',
-					type: 'role',
-				},
-			],
+					type: 'role'
+				}
+			]
 		});
 	}
 
@@ -64,8 +64,8 @@ export default class RoleManagementCommands extends Command {
 			color: getEmbedColor(msg),
 			author: {
 				name: 'Role Manager',
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/110/lock_1f512.png',
-			},
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/110/lock_1f512.png'
+			}
 		});
 
 		let guildAssignableRoles: string[] = msg.client.provider.get(msg.guild, 'assignableRoles', []);
@@ -128,7 +128,7 @@ export default class RoleManagementCommands extends Command {
 						roleEmbed.fields.push({
 							name: 'Assignable Roles',
 							value: roles.join('\n'),
-							inline: true,
+							inline: true
 						});
 					}
 				}
@@ -140,7 +140,7 @@ export default class RoleManagementCommands extends Command {
 						roleEmbed.fields.push({
 							name: 'Default Role',
 							value: role.name,
-							inline: true,
+							inline: true
 						});
 					}
 				}

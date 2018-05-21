@@ -26,8 +26,8 @@ export default class TopicCommand extends Command {
 			name: 'topic',
 			throttling: {
 				duration: 3,
-				usages: 2,
-			},
+				usages: 2
+			}
 		});
 	}
 
@@ -52,7 +52,7 @@ export default class TopicCommand extends Command {
 				color: getEmbedColor(msg),
 				description: response,
 				title: channel.name,
-				thumbnail: { url: this.client.user.avatarURL },
+				thumbnail: { url: this.client.user.avatarURL }
 			});
 		}
 		return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');

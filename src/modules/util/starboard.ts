@@ -28,19 +28,19 @@ export default class StarboardCommand extends Command {
 				{
 					key: 'subCommand',
 					prompt: 'channel|trigger|enable|disable\n',
-					type: 'string',
+					type: 'string'
 				},
 				{
 					default: '',
 					key: 'content',
 					prompt: 'what would you like the trigger set to?\n',
-					type: 'string',
-				},
+					type: 'string'
+				}
 			],
 			throttling: {
 				duration: 3,
-				usages: 2,
-			},
+				usages: 2
+			}
 		});
 	}
 
@@ -68,8 +68,8 @@ export default class StarboardCommand extends Command {
 			color: getEmbedColor(msg),
 			author: {
 				name: 'Star Board',
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/133/white-medium-star_2b50.png',
-			},
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/133/white-medium-star_2b50.png'
+			}
 		});
 
 		const starboard = msg.client.provider.get(msg.guild, 'starboardChannel');

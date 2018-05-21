@@ -43,8 +43,8 @@ export default class StatsCommand extends Command {
 			name: 'stats',
 			throttling: {
 				duration: 3,
-				usages: 2,
-			},
+				usages: 2
+			}
 		});
 	}
 
@@ -64,12 +64,12 @@ export default class StatsCommand extends Command {
 				{
 					inline: true,
 					name: '❯ Uptime',
-					value: duration.format('d[ d] h[ h] m[ m] s[ s]'),
+					value: duration.format('d[ d] h[ h] m[ m] s[ s]')
 				},
 				{
 					inline: true,
 					name: '❯ Memory usage',
-					value: `${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB`,
+					value: `${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB`
 				},
 				{
 					inline: true,
@@ -78,15 +78,15 @@ export default class StatsCommand extends Command {
 					• Guilds: ${this.client.guilds.size}
 					• Channels: ${this.client.channels.size}
 					• Users: ${this.client.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b)}
-					`,
+					`
 				},
 				{
 					inline: true,
 					name: '❯ Version',
-					value: `v${version}`,
-				},
+					value: `v${version}`
+				}
 			],
-			thumbnail: { url: this.client.user.avatarURL },
+			thumbnail: { url: this.client.user.avatarURL }
 		});
 	}
 }

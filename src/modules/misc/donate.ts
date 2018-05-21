@@ -25,8 +25,8 @@ export default class DonateCommand extends Command {
 			name: 'donate',
 			throttling: {
 				duration: 3,
-				usages: 2,
-			},
+				usages: 2
+			}
 		});
 	}
 

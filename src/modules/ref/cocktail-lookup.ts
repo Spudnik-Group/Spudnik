@@ -28,16 +28,16 @@ export default class CocktailCommand extends Command {
 			name: 'cocktail',
 			throttling: {
 				duration: 3,
-				usages: 2,
+				usages: 2
 			},
 			args: [
 				{
 					default: '',
 					key: 'query',
 					prompt: 'what cocktail should I look up?\n',
-					type: 'string',
-				},
-			],
+					type: 'string'
+				}
+			]
 		});
 	}
 
@@ -55,9 +55,9 @@ export default class CocktailCommand extends Command {
 			author: {
 				name: 'CocktailDB',
 				url: 'http://www.thecocktaildb.com/',
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/240/twitter/103/cocktail-glass_1f378.png',
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/240/twitter/103/cocktail-glass_1f378.png'
 			},
-			description: '',
+			description: ''
 		});
 
 		request(`http://www.thecocktaildb.com/api/json/v1/1/search.php?s=${encodeURIComponent(args.query)}`, (err: Error, res: RequestResponse, body: any) => {
@@ -82,7 +82,7 @@ export default class CocktailCommand extends Command {
 						fields.push({
 							name: 'Glass:',
 							value: result.strGlass,
-							inline: true,
+							inline: true
 						});
 					}
 					if (typeof ingredients !== 'undefined' && ingredients.length > 0) {
@@ -99,12 +99,12 @@ export default class CocktailCommand extends Command {
 						fields.push({
 							name: 'Ingredients:',
 							value: ingredientsList,
-							inline: true,
+							inline: true
 						});
 					}
 					fields.push({
 						name: 'Instructions:',
-						value: result.strInstructions,
+						value: result.strInstructions
 					});
 
 					cocktailEmbed.title = `__${result.strDrink}__`;

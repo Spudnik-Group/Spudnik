@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import * as DBLAPI from 'dblapi.js';
-import { Channel, Guild, GuildChannel, GuildMember, Message, MessageAttachment, MessageEmbed, MessageReaction, PresenceData, TextChannel } from 'discord.js';
+import { Channel, Guild, GuildChannel, GuildMember, Message, MessageAttachment, MessageEmbed, MessageReaction, PresenceData, ReactionUserStore, TextChannel } from 'discord.js';
 import { CommandoClient } from 'discord.js-commando';
 import * as http from 'http';
 import Mongoose = require('mongoose');
@@ -36,7 +36,7 @@ export class Spudnik {
 		console.log(chalk.blue('---Spudnik Stage 2 Engaged.---'));
 
 		this.Honeybadger = honeyBadger.configure({
-			apiKey: this.Config.getHbApiKey(),
+			apiKey: this.Config.getHbApiKey()
 		});
 
 		this.Discord = new CommandoClient({
@@ -45,7 +45,7 @@ export class Spudnik {
 			messageSweepInterval: 60,
 			unknownCommandResponse: false,
 			owner: this.Config.getOwner(),
-			invite: 'https://spudnik.io/support',
+			invite: 'https://spudnik.io/support'
 		});
 
 		this.setupCommands();
@@ -73,7 +73,7 @@ export class Spudnik {
 				['ref', 'Reference'],
 				['roles', 'Roles'],
 				['translate', 'Translate'],
-				['util', 'Utility'],
+				['util', 'Utility']
 			])
 			.registerDefaults()
 			.registerCommandsIn(path.join(__dirname, '../modules'));
@@ -89,7 +89,7 @@ export class Spudnik {
 		Mongoose.Promise = require('bluebird').Promise;
 
 		this.Discord.setProvider(
-			Mongoose.connect(this.Config.getDatabaseConnection(), { useMongoClient: true }).then(() => new MongoProvider(Mongoose.connection)),
+			Mongoose.connect(this.Config.getDatabaseConnection(), { useMongoClient: true }).then(() => new MongoProvider(Mongoose.connection))
 		).catch((err) => {
 			this.Honeybadger.notify(err);
 			console.error(err);
@@ -105,44 +105,44 @@ export class Spudnik {
 	 */
 	private setupEvents = () => {
 		this.Discord
-			.once('ready', () => {
+			.once('ready', async () => {
 				let statuses: PresenceData[] = [
 					{
 						activity: {
 							type: 'PLAYING',
-							name: `${this.Discord.commandPrefix}help | ${this.Discord.guilds.array().length} Servers`,
-						},
+							name: `${this.Discord.commandPrefix}help | ${this.Discord.guilds.array().length} Servers`
+						}
 					},
 					{
 						activity: {
 							type: 'STREAMING',
-							name: 'spudnik.io',
+							name: 'spudnik.io'
 						}
 					},
 					{
 						activity: {
 							type: 'PLAYING',
-							name: `${this.Discord.commandPrefix}donate 💕`,
+							name: `${this.Discord.commandPrefix}donate 💕`
 						}
 					},
 					{
 						activity: {
 							type: 'STREAMING',
-							name: `Version: v${version} | ${this.Discord.commandPrefix}help`,
+							name: `Version: v${version} | ${this.Discord.commandPrefix}help`
 						}
 					},
 					{
 						activity: {
 							type: 'PLAYING',
-							name: `spudnik.io/support | ${this.Discord.commandPrefix}support`,
+							name: `spudnik.io/support | ${this.Discord.commandPrefix}support`
 						}
 					},
 					{
 						activity: {
 							type: 'STREAMING',
-							name: 'docs.spudnik.io',
+							name: 'docs.spudnik.io'
 						}
-					},
+					}
 				];
 
 				console.log(chalk.magenta(`Logged into Discord! Serving in ${this.Discord.guilds.array().length} Discord servers`));
@@ -150,31 +150,32 @@ export class Spudnik {
 
 				if (this.Config.getDblApiKey() !== '') {
 					let upvotes: number = 0;
-					let users = this.Discord.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b);
-					let guilds = this.Discord.guilds.values.length;
-					let dbl: DBLAPI = new DBLAPI(this.Config.getDblApiKey(), this.Discord);
+
+					const users: number = this.Discord.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b);
+					const guilds: number = this.Discord.guilds.array().length;
+
+					const dbl: DBLAPI = new DBLAPI(this.Config.getDblApiKey(), this.Discord);
 
 					dbl.getVotes().then((votes: DBLAPI.Vote[]) => {
 						this.Discord.provider.set('0', 'dblUpvotes', votes.length);
 						upvotes = votes.length;
+
+						statuses.push({
+							activity: {
+								type: 'WATCHING',
+								name: `Upvoted ${upvotes} times on discordbots.org`
+							}
+						});
 					});
 
 					statuses.push({
 						activity: {
 							type: 'WATCHING',
-							name: `Upvoted ${upvotes} times on discordbots.org`,
-						},
-					});
-
-					statuses.push({
-						activity: {
-							type: 'WATCHING',
-							name: `Assisting ${users} users on ${guilds} servers`,
-						},
+							name: `Assisting ${users} users on ${guilds} servers`
+						}
 					});
 
 					// Bot Listing Interval Events
-					this.updateDiscordBotList(this.Config, this.Discord, statuses);
 					setInterval(() => statuses = this.updateDiscordBotList(this.Config, this.Discord, statuses), 1800000, true);
 				}
 
@@ -229,12 +230,12 @@ export class Spudnik {
 									.setImage((message.attachments as any).filter((atchmt: MessageAttachment) => atchmt.attachment) ? (message.attachments as any).filter((atchmt: any) => atchmt.attachment).attachment : null)
 									.setColor(await this.Discord.provider.get(message.guild.id, 'embedColor', 5592405))
 									.setTimestamp()
-									.setFooter(`⭐ ${stars.size} | ${message.id} `),
+									.setFooter(`⭐ ${stars.size} | ${message.id} `)
 							}).then((item) => {
 								starred.push({
 									messageId: message.id,
 									embedId: (item as Message).id,
-									channelId: (channel as TextChannel).id,
+									channelId: (channel as TextChannel).id
 								});
 								this.Discord.provider.set(message.guild.id, 'starboard', starred);
 							}).catch((err) => {
@@ -255,7 +256,7 @@ export class Spudnik {
 										.setImage((message.attachments as any).filter((atchmt: MessageAttachment) => atchmt.attachment) ? (message.attachments as any).filter((atchmt: any) => atchmt.attachment).attachment : null)
 										.setColor(this.Discord.provider.get(message.guild.id, 'embedColor', 5592405))
 										.setTimestamp()
-										.setFooter(`⭐ ${stars.size} | ${message.id} `),
+										.setFooter(`⭐ ${stars.size} | ${message.id} `)
 								}).catch((err) => {
 									(starboard as TextChannel).send(`Failed to send embed of message ID: ${message.id}`);
 								});
@@ -274,7 +275,7 @@ export class Spudnik {
 							message.channel.send({
 								embed: new MessageEmbed()
 									.setAuthor('🛑 Adblock')
-									.setDescription('Only mods may paste invites to other servers!'),
+									.setDescription('Only mods may paste invites to other servers!')
 							}).then((reply: Message | Message[]) => {
 								if (reply instanceof Message) {
 									reply.delete({ timeout: 3000 }).catch(() => undefined);
@@ -383,8 +384,8 @@ export class Spudnik {
 		console.log(chalk.red('udbl'));
 		const dbl: DBLAPI = new DBLAPI(config.getDblApiKey(), client);
 		let upvotes: number = client.provider.get('0', 'dblUpvotes', 0);
-		let users: number = client.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b);
-		let guilds: number = client.guilds.array().length;
+		const users: number = client.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b);
+		const guilds: number = client.guilds.array().length;
 
 		// Post stats
 		dbl.postStats(client.guilds.array().length);
@@ -393,28 +394,28 @@ export class Spudnik {
 		dbl.getVotes().then((votes: DBLAPI.Vote[]) => {
 			client.provider.set('0', 'dblUpvotes', votes.length);
 			upvotes = votes.length;
-		});
 
-		// Update Statuses
-		statuses = statuses.filter((item: PresenceData) => {
-			if (item.activity && item.activity.type !== 'WATCHING') {
-				return true;
-			}
-			return false;
-		});
+			// Update Statuses
+			statuses = statuses.filter((item: PresenceData) => {
+				if (item.activity && item.activity.type !== 'WATCHING') {
+					return true;
+				}
+				return false;
+			});
 
-		statuses.push({
-			activity: {
-				type: 'WATCHING',
-				name: `Upvoted ${upvotes} times on discordbots.org`,
-			},
-		});
+			statuses.push({
+				activity: {
+					type: 'WATCHING',
+					name: `Upvoted ${upvotes} times on discordbots.org`
+				}
+			});
 
-		statuses.push({
-			activity: {
-				type: 'WATCHING',
-				name: `Assisting ${users} users on ${guilds} servers`,
-			},
+			statuses.push({
+				activity: {
+					type: 'WATCHING',
+					name: `Assisting ${users} users on ${guilds} servers`
+				}
+			});
 		});
 
 		return statuses;

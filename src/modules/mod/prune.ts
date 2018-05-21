@@ -32,7 +32,7 @@ export default class PruneCommand extends Command {
 			name: 'prune',
 			throttling: {
 				duration: 3,
-				usages: 2,
+				usages: 2
 			},
 			args: [
 				{
@@ -43,22 +43,22 @@ export default class PruneCommand extends Command {
 						if (!isNaN(Number(limit)) && limit > 0) { return true; }
 						return 'Invalid number of messages to delete.';
 					},
-					type: 'integer',
+					type: 'integer'
 				},
 				{
 					default: '',
 					key: 'filter',
 					parse: (str: string) => str.toLowerCase(),
 					prompt: 'what filter would you like to apply?\n',
-					type: 'string',
+					type: 'string'
 				},
 				{
 					default: '',
 					key: 'member',
 					prompt: 'whose messages would you like to delete?\n',
-					type: 'member',
-				},
-			],
+					type: 'member'
+				}
+			]
 		});
 	}
 

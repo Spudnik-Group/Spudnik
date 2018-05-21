@@ -27,15 +27,15 @@ export default class DdgCommand extends Command {
 			name: 'ddg',
 			throttling: {
 				duration: 3,
-				usages: 2,
+				usages: 2
 			},
 			args: [
 				{
 					key: 'query',
 					prompt: 'what did you want DuckDuckGo to look up?\n',
-					type: 'string',
-				},
-			],
+					type: 'string'
+				}
+			]
 		});
 	}
 
@@ -55,9 +55,9 @@ export default class DdgCommand extends Command {
 			color: getEmbedColor(msg),
 			footer: {
 				text: 'results from DuckDuckGo',
-				icon_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/DuckDuckGo_logo_and_wordmark_%282014-present%29.svg/150px-DuckDuckGo_logo_and_wordmark_%282014-present%29.svg.png',
+				icon_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/DuckDuckGo_logo_and_wordmark_%282014-present%29.svg/150px-DuckDuckGo_logo_and_wordmark_%282014-present%29.svg.png'
 			},
-			description: '',
+			description: ''
 		});
 
 		ddg.request(args.query, (err, response, body) => {

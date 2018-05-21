@@ -11,7 +11,7 @@ interface ISettingsModel extends ISettings, Document { }
 
 const settingsSchema: Schema = new Schema({
 	guild: String,
-	settings: String,
+	settings: String
 });
 
 /**

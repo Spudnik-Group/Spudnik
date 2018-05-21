@@ -29,8 +29,8 @@ export default class CatFactCommand extends Command {
 			name: 'cat-fact',
 			throttling: {
 				duration: 3,
-				usages: 2,
-			},
+				usages: 2
+			}
 		});
 	}
 
@@ -53,7 +53,7 @@ export default class CatFactCommand extends Command {
 					msg.embed(new MessageEmbed({
 						color: getEmbedColor(msg),
 						title: ':cat: Fact',
-						description: data.fact,
+						description: data.fact
 					}));
 				}
 			} catch (err) {

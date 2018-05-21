@@ -30,8 +30,8 @@ export default class ChuckFactCommand extends Command {
 			name: 'chuck-fact',
 			throttling: {
 				duration: 3,
-				usages: 2,
-			},
+				usages: 2
+			}
 		});
 	}
 
@@ -54,7 +54,7 @@ export default class ChuckFactCommand extends Command {
 					msg.embed(new MessageEmbed({
 						color: getEmbedColor(msg),
 						title: 'Chuck Norris Fact',
-						description: data.value.joke,
+						description: data.value.joke
 					}));
 				}
 			} catch (err) {

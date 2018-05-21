@@ -28,19 +28,19 @@ export default class WelcomeCommand extends Command {
 				{
 					key: 'subCommand',
 					prompt: 'channel|message|enable|disable\n',
-					type: 'string',
+					type: 'string'
 				},
 				{
 					default: '',
 					key: 'content',
 					prompt: 'what would you like the message set to?\n',
-					type: 'string',
-				},
+					type: 'string'
+				}
 			],
 			throttling: {
 				duration: 3,
-				usages: 2,
-			},
+				usages: 2
+			}
 		});
 	}
 
@@ -68,8 +68,8 @@ export default class WelcomeCommand extends Command {
 			color: getEmbedColor(msg),
 			author: {
 				name: 'Server Welcome Message',
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png',
-			},
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png'
+			}
 		});
 
 		const welcomeChannel = msg.client.provider.get(msg.guild, 'welcomeChannel', msg.guild.systemChannelID);

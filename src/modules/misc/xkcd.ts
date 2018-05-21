@@ -29,7 +29,7 @@ export default class XkcdCommand extends Command {
 			name: 'xkcd',
 			throttling: {
 				duration: 3,
-				usages: 2,
+				usages: 2
 			},
 			args: [
 				{
@@ -40,9 +40,9 @@ export default class XkcdCommand extends Command {
 					validate: (comicNumber: number) => {
 						if (!isNaN(Number(comicNumber)) && Number.isInteger(Number(comicNumber)) && comicNumber > 0) { return true; }
 						return 'Invalid comic number.';
-					},
-				},
-			],
+					}
+				}
+			]
 		});
 	}
 
@@ -69,11 +69,11 @@ export default class XkcdCommand extends Command {
 					color: getEmbedColor(msg),
 					title: `XKCD ${comic.num} ${comic.title}`,
 					image: {
-						url: comic.img,
+						url: comic.img
 					},
 					footer: {
-						text: comic.alt,
-					},
+						text: comic.alt
+					}
 				});
 			} catch (err) {
 				msg.delete();

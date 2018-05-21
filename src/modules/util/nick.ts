@@ -28,13 +28,13 @@ export default class NickCommand extends Command {
 					default: '',
 					key: 'nickName',
 					prompt: 'what is the nickname you\'d like to set?\n',
-					type: 'string',
-				},
+					type: 'string'
+				}
 			],
 			throttling: {
 				duration: 3,
-				usages: 2,
-			},
+				usages: 2
+			}
 		});
 	}
 
