@@ -3,13 +3,14 @@ import * as DBLAPI from 'dblapi.js';
 import { Channel, Guild, GuildChannel, GuildMember, Message, MessageAttachment, MessageEmbed, MessageReaction, PresenceData, TextChannel } from 'discord.js';
 import { CommandoClient } from 'discord.js-commando';
 import * as http from 'http';
-import * as Mongoose from 'mongoose';
+import Mongoose = require('mongoose');
 import * as path from 'path';
 import { Configuration } from './config';
 import { MongoProvider } from './providers/mongodb-provider';
 
 // tslint:disable:no-var-requires
 const honeyBadger = require('honeybadger');
+const { version }: { version: string } = require('../../package');
 // tslint:enable:no-var-requires
 
 /**
@@ -34,7 +35,7 @@ export class Spudnik {
 
 		console.log(chalk.blue('---Spudnik Stage 2 Engaged.---'));
 
-		this.Honeybadger = require('honeybadger').configure({
+		this.Honeybadger = honeyBadger.configure({
 			apiKey: this.Config.getHbApiKey(),
 		});
 
@@ -85,10 +86,12 @@ export class Spudnik {
 	 * @memberof Spudnik
 	 */
 	private setupDatabase = () => {
+		Mongoose.Promise = require('bluebird').Promise;
+
 		this.Discord.setProvider(
-			Mongoose.connect(this.Config.getDatabaseConnection()).then(() => new MongoProvider(Mongoose.connection)),
+			Mongoose.connect(this.Config.getDatabaseConnection(), { useMongoClient: true }).then(() => new MongoProvider(Mongoose.connection)),
 		).catch((err) => {
-			honeyBadger.notify(err);
+			this.Honeybadger.notify(err);
 			console.error(err);
 			process.exit(-1);
 		});
@@ -103,8 +106,6 @@ export class Spudnik {
 	private setupEvents = () => {
 		this.Discord
 			.once('ready', () => {
-				// tslint:disable-next-line:no-var-requires
-				const { version }: { version: string } = require('../../package');
 				let statuses: PresenceData[] = [
 					{
 						activity: {
@@ -147,12 +148,10 @@ export class Spudnik {
 				console.log(chalk.magenta(`Logged into Discord! Serving in ${this.Discord.guilds.array().length} Discord servers`));
 				console.log(chalk.blue('---Spudnik Launch Success---'));
 
-
 				if (this.Config.getDblApiKey() !== '') {
 					let upvotes: number = 0;
 					let users = this.Discord.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b);
 					let guilds = this.Discord.guilds.values.length;
-
 					let dbl: DBLAPI = new DBLAPI(this.Config.getDblApiKey(), this.Discord);
 
 					dbl.getVotes().then((votes: DBLAPI.Vote[]) => {
@@ -175,12 +174,14 @@ export class Spudnik {
 					});
 
 					// Bot Listing Interval Events
-					setInterval(() => this.updateDiscordBotList(this.Config, this.Discord, statuses), 1800000);
+					this.updateDiscordBotList(this.Config, this.Discord, statuses);
+					setInterval(() => statuses = this.updateDiscordBotList(this.Config, this.Discord, statuses), 1800000, true);
 				}
 
 				// Update bot status, using array of possible statuses
 				let statusIndex: number = -1;
-				setInterval(() => this.updateStatus(this.Discord, statuses, statusIndex), 30000);
+				statusIndex = this.updateStatus(this.Discord, statuses, statusIndex);
+				setInterval(() => statusIndex = this.updateStatus(this.Discord, statuses, statusIndex), 30000, true);
 			})
 			.on('raw', async (event: any) => {
 				if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(event.t)) {
@@ -193,26 +194,26 @@ export class Spudnik {
 				const emojiKey: any = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
 				const reaction: MessageReaction | undefined = message.reactions.get(emojiKey);
 				const starboardEnabled: boolean = await this.Discord.provider.get(message.guild.id, 'starboardEnabled', false);
-				const starboard: GuildChannel | undefined = await message.guild.channels.get(this.Discord.provider.get(message.guild.id, 'starboardChannel'));
-				const starboardTrigger = await this.Discord.provider.get(message.guild.id, 'starboardTrigger', '⭐');
-				const starred: any[] = await this.Discord.provider.get(message.guild.id, 'starboard', []);
-				const stars = await message.reactions.find((mReaction: MessageReaction) => mReaction.emoji.name === starboardTrigger).users.fetch();
-
-				if (message.author.id === data.user_id && !this.Discord.owners.includes(data.user_id)) {
-					return (channel as TextChannel)
-						.send(`⚠ You cannot star your own messages, **<@${data.user_id}>**!`)
-						.then((reply: Message | Message[]) => {
-							if (reply instanceof Message) {
-								reply.delete({ timeout: 3000 }).catch(() => undefined);
-							}
-						});
-				}
-
+				const starboard: GuildChannel | undefined = await message.guild.channels.get(this.Discord.provider.get(message.guild.id, 'starboardChannel', undefined));
 				if ((channel as TextChannel).nsfw) {
 					return;
 				}
 
-				if (starboardEnabled && starboard) {
+				if (starboardEnabled && starboard !== undefined) {
+					const starboardTrigger = await this.Discord.provider.get(message.guild.id, 'starboardTrigger', '⭐');
+					const starred: any[] = await this.Discord.provider.get(message.guild.id, 'starboard', []);
+					const stars = await message.reactions.find((mReaction: MessageReaction) => mReaction.emoji.name === starboardTrigger).users.fetch();
+
+					if (message.author.id === data.user_id && !this.Discord.owners.includes(data.user_id)) {
+						return (channel as TextChannel)
+							.send(`⚠ You cannot star your own messages, **<@${data.user_id}>**!`)
+							.then((reply: Message | Message[]) => {
+								if (reply instanceof Message) {
+									reply.delete({ timeout: 3000 }).catch(() => undefined);
+								}
+							});
+					}
+
 					// Check for 'star' (or customized starboard reaction)
 					if (starboardTrigger === (reaction as MessageReaction).emoji.name) {
 						// Check for presence of post in starboard channel
@@ -285,11 +286,11 @@ export class Spudnik {
 			})
 			.on('guildMemberAdd', (member: GuildMember) => {
 				const guild = member.guild;
-				const welcomeChannel = this.Discord.provider.get(guild, 'welcomeChannel', guild.systemChannelID);
-				const welcomeMessage = this.Discord.provider.get(guild, 'welcomeMessage', '@here, please Welcome {user} to {guild}!');
 				const welcomeEnabled = this.Discord.provider.get(guild, 'welcomeEnabled', false);
 
 				if (welcomeEnabled) {
+					const welcomeChannel = this.Discord.provider.get(guild, 'welcomeChannel', guild.systemChannelID);
+					const welcomeMessage = this.Discord.provider.get(guild, 'welcomeMessage', '@here, please Welcome {user} to {guild}!');
 					const message = welcomeMessage.replace('{guild}', guild.name).replace('{user}', `<@${member.id}>`);
 					const channel = guild.channels.get(welcomeChannel);
 					if (channel && channel.type === 'text') {
@@ -301,11 +302,11 @@ export class Spudnik {
 			})
 			.on('guildMemberRemove', (member: GuildMember) => {
 				const guild = member.guild;
-				const goodbyeChannel = this.Discord.provider.get(guild, 'goodbyeChannel', guild.systemChannelID);
-				const goodbyeMessage = this.Discord.provider.get(guild, 'goodbyeMessage', '{user} has left the server.');
 				const goodbyeEnabled = this.Discord.provider.get(guild, 'goodbyeEnabled', false);
 
 				if (goodbyeEnabled) {
+					const goodbyeChannel = this.Discord.provider.get(guild, 'goodbyeChannel', guild.systemChannelID);
+					const goodbyeMessage = this.Discord.provider.get(guild, 'goodbyeMessage', '{user} has left the server.');
 					const message = goodbyeMessage.replace('{guild}', guild.name).replace('{user}', `<@${member.id}>`);
 					const channel = guild.channels.get(goodbyeChannel);
 					if (channel && channel.type === 'text') {
@@ -316,15 +317,15 @@ export class Spudnik {
 				}
 			})
 			.on('disconnected', (err: Error) => {
-				honeyBadger.notify(chalk.red(`Disconnected from Discord!\nError: ${err}`));
+				this.Honeybadger.notify(chalk.red(`Disconnected from Discord!\nError: ${err}`));
 				console.log(chalk.red('Disconnected from Discord!'));
 			})
 			.on('error', (err: Error) => {
-				honeyBadger.notify(err);
+				this.Honeybadger.notify(err);
 				console.error(err);
 			})
 			.on('warn', (err: Error) => {
-				honeyBadger.notify(err);
+				this.Honeybadger.notify(err);
 				console.warn(err);
 			})
 			.on('debug', (err: Error) => {
@@ -333,8 +334,10 @@ export class Spudnik {
 				}
 			})
 			.on('commandError', (cmd, err) => {
-				honeyBadger.notify(err, { component: cmd.groupID, action: cmd.memberName });
-				console.error(`Error in command ${cmd.groupID}:${cmd.memberName}`, err);
+				if (this.Config.getDebug()) {
+					this.Honeybadger.notify(err, { component: cmd.groupID, action: cmd.memberName });
+					console.error(`Error in command ${cmd.groupID}:${cmd.memberName}`, err);
+				}
 			});
 	}
 
@@ -376,11 +379,12 @@ export class Spudnik {
 	 * @private
 	 * @memberof Spudnik
 	 */
-	private updateDiscordBotList = (config: Configuration, client: CommandoClient, statuses: PresenceData[]) => {
+	private updateDiscordBotList = (config: Configuration, client: CommandoClient, statuses: PresenceData[]): PresenceData[] => {
+		console.log(chalk.red('udbl'));
 		const dbl: DBLAPI = new DBLAPI(config.getDblApiKey(), client);
-		let upvotes = client.provider.get('0', 'dblUpvotes');
-		let users = client.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b);
-		let guilds = client.guilds.array().length;
+		let upvotes: number = client.provider.get('0', 'dblUpvotes', 0);
+		let users: number = client.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b);
+		let guilds: number = client.guilds.array().length;
 
 		// Post stats
 		dbl.postStats(client.guilds.array().length);
@@ -412,6 +416,8 @@ export class Spudnik {
 				name: `Assisting ${users} users on ${guilds} servers`,
 			},
 		});
+
+		return statuses;
 	}
 
 	/**
@@ -420,11 +426,13 @@ export class Spudnik {
 	 * @private
 	 * @memberof Spudnik
 	 */
-	private updateStatus = (client: CommandoClient, statuses: PresenceData[], statusIndex: number) => {
+	private updateStatus = (client: CommandoClient, statuses: PresenceData[], statusIndex: number): number => {
 		++statusIndex;
 		if (statusIndex >= statuses.length) {
 			statusIndex = 0;
 		}
 		client.user.setPresence(statuses[statusIndex]);
+
+		return statusIndex;
 	}
 }
