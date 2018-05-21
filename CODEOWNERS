@@ -14,7 +14,6 @@ tsconfig.json     @spudnik-group/authors
 tslint.json       @spudnik-group/authors
 typings.d.ts      @spudnik-group/authors
 typings.json      @spudnik-group/authors
-webpack.config.js @spudnik-group/authors
 scripts/*         @spudnik-group/authors
 src/lib/*         @spudnik-group/authors
 src/launch.ts     @spudnik-group/authors
