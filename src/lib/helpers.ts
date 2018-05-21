@@ -2,6 +2,7 @@ import chalk from 'chalk';
 import { Message } from 'discord.js';
 import { CommandMessage } from 'discord.js-commando';
 import * as fs from 'fs';
+import { getEmbedColor } from './custom-helpers';
 
 /**
  * Post a message.
@@ -16,10 +17,10 @@ export function sendSimpleEmbeddedMessage(msg: CommandMessage, text: string, tim
 	const promise: Promise<Message | Message[]> = msg.embed({
 		author: {
 			icon_url: msg.guild.me.user.displayAvatarURL,
-			name: `${msg.guild.me.user.username}`,
+			name: `${msg.guild.me.user.username}`
 		},
-		color: 5592405,
-		description: `${text}`,
+		color: getEmbedColor(msg),
+		description: `${text}`
 	});
 
 	if (timeout) {
@@ -47,10 +48,10 @@ export function sendSimpleEmbeddedError(msg: CommandMessage, text: string, timeo
 	const promise: Promise<Message | Message[]> = msg.embed({
 		author: {
 			icon_url: msg.guild.me.user.displayAvatarURL,
-			name: `${msg.guild.me.user.username}`,
+			name: `${msg.guild.me.user.username}`
 		},
 		color: 16711680,
-		description: `${text}`,
+		description: `${text}`
 	});
 
 	if (timeout) {
@@ -78,10 +79,10 @@ export function sendSimpleEmbeddedSuccess(msg: CommandMessage, text: string, tim
 	const promise: Promise<Message | Message[]> = msg.embed({
 		author: {
 			icon_url: msg.guild.me.user.displayAvatarURL,
-			name: `${msg.guild.me.user.username}`,
+			name: `${msg.guild.me.user.username}`
 		},
 		color: 3447003,
-		description: `${text}`,
+		description: `${text}`
 	});
 
 	if (timeout) {
@@ -109,11 +110,11 @@ export function sendSimpleEmbeddedImage(msg: CommandMessage, url: string, descri
 	return msg.embed({
 		author: {
 			icon_url: msg.guild.me.user.displayAvatarURL,
-			name: `${msg.guild.me.user.username}`,
+			name: `${msg.guild.me.user.username}`
 		},
 		color: 3447003,
 		description,
-		image: { url },
+		image: { url }
 	});
 }
 

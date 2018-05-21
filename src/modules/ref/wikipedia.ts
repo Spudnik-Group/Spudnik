@@ -1,5 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 /**
@@ -25,15 +26,15 @@ export default class WikiCommand extends Command {
 			name: 'wiki',
 			throttling: {
 				duration: 3,
-				usages: 2,
+				usages: 2
 			},
 			args: [
 				{
 					key: 'query',
 					prompt: 'what Wiki article should I look up?\n',
-					type: 'string',
-				},
-			],
+					type: 'string'
+				}
+			]
 		});
 	}
 
@@ -54,9 +55,9 @@ export default class WikiCommand extends Command {
 						const paragraph = sumText.shift();
 						if (paragraph) {
 							return msg.embed({
-								color: 5592405,
+								color: getEmbedColor(msg),
 								title: page.raw.title,
-								description: `${paragraph}\n\n${page.raw.fullurl}`,
+								description: `${paragraph}\n\n${page.raw.fullurl}`
 							});
 						}
 					};

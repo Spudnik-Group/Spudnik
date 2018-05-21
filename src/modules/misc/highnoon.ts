@@ -27,8 +27,8 @@ export default class HighNoonCommand extends Command {
 			name: 'highnoon',
 			throttling: {
 				duration: 3,
-				usages: 2,
-			},
+				usages: 2
+			}
 		});
 	}
 
@@ -42,12 +42,12 @@ export default class HighNoonCommand extends Command {
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
 		request({
 			uri: 'http://imgs.xkcd.com/comics/now.png',
-			followAllRedirects: true,
+			followAllRedirects: true
 		}, (err: Error, resp: RequestResponse) => {
 			if (resp.request.uri.href) {
 				return sendSimpleEmbeddedImage(msg, resp.request.uri.href.toString());
 			} else {
-				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
+				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			}
 		});
 		return sendSimpleEmbeddedMessage(msg, 'Loading...');

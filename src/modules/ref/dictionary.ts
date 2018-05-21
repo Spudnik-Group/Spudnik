@@ -3,6 +3,7 @@ import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import * as request from 'request';
 import { RequestResponse } from 'request';
 import { Config } from '../../lib/config';
+import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 const dictionaryApiKey: string = Config.getDictionaryApiKey();
@@ -30,15 +31,15 @@ export default class DefineCommand extends Command {
 			name: 'define',
 			throttling: {
 				duration: 3,
-				usages: 2,
+				usages: 2
 			},
 			args: [
 				{
 					key: 'query',
 					prompt: 'what should I look up in the dictionary?\n',
-					type: 'string',
-				},
-			],
+					type: 'string'
+				}
+			]
 		});
 	}
 
@@ -94,13 +95,13 @@ export default class DefineCommand extends Command {
 				});
 
 				return msg.embed({
-					color: 5592405,
+					color: getEmbedColor(msg),
 					title: word,
 					description: definitionResult,
 					footer: {
 						text: 'powered by Merriam-Webster\'s Collegiate® Dictionary',
-						icon_url: 'http://www.dictionaryapi.com/images/info/branding-guidelines/mw-logo-light-background-50x50.png',
-					},
+						icon_url: 'http://www.dictionaryapi.com/images/info/branding-guidelines/mw-logo-light-background-50x50.png'
+					}
 				});
 			});
 		});

@@ -1,5 +1,6 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { getEmbedColor } from '../../lib/custom-helpers';
 
 /**
  * Manage notifications when someone leaves the guild.
@@ -17,7 +18,7 @@ export default class GoodbyeCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Used to set the message to be sent to the guild when someone leaves, show the current goodbye message, changes the channel for the message to be shown, and enables or disables the message; use {guild} for guild name, and {user} to reference the user that left',
+			description: 'Used to set the message to be sent to the guild when someone leaves, show the current goodbye message, changes the channel for the message to be shown, and enables or disables the message; use {guild} for guild name, and {user} to reference the user that left.',
 			details: 'message <text to say goodbye (leave blank to show current)> | channel | enable | disable',
 			group: 'util',
 			guildOnly: true,
@@ -27,19 +28,19 @@ export default class GoodbyeCommand extends Command {
 				{
 					key: 'subCommand',
 					prompt: 'channel|message|enable|disable\n',
-					type: 'string',
+					type: 'string'
 				},
 				{
 					default: '',
 					key: 'content',
 					prompt: 'what would you like the message set to?\n',
-					type: 'string',
-				},
+					type: 'string'
+				}
 			],
 			throttling: {
 				duration: 3,
-				usages: 2,
-			},
+				usages: 2
+			}
 		});
 	}
 
@@ -51,7 +52,7 @@ export default class GoodbyeCommand extends Command {
 	 * @memberof GoodbyeCommand
 	 */
 	public hasPermission(msg: CommandMessage): boolean {
-		return this.client.isOwner(msg.author) || msg.member.hasPermission('ADMINISTRATOR');
+		return this.client.isOwner(msg.author) || msg.member.hasPermission(['ADMINISTRATOR', 'MANAGE_GUILD'], { checkAdmin: true, checkOwner: true });
 	}
 
 	/**
@@ -64,11 +65,11 @@ export default class GoodbyeCommand extends Command {
 	 */
 	public async run(msg: CommandMessage, args: { subCommand: string, content: string }): Promise<Message | Message[]> {
 		const goodbyeEmbed = new MessageEmbed({
-			color: 5592405,
+			color: getEmbedColor(msg),
 			author: {
 				name: 'Server Goodbye Message',
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png',
-			},
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png'
+			}
 		});
 
 		const goodbyeChannel = msg.client.provider.get(msg.guild, 'goodbyeChannel', msg.guild.systemChannelID);

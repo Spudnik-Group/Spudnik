@@ -28,8 +28,8 @@ export default class CoinFlipCommand extends Command {
 			name: 'coinflip',
 			throttling: {
 				duration: 3,
-				usages: 2,
-			},
+				usages: 2
+			}
 		});
 	}
 

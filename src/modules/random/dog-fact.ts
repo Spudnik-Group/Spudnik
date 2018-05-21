@@ -3,6 +3,7 @@ import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import * as request from 'request';
 import { RequestResponse } from 'request';
+import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 /**
@@ -28,8 +29,8 @@ export default class DogFactCommand extends Command {
 			name: 'dog-fact',
 			throttling: {
 				duration: 3,
-				usages: 2,
-			},
+				usages: 2
+			}
 		});
 	}
 
@@ -50,9 +51,9 @@ export default class DogFactCommand extends Command {
 				const data = JSON.parse(body);
 				if (data && data.facts && data.facts[0]) {
 					return msg.embed(new MessageEmbed({
-						color: 5592405,
+						color: getEmbedColor(msg),
 						title: ':dog: Fact',
-						description: data.facts[0],
+						description: data.facts[0]
 					}));
 				}
 			} catch (err) {

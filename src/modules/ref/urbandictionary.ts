@@ -1,5 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 /**
@@ -25,16 +26,16 @@ export default class UrbanCommand extends Command {
 			name: 'urban',
 			throttling: {
 				duration: 3,
-				usages: 2,
+				usages: 2
 			},
 			args: [
 				{
 					default: '',
 					key: 'query',
 					prompt: 'what should I look up on Urban Dictionary?\n',
-					type: 'string',
-				},
-			],
+					type: 'string'
+				}
+			]
 		});
 	}
 
@@ -65,12 +66,12 @@ export default class UrbanCommand extends Command {
 				}
 
 				return msg.embed({
-					color: 5592405,
+					color: getEmbedColor(msg),
 					title,
 					description: message,
 					footer: {
-						text: example,
-					},
+						text: example
+					}
 				});
 			});
 		} catch (err) {

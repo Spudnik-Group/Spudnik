@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { getRandomInt, sendSimpleEmbeddedImage } from '../../lib/helpers';
+import { getRandomInt, sendSimpleEmbeddedError, sendSimpleEmbeddedImage } from '../../lib/helpers';
 
 // tslint:disable-next-line:no-var-requires
 const { bacon }: { bacon: string[] } = require('../../extras/data');
@@ -28,8 +28,8 @@ export default class BaconCommand extends Command {
 			name: 'bacon',
 			throttling: {
 				duration: 3,
-				usages: 2,
-			},
+				usages: 2
+			}
 		});
 	}
 
@@ -41,6 +41,10 @@ export default class BaconCommand extends Command {
 	 * @memberof BaconCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
-		return sendSimpleEmbeddedImage(msg, bacon[getRandomInt(0, bacon.length)]);
+		if (bacon) {
+			return sendSimpleEmbeddedImage(msg, bacon[getRandomInt(0, bacon.length)]);
+		} else {
+			return sendSimpleEmbeddedError(msg, 'Error getting answer. Try again later?', 3000);
+		}
 	}
 }

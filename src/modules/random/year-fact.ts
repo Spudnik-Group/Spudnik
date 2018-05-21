@@ -3,6 +3,7 @@ import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import * as request from 'request';
 import { RequestResponse } from 'request';
+import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 /**
@@ -28,8 +29,8 @@ export default class YearFactCommand extends Command {
 			name: 'year-fact',
 			throttling: {
 				duration: 3,
-				usages: 2,
-			},
+				usages: 2
+			}
 		});
 	}
 
@@ -50,9 +51,9 @@ export default class YearFactCommand extends Command {
 				const data = JSON.parse(body);
 				if (data && data.text) {
 					return msg.embed(new MessageEmbed({
-						color: 5592405,
+						color: getEmbedColor(msg),
 						title: 'Year Fact',
-						description: data.text,
+						description: data.text
 					}));
 				}
 			} catch (err) {

@@ -2,6 +2,7 @@ import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import * as request from 'request';
 import { RequestResponse } from 'request';
+import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 /**
@@ -28,7 +29,7 @@ export default class XkcdCommand extends Command {
 			name: 'xkcd',
 			throttling: {
 				duration: 3,
-				usages: 2,
+				usages: 2
 			},
 			args: [
 				{
@@ -36,8 +37,12 @@ export default class XkcdCommand extends Command {
 					key: 'comicNumber',
 					prompt: 'what comic number would you like to see?\n',
 					type: 'string',
-				},
-			],
+					validate: (comicNumber: number) => {
+						if (!isNaN(Number(comicNumber)) && Number.isInteger(Number(comicNumber)) && comicNumber > 0) { return true; }
+						return 'Invalid comic number.';
+					}
+				}
+			]
 		});
 	}
 
@@ -50,6 +55,7 @@ export default class XkcdCommand extends Command {
 	 * @memberof XkcdCommand
 	 */
 	public async run(msg: CommandMessage, args: { comicNumber: string }): Promise<Message | Message[]> {
+		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
 		let url: string = 'http://xkcd.com/';
 		if (args.comicNumber !== '') {
 			url += `${args.comicNumber}/`;
@@ -60,19 +66,21 @@ export default class XkcdCommand extends Command {
 				const comic = JSON.parse(body);
 				msg.delete();
 				return msg.embed({
-					color: 5592405,
+					color: getEmbedColor(msg),
 					title: `XKCD ${comic.num} ${comic.title}`,
 					image: {
-						url: comic.img,
+						url: comic.img
 					},
 					footer: {
-						text: comic.alt,
-					},
+						text: comic.alt
+					}
 				});
 			} catch (err) {
-				return sendSimpleEmbeddedError(msg, `Couldn't fetch an XKCD for ${args.comicNumber}`);
+				msg.delete();
+				return sendSimpleEmbeddedError(msg, `Couldn't fetch an XKCD for ${args.comicNumber}`, 3000);
 			}
 		});
-		return sendSimpleEmbeddedMessage(msg, 'Loading...');
+
+		return response;
 	}
 }

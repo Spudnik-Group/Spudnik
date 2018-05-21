@@ -3,6 +3,7 @@ import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { RequestResponse } from 'request';
 import * as request from 'request';
 import { Config } from '../../lib/config';
+import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 const breweryDbApiKey: string = Config.getBreweryDbApiKey();
@@ -30,16 +31,16 @@ export default class BrewCommand extends Command {
 			name: 'brew',
 			throttling: {
 				duration: 3,
-				usages: 2,
+				usages: 2
 			},
 			args: [
 				{
 					default: '',
 					key: 'query',
 					prompt: 'what brew or brewery should I look up?\n',
-					type: 'string',
-				},
-			],
+					type: 'string'
+				}
+			]
 		});
 	}
 
@@ -53,17 +54,17 @@ export default class BrewCommand extends Command {
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
 		const brewEmbed: MessageEmbed = new MessageEmbed({
-			color: 5592405,
+			color: getEmbedColor(msg),
 			author: {
 				name: 'BreweryDB',
 				url: 'http://www.brewerydb.com/',
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/twitter/103/beer-mug_1f37a.png',
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/twitter/103/beer-mug_1f37a.png'
 			},
 			footer: {
 				text: 'powered by BreweryDB',
-				icon_url: 'http://s3.amazonaws.com/brewerydb/Powered-By-BreweryDB.png',
+				icon_url: 'http://s3.amazonaws.com/brewerydb/Powered-By-BreweryDB.png'
 			},
-			description: '',
+			description: ''
 		});
 
 		request(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(args.query)}&key=${breweryDbApiKey}`, (err: Error, res: RequestResponse, body: string) => {
@@ -88,21 +89,21 @@ export default class BrewCommand extends Command {
 					if (typeof result.style !== 'undefined') {
 						fields.push({
 							name: `Style: ${result.style.name}`,
-							value: result.style.description,
+							value: result.style.description
 						});
 					}
 					if (typeof result.abv !== 'undefined') {
 						fields.push({
 							name: 'ABV (Alcohol By Volume)',
 							value: `${result.abv}%`,
-							inline: true,
+							inline: true
 						});
 					}
 					if (typeof result.ibu !== 'undefined') {
 						fields.push({
 							name: 'IBU (International Bitterness Units)',
 							value: `${result.ibu}/100`,
-							inline: true,
+							inline: true
 						});
 					}
 
@@ -110,7 +111,7 @@ export default class BrewCommand extends Command {
 						fields.push({
 							name: 'Website',
 							value: result.website,
-							inline: true,
+							inline: true
 						});
 					}
 
@@ -118,7 +119,7 @@ export default class BrewCommand extends Command {
 						fields.push({
 							name: 'Year Established',
 							value: result.established,
-							inline: true,
+							inline: true
 						});
 					}
 
@@ -127,7 +128,7 @@ export default class BrewCommand extends Command {
 					}
 					if (thumbnail !== '') {
 						brewEmbed.thumbnail = {
-							url: thumbnail,
+							url: thumbnail
 						};
 					}
 					brewEmbed.description = `\n${result.description}\n\n`;

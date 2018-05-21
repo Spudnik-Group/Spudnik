@@ -1,5 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { getEmbedColor } from '../../lib/custom-helpers';
 import { getRandomInt } from '../../lib/helpers';
 
 /**
@@ -25,20 +26,20 @@ export default class ChooseCommand extends Command {
 			name: 'choose',
 			throttling: {
 				duration: 3,
-				usages: 2,
+				usages: 2
 			},
 			args: [
 				{
 					key: 'choice1',
 					prompt: 'What is the first option?',
-					type: 'string',
+					type: 'string'
 				},
 				{
 					key: 'choice2',
 					prompt: 'What is the second option?',
-					type: 'string',
-				},
-			],
+					type: 'string'
+				}
+			]
 		});
 	}
 
@@ -55,11 +56,11 @@ export default class ChooseCommand extends Command {
 		return msg.embed({
 			author: {
 				icon_url: msg.guild.me.user.displayAvatarURL,
-				name: `${msg.guild.me.user.username}`,
+				name: `${msg.guild.me.user.username}`
 			},
-			color: 5592405,
+			color: getEmbedColor(msg),
 			title: ':thinking:',
-			description: `I choose ${options[getRandomInt(0, 1)]}`,
+			description: `I choose ${options[getRandomInt(0, 1)]}`
 		});
 	}
 }
