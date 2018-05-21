@@ -3,7 +3,7 @@ import * as DBLAPI from 'dblapi.js';
 import { Channel, Guild, GuildChannel, GuildMember, Message, MessageAttachment, MessageEmbed, MessageReaction, PresenceData, TextChannel } from 'discord.js';
 import { CommandoClient } from 'discord.js-commando';
 import * as http from 'http';
-import * as Mongoose from 'mongoose';
+import Mongoose = require('mongoose');
 import * as path from 'path';
 import { Configuration } from './config';
 import { MongoProvider } from './providers/mongodb-provider';
@@ -85,8 +85,10 @@ export class Spudnik {
 	 * @memberof Spudnik
 	 */
 	private setupDatabase = () => {
+		Mongoose.Promise = require('bluebird').Promise;
+
 		this.Discord.setProvider(
-			Mongoose.connect(this.Config.getDatabaseConnection()).then(() => new MongoProvider(Mongoose.connection)),
+			Mongoose.connect(this.Config.getDatabaseConnection(), { useMongoClient: true }).then(() => new MongoProvider(Mongoose.connection)),
 		).catch((err) => {
 			honeyBadger.notify(err);
 			console.error(err);
@@ -175,12 +177,14 @@ export class Spudnik {
 					});
 
 					// Bot Listing Interval Events
-					setInterval(() => this.updateDiscordBotList(this.Config, this.Discord, statuses), 1800000);
+					this.updateDiscordBotList(this.Config, this.Discord, statuses);
+					setInterval(() => statuses = this.updateDiscordBotList(this.Config, this.Discord, statuses), 1800000, true);
 				}
 
 				// Update bot status, using array of possible statuses
 				let statusIndex: number = -1;
-				setInterval(() => this.updateStatus(this.Discord, statuses, statusIndex), 30000);
+				statusIndex = this.updateStatus(this.Discord, statuses, statusIndex);
+				setInterval(() => statusIndex = this.updateStatus(this.Discord, statuses, statusIndex), 30000, true);
 			})
 			.on('raw', async (event: any) => {
 				if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(event.t)) {
@@ -376,11 +380,12 @@ export class Spudnik {
 	 * @private
 	 * @memberof Spudnik
 	 */
-	private updateDiscordBotList = (config: Configuration, client: CommandoClient, statuses: PresenceData[]) => {
+	private updateDiscordBotList = (config: Configuration, client: CommandoClient, statuses: PresenceData[]): PresenceData[] => {
+		console.log(chalk.red('udbl'));
 		const dbl: DBLAPI = new DBLAPI(config.getDblApiKey(), client);
-		let upvotes = client.provider.get('0', 'dblUpvotes');
-		let users = client.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b);
-		let guilds = client.guilds.array().length;
+		let upvotes: number = client.provider.get('0', 'dblUpvotes', 0);
+		let users: number = client.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b);
+		let guilds: number = client.guilds.array().length;
 
 		// Post stats
 		dbl.postStats(client.guilds.array().length);
@@ -412,6 +417,8 @@ export class Spudnik {
 				name: `Assisting ${users} users on ${guilds} servers`,
 			},
 		});
+
+		return statuses;
 	}
 
 	/**
@@ -420,11 +427,13 @@ export class Spudnik {
 	 * @private
 	 * @memberof Spudnik
 	 */
-	private updateStatus = (client: CommandoClient, statuses: PresenceData[], statusIndex: number) => {
+	private updateStatus = (client: CommandoClient, statuses: PresenceData[], statusIndex: number): number => {
 		++statusIndex;
 		if (statusIndex >= statuses.length) {
 			statusIndex = 0;
 		}
 		client.user.setPresence(statuses[statusIndex]);
+
+		return statusIndex;
 	}
 }
