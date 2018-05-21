@@ -34,7 +34,7 @@ export class Spudnik {
 
 		console.log(chalk.blue('---Spudnik Stage 2 Engaged.---'));
 
-		this.Honeybadger = require('honeybadger').configure({
+		this.Honeybadger = honeyBadger.configure({
 			apiKey: this.Config.getHbApiKey(),
 		});
 
@@ -90,7 +90,7 @@ export class Spudnik {
 		this.Discord.setProvider(
 			Mongoose.connect(this.Config.getDatabaseConnection(), { useMongoClient: true }).then(() => new MongoProvider(Mongoose.connection)),
 		).catch((err) => {
-			honeyBadger.notify(err);
+			this.Honeybadger.notify(err);
 			console.error(err);
 			process.exit(-1);
 		});
@@ -320,15 +320,15 @@ export class Spudnik {
 				}
 			})
 			.on('disconnected', (err: Error) => {
-				honeyBadger.notify(chalk.red(`Disconnected from Discord!\nError: ${err}`));
+				this.Honeybadger.notify(chalk.red(`Disconnected from Discord!\nError: ${err}`));
 				console.log(chalk.red('Disconnected from Discord!'));
 			})
 			.on('error', (err: Error) => {
-				honeyBadger.notify(err);
+				this.Honeybadger.notify(err);
 				console.error(err);
 			})
 			.on('warn', (err: Error) => {
-				honeyBadger.notify(err);
+				this.Honeybadger.notify(err);
 				console.warn(err);
 			})
 			.on('debug', (err: Error) => {
@@ -337,8 +337,10 @@ export class Spudnik {
 				}
 			})
 			.on('commandError', (cmd, err) => {
-				honeyBadger.notify(err, { component: cmd.groupID, action: cmd.memberName });
-				console.error(`Error in command ${cmd.groupID}:${cmd.memberName}`, err);
+				if (this.Config.getDebug()) {
+					this.Honeybadger.notify(err, { component: cmd.groupID, action: cmd.memberName });
+					console.error(`Error in command ${cmd.groupID}:${cmd.memberName}`, err);
+				}
 			});
 	}
 
