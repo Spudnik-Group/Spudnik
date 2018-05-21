@@ -286,11 +286,11 @@ export class Spudnik {
 			})
 			.on('guildMemberAdd', (member: GuildMember) => {
 				const guild = member.guild;
-				const welcomeChannel = this.Discord.provider.get(guild, 'welcomeChannel', guild.systemChannelID);
-				const welcomeMessage = this.Discord.provider.get(guild, 'welcomeMessage', '@here, please Welcome {user} to {guild}!');
 				const welcomeEnabled = this.Discord.provider.get(guild, 'welcomeEnabled', false);
 
 				if (welcomeEnabled) {
+					const welcomeChannel = this.Discord.provider.get(guild, 'welcomeChannel', guild.systemChannelID);
+					const welcomeMessage = this.Discord.provider.get(guild, 'welcomeMessage', '@here, please Welcome {user} to {guild}!');
 					const message = welcomeMessage.replace('{guild}', guild.name).replace('{user}', `<@${member.id}>`);
 					const channel = guild.channels.get(welcomeChannel);
 					if (channel && channel.type === 'text') {
@@ -302,11 +302,11 @@ export class Spudnik {
 			})
 			.on('guildMemberRemove', (member: GuildMember) => {
 				const guild = member.guild;
-				const goodbyeChannel = this.Discord.provider.get(guild, 'goodbyeChannel', guild.systemChannelID);
-				const goodbyeMessage = this.Discord.provider.get(guild, 'goodbyeMessage', '{user} has left the server.');
 				const goodbyeEnabled = this.Discord.provider.get(guild, 'goodbyeEnabled', false);
 
 				if (goodbyeEnabled) {
+					const goodbyeChannel = this.Discord.provider.get(guild, 'goodbyeChannel', guild.systemChannelID);
+					const goodbyeMessage = this.Discord.provider.get(guild, 'goodbyeMessage', '{user} has left the server.');
 					const message = goodbyeMessage.replace('{guild}', guild.name).replace('{user}', `<@${member.id}>`);
 					const channel = guild.channels.get(goodbyeChannel);
 					if (channel && channel.type === 'text') {
