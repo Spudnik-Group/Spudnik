@@ -3,7 +3,7 @@ import * as DBLAPI from 'dblapi.js';
 import { Channel, Guild, GuildChannel, GuildMember, Message, MessageAttachment, MessageEmbed, MessageReaction, PresenceData, TextChannel } from 'discord.js';
 import { CommandoClient } from 'discord.js-commando';
 import * as http from 'http';
-import * as Mongoose from 'mongoose';
+import Mongoose = require('mongoose');
 import * as path from 'path';
 import { Configuration } from './config';
 import { MongoProvider } from './providers/mongodb-provider';
@@ -85,8 +85,10 @@ export class Spudnik {
 	 * @memberof Spudnik
 	 */
 	private setupDatabase = () => {
+		Mongoose.Promise = require('bluebird').Promise;
+
 		this.Discord.setProvider(
-			Mongoose.connect(this.Config.getDatabaseConnection()).then(() => new MongoProvider(Mongoose.connection)),
+			Mongoose.connect(this.Config.getDatabaseConnection(), { useMongoClient: true }).then(() => new MongoProvider(Mongoose.connection)),
 		).catch((err) => {
 			honeyBadger.notify(err);
 			console.error(err);
