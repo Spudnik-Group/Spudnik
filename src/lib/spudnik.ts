@@ -10,6 +10,7 @@ import { MongoProvider } from './providers/mongodb-provider';
 
 // tslint:disable:no-var-requires
 const honeyBadger = require('honeybadger');
+const { version }: { version: string } = require('../../package');
 // tslint:enable:no-var-requires
 
 /**
@@ -105,8 +106,6 @@ export class Spudnik {
 	private setupEvents = () => {
 		this.Discord
 			.once('ready', () => {
-				// tslint:disable-next-line:no-var-requires
-				const { version }: { version: string } = require('../../package');
 				let statuses: PresenceData[] = [
 					{
 						activity: {
@@ -149,12 +148,10 @@ export class Spudnik {
 				console.log(chalk.magenta(`Logged into Discord! Serving in ${this.Discord.guilds.array().length} Discord servers`));
 				console.log(chalk.blue('---Spudnik Launch Success---'));
 
-
 				if (this.Config.getDblApiKey() !== '') {
 					let upvotes: number = 0;
 					let users = this.Discord.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b);
 					let guilds = this.Discord.guilds.values.length;
-
 					let dbl: DBLAPI = new DBLAPI(this.Config.getDblApiKey(), this.Discord);
 
 					dbl.getVotes().then((votes: DBLAPI.Vote[]) => {
