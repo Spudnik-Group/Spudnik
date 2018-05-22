@@ -176,13 +176,13 @@ export class Spudnik {
 					});
 
 					// Bot Listing Interval Events
-					setInterval(() => statuses = this.updateDiscordBotList(this.Config, this.Discord, statuses), 1800000, true);
+					setInterval(() => statuses = this.updateDiscordBotList(this.Config, this.Discord, statuses), this.Config.getStatusUpdateInterval(), true);
 				}
 
 				// Update bot status, using array of possible statuses
 				let statusIndex: number = -1;
 				statusIndex = this.updateStatus(this.Discord, statuses, statusIndex);
-				setInterval(() => statusIndex = this.updateStatus(this.Discord, statuses, statusIndex), 30000, true);
+				setInterval(() => statusIndex = this.updateStatus(this.Discord, statuses, statusIndex), this.Config.getBotListUpdateInterval(), true);
 			})
 			.on('raw', async (event: any) => {
 				if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(event.t)) {
