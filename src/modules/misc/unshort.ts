@@ -26,15 +26,15 @@ export default class UnshortCommand extends Command {
 			name: 'unshort',
 			throttling: {
 				duration: 3,
-				usages: 2,
+				usages: 2
 			},
 			args: [
 				{
 					key: 'query',
 					prompt: 'what link should I unshorten?\n',
-					type: 'string',
-				},
-			],
+					type: 'string'
+				}
+			]
 		});
 	}
 

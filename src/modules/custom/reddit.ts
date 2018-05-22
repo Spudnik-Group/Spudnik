@@ -25,8 +25,8 @@ export default class RedditCommand extends Command {
 			name: 'reddit',
 			throttling: {
 				duration: 3,
-				usages: 2,
-			},
+				usages: 2
+			}
 		});
 	}
 

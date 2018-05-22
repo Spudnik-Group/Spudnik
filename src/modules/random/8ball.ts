@@ -29,15 +29,15 @@ export default class EightBallCommand extends Command {
 			name: '8ball',
 			throttling: {
 				duration: 3,
-				usages: 2,
+				usages: 2
 			},
 			args: [
 				{
 					key: 'query',
 					prompt: 'What would you like to ask the magic 8-ball?',
-					type: 'string',
-				},
-			],
+					type: 'string'
+				}
+			]
 		});
 	}
 
@@ -56,7 +56,7 @@ export default class EightBallCommand extends Command {
 			return msg.embed(new MessageEmbed({
 				color: getEmbedColor(msg),
 				title: args.query,
-				description: `:8ball: **${response}**`,
+				description: `:8ball: **${response}**`
 			}));
 		} else {
 			return sendSimpleEmbeddedError(msg, response, 3000);

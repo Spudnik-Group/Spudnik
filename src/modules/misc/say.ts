@@ -27,9 +27,9 @@ export default class SayCommand extends Command {
 				{
 					key: 'text',
 					prompt: 'What text would you like the bot to say?',
-					type: 'string',
-				},
-			],
+					type: 'string'
+				}
+			]
 		});
 	}
 

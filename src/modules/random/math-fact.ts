@@ -29,8 +29,8 @@ export default class MathFactCommand extends Command {
 			name: 'math-fact',
 			throttling: {
 				duration: 3,
-				usages: 2,
-			},
+				usages: 2
+			}
 		});
 	}
 
@@ -53,7 +53,7 @@ export default class MathFactCommand extends Command {
 					return msg.embed(new MessageEmbed({
 						color: getEmbedColor(msg),
 						title: 'Math Fact',
-						description: data.text,
+						description: data.text
 					}));
 				}
 			} catch (err) {

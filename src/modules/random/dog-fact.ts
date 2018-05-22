@@ -29,8 +29,8 @@ export default class DogFactCommand extends Command {
 			name: 'dog-fact',
 			throttling: {
 				duration: 3,
-				usages: 2,
-			},
+				usages: 2
+			}
 		});
 	}
 
@@ -53,7 +53,7 @@ export default class DogFactCommand extends Command {
 					return msg.embed(new MessageEmbed({
 						color: getEmbedColor(msg),
 						title: ':dog: Fact',
-						description: data.facts[0],
+						description: data.facts[0]
 					}));
 				}
 			} catch (err) {

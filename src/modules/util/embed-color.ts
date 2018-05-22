@@ -36,13 +36,13 @@ export default class EmbedColorCommand extends Command {
 							return true;
 						}
 						return 'You provided an invalid color hex number. Please try again.';
-					},
-				},
+					}
+				}
 			],
 			throttling: {
 				duration: 3,
-				usages: 2,
-			},
+				usages: 2
+			}
 		});
 	}
 

@@ -29,8 +29,8 @@ export default class SmiffFactCommand extends Command {
 			name: 'smiff-fact',
 			throttling: {
 				duration: 3,
-				usages: 2,
-			},
+				usages: 2
+			}
 		});
 	}
 

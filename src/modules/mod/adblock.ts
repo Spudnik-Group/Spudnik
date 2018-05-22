@@ -27,13 +27,13 @@ export default class AdblockCommand extends Command {
 				{
 					key: 'subCommand',
 					prompt: 'Would you like to enable or disable the feature?\n',
-					type: 'string',
-				},
+					type: 'string'
+				}
 			],
 			throttling: {
 				duration: 3,
-				usages: 2,
-			},
+				usages: 2
+			}
 		});
 	}
 

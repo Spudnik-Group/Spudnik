@@ -25,15 +25,15 @@ export default class LeetCommand extends Command {
 			name: 'leet',
 			throttling: {
 				duration: 3,
-				usages: 2,
+				usages: 2
 			},
 			args: [
 				{
 					key: 'query',
 					prompt: '61v3 m3 4 qu3ry.\n',
-					type: 'string',
-				},
-			],
+					type: 'string'
+				}
+			]
 		});
 	}
 

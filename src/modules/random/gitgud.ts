@@ -25,16 +25,16 @@ export default class GitGudCommand extends Command {
 			name: 'gitgud',
 			throttling: {
 				duration: 3,
-				usages: 2,
+				usages: 2
 			},
 			args: [
 				{
 					default: '',
 					key: 'mention',
 					prompt: 'Who should gitgud?',
-					type: 'string',
-				},
-			],
+					type: 'string'
+				}
+			]
 		});
 	}
 
@@ -49,7 +49,7 @@ export default class GitGudCommand extends Command {
 	public async run(msg: CommandMessage, args: { mention: string }): Promise<Message | Message[]> {
 		if (args.mention && args.mention !== null) {
 			return msg.embed({ image: { url: 'http://i.imgur.com/NqpPXHu.jpg' } }, '', {
-				reply: resolveMention(args.mention),
+				reply: resolveMention(args.mention)
 			});
 		}
 		return sendSimpleEmbeddedImage(msg, 'http://i.imgur.com/NqpPXHu.jpg');

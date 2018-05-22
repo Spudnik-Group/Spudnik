@@ -25,15 +25,15 @@ export default class YodifyCommand extends Command {
 			name: 'yodify',
 			throttling: {
 				duration: 3,
-				usages: 2,
+				usages: 2
 			},
 			args: [
 				{
 					key: 'query',
 					prompt: 'your statement, I must have.\n',
-					type: 'string',
-				},
-			],
+					type: 'string'
+				}
+			]
 		});
 	}
 

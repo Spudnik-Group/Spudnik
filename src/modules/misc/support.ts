@@ -25,8 +25,8 @@ export default class SupportCommand extends Command {
 			name: 'support',
 			throttling: {
 				duration: 3,
-				usages: 2,
-			},
+				usages: 2
+			}
 		});
 	}
 

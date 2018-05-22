@@ -29,9 +29,9 @@ export default class RollCommand extends Command {
 					default: '6',
 					key: 'roll',
 					prompt: 'What die combo would you like to roll?',
-					type: 'string',
-				},
-			],
+					type: 'string'
+				}
+			]
 		});
 	}
 

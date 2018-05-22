@@ -1,7 +1,7 @@
 import { Channel, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, sendSimpleEmbeddedSuccess } from '../../lib/helpers';
+import { sendSimpleEmbeddedError } from '../../lib/helpers';
 
 /**
  * Sets/Shows the terms of service for a guild.
@@ -26,38 +26,38 @@ export default class TermsOfServiceCommand extends Command {
 			name: 'tos',
 			throttling: {
 				duration: 3,
-				usages: 2,
+				usages: 2
 			},
 			args: [
 				{
 					key: 'arg1',
 					prompt: 'Please provide a channel or subcommand (text|body).',
 					type: 'channel|string',
-					default: '',
+					default: ''
 				},
 				{
 					default: '',
 					key: 'messageNumber',
 					prompt: 'message number',
-					type: 'integer',
+					type: 'integer'
 				},
 				{
 					default: '',
 					key: 'text',
 					prompt: 'text',
-					type: 'string',
-				},
-			],
+					type: 'string'
+				}
+			]
 		});
 	}
 
 	/**
- 	* Determine if a member has permission to run the "accept" command.
-	*
- 	* @param {CommandMessage} msg
- 	* @returns {boolean}
- 	* @memberof TermsOfServiceCommand
- 	*/
+	 * Determine if a member has permission to run the "accept" command.
+	 *
+	 * @param {CommandMessage} msg
+	 * @returns {boolean}
+	 * @memberof TermsOfServiceCommand
+	 */
 	public hasPermission(msg: CommandMessage): boolean {
 		return msg.member.hasPermission('MANAGE_GUILD');
 	}
@@ -74,13 +74,13 @@ export default class TermsOfServiceCommand extends Command {
 			color: getEmbedColor(msg),
 			author: {
 				name: 'Terms of Service',
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/ballot-box-with-check_2611.png',
-			},
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/ballot-box-with-check_2611.png'
+			}
 		});
 
 		const tosChannel: string = await msg.client.provider.get(msg.guild, 'tosChannel');
 		const tosMessageCount: number = await msg.client.provider.get(msg.guild, 'tosMessageCount') || 0;
-		let tosMessages: ITOSMessage[] = [];
+		const tosMessages: ITOSMessage[] = [];
 
 		for (let i = 1; i < tosMessageCount + 1; i++) {
 			const tosMessage: ITOSMessage = await msg.client.provider.get(msg.guild, `tosMessage${i}`);
@@ -124,7 +124,7 @@ export default class TermsOfServiceCommand extends Command {
 				message = {
 					id: args.messageNumber - 1,
 					title: '',
-					body: '',
+					body: ''
 				};
 				tosMessages.push(message);
 			}

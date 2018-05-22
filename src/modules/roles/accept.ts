@@ -26,16 +26,16 @@ export default class AcceptCommand extends Command {
 			name: 'accept',
 			throttling: {
 				duration: 3,
-				usages: 2,
+				usages: 2
 			},
 			args: [
 				{
 					key: 'channel',
 					prompt: 'Please provide a channel to allow the Terms of Service command to be used in.',
 					type: 'channel',
-					default: '',
-				},
-			],
+					default: ''
+				}
+			]
 		});
 	}
 
@@ -65,8 +65,8 @@ export default class AcceptCommand extends Command {
 			color: getEmbedColor(msg),
 			author: {
 				name: 'Accept',
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/ballot-box-with-check_2611.png',
-			},
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/ballot-box-with-check_2611.png'
+			}
 		});
 
 		if (msg.member.hasPermission('MANAGE_ROLES') && args.channel instanceof Channel) {

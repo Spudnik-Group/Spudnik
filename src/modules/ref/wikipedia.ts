@@ -26,15 +26,15 @@ export default class WikiCommand extends Command {
 			name: 'wiki',
 			throttling: {
 				duration: 3,
-				usages: 2,
+				usages: 2
 			},
 			args: [
 				{
 					key: 'query',
 					prompt: 'what Wiki article should I look up?\n',
-					type: 'string',
-				},
-			],
+					type: 'string'
+				}
+			]
 		});
 	}
 
@@ -57,7 +57,7 @@ export default class WikiCommand extends Command {
 							return msg.embed({
 								color: getEmbedColor(msg),
 								title: page.raw.title,
-								description: `${paragraph}\n\n${page.raw.fullurl}`,
+								description: `${paragraph}\n\n${page.raw.fullurl}`
 							});
 						}
 					};

@@ -25,8 +25,8 @@ export default class SourceCommand extends Command {
 			name: 'source',
 			throttling: {
 				duration: 3,
-				usages: 2,
-			},
+				usages: 2
+			}
 		});
 	}
 

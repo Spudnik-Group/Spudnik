@@ -30,16 +30,16 @@ export default class ServerCommand extends Command {
 			name: 'server',
 			throttling: {
 				duration: 3,
-				usages: 2,
+				usages: 2
 			},
 			args: [
 				{
 					default: 'list',
 					key: 'query',
 					prompt: 'What server would you like info on?',
-					type: 'string',
-				},
-			],
+					type: 'string'
+				}
+			]
 		});
 	}
 
@@ -67,7 +67,7 @@ export default class ServerCommand extends Command {
 			return msg.embed(new MessageEmbed({
 				title: `${msg.guild.name} Servers`,
 				description: servers.map((server: any) => server.key).sort().join('\n'),
-				color: getEmbedColor(msg),
+				color: getEmbedColor(msg)
 			}));
 		} else {
 			const info = servers.filter((server: any) => server.key.toLowerCase() === args.query.toLowerCase())[0];
@@ -75,7 +75,7 @@ export default class ServerCommand extends Command {
 				return msg.embed(new MessageEmbed({
 					title: info.title,
 					description: info.description,
-					color: getEmbedColor(msg),
+					color: getEmbedColor(msg)
 				}));
 			}
 		}

@@ -1,7 +1,7 @@
 import { GuildMember, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedMessage, sendSimpleEmbeddedError } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 /**
  * Ban a member and optionally delete past messages.
@@ -27,26 +27,26 @@ export default class BanCommand extends Command {
 			name: 'ban',
 			throttling: {
 				duration: 3,
-				usages: 2,
+				usages: 2
 			},
 			args: [
 				{
 					key: 'member',
 					prompt: 'who needs the banhammer?\n',
-					type: 'member',
+					type: 'member'
 				},
 				{
 					key: 'reason',
 					prompt: 'why do you want to ban this noob?\n',
-					type: 'string',
+					type: 'string'
 				},
 				{
 					default: 0,
 					key: 'daysOfMessages',
 					prompt: 'how many days worth of messages would you like to delete?\n',
-					type: 'integer',
-				},
-			],
+					type: 'integer'
+				}
+			]
 		});
 	}
 
@@ -71,13 +71,13 @@ export default class BanCommand extends Command {
 	 */
 	public async run(msg: CommandMessage, args: { member: GuildMember, reason: string, daysOfMessages: number }): Promise<Message | Message[]> {
 		const memberToBan: GuildMember = args.member;
-		let banEmbed: MessageEmbed = new MessageEmbed({
+		const banEmbed: MessageEmbed = new MessageEmbed({
 			color: getEmbedColor(msg),
 			author: {
 				name: 'Ban Hammer',
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/hammer_1f528.png',
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/hammer_1f528.png'
 			},
-			description: '',
+			description: ''
 		});
 
 		msg.delete();
@@ -107,5 +107,5 @@ export default class BanCommand extends Command {
 		}
 
 		return sendSimpleEmbeddedMessage(msg, 'Loading...');
-	};
+	}
 }

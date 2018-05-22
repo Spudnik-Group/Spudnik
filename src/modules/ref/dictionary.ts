@@ -31,15 +31,15 @@ export default class DefineCommand extends Command {
 			name: 'define',
 			throttling: {
 				duration: 3,
-				usages: 2,
+				usages: 2
 			},
 			args: [
 				{
 					key: 'query',
 					prompt: 'what should I look up in the dictionary?\n',
-					type: 'string',
-				},
-			],
+					type: 'string'
+				}
+			]
 		});
 	}
 
@@ -100,8 +100,8 @@ export default class DefineCommand extends Command {
 					description: definitionResult,
 					footer: {
 						text: 'powered by Merriam-Webster\'s Collegiate® Dictionary',
-						icon_url: 'http://www.dictionaryapi.com/images/info/branding-guidelines/mw-logo-light-background-50x50.png',
-					},
+						icon_url: 'http://www.dictionaryapi.com/images/info/branding-guidelines/mw-logo-light-background-50x50.png'
+					}
 				});
 			});
 		});

@@ -25,15 +25,15 @@ export default class LmgtfyCommand extends Command {
 			name: 'lmgtfy',
 			throttling: {
 				duration: 3,
-				usages: 2,
+				usages: 2
 			},
 			args: [
 				{
 					key: 'query',
 					prompt: 'what should I Google for that noob?\n',
-					type: 'string',
-				},
-			],
+					type: 'string'
+				}
+			]
 		});
 	}
 
