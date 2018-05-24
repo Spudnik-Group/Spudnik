@@ -18,7 +18,9 @@ export default class PlayingCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'List people playing games.',
+			description: 'Returns a list of people playing games. Allows filtering.',
+			details: 'syntax: `!playing [game name]`\nSupplying no game name provides you with a list of all users who are marked with the "Playing" status type.\nSupplying a game name provides you with a list of all users with that game name as their status (case insensitive)',
+			examples: ['!playing', '!playing fortnite'],
 			group: 'misc',
 			guildOnly: true,
 			memberName: 'playing',

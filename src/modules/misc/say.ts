@@ -22,7 +22,7 @@ export default class SayCommand extends Command {
 			memberName: 'say',
 			guildOnly: true,
 			description: 'Replies with the text you provide.',
-			examples: ['say Hi there!'],
+			examples: ['!say Hi there!'],
 			args: [
 				{
 					key: 'text',

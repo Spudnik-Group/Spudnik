@@ -21,6 +21,7 @@ export default class HighNoonCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Displays the High Noon XKCD comic.',
+			examples: ['!highnoon'],
 			group: 'misc',
 			guildOnly: true,
 			memberName: 'highnoon',

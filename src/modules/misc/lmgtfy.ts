@@ -18,7 +18,9 @@ export default class LmgtfyCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Let Me Google that for You.',
+			description: 'Returns a Let Me Google That For You link, so you can school a n00b.',
+			details: 'syntax: `!lmgtfy (query)`',
+			examples: ['!lmgtfy port forwarding'],
 			group: 'misc',
 			guildOnly: true,
 			memberName: 'lmgtfy',
@@ -30,8 +32,9 @@ export default class LmgtfyCommand extends Command {
 			args: [
 				{
 					key: 'query',
-					prompt: 'what should I Google for that noob?\n',
-					type: 'string'
+					prompt: 'What should I Google for that n00b?\n',
+					type: 'string',
+					parse: (query: string) => require('remove-markdown')(query)
 				}
 			]
 		});
@@ -46,7 +49,6 @@ export default class LmgtfyCommand extends Command {
 	 * @memberof LmgtfyCommand
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
-		msg.delete();
-		return sendSimpleEmbeddedMessage(msg, `<http://lmgtfy.com/?q=${encodeURI(require('remove-markdown')(args.query))}>`);
+		return sendSimpleEmbeddedMessage(msg, `<http://lmgtfy.com/?q=${encodeURI(args.query)}>`);
 	}
 }

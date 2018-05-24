@@ -18,7 +18,7 @@ export default class SourceCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Link to my source code!',
+			description: 'Returns a link to my source code!',
 			group: 'misc',
 			guildOnly: true,
 			memberName: 'source',
