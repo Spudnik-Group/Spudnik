@@ -38,6 +38,6 @@ export default class SourceCommand extends Command {
 	 * @memberof SourceCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
-		return sendSimpleEmbeddedMessage(msg, 'https://github.com/Spudnik-Group/Spudnik');
+		return sendSimpleEmbeddedMessage(msg, '<https://github.com/Spudnik-Group/Spudnik>');
 	}
 }

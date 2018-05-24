@@ -18,7 +18,8 @@ export default class SupportCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Link to my support server!',
+			description: 'Returns a link to my support server!',
+			examples: ['!support'],
 			group: 'misc',
 			guildOnly: true,
 			memberName: 'support',
@@ -38,6 +39,6 @@ export default class SupportCommand extends Command {
 	 * @memberof SupportCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
-		return sendSimpleEmbeddedMessage(msg, 'https://spudnik.io/support');
+		return sendSimpleEmbeddedMessage(msg, '<https://spudnik.io/support>');
 	}
 }
