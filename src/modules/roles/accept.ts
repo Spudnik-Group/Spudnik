@@ -20,6 +20,10 @@ export default class AcceptCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Accept the guild rules, and be auto-assigned the default role.',
+			examples: [
+				'!accept',
+				'!accept #channel_name'
+			],
 			group: 'roles',
 			guildOnly: true,
 			memberName: 'accept',

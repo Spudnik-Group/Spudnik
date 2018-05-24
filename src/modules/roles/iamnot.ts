@@ -19,6 +19,7 @@ export default class IAmNotCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Used to remove a role from yourself.',
+			examples: ['!iamnot @role_name'],
 			group: 'roles',
 			guildOnly: true,
 			memberName: 'iamnot',

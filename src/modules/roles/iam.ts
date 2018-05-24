@@ -19,6 +19,7 @@ export default class IAmNotCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Used to add a role to yourself.',
+			examples: ['!iam @role_name'],
 			group: 'roles',
 			guildOnly: true,
 			memberName: 'iam',
