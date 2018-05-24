@@ -18,8 +18,11 @@
 	],
 	"main": "dist/launch.js",
 	"scripts": {
+		"dev:start": "npm run test && npm run compile && npm start",
+		"test": "npm run lint",
 		"start": "node dist/launch.js",
-		"lint": "tslint && tsc"
+		"lint": "tslint",
+		"compile": "tsc"
 	},
 	"dependencies": {
 		"body-parser": "^1.17.1",
