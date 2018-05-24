@@ -326,8 +326,9 @@ export class Spudnik {
 				console.error(err);
 			})
 			.on('warn', (err: Error) => {
-				this.Honeybadger.notify(err);
-				console.warn(err);
+				if (this.Config.getDebug()) {
+					console.warn(err);
+				}
 			})
 			.on('debug', (err: Error) => {
 				if (this.Config.getDebug()) {
@@ -336,7 +337,6 @@ export class Spudnik {
 			})
 			.on('commandError', (cmd, err) => {
 				if (this.Config.getDebug()) {
-					this.Honeybadger.notify(err, { component: cmd.groupID, action: cmd.memberName });
 					console.error(`Error in command ${cmd.groupID}:${cmd.memberName}`, err);
 				}
 			});
