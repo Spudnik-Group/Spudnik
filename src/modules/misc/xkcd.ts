@@ -22,7 +22,8 @@ export default class XkcdCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Displays a given XKCD comic number (or the latest if nothing specified)',
-			details: '[comicNumber]',
+			details: 'syntax: `!xkcd [comic number]`\n',
+			examples: ['!xkcd', '!xkcd 323'],
 			group: 'misc',
 			guildOnly: true,
 			memberName: 'xkcd',
@@ -35,7 +36,7 @@ export default class XkcdCommand extends Command {
 				{
 					default: '',
 					key: 'comicNumber',
-					prompt: 'what comic number would you like to see?\n',
+					prompt: 'What comic number would you like to see?\n',
 					type: 'string',
 					validate: (comicNumber: number) => {
 						if (!isNaN(Number(comicNumber)) && Number.isInteger(Number(comicNumber)) && comicNumber > 0) { return true; }

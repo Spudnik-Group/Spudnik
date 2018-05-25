@@ -19,7 +19,8 @@ export default class TopicCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Shows the purpose of the chat channel.',
+			description: 'Returns the purpose of the chat channel.',
+			examples: ['!topic'],
 			group: 'misc',
 			guildOnly: true,
 			memberName: 'topic',
