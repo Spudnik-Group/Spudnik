@@ -15,18 +15,18 @@ script:
   -in assets.zip.enc -out assets.zip -d
 - unzip assets.zip -d ./
 - tsc
-after_script:
-- zip -r release.zip dist/ config/ package.json README.md LICENSE
-- mkdir -p dpl_cd_upload
-- mv release.zip dpl_cd_upload/release.zip
-- mv assets/prod/config.json config/config.json
-- mv assets/servers.json config/servers.json
 after_success:
 - chmod +x ./scripts/build_success.sh
 - "./scripts/build_success.sh"
 after_failure:
 - chmod +x ./scripts/build_fail.sh
 - "./scripts/build_fail.sh"
+before_deploy:
+- zip -r release.zip dist/ config/ package.json README.md LICENSE
+- mkdir -p dpl_cd_upload
+- mv release.zip dpl_cd_upload/release.zip
+- mv assets/prod/config.json config/config.json
+- mv assets/servers.json config/servers.json
 deploy:
 - provider: releases
   api_key:
