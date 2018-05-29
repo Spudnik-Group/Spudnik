@@ -33,8 +33,8 @@ export default class StarboardCommand extends Command {
 				}
 			],
 			description: 'Used to configure the :star: Star Board feature.',
-			details: 'syntax: `!starboard (channel|trigger|enable|disable) [new starboard emoji|channel id]`\n`(channel) (channel id)` - sets Star Board channel to the channel supplied.\n`trigger [emoji]` - sets emoji to save to star board. If blank, shows current trigger emoji.\n`!enable` - enables the Star Board feature.\n`!disable` - disables the Star Board feature.\n\nAdministrator permission required.',
-			examples: ['!starboard channel 1132423443', '!starboard trigger', '!starboard trigger :stuck_out_tongue:', '!starboard enable', '!starboard disable'],
+			details: 'syntax: `!starboard (channelMention|trigger|enable|disable) [new starboard emoji|channel id]`\n`(channel) (channel mention)` - sets Star Board channel to the channel supplied.\n`trigger [emoji]` - sets emoji to save to star board. If blank, shows current trigger emoji.\n`!enable` - enables the Star Board feature.\n`!disable` - disables the Star Board feature.\n\nAdministrator permission required.',
+			examples: ['!starboard channel #channelMention', '!starboard trigger', '!starboard trigger :stuck_out_tongue:', '!starboard enable', '!starboard disable'],
 			group: 'util',
 			guildOnly: true,
 			memberName: 'starboard',

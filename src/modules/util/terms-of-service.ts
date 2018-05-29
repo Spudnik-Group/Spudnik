@@ -40,8 +40,8 @@ export default class TermsOfServiceCommand extends Command {
 				}
 			],
 			description: 'Used to configure the Terms of Service for a guild.',
-			details: 'syntax: `!tos (channel|title|body|list) [channel id | message number] [text]\n`channel id` - Sets the channel to display the terms of service in.\n`(title) (info block number) (text)` - Edit the title of a terms of service info block.\n`(body) (info block number) (text)` - Edit the body of a terms of service info block.\n`list` - returns all the terms of service info blocks.\n\nManage Guild permission required.',
-			examples: ['!tos channel 23423234434424', '!tos title 1 Interesting title', '!tos body 1 Interesting body text', '!tos list'],
+			details: 'syntax: `!tos (channel|title|body|list) [channel mention | message number] [text]\n`channel mention` - Sets the channel to display the terms of service in.\n`(title) (info block number) (text)` - Edit the title of a terms of service info block.\n`(body) (info block number) (text)` - Edit the body of a terms of service info block.\n`list` - returns all the terms of service info blocks.\n\nManage Guild permission required.',
+			examples: ['!tos channel #channelMention', '!tos title 1 Interesting title', '!tos body 1 Interesting body text', '!tos list'],
 			group: 'util',
 			guildOnly: true,
 			memberName: 'tos',
