@@ -1,3 +1,4 @@
+import { oneLine } from 'common-tags';
 import { GuildMember, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
@@ -19,16 +20,6 @@ export default class KickCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Kicks the user.',
-			details: '<user> [reason] [daysOfMessages]',
-			group: 'mod',
-			guildOnly: true,
-			memberName: 'kick',
-			name: 'kick',
-			throttling: {
-				duration: 3,
-				usages: 2
-			},
 			args: [
 				{
 					key: 'member',
@@ -40,7 +31,17 @@ export default class KickCommand extends Command {
 					prompt: 'why do you want to kick this noob?\n',
 					type: 'string'
 				}
-			]
+			],
+			description: 'Kicks the user.',
+			details: '<user> [reason] [daysOfMessages]',
+			guildOnly: true,
+			group: 'mod',
+			memberName: 'kick',
+			name: 'kick',
+			throttling: {
+				duration: 3,
+				usages: 2
+			}
 		});
 	}
 
@@ -52,7 +53,7 @@ export default class KickCommand extends Command {
 	 * @memberof KickCommand
 	 */
 	public hasPermission(msg: CommandMessage): boolean {
-		return msg.client.isOwner(msg.author) || msg.member.hasPermission(['KICK_MEMBERS']);
+		return msg.member.hasPermission(['KICK_MEMBERS']);
 	}
 
 	/**
@@ -77,15 +78,23 @@ export default class KickCommand extends Command {
 		if (!memberToKick.kickable || !(msg.member.roles.highest.comparePositionTo(memberToKick.roles.highest) > 0)) {
 			return sendSimpleEmbeddedError(msg, `I can't kick ${memberToKick}. Do they have the same or a higher role than me or you?`);
 		}
+
 		memberToKick.kick(args.reason)
 			.then(() => {
 				kickEmbed.description = `Kicking ${memberToKick} from ${msg.guild} for ${args.reason}!`;
+
 				return msg.embed(kickEmbed);
 			})
 			.catch((err: Error) => {
-				msg.client.emit('error', `Error with command 'ban'\nBanning ${memberToKick} from ${msg.guild} failed!\nError: ${err}`);
+				msg.client.emit('error',
+					oneLine`Error with command 'ban'\n
+						Banning ${memberToKick} from ${msg.guild} failed!\n
+						Error: ${err}`
+				);
+
 				return sendSimpleEmbeddedMessage(msg, `Kicking ${memberToKick} failed!`);
 			});
+
 		return sendSimpleEmbeddedMessage(msg, 'Loading...');
 	}
 }

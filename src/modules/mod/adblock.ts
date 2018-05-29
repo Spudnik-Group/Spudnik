@@ -18,11 +18,6 @@ export default class AdblockCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Enable or disable the adblock feature.',
-			group: 'mod',
-			guildOnly: true,
-			memberName: 'adblock',
-			name: 'adblock',
 			args: [
 				{
 					key: 'subCommand',
@@ -30,6 +25,11 @@ export default class AdblockCommand extends Command {
 					type: 'string'
 				}
 			],
+			description: 'Enable or disable the adblock feature.',
+			guildOnly: true,
+			group: 'mod',
+			memberName: 'adblock',
+			name: 'adblock',
 			throttling: {
 				duration: 3,
 				usages: 2
@@ -45,7 +45,7 @@ export default class AdblockCommand extends Command {
 	 * @memberof AdblockCommand
 	 */
 	public hasPermission(msg: CommandMessage): boolean {
-		return this.client.isOwner(msg.author) || msg.member.hasPermission('MANAGE_MESSAGES');
+		return msg.member.hasPermission('MANAGE_MESSAGES');
 	}
 
 	/**
