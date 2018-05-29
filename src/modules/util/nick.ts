@@ -31,6 +31,7 @@ export default class NickCommand extends Command {
 			details: oneLine`
 				syntax: \`!nick [new nickname]\`\n
 				\n
+				Supplying no nickname resets the nickname to default.\n
 				Manage Nicknames permission required.
 			`,
 			examples: [

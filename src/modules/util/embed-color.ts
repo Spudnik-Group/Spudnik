@@ -39,6 +39,7 @@ export default class EmbedColorCommand extends Command {
 			details: oneLine`
 				syntax: \`!embedcolor [hex color]\`\n
 				\n
+				Supplying no hex color resets the embed color to default.\n
 				Manage Guild permission required.
 			`,
 			examples: [
