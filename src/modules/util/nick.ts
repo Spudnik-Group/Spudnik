@@ -1,7 +1,7 @@
+import { oneLine } from 'common-tags';
 import { GuildMember, Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
-import { oneLine } from 'common-tags';
 
 /**
  * Change the bot's nickname on your server, or reset it.

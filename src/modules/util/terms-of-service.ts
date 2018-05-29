@@ -108,20 +108,20 @@ export default class TermsOfServiceCommand extends Command {
 
 		switch (args.arg1.toLowerCase()) {
 			case 'channel':
-				const channel = args.item as Channel;
-				if (tosChannel && tosChannel === channel.id) {
-					tosEmbed.description = `Terms of Service channel already set to <#${msg.channel.id}>!`;
+				const channelID = (args.item as Channel).id;
+				if (tosChannel && tosChannel === channelID) {
+					tosEmbed.description = `Terms of Service channel already set to <#${channelID}>!`;
 					return msg.embed(tosEmbed);
 				} else {
-					return msg.client.provider.set(msg.guild, 'tosChannel', channel.id)
+					return msg.client.provider.set(msg.guild, 'tosChannel', channelID)
 						.then(() => {
-							tosEmbed.description = `Terms of Service channel set to <#${(args.item as Channel).id}>.`;
+							tosEmbed.description = `Terms of Service channel set to <#${channelID}>.`;
 							return msg.embed(tosEmbed);
 						})
 						.catch((err: Error) => {
 							msg.client.emit('warn', `Error in command util:tos: ${err}`);
 							return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
-						})
+						});
 				}
 			case 'list':
 				tosEmbed.description = '';
