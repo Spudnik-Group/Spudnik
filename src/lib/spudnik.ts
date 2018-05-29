@@ -326,9 +326,7 @@ export class Spudnik {
 				console.error(err);
 			})
 			.on('warn', (err: Error) => {
-				if (this.Config.getDebug()) {
-					console.warn(err);
-				}
+				console.warn(err);
 			})
 			.on('debug', (err: Error) => {
 				if (this.Config.getDebug()) {
@@ -336,9 +334,7 @@ export class Spudnik {
 				}
 			})
 			.on('commandError', (cmd, err) => {
-				if (this.Config.getDebug()) {
-					console.error(`Error in command ${cmd.groupID}:${cmd.memberName}`, err);
-				}
+				console.error(`Error in command ${cmd.groupID}:${cmd.memberName}`, err);
 			});
 	}
 
