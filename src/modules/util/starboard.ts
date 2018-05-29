@@ -2,6 +2,7 @@ import { Channel, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError } from '../../lib/helpers';
+import { oneLine } from 'common-tags';
 
 /**
  * Adjusts starboard settings.
@@ -33,8 +34,22 @@ export default class StarboardCommand extends Command {
 				}
 			],
 			description: 'Used to configure the :star: Star Board feature.',
-			details: 'syntax: `!starboard (channelMention|trigger|enable|disable) [new starboard emoji|channel id]`\n`(channel) (channel mention)` - sets Star Board channel to the channel supplied.\n`trigger [emoji]` - sets emoji to save to star board. If blank, shows current trigger emoji.\n`!enable` - enables the Star Board feature.\n`!disable` - disables the Star Board feature.\n\nAdministrator permission required.',
-			examples: ['!starboard channel #channelMention', '!starboard trigger', '!starboard trigger :stuck_out_tongue:', '!starboard enable', '!starboard disable'],
+			details: oneLine`
+				syntax: \`!starboard(channelMention|trigger|enable|disable) [new starboard emoji | channel id]\`\n
+				\n
+				\`(channel)(channel mention)\` - sets Star Board channel to the channel supplied.\n
+				\`trigger[emoji]\` - sets emoji to save to star board. If blank, shows current trigger emoji.\n
+				\`!enable\` - enables the Star Board feature.\n
+				\`!disable\` - disables the Star Board feature.\n
+				\n
+				Administrator permission required.`,
+			examples: [
+				'!starboard channel #channelMention',
+				'!starboard trigger',
+				'!starboard trigger :stuck_out_tongue:',
+				'!starboard enable',
+				'!starboard disable'
+			],
 			group: 'util',
 			guildOnly: true,
 			memberName: 'starboard',
@@ -108,23 +123,31 @@ export default class StarboardCommand extends Command {
 						.then(() => {
 							starboardEmbed.description = 'Star Board trigger set to: ' + args.content + `\n\n---\nStar Board feature: ${starboardEnabled ? '_Enabled_' : '_Disabled_'}\nChannel set to: <#${starboard}>\nTrigger set to: ${starboardTrigger}`;
 							return msg.embed(starboardEmbed);
-						});
-				}
-			}
-			case 'enable': {
-				if (starboardEnabled === false) {
-					return msg.client.provider.set(msg.guild, 'starboardEnabled', true)
-						.then(() => {
-							starboardEmbed.description = `Star Board enabled.\n\n---\nStar Board feature: ${starboardEnabled ? '_Enabled_' : '_Disabled_'}\nChannel set to: <#${starboard}>\nTrigger set to: ${starboardTrigger}`;
-							return msg.embed(starboardEmbed);
 						})
 						.catch((err: Error) => {
 							msg.client.emit('warn', `Error in command util:starboard: ${err}`);
 							return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
 						});
+				}
+			}
+			case 'enable': {
+				if (starboard !== undefined) {
+					if (starboardEnabled === false) {
+						return msg.client.provider.set(msg.guild, 'starboardEnabled', true)
+							.then(() => {
+								starboardEmbed.description = `Star Board enabled.\n\n---\nStar Board feature: ${starboardEnabled ? '_Enabled_' : '_Disabled_'}\nChannel set to: <#${starboard}>\nTrigger set to: ${starboardTrigger}`;
+								return msg.embed(starboardEmbed);
+							})
+							.catch((err: Error) => {
+								msg.client.emit('warn', `Error in command util:starboard: ${err}`);
+								return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
+							});
+					} else {
+						starboardEmbed.description = 'Star Board is already enabled! Disable with `starboard disable`';
+						return msg.embed(starboardEmbed);
+					}
 				} else {
-					starboardEmbed.description = 'Star Board is already enabled! Disable with `starboard disable`';
-					return msg.embed(starboardEmbed);
+					return sendSimpleEmbeddedError(msg, 'Please set the channel for the Star Board before enabling the feature. See `!help starboard` for info.', 3000);
 				}
 			}
 			case 'disable': {

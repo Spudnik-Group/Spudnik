@@ -49,7 +49,7 @@ export default class TermsOfServiceCommand extends Command {
 				\`body (info block number) (text)\` - Edit the body of a terms of service info block.\n
 				\`list\` - returns all the terms of service info blocks.\n
 				\n
-				Manage Guild permission required.')`,
+				Manage Guild permission required.`,
 			examples: [
 				'!tos channel #channelMention',
 				'!tos title 1 Interesting title',
@@ -118,10 +118,10 @@ export default class TermsOfServiceCommand extends Command {
 							tosEmbed.description = `Terms of Service channel set to <#${(args.item as Channel).id}>.`;
 							return msg.embed(tosEmbed);
 						})
-						.catch((context) => {
-							msg.client.emit('error', `Unsuccessful database request.\nCommand: 'tos'\nContext: ${context}`);
+						.catch((err: Error) => {
+							msg.client.emit('warn', `Error in command util:tos: ${err}`);
 							return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
-						});
+						})
 				}
 			case 'list':
 				tosEmbed.description = '';
@@ -175,14 +175,15 @@ export default class TermsOfServiceCommand extends Command {
 						tosEmbed.description = `Terms of Service message #${item} ${tosEmbedUpsertMessage}.`;
 
 						await msg.client.provider.set(msg.guild, 'tosMessageCount', tosMessages.length)
-							.catch((context) => {
-								msg.client.emit('error', `Unsuccessful database request.\nCommand: 'tos'\nContext: ${context}`);
+							.catch((err: Error) => {
+								msg.client.emit('warn', `Error in command util:tos: ${err}`);
+								return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
 							});
 
 						return msg.embed(tosEmbed);
 					})
-					.catch((context) => {
-						msg.client.emit('error', `Unsuccessful database request.\nCommand: 'tos'\nContext: ${context}`);
+					.catch((err: Error) => {
+						msg.client.emit('warn', `Error in command util:tos: ${err}`);
 						return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
 					});
 			case 'body':
@@ -229,14 +230,15 @@ export default class TermsOfServiceCommand extends Command {
 					.then(async () => {
 						tosEmbed.description = `Terms of Service message #${args.item} ${tosEmbedUpsertMessage}.`;
 						await msg.client.provider.set(msg.guild, 'tosMessageCount', tosMessages.length)
-							.catch((context) => {
-								msg.client.emit('error', `Unsuccessful database request.\nCommand: 'tos'\nContext: ${context}`);
+							.catch((err: Error) => {
+								msg.client.emit('warn', `Error in command util:tos: ${err}`);
+								return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
 							});
 
 						return msg.embed(tosEmbed);
 					})
-					.catch((context) => {
-						msg.client.emit('error', `Unsuccessful database request.\nCommand: 'tos'\nContext: ${context}`);
+					.catch((err: Error) => {
+						msg.client.emit('warn', `Error in command util:tos: ${err}`);
 						return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
 					});
 			default:
