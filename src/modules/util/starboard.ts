@@ -1,4 +1,4 @@
-import { Message, MessageEmbed, Channel } from 'discord.js';
+import { Channel, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError } from '../../lib/helpers';
@@ -29,7 +29,7 @@ export default class StarboardCommand extends Command {
 					default: '',
 					key: 'content',
 					prompt: 'What would you like it set to?\n',
-					type: 'string|channel'
+					type: 'channel|string'
 				}
 			],
 			description: 'Used to configure the :star: Star Board feature.',
