@@ -21,17 +21,6 @@ export default class XkcdCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Displays a given XKCD comic number (or the latest if nothing specified)',
-			details: 'syntax: `!xkcd [comic number]`\n',
-			examples: ['!xkcd', '!xkcd 323'],
-			group: 'misc',
-			guildOnly: true,
-			memberName: 'xkcd',
-			name: 'xkcd',
-			throttling: {
-				duration: 3,
-				usages: 2
-			},
 			args: [
 				{
 					default: '',
@@ -43,7 +32,18 @@ export default class XkcdCommand extends Command {
 						return 'Invalid comic number.';
 					}
 				}
-			]
+			],
+			description: 'Displays a given XKCD comic number (or the latest if nothing specified)',
+			details: 'syntax: `!xkcd [comic number]`\n',
+			examples: ['!xkcd', '!xkcd 323'],
+			group: 'misc',
+			guildOnly: true,
+			memberName: 'xkcd',
+			name: 'xkcd',
+			throttling: {
+				duration: 3,
+				usages: 2
+			}
 		});
 	}
 
@@ -62,19 +62,19 @@ export default class XkcdCommand extends Command {
 			url += `${args.comicNumber}/`;
 		}
 		url += 'info.0.json';
-		request({ url }, (err: Error, res: RequestResponse, body: string) => {
+		request({ url: url }, (err: Error, res: RequestResponse, body: string) => {
 			try {
 				const comic = JSON.parse(body);
 				msg.delete();
 				return msg.embed({
 					color: getEmbedColor(msg),
-					title: `XKCD ${comic.num} ${comic.title}`,
+					footer: {
+						text: comic.alt
+					},
 					image: {
 						url: comic.img
 					},
-					footer: {
-						text: comic.alt
-					}
+					title: `XKCD ${comic.num} ${comic.title}`
 				});
 			} catch (err) {
 				msg.delete();

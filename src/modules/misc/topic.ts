@@ -52,8 +52,8 @@ export default class TopicCommand extends Command {
 			return msg.embed({
 				color: getEmbedColor(msg),
 				description: response,
-				title: channel.name,
-				thumbnail: { url: this.client.user.avatarURL }
+				thumbnail: { url: this.client.user.avatarURL },
+				title: channel.name
 			});
 		}
 		return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');

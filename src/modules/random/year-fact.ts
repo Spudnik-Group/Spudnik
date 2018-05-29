@@ -52,8 +52,8 @@ export default class YearFactCommand extends Command {
 				if (data && data.text) {
 					return msg.embed(new MessageEmbed({
 						color: getEmbedColor(msg),
-						title: 'Year Fact',
-						description: data.text
+						description: data.text,
+						title: 'Year Fact'
 					}));
 				}
 			} catch (err) {

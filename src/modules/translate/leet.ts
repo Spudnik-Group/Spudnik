@@ -18,6 +18,13 @@ export default class LeetCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
+			args: [
+				{
+					key: 'query',
+					prompt: '61v3 m3 4 qu3ry.\n',
+					type: 'string'
+				}
+			],
 			description: 'Converts boring regular text to 1337.',
 			group: 'translate',
 			guildOnly: true,
@@ -26,14 +33,7 @@ export default class LeetCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			},
-			args: [
-				{
-					key: 'query',
-					prompt: '61v3 m3 4 qu3ry.\n',
-					type: 'string'
-				}
-			]
+			}
 		});
 	}
 

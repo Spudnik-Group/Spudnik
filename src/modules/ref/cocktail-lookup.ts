@@ -21,6 +21,14 @@ export default class CocktailCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
+			args: [
+				{
+					default: '',
+					key: 'query',
+					prompt: 'what cocktail should I look up?\n',
+					type: 'string'
+				}
+			],
 			description: 'Used to retrieve information about a cocktail.',
 			group: 'ref',
 			guildOnly: true,
@@ -29,15 +37,7 @@ export default class CocktailCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			},
-			args: [
-				{
-					default: '',
-					key: 'query',
-					prompt: 'what cocktail should I look up?\n',
-					type: 'string'
-				}
-			]
+			}
 		});
 	}
 
@@ -51,12 +51,12 @@ export default class CocktailCommand extends Command {
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
 		const cocktailEmbed: MessageEmbed = new MessageEmbed({
-			color: getEmbedColor(msg),
 			author: {
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/240/twitter/103/cocktail-glass_1f378.png',
 				name: 'CocktailDB',
-				url: 'http://www.thecocktaildb.com/',
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/240/twitter/103/cocktail-glass_1f378.png'
+				url: 'http://www.thecocktaildb.com/'
 			},
+			color: getEmbedColor(msg),
 			description: ''
 		});
 
@@ -80,9 +80,9 @@ export default class CocktailCommand extends Command {
 					}
 					if (typeof result.strGlass !== 'undefined' && result.strGlass !== '' && result.strGlass !== null) {
 						fields.push({
+							inline: true,
 							name: 'Glass:',
-							value: result.strGlass,
-							inline: true
+							value: result.strGlass
 						});
 					}
 					if (typeof ingredients !== 'undefined' && ingredients.length > 0) {
@@ -97,9 +97,9 @@ export default class CocktailCommand extends Command {
 							}
 						});
 						fields.push({
+							inline: true,
 							name: 'Ingredients:',
-							value: ingredientsList,
-							inline: true
+							value: ingredientsList
 						});
 					}
 					fields.push({

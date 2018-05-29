@@ -76,11 +76,11 @@ export default class GoodbyeCommand extends Command {
 	 */
 	public async run(msg: CommandMessage, args: { subCommand: string, content: string }): Promise<Message | Message[]> {
 		const goodbyeEmbed = new MessageEmbed({
-			color: getEmbedColor(msg),
 			author: {
-				name: 'Server Goodbye Message',
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png'
-			}
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png',
+				name: 'Server Goodbye Message'
+			},
+			color: getEmbedColor(msg)
 		});
 
 		const goodbyeChannel = msg.client.provider.get(msg.guild, 'goodbyeChannel', msg.guild.systemChannelID);

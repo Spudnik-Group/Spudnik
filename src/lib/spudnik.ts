@@ -41,11 +41,11 @@ export class Spudnik {
 
 		this.Discord = new CommandoClient({
 			commandPrefix: '!',
+			invite: 'https://spudnik.io/support',
 			messageCacheLifetime: 30,
 			messageSweepInterval: 60,
-			unknownCommandResponse: false,
 			owner: this.Config.getOwner(),
-			invite: 'https://spudnik.io/support'
+			unknownCommandResponse: false
 		});
 
 		this.setupCommands();
@@ -109,38 +109,38 @@ export class Spudnik {
 				let statuses: PresenceData[] = [
 					{
 						activity: {
-							type: 'PLAYING',
-							name: `${this.Discord.commandPrefix}help | ${this.Discord.guilds.array().length} Servers`
+							name: `${this.Discord.commandPrefix}help | ${this.Discord.guilds.array().length} Servers`,
+							type: 'PLAYING'
 						}
 					},
 					{
 						activity: {
-							type: 'STREAMING',
-							name: 'spudnik.io'
+							name: 'spudnik.io',
+							type: 'STREAMING'
 						}
 					},
 					{
 						activity: {
-							type: 'PLAYING',
-							name: `${this.Discord.commandPrefix}donate 💕`
+							name: `${this.Discord.commandPrefix}donate 💕`,
+							type: 'PLAYING'
 						}
 					},
 					{
 						activity: {
-							type: 'STREAMING',
-							name: `Version: v${version} | ${this.Discord.commandPrefix}help`
+							name: `Version: v${version} | ${this.Discord.commandPrefix}help`,
+							type: 'STREAMING'
 						}
 					},
 					{
 						activity: {
-							type: 'PLAYING',
-							name: `spudnik.io/support | ${this.Discord.commandPrefix}support`
+							name: `spudnik.io/support | ${this.Discord.commandPrefix}support`,
+							type: 'PLAYING'
 						}
 					},
 					{
 						activity: {
-							type: 'STREAMING',
-							name: 'docs.spudnik.io'
+							name: 'docs.spudnik.io',
+							type: 'STREAMING'
 						}
 					}
 				];
@@ -162,16 +162,16 @@ export class Spudnik {
 
 						statuses.push({
 							activity: {
-								type: 'WATCHING',
-								name: `Upvoted ${upvotes} times on discordbots.org`
+								name: `Upvoted ${upvotes} times on discordbots.org`,
+								type: 'WATCHING'
 							}
 						});
 					});
 
 					statuses.push({
 						activity: {
-							type: 'WATCHING',
-							name: `Assisting ${users} users on ${guilds} servers`
+							name: `Assisting ${users} users on ${guilds} servers`,
+							type: 'WATCHING'
 						}
 					});
 
@@ -233,9 +233,9 @@ export class Spudnik {
 									.setFooter(`⭐ ${stars.size} | ${message.id} `)
 							}).then((item) => {
 								starred.push({
-									messageId: message.id,
+									channelId: (channel as TextChannel).id,
 									embedId: (item as Message).id,
-									channelId: (channel as TextChannel).id
+									messageId: message.id
 								});
 								this.Discord.provider.set(message.guild.id, 'starboard', starred);
 							}).catch((err) => {
@@ -405,15 +405,15 @@ export class Spudnik {
 
 			statuses.push({
 				activity: {
-					type: 'WATCHING',
-					name: `Upvoted ${upvotes} times on discordbots.org`
+					name: `Upvoted ${upvotes} times on discordbots.org`,
+					type: 'WATCHING'
 				}
 			});
 
 			statuses.push({
 				activity: {
-					type: 'WATCHING',
-					name: `Assisting ${users} users on ${guilds} servers`
+					name: `Assisting ${users} users on ${guilds} servers`,
+					type: 'WATCHING'
 				}
 			});
 		});

@@ -24,6 +24,13 @@ export default class DefineCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
+			args: [
+				{
+					key: 'query',
+					prompt: 'what should I look up in the dictionary?\n',
+					type: 'string'
+				}
+			],
 			description: 'Looks up a word in the Merriam-Webster Collegiate Dictionary.',
 			group: 'ref',
 			guildOnly: true,
@@ -32,14 +39,7 @@ export default class DefineCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			},
-			args: [
-				{
-					key: 'query',
-					prompt: 'what should I look up in the dictionary?\n',
-					type: 'string'
-				}
-			]
+			}
 		});
 	}
 
@@ -96,12 +96,12 @@ export default class DefineCommand extends Command {
 
 				return msg.embed({
 					color: getEmbedColor(msg),
-					title: word,
 					description: definitionResult,
 					footer: {
-						text: 'powered by Merriam-Webster\'s Collegiate® Dictionary',
-						icon_url: 'http://www.dictionaryapi.com/images/info/branding-guidelines/mw-logo-light-background-50x50.png'
-					}
+						icon_url: 'http://www.dictionaryapi.com/images/info/branding-guidelines/mw-logo-light-background-50x50.png',
+						text: 'powered by Merriam-Webster\'s Collegiate® Dictionary'
+					},
+					title: word
 				});
 			});
 		});

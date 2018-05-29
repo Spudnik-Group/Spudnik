@@ -19,6 +19,13 @@ export default class WikiCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
+			args: [
+				{
+					key: 'query',
+					prompt: 'what Wiki article should I look up?\n',
+					type: 'string'
+				}
+			],
 			description: 'Returns the summary of the first matching search result from Wikipedia.',
 			group: 'ref',
 			guildOnly: true,
@@ -27,14 +34,7 @@ export default class WikiCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			},
-			args: [
-				{
-					key: 'query',
-					prompt: 'what Wiki article should I look up?\n',
-					type: 'string'
-				}
-			]
+			}
 		});
 	}
 
@@ -56,8 +56,8 @@ export default class WikiCommand extends Command {
 						if (paragraph) {
 							return msg.embed({
 								color: getEmbedColor(msg),
-								title: page.raw.title,
-								description: `${paragraph}\n\n${page.raw.fullurl}`
+								description: `${paragraph}\n\n${page.raw.fullurl}`,
+								title: page.raw.title
 							});
 						}
 					};

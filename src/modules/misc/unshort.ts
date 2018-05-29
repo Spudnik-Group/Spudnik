@@ -19,6 +19,13 @@ export default class UnshortCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
 			aliases: ['unshorten'],
+			args: [
+				{
+					key: 'query',
+					prompt: 'What link should I unshorten?\n',
+					type: 'string'
+				}
+			],
 			description: 'Unshorten a link.',
 			examples: ['!unshort', '!unshorten'],
 			group: 'misc',
@@ -28,14 +35,7 @@ export default class UnshortCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			},
-			args: [
-				{
-					key: 'query',
-					prompt: 'What link should I unshorten?\n',
-					type: 'string'
-				}
-			]
+			}
 		});
 	}
 

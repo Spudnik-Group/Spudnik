@@ -26,8 +26,8 @@ export default class AdblockCommand extends Command {
 				}
 			],
 			description: 'Enable or disable the adblock feature.',
-			guildOnly: true,
 			group: 'mod',
+			guildOnly: true,
 			memberName: 'adblock',
 			name: 'adblock',
 			throttling: {

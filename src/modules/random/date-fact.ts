@@ -51,8 +51,8 @@ export default class DateFactCommand extends Command {
 				if (data && data.text) {
 					return msg.embed(new MessageEmbed({
 						color: getEmbedColor(msg),
-						title: 'Date Fact',
-						description: data.text
+						description: data.text,
+						title: 'Date Fact'
 					}));
 				}
 			} catch (err) {

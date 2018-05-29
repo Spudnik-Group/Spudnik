@@ -83,11 +83,11 @@ export default class StarboardCommand extends Command {
 	 */
 	public async run(msg: CommandMessage, args: { subCommand: string, content: Channel | string }): Promise<Message | Message[]> {
 		const starboardEmbed = new MessageEmbed({
-			color: getEmbedColor(msg),
 			author: {
-				name: 'Star Board',
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/133/white-medium-star_2b50.png'
-			}
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/133/white-medium-star_2b50.png',
+				name: 'Star Board'
+			},
+			color: getEmbedColor(msg)
 		});
 
 		const starboard = msg.client.provider.get(msg.guild, 'starboardChannel');

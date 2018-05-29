@@ -18,18 +18,6 @@ export default class RoleManagementCommands extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Used to add or remove a role to yourself, list available roles, and set the default role.',
-			examples: [
-				'!role add @role_name',
-				'!role remove @role_name',
-				'!role list',
-				'!role default @role_name'
-			],
-			details: 'add <role>|remove <role>|list|default <role>',
-			group: 'roles',
-			guildOnly: true,
-			memberName: 'role',
-			name: 'role',
 			args: [
 				{
 					key: 'subCommand',
@@ -42,7 +30,19 @@ export default class RoleManagementCommands extends Command {
 					prompt: 'what role do you want added to yourself?\n',
 					type: 'role'
 				}
-			]
+			],
+			description: 'Used to add or remove a role to yourself, list available roles, and set the default role.',
+			details: 'add <role>|remove <role>|list|default <role>',
+			examples: [
+				'!role add @role_name',
+				'!role remove @role_name',
+				'!role list',
+				'!role default @role_name'
+			],
+			group: 'roles',
+			guildOnly: true,
+			memberName: 'role',
+			name: 'role'
 		});
 	}
 
@@ -67,11 +67,11 @@ export default class RoleManagementCommands extends Command {
 	 */
 	public async run(msg: CommandMessage, args: { subCommand: string, role: Role }): Promise<Message | Message[]> {
 		const roleEmbed = new MessageEmbed({
-			color: getEmbedColor(msg),
 			author: {
-				name: 'Role Manager',
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/110/lock_1f512.png'
-			}
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/110/lock_1f512.png',
+				name: 'Role Manager'
+			},
+			color: getEmbedColor(msg)
 		});
 
 		let guildAssignableRoles: string[] = msg.client.provider.get(msg.guild, 'assignableRoles', []);
@@ -132,9 +132,9 @@ export default class RoleManagementCommands extends Command {
 
 					if (roles.length > 0) {
 						roleEmbed.fields.push({
+							inline: true,
 							name: 'Assignable Roles',
-							value: roles.join('\n'),
-							inline: true
+							value: roles.join('\n')
 						});
 					}
 				}
@@ -144,9 +144,9 @@ export default class RoleManagementCommands extends Command {
 
 					if (role) {
 						roleEmbed.fields.push({
+							inline: true,
 							name: 'Default Role',
-							value: role.name,
-							inline: true
+							value: role.name
 						});
 					}
 				}

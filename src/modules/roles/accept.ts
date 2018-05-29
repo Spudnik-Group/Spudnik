@@ -19,6 +19,14 @@ export default class AcceptCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
+			args: [
+				{
+					default: '',
+					key: 'channel',
+					prompt: 'Please provide a channel to allow the Terms of Service command to be used in.',
+					type: 'channel'
+				}
+			],
 			description: 'Accept the guild rules, and be auto-assigned the default role.',
 			examples: [
 				'!accept',
@@ -31,15 +39,7 @@ export default class AcceptCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			},
-			args: [
-				{
-					key: 'channel',
-					prompt: 'Please provide a channel to allow the Terms of Service command to be used in.',
-					type: 'channel',
-					default: ''
-				}
-			]
+			}
 		});
 	}
 
@@ -66,11 +66,11 @@ export default class AcceptCommand extends Command {
 	 */
 	public async run(msg: CommandMessage, args: { channel: Channel }): Promise<Message | Message[]> {
 		const acceptEmbed = new MessageEmbed({
-			color: getEmbedColor(msg),
 			author: {
-				name: 'Accept',
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/ballot-box-with-check_2611.png'
-			}
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/ballot-box-with-check_2611.png',
+				name: 'Accept'
+			},
+			color: getEmbedColor(msg)
 		});
 
 		if (msg.member.hasPermission('MANAGE_ROLES') && args.channel instanceof Channel) {

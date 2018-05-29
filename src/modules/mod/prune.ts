@@ -29,11 +29,11 @@ export default class PruneCommand extends Command {
 					key: 'limit',
 					max: 100,
 					prompt: 'how many messages would you like to delete?\n',
+					type: 'integer',
 					validate: (limit: number) => {
 						if (!isNaN(Number(limit)) && limit > 0) { return true; }
 						return 'Invalid number of messages to delete.';
-					},
-					type: 'integer'
+					}
 				},
 				{
 					default: '',
@@ -58,8 +58,8 @@ export default class PruneCommand extends Command {
 				\`bots\`: Messages sent by bots\n
 				\`uploads\`: Messages containing an attachment\n
 				\`links\`: Messages containing a link`,
-			guildOnly: true,
 			group: 'mod',
+			guildOnly: true,
 			memberName: 'prune',
 			name: 'prune',
 			throttling: {
@@ -119,7 +119,7 @@ export default class PruneCommand extends Command {
 				);
 			}
 
-			const messages: Collection<string, Message> = await msg.channel.messages.fetch({ limit });
+			const messages: Collection<string, Message> = await msg.channel.messages.fetch({ limit: limit });
 			const messagesToDelete: Collection<string, Message> = messages.filter(messageFilter);
 
 			await sendSimpleEmbeddedMessage(msg, `Pruning ${limit} messages.`).then((response: Message | Message[]) => {
@@ -131,7 +131,7 @@ export default class PruneCommand extends Command {
 			return sendSimpleEmbeddedMessage(msg, `Pruned ${limit} messages`, 5000);
 		}
 
-		const messages: Collection<string, Message> = await msg.channel.messages.fetch({ limit });
+		const messages: Collection<string, Message> = await msg.channel.messages.fetch({ limit: limit });
 		await sendSimpleEmbeddedMessage(msg, `Pruning ${limit} messages.`)
 			.then((response: Message | Message[]) => {
 				msg.channel.bulkDelete(messages.array().reverse())

@@ -53,8 +53,8 @@ export default class ChuckFactCommand extends Command {
 				if (data && data.value && data.value.joke) {
 					msg.embed(new MessageEmbed({
 						color: getEmbedColor(msg),
-						title: 'Chuck Norris Fact',
-						description: data.value.joke
+						description: data.value.joke,
+						title: 'Chuck Norris Fact'
 					}));
 				}
 			} catch (err) {

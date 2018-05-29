@@ -18,12 +18,6 @@ export default class IAmNotCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Used to add a role to yourself.',
-			examples: ['!iam @role_name'],
-			group: 'roles',
-			guildOnly: true,
-			memberName: 'iam',
-			name: 'iam',
 			args: [
 				{
 					default: '',
@@ -31,7 +25,13 @@ export default class IAmNotCommand extends Command {
 					prompt: 'what role do you want added to yourself?\n',
 					type: 'string'
 				}
-			]
+			],
+			description: 'Used to add a role to yourself.',
+			examples: ['!iam @role_name'],
+			group: 'roles',
+			guildOnly: true,
+			memberName: 'iam',
+			name: 'iam'
 		});
 	}
 
@@ -45,11 +45,11 @@ export default class IAmNotCommand extends Command {
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
 		const roleEmbed = new MessageEmbed({
-			color: getEmbedColor(msg),
 			author: {
-				name: 'Role Manager',
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/110/lock_1f512.png'
-			}
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/110/lock_1f512.png',
+				name: 'Role Manager'
+			},
+			color: getEmbedColor(msg)
 		});
 
 		const role = msg.guild.roles.find((r) => r.name.toLowerCase() === args.query.toLowerCase());

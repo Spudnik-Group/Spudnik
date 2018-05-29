@@ -52,8 +52,8 @@ export default class CatFactCommand extends Command {
 				if (data && data.fact) {
 					msg.embed(new MessageEmbed({
 						color: getEmbedColor(msg),
-						title: ':cat: Fact',
-						description: data.fact
+						description: data.fact,
+						title: ':cat: Fact'
 					}));
 				}
 			} catch (err) {

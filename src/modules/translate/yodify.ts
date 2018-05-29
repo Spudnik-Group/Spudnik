@@ -18,6 +18,13 @@ export default class YodifyCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
+			args: [
+				{
+					key: 'query',
+					prompt: 'your statement, I must have.\n',
+					type: 'string'
+				}
+			],
 			description: 'Translate to Yoda speak.',
 			group: 'translate',
 			guildOnly: true,
@@ -26,14 +33,7 @@ export default class YodifyCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			},
-			args: [
-				{
-					key: 'query',
-					prompt: 'your statement, I must have.\n',
-					type: 'string'
-				}
-			]
+			}
 		});
 	}
 

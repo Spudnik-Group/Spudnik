@@ -87,11 +87,11 @@ export default class TermsOfServiceCommand extends Command {
 	 */
 	public async run(msg: CommandMessage, args: { arg1: string, item: Channel | number, text: string }): Promise<Message | Message[]> {
 		const tosEmbed = new MessageEmbed({
-			color: getEmbedColor(msg),
 			author: {
-				name: 'Terms of Service',
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/ballot-box-with-check_2611.png'
-			}
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/ballot-box-with-check_2611.png',
+				name: 'Terms of Service'
+			},
+			color: getEmbedColor(msg)
 		});
 
 		const tosChannel: string = await msg.client.provider.get(msg.guild, 'tosChannel');
@@ -142,9 +142,9 @@ export default class TermsOfServiceCommand extends Command {
 
 					if (!message) {
 						message = {
+							body: '',
 							id: item - 1,
-							title: '',
-							body: ''
+							title: ''
 						};
 						tosMessages.push(message);
 					}
@@ -198,9 +198,9 @@ export default class TermsOfServiceCommand extends Command {
 					}
 					if (!message) {
 						message = {
+							body: '',
 							id: item - 1,
-							title: '',
-							body: ''
+							title: ''
 						};
 						tosMessages.push(message);
 					}

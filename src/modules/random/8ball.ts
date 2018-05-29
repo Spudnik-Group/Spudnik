@@ -22,6 +22,13 @@ export default class EightBallCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
+			args: [
+				{
+					key: 'query',
+					prompt: 'What would you like to ask the magic 8-ball?',
+					type: 'string'
+				}
+			],
 			description: 'Ask the magic 8 ball a question.',
 			group: 'random',
 			guildOnly: true,
@@ -30,14 +37,7 @@ export default class EightBallCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			},
-			args: [
-				{
-					key: 'query',
-					prompt: 'What would you like to ask the magic 8-ball?',
-					type: 'string'
-				}
-			]
+			}
 		});
 	}
 
@@ -55,8 +55,8 @@ export default class EightBallCommand extends Command {
 			response = eightBall[getRandomInt(0, eightBall.length) - 1];
 			return msg.embed(new MessageEmbed({
 				color: getEmbedColor(msg),
-				title: args.query,
-				description: `:8ball: **${response}**`
+				description: `:8ball: **${response}**`,
+				title: args.query
 			}));
 		} else {
 			return sendSimpleEmbeddedError(msg, response, 3000);

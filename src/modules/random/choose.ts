@@ -19,15 +19,6 @@ export default class ChooseCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Have the bot choose for you.',
-			group: 'random',
-			guildOnly: true,
-			memberName: 'choose',
-			name: 'choose',
-			throttling: {
-				duration: 3,
-				usages: 2
-			},
 			args: [
 				{
 					key: 'choice1',
@@ -39,7 +30,16 @@ export default class ChooseCommand extends Command {
 					prompt: 'What is the second option?',
 					type: 'string'
 				}
-			]
+			],
+			description: 'Have the bot choose for you.',
+			group: 'random',
+			guildOnly: true,
+			memberName: 'choose',
+			name: 'choose',
+			throttling: {
+				duration: 3,
+				usages: 2
+			}
 		});
 	}
 
@@ -59,8 +59,8 @@ export default class ChooseCommand extends Command {
 				name: `${msg.guild.me.user.username}`
 			},
 			color: getEmbedColor(msg),
-			title: ':thinking:',
-			description: `I choose ${options[getRandomInt(0, 1)]}`
+			description: `I choose ${options[getRandomInt(0, 1)]}`,
+			title: ':thinking:'
 		});
 	}
 }

@@ -24,6 +24,14 @@ export default class BrewCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
+			args: [
+				{
+					default: '',
+					key: 'query',
+					prompt: 'what brew or brewery should I look up?\n',
+					type: 'string'
+				}
+			],
 			description: 'Used to retrieve specific information about a brewery or brew.',
 			group: 'ref',
 			guildOnly: true,
@@ -32,15 +40,7 @@ export default class BrewCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			},
-			args: [
-				{
-					default: '',
-					key: 'query',
-					prompt: 'what brew or brewery should I look up?\n',
-					type: 'string'
-				}
-			]
+			}
 		});
 	}
 
@@ -54,17 +54,17 @@ export default class BrewCommand extends Command {
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
 		const brewEmbed: MessageEmbed = new MessageEmbed({
-			color: getEmbedColor(msg),
 			author: {
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/twitter/103/beer-mug_1f37a.png',
 				name: 'BreweryDB',
-				url: 'http://www.brewerydb.com/',
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/twitter/103/beer-mug_1f37a.png'
+				url: 'http://www.brewerydb.com/'
 			},
+			color: getEmbedColor(msg),
+			description: '',
 			footer: {
-				text: 'powered by BreweryDB',
-				icon_url: 'http://s3.amazonaws.com/brewerydb/Powered-By-BreweryDB.png'
-			},
-			description: ''
+				icon_url: 'http://s3.amazonaws.com/brewerydb/Powered-By-BreweryDB.png',
+				text: 'powered by BreweryDB'
+			}
 		});
 
 		request(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(args.query)}&key=${breweryDbApiKey}`, (err: Error, res: RequestResponse, body: string) => {
@@ -94,32 +94,32 @@ export default class BrewCommand extends Command {
 					}
 					if (typeof result.abv !== 'undefined') {
 						fields.push({
+							inline: true,
 							name: 'ABV (Alcohol By Volume)',
-							value: `${result.abv}%`,
-							inline: true
+							value: `${result.abv}%`
 						});
 					}
 					if (typeof result.ibu !== 'undefined') {
 						fields.push({
+							inline: true,
 							name: 'IBU (International Bitterness Units)',
-							value: `${result.ibu}/100`,
-							inline: true
+							value: `${result.ibu}/100`
 						});
 					}
 
 					if (typeof result.website !== 'undefined') {
 						fields.push({
+							inline: true,
 							name: 'Website',
-							value: result.website,
-							inline: true
+							value: result.website
 						});
 					}
 
 					if (typeof result.established !== 'undefined') {
 						fields.push({
+							inline: true,
 							name: 'Year Established',
-							value: result.established,
-							inline: true
+							value: result.established
 						});
 					}
 

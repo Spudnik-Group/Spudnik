@@ -18,6 +18,14 @@ export default class LmgtfyCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
+			args: [
+				{
+					key: 'query',
+					parse: (query: string) => require('remove-markdown')(query),
+					prompt: 'What should I Google for that n00b?\n',
+					type: 'string'
+				}
+			],
 			description: 'Returns a Let Me Google That For You link, so you can school a n00b.',
 			details: 'syntax: `!lmgtfy (query)`',
 			examples: ['!lmgtfy port forwarding'],
@@ -28,15 +36,7 @@ export default class LmgtfyCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			},
-			args: [
-				{
-					key: 'query',
-					prompt: 'What should I Google for that n00b?\n',
-					type: 'string',
-					parse: (query: string) => require('remove-markdown')(query)
-				}
-			]
+			}
 		});
 	}
 

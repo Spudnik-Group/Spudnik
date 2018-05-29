@@ -34,8 +34,8 @@ export default class KickCommand extends Command {
 			],
 			description: 'Kicks the user.',
 			details: '<user> [reason] [daysOfMessages]',
-			guildOnly: true,
 			group: 'mod',
+			guildOnly: true,
 			memberName: 'kick',
 			name: 'kick',
 			throttling: {
@@ -67,11 +67,11 @@ export default class KickCommand extends Command {
 	public async run(msg: CommandMessage, args: { member: GuildMember, reason: string }): Promise<Message | Message[] | any> {
 		const memberToKick: GuildMember = args.member;
 		const kickEmbed: MessageEmbed = new MessageEmbed({
-			color: getEmbedColor(msg),
 			author: {
-				name: 'Das Boot',
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/eject-symbol_23cf.png'
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/eject-symbol_23cf.png',
+				name: 'Das Boot'
 			},
+			color: getEmbedColor(msg),
 			description: ''
 		});
 

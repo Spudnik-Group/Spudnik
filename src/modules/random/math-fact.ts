@@ -52,8 +52,8 @@ export default class MathFactCommand extends Command {
 				if (data && data.text) {
 					return msg.embed(new MessageEmbed({
 						color: getEmbedColor(msg),
-						title: 'Math Fact',
-						description: data.text
+						description: data.text,
+						title: 'Math Fact'
 					}));
 				}
 			} catch (err) {

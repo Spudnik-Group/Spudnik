@@ -18,6 +18,14 @@ export default class GitGudCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
+			args: [
+				{
+					default: '',
+					key: 'mention',
+					prompt: 'Who should gitgud?',
+					type: 'string'
+				}
+			],
 			description: 'Informs someone that they should "git gud".',
 			group: 'random',
 			guildOnly: true,
@@ -26,15 +34,7 @@ export default class GitGudCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			},
-			args: [
-				{
-					default: '',
-					key: 'mention',
-					prompt: 'Who should gitgud?',
-					type: 'string'
-				}
-			]
+			}
 		});
 	}
 

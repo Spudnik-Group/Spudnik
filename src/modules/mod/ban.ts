@@ -40,8 +40,8 @@ export default class BanCommand extends Command {
 			],
 			description: 'Bans the user, optionally deleting messages from them in the last x days.',
 			details: 'userMention [reason] [daysOfMessages]',
-			guildOnly: true,
 			group: 'mod',
+			guildOnly: true,
 			memberName: 'ban',
 			name: 'ban',
 			throttling: {
@@ -73,11 +73,11 @@ export default class BanCommand extends Command {
 	public async run(msg: CommandMessage, args: { member: GuildMember, reason: string, daysOfMessages: number }): Promise<Message | Message[]> {
 		const memberToBan: GuildMember = args.member;
 		const banEmbed: MessageEmbed = new MessageEmbed({
-			color: getEmbedColor(msg),
 			author: {
-				name: 'Ban Hammer',
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/hammer_1f528.png'
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/hammer_1f528.png',
+				name: 'Ban Hammer'
 			},
+			color: getEmbedColor(msg),
 			description: ''
 		});
 

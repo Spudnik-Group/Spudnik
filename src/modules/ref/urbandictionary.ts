@@ -19,6 +19,14 @@ export default class UrbanCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
+			args: [
+				{
+					default: '',
+					key: 'query',
+					prompt: 'what should I look up on Urban Dictionary?\n',
+					type: 'string'
+				}
+			],
 			description: 'Looks something up on Urban Dictionary. If no query is supplied, returns a random thing.',
 			group: 'ref',
 			guildOnly: true,
@@ -27,15 +35,7 @@ export default class UrbanCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			},
-			args: [
-				{
-					default: '',
-					key: 'query',
-					prompt: 'what should I look up on Urban Dictionary?\n',
-					type: 'string'
-				}
-			]
+			}
 		});
 	}
 
@@ -67,11 +67,11 @@ export default class UrbanCommand extends Command {
 
 				return msg.embed({
 					color: getEmbedColor(msg),
-					title,
 					description: message,
 					footer: {
 						text: example
-					}
+					},
+					title: title
 				});
 			});
 		} catch (err) {

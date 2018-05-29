@@ -76,11 +76,11 @@ export default class WelcomeCommand extends Command {
 	 */
 	public async run(msg: CommandMessage, args: { subCommand: string, content: string }): Promise<Message | Message[]> {
 		const welcomeEmbed = new MessageEmbed({
-			color: getEmbedColor(msg),
 			author: {
-				name: 'Server Welcome Message',
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png'
-			}
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png',
+				name: 'Server Welcome Message'
+			},
+			color: getEmbedColor(msg)
 		});
 
 		const welcomeChannel = msg.client.provider.get(msg.guild, 'welcomeChannel', msg.guild.systemChannelID);
