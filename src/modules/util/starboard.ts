@@ -1,8 +1,8 @@
+import { oneLine } from 'common-tags';
 import { Channel, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError } from '../../lib/helpers';
-import { oneLine } from 'common-tags';
 
 /**
  * Adjusts starboard settings.
@@ -29,7 +29,7 @@ export default class StarboardCommand extends Command {
 				{
 					default: '',
 					key: 'content',
-					prompt: 'What would you like it set to?\n',
+					prompt: 'channelMention or trigger emoji',
 					type: 'channel|string'
 				}
 			],
@@ -37,12 +37,13 @@ export default class StarboardCommand extends Command {
 			details: oneLine`
 				syntax: \`!starboard(channelMention|trigger|enable|disable) [new starboard emoji | channel id]\`\n
 				\n
-				\`(channel)(channel mention)\` - sets Star Board channel to the channel supplied.\n
-				\`trigger[emoji]\` - sets emoji to save to star board. If blank, shows current trigger emoji.\n
+				\`(channel) (#channelMention)\` - sets Star Board channel to the channel supplied.\n
+				\`trigger [emoji]\` - sets emoji to save to star board. If blank, shows current trigger emoji.\n
 				\`!enable\` - enables the Star Board feature.\n
 				\`!disable\` - disables the Star Board feature.\n
 				\n
-				Administrator permission required.`,
+				Administrator permission required.
+			`,
 			examples: [
 				'!starboard channel #channelMention',
 				'!starboard trigger',

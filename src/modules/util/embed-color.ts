@@ -1,6 +1,7 @@
+import { oneLine } from 'common-tags';
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 /**
  * Change the default embed color for the server.
@@ -18,11 +19,6 @@ export default class EmbedColorCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Change the default embed color the bot uses for responses.',
-			group: 'util',
-			guildOnly: true,
-			memberName: 'embedcolor',
-			name: 'embedcolor',
 			args: [
 				{
 					default: '',
@@ -39,6 +35,20 @@ export default class EmbedColorCommand extends Command {
 					}
 				}
 			],
+			description: 'Used to change the default embed color the bot uses for responses, or reset it.',
+			details: oneLine`
+				syntax: \`!embedcolor [hex color]\`\n
+				\n
+				Manage Guild permission required.
+			`,
+			examples: [
+				'!embedcolor',
+				'!embedcolor 5592405'
+			],
+			group: 'util',
+			guildOnly: true,
+			memberName: 'embedcolor',
+			name: 'embedcolor',
 			throttling: {
 				duration: 3,
 				usages: 2
@@ -54,7 +64,7 @@ export default class EmbedColorCommand extends Command {
 	 * @memberof EmbedColorCommand
 	 */
 	public hasPermission(msg: CommandMessage): boolean {
-		return this.client.isOwner(msg.author) || msg.member.hasPermission(['ADMINISTRATOR', 'MANAGE_GUILD'], { checkAdmin: true, checkOwner: true });
+		return this.client.isOwner(msg.author) || msg.member.hasPermission('MANAGE_GUILD');
 	}
 
 	/**
@@ -65,12 +75,26 @@ export default class EmbedColorCommand extends Command {
 	 * @memberof EmbedColorCommand
 	 */
 	public async run(msg: CommandMessage, args: { color: string }): Promise<Message | Message[]> {
+		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
 		if (args.color === '') {
-			msg.client.provider.remove(msg.guild, 'embedColor');
-			return sendSimpleEmbeddedMessage(msg, 'Default Embed Color cleared.');
+			msg.client.provider.remove(msg.guild, 'embedColor')
+				.then(() => {
+					return sendSimpleEmbeddedMessage(msg, 'Default Embed Color cleared.');
+				})
+				.catch((err: Error) => {
+					msg.client.emit('warn', `Error in command util:embedcolor: ${err}`);
+					return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
+				});
 		} else {
-			msg.client.provider.set(msg.guild, 'embedColor', args.color);
-			return sendSimpleEmbeddedMessage(msg, `Default Embed Color changed to: ${args.color}. How do I look?`);
+			msg.client.provider.set(msg.guild, 'embedColor', args.color)
+				.then(() => {
+					return sendSimpleEmbeddedMessage(msg, `Default Embed Color changed to: ${args.color}. How do I look?`);
+				})
+				.catch((err: Error) => {
+					msg.client.emit('warn', `Error in command util:embedcolor: ${err}`);
+					return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
+				});
 		}
+		return response;
 	}
 }

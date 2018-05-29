@@ -1,6 +1,7 @@
 import { GuildMember, Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { oneLine } from 'common-tags';
 
 /**
  * Change the bot's nickname on your server, or reset it.
@@ -18,11 +19,6 @@ export default class NickCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Change the bot\'s nickname on your server, or reset it.',
-			group: 'util',
-			guildOnly: true,
-			memberName: 'nick',
-			name: 'nick',
 			args: [
 				{
 					default: '',
@@ -31,6 +27,20 @@ export default class NickCommand extends Command {
 					type: 'string'
 				}
 			],
+			description: 'Used to change the bot\'s nickname on your server, or reset it.',
+			details: oneLine`
+				syntax: \`!nick [new nickname]\`\n
+				\n
+				Manage Nicknames permission required.
+			`,
+			examples: [
+				'!nick',
+				'!nick AwesomeBot'
+			],
+			group: 'util',
+			guildOnly: true,
+			memberName: 'nick',
+			name: 'nick',
 			throttling: {
 				duration: 3,
 				usages: 2

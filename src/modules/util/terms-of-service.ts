@@ -30,7 +30,7 @@ export default class TermsOfServiceCommand extends Command {
 				{
 					default: '',
 					key: 'item',
-					prompt: 'channel id or message number',
+					prompt: 'channelMention or message number',
 					type: 'channel|integer'
 				},
 				{
@@ -44,7 +44,7 @@ export default class TermsOfServiceCommand extends Command {
 			details: oneLine`
 				syntax: \`!tos(channel|title|body|list) [channel mention | message number][text]\n
 				\n
-				\`channel mention\` - Sets the channel to display the terms of service in.\n
+				\`channel (#channelMention)\` - Sets the channel to display the terms of service in.\n
 				\`title (info block number) (text)\` - Edit the title of a terms of service info block.\n
 				\`body (info block number) (text)\` - Edit the body of a terms of service info block.\n
 				\`list\` - returns all the terms of service info blocks.\n
