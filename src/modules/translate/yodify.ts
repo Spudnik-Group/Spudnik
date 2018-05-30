@@ -1,6 +1,7 @@
+import { oneLine } from 'common-tags';
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 /**
  * Convert a statement to be structured as Yoda speaks.
@@ -21,11 +22,15 @@ export default class YodifyCommand extends Command {
 			args: [
 				{
 					key: 'query',
-					prompt: 'your statement, I must have.\n',
+					prompt: 'Your statement, I must have.\n',
 					type: 'string'
 				}
 			],
-			description: 'Translate to Yoda speak.',
+			description: 'Translates text to Yoda speak.',
+			details: oneLine`
+				syntax: \`!yodify <text>\`
+			`,
+			examples: ['!yodify Give me better input than this'],
 			group: 'translate',
 			guildOnly: true,
 			memberName: 'yodify',
@@ -46,19 +51,24 @@ export default class YodifyCommand extends Command {
 	 * @memberof YodifyCommand
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
+		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
 		require('soap').createClient('http://www.yodaspeak.co.uk/webservice/yodatalk.php?wsdl', (err: Error, client: any) => {
 			if (err) {
-				return sendSimpleEmbeddedMessage(msg, 'Lost, I am. Not found, the web service is. Hrmm...');
+				msg.delete();
+				msg.client.emit('warn', `Error in command translate:yodify: ${err}`);
+				return sendSimpleEmbeddedError(msg, 'Lost, I am. Not found, the web service is. Hrmm...', 3000);
 			}
 
 			client.yodaTalk({ inputText: args.query }, (err: Error, result: any) => {
 				if (err) {
-					return sendSimpleEmbeddedMessage(msg, 'Confused, I am. Disturbance in the force, there is. Hrmm...');
+					msg.delete();
+					msg.client.emit('warn', `Error in command translate:yodify: ${err}`);
+					return sendSimpleEmbeddedError(msg, 'Confused, I am. Disturbance in the force, there is. Hrmm...', 3000);
 				}
 				msg.delete();
 				return sendSimpleEmbeddedMessage(msg, result.return);
 			});
 		});
-		return sendSimpleEmbeddedMessage(msg, 'Loading...');
+		return response;
 	}
 }
