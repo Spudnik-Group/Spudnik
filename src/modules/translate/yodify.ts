@@ -32,7 +32,6 @@ export default class YodifyCommand extends Command {
 			`,
 			examples: ['!yodify Give me better input than this'],
 			group: 'translate',
-			guildOnly: true,
 			memberName: 'yodify',
 			name: 'yodify',
 			throttling: {

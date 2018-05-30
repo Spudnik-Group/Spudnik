@@ -21,7 +21,6 @@ export default class SupportCommand extends Command {
 			description: 'Returns a link to my support server!',
 			examples: ['!support'],
 			group: 'misc',
-			guildOnly: true,
 			memberName: 'support',
 			name: 'support',
 			throttling: {

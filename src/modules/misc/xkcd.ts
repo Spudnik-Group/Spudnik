@@ -45,7 +45,6 @@ export default class XkcdCommand extends Command {
 				'!xkcd 323'
 			],
 			group: 'misc',
-			guildOnly: true,
 			memberName: 'xkcd',
 			name: 'xkcd',
 			throttling: {

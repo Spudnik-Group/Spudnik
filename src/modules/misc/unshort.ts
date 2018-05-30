@@ -36,7 +36,6 @@ export default class UnshortCommand extends Command {
 				'!unshorten http://bit.ly/Wn2Xdz'
 			],
 			group: 'misc',
-			guildOnly: true,
 			memberName: 'unshort',
 			name: 'unshort',
 			throttling: {

@@ -27,7 +27,6 @@ export default class SayCommand extends Command {
 			description: 'Returns the text provided.',
 			examples: ['!say Hi there!'],
 			group: 'misc',
-			guildOnly: true,
 			memberName: 'say',
 			name: 'say'
 		});

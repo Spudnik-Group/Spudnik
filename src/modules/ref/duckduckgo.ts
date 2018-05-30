@@ -37,7 +37,6 @@ export default class DdgCommand extends Command {
 				'!ddg github'
 			],
 			group: 'ref',
-			guildOnly: true,
 			memberName: 'ddg',
 			name: 'ddg',
 			throttling: {

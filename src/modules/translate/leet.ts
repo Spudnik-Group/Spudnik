@@ -32,7 +32,6 @@ export default class LeetCommand extends Command {
 			`,
 			examples: ['!leet Give me better input than this'],
 			group: 'translate',
-			guildOnly: true,
 			memberName: 'leet',
 			name: 'leet',
 			throttling: {

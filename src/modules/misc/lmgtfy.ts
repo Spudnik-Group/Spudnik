@@ -30,7 +30,6 @@ export default class LmgtfyCommand extends Command {
 			details: 'syntax: `!lmgtfy (query)`',
 			examples: ['!lmgtfy port forwarding'],
 			group: 'misc',
-			guildOnly: true,
 			memberName: 'lmgtfy',
 			name: 'lmgtfy',
 			throttling: {

@@ -33,7 +33,6 @@ export default class WikiCommand extends Command {
 			`,
 			examples: ['!wiki Sputnik 1'],
 			group: 'ref',
-			guildOnly: true,
 			memberName: 'wiki',
 			name: 'wiki',
 			throttling: {

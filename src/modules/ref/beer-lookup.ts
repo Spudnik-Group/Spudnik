@@ -42,7 +42,6 @@ export default class BrewCommand extends Command {
 				'!brew Monday Night Brewing'
 			],
 			group: 'ref',
-			guildOnly: true,
 			memberName: 'brew',
 			name: 'brew',
 			throttling: {

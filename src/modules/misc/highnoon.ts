@@ -23,7 +23,6 @@ export default class HighNoonCommand extends Command {
 			description: 'Displays the High Noon XKCD comic.',
 			examples: ['!highnoon'],
 			group: 'misc',
-			guildOnly: true,
 			memberName: 'highnoon',
 			name: 'highnoon',
 			throttling: {
