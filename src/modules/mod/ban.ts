@@ -39,7 +39,16 @@ export default class BanCommand extends Command {
 				}
 			],
 			description: 'Bans the user, optionally deleting messages from them in the last x days.',
-			details: 'userMention [reason] [daysOfMessages]',
+			details: oneLine`
+				syntax: \`!ban userMention <reason> (daysOfMessages)\`\n
+				\n
+				User must be banned with reason.\n
+				\`daysOfMessages\` is not required but must be an integer if supplied.\n
+			`,
+			examples: [
+				'!ban @user being a pleb',
+				'!ban @user being a pleb 7'
+			],
 			group: 'mod',
 			guildOnly: true,
 			memberName: 'ban',

@@ -33,7 +33,14 @@ export default class KickCommand extends Command {
 				}
 			],
 			description: 'Kicks the user.',
-			details: '<user> [reason] [daysOfMessages]',
+			details: oneLine`
+				syntax: \`!kick userMention <reason>\`\n
+				\n
+				User must be kicked with reason.\n
+			`,
+			examples: [
+				'!kick @user being a pleb'
+			],
 			group: 'mod',
 			guildOnly: true,
 			memberName: 'kick',

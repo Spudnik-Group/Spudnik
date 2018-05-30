@@ -52,12 +52,17 @@ export default class PruneCommand extends Command {
 			description: 'Deletes messages.',
 			details: oneLine`Deletes messages.\n
 				\n
-				Here is a list of filters:\n
+				List of filters:\n
 				\`invites\`: Messages containing an invite\n
-				\`user (userMention)\`: Messages sent by @user\n
+				\`user <userMention>\`: Messages sent by @user\n
 				\`bots\`: Messages sent by bots\n
 				\`uploads\`: Messages containing an attachment\n
 				\`links\`: Messages containing a link`,
+			examples: [
+				'!prune 50',
+				'!prune 15 links',
+				'!prune 50 user @user'
+			],
 			group: 'mod',
 			guildOnly: true,
 			memberName: 'prune',
