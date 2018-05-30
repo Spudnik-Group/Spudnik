@@ -20,11 +20,11 @@ export default class SayCommand extends Command {
 			args: [
 				{
 					key: 'text',
-					prompt: 'What text would you like the bot to say?',
+					prompt: 'What text would you like me to say?',
 					type: 'string'
 				}
 			],
-			description: 'Replies with the text you provide.',
+			description: 'Returns the text provided.',
 			examples: ['!say Hi there!'],
 			group: 'misc',
 			guildOnly: true,

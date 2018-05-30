@@ -37,9 +37,10 @@ export default class EmbedColorCommand extends Command {
 			],
 			description: 'Used to change the default embed color the bot uses for responses, or reset it.',
 			details: oneLine`
-				syntax: \`!embedcolor [hex color]\`\n
+				syntax: \`!embedcolor (hex color)\`\n
 				\n
 				Supplying no hex color resets the embed color to default.\n
+				\n
 				Manage Guild permission required.
 			`,
 			examples: [

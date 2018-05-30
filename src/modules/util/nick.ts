@@ -29,9 +29,10 @@ export default class NickCommand extends Command {
 			],
 			description: 'Used to change the bot\'s nickname on your server, or reset it.',
 			details: oneLine`
-				syntax: \`!nick [new nickname]\`\n
+				syntax: \`!nick (new nickname)\`\n
 				\n
 				Supplying no nickname resets the nickname to default.\n
+				\n
 				Manage Nicknames permission required.
 			`,
 			examples: [

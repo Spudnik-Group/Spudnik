@@ -1,3 +1,4 @@
+import { oneLine } from 'common-tags';
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import * as request from 'request';
@@ -33,9 +34,16 @@ export default class XkcdCommand extends Command {
 					}
 				}
 			],
-			description: 'Displays a given XKCD comic number (or the latest if nothing specified)',
-			details: 'syntax: `!xkcd [comic number]`\n',
-			examples: ['!xkcd', '!xkcd 323'],
+			description: 'Returns a given XKCD comic number (or the latest if nothing specified)',
+			details: oneLine`
+				syntax: \`!xkcd (comic number)\`\n
+				\n
+				Supplying no comic number returns the latest comic.\n
+			`,
+			examples: [
+				'!xkcd',
+				'!xkcd 323'
+			],
 			group: 'misc',
 			guildOnly: true,
 			memberName: 'xkcd',
@@ -62,7 +70,7 @@ export default class XkcdCommand extends Command {
 			url += `${args.comicNumber}/`;
 		}
 		url += 'info.0.json';
-		request({ url: url }, (err: Error, res: RequestResponse, body: string) => {
+		request({ url }, (err: Error, res: RequestResponse, body: string) => {
 			try {
 				const comic = JSON.parse(body);
 				msg.delete();

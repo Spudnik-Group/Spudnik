@@ -41,6 +41,7 @@ export default class HighNoonCommand extends Command {
 	 * @memberof HighNoonCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
+		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
 		request({
 			followAllRedirects: true,
 			uri: 'http://imgs.xkcd.com/comics/now.png'
@@ -51,6 +52,6 @@ export default class HighNoonCommand extends Command {
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			}
 		});
-		return sendSimpleEmbeddedMessage(msg, 'Loading...');
+		return response;
 	}
 }

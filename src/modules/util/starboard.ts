@@ -35,12 +35,12 @@ export default class StarboardCommand extends Command {
 			],
 			description: 'Used to configure the :star: Star Board feature.',
 			details: oneLine`
-				syntax: \`!starboard(channelMention|trigger|enable|disable) [new starboard emoji | channel id]\`\n
+				syntax: \`!starboard <channelMention|trigger|enable|disable> (new starboard emoji | channel id)\`\n
 				\n
-				\`(channel) (#channelMention)\` - sets Star Board channel to the channel supplied.\n
-				\`trigger [emoji]\` - sets emoji to save to star board. If blank, shows current trigger emoji.\n
-				\`!enable\` - enables the Star Board feature.\n
-				\`!disable\` - disables the Star Board feature.\n
+				\`channel <#channelMention>\` - sets Star Board channel to the channel supplied.\n
+				\`trigger <emoji>\` - sets emoji to save to star board. If blank, shows current trigger emoji.\n
+				\`enable\` - enables the Star Board feature.\n
+				\`disable\` - disables the Star Board feature.\n
 				\n
 				Administrator permission required.
 			`,

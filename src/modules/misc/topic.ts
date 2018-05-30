@@ -40,22 +40,18 @@ export default class TopicCommand extends Command {
 	 * @memberof TopicCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
-		const channel = msg.channel;
-		let response = '';
-		if (channel instanceof TextChannel) {
-			response = channel.topic;
-			if (response === null) {
-				response = "There doesn't seem to be a topic for this channel. Maybe ask the mods?";
-			} else if (response.trim() === '') {
-				response = "There doesn't seem to be a topic for this channel. Maybe ask the mods?";
-			}
-			return msg.embed({
-				color: getEmbedColor(msg),
-				description: response,
-				thumbnail: { url: this.client.user.avatarURL },
-				title: channel.name
-			});
+		const channel = msg.channel as TextChannel;
+		let response = channel.topic;
+		if (response === null) {
+			response = "There doesn't seem to be a topic for this channel. Maybe ask the mods?";
+		} else if (response.trim() === '') {
+			response = "There doesn't seem to be a topic for this channel. Maybe ask the mods?";
 		}
-		return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
+		return msg.embed({
+			color: getEmbedColor(msg),
+			description: response,
+			thumbnail: { url: this.client.user.avatarURL },
+			title: channel.name
+		});
 	}
 }

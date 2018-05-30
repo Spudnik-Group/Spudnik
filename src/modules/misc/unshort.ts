@@ -1,3 +1,4 @@
+import { oneLine } from 'common-tags';
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
@@ -27,7 +28,13 @@ export default class UnshortCommand extends Command {
 				}
 			],
 			description: 'Unshorten a link.',
-			examples: ['!unshort', '!unshorten'],
+			details: oneLine`
+				syntax: \`!unshort <short link>\`
+			`,
+			examples: [
+				'!unshort http://bit.ly/Wn2Xdz',
+				'!unshorten http://bit.ly/Wn2Xdz'
+			],
 			group: 'misc',
 			guildOnly: true,
 			memberName: 'unshort',
@@ -58,7 +65,7 @@ export default class UnshortCommand extends Command {
 				return sendSimpleEmbeddedError(msg, 'This url can\'t be expanded. Make sure the protocol exists (Http/Https) and try again.', 3000);
 			})
 			.catch((err: Error) => {
-				msg.client.emit('error', `Error with command 'unshort'\nError: ${err}`);
+				msg.client.emit('warn', `Error in command misc:unshort: ${err}`);
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. The url may not be valid. Try again?', 3000);
 			});
 		return response;

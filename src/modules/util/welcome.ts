@@ -35,10 +35,10 @@ export default class WelcomeCommand extends Command {
 			],
 			description: 'Used to configure the message to be sent when a new user join your guild.',
 			details: oneLine`
-				syntax: \`!welcome (message|channel|enable|disable) [text | #channelMention]\`\n
+				syntax: \`!welcome <message|channel|enable|disable> (text | #channelMention)\`\n
 				\n
-				\`message <text to welcome/heckle (leave blank to show current)>\` - Set/return the welcome message. Use { guild } for guild name, and { user } to reference the user joining.\n
-				\`channel (#channelMention)\` - Set the channel for the welcome message to be displayed.\n
+				\`message (text to welcome/heckle)\` - Set/return the welcome message. Use { guild } for guild name, and { user } to reference the user joining. Leave blank to show current.\n
+				\`channel <#channelMention>\` - Set the channel for the welcome message to be displayed.\n
 				\`enable\` - Enable the welcome message feature.\n
 				\`disable\` - Disable the welcome message feature.\n
 				\n
