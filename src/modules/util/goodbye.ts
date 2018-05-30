@@ -1,5 +1,5 @@
 import { oneLine } from 'common-tags';
-import { Message, MessageEmbed } from 'discord.js';
+import { Channel, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError } from '../../lib/helpers';
@@ -30,7 +30,7 @@ export default class GoodbyeCommand extends Command {
 					default: '',
 					key: 'content',
 					prompt: 'channelMention or goodbye text\n',
-					type: 'string'
+					type: 'channel|string'
 				}
 			],
 			description: 'Used to configure the message to be sent when a user leaves your guild.',
@@ -74,7 +74,7 @@ export default class GoodbyeCommand extends Command {
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof GoodbyeCommand
 	 */
-	public async run(msg: CommandMessage, args: { subCommand: string, content: string }): Promise<Message | Message[]> {
+	public async run(msg: CommandMessage, args: { subCommand: string, content: Channel | string }): Promise<Message | Message[]> {
 		const goodbyeEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png',
@@ -88,13 +88,14 @@ export default class GoodbyeCommand extends Command {
 		const goodbyeEnabled = msg.client.provider.get(msg.guild, 'goodbyeEnabled', false);
 		switch (args.subCommand.toLowerCase()) {
 			case 'channel': {
-				if (goodbyeChannel === msg.channel.id) {
-					goodbyeEmbed.description = `Goodbye channel already set to <#${msg.channel.id}>!`;
+				const channelID = (args.content as Channel).id;
+				if (goodbyeChannel && goodbyeChannel === channelID) {
+					goodbyeEmbed.description = `Goodbye channel already set to <#${channelID}>!`;
 					return msg.embed(goodbyeEmbed);
 				} else {
-					return msg.client.provider.set(msg.guild, 'goodbyeChannel', msg.channel.id)
+					return msg.client.provider.set(msg.guild, 'goodbyeChannel', channelID)
 						.then(() => {
-							goodbyeEmbed.description = `Goodbye channel set to <#${msg.channel.id}>.`;
+							goodbyeEmbed.description = `Goodbye channel set to <#${channelID}>.`;
 							return msg.embed(goodbyeEmbed);
 						})
 						.catch((err: Error) => {

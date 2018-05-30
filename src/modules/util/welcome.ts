@@ -1,5 +1,5 @@
 import { oneLine } from 'common-tags';
-import { Message, MessageEmbed } from 'discord.js';
+import { Channel, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError } from '../../lib/helpers';
@@ -30,7 +30,7 @@ export default class WelcomeCommand extends Command {
 					default: '',
 					key: 'content',
 					prompt: 'channelMention or welcome text\n',
-					type: 'string'
+					type: 'channel|string'
 				}
 			],
 			description: 'Used to configure the message to be sent when a new user join your guild.',
@@ -74,7 +74,7 @@ export default class WelcomeCommand extends Command {
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof WelcomeCommand
 	 */
-	public async run(msg: CommandMessage, args: { subCommand: string, content: string }): Promise<Message | Message[]> {
+	public async run(msg: CommandMessage, args: { subCommand: string, content: Channel | string }): Promise<Message | Message[]> {
 		const welcomeEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png',
@@ -88,13 +88,14 @@ export default class WelcomeCommand extends Command {
 		const welcomeEnabled = msg.client.provider.get(msg.guild, 'welcomeEnabled', false);
 		switch (args.subCommand.toLowerCase()) {
 			case 'channel': {
-				if (welcomeChannel === msg.channel.id) {
-					welcomeEmbed.description = `Welcome channel already set to <#${msg.channel.id}>!`;
+				const channelID = (args.content as Channel).id;
+				if (welcomeChannel && welcomeChannel === channelID) {
+					welcomeEmbed.description = `Welcome channel already set to <#${channelID}>!`;
 					return msg.embed(welcomeEmbed);
 				} else {
-					return msg.client.provider.set(msg.guild, 'welcomeChannel', msg.channel.id)
+					return msg.client.provider.set(msg.guild, 'welcomeChannel', channelID)
 						.then(() => {
-							welcomeEmbed.description = `Welcome channel set to <#${msg.channel.id}>.`;
+							welcomeEmbed.description = `Welcome channel set to <#${channelID}>.`;
 							return msg.embed(welcomeEmbed);
 						})
 						.catch((err: Error) => {
