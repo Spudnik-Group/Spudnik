@@ -86,6 +86,7 @@ export default class XkcdCommand extends Command {
 				});
 			} catch (err) {
 				msg.delete();
+				msg.client.emit('warn', `Error in command misc:xkcd: ${err}`);
 				return sendSimpleEmbeddedError(msg, `Couldn't fetch an XKCD for ${args.comicNumber}`, 3000);
 			}
 		});

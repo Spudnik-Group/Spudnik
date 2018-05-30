@@ -49,6 +49,7 @@ export default class HighNoonCommand extends Command {
 			if (resp.request.uri.href) {
 				return sendSimpleEmbeddedImage(msg, resp.request.uri.href.toString());
 			} else {
+				msg.client.emit('warn', `Error in command misc:highnoon: ${err}`);
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			}
 		});
