@@ -69,7 +69,7 @@ export default class XkcdCommand extends Command {
 			url += `${args.comicNumber}/`;
 		}
 		url += 'info.0.json';
-		request({ url }, (err: Error, res: RequestResponse, body: string) => {
+		request({ url: url }, (err: Error, res: RequestResponse, body: string) => {
 			try {
 				const comic = JSON.parse(body);
 				msg.delete();

@@ -83,7 +83,7 @@ export default class UrbanCommand extends Command {
 					footer: {
 						text: example
 					},
-					title
+					title: title
 				});
 			});
 		} catch (err) {
