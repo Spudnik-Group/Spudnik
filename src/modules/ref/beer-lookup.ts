@@ -1,3 +1,4 @@
+import { oneLine } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { RequestResponse } from 'request';
@@ -26,13 +27,20 @@ export default class BrewCommand extends Command {
 		super(client, {
 			args: [
 				{
-					default: '',
 					key: 'query',
-					prompt: 'what brew or brewery should I look up?\n',
+					prompt: 'What brew or brewery should I look up?\n',
 					type: 'string'
 				}
 			],
-			description: 'Used to retrieve specific information about a brewery or brew.',
+			description: 'Returns information about a brewery or brew. Uses the BreweryDB API.',
+			details: oneLine`
+				syntax: \`!brew <brew|brewery name>\`
+			`,
+			examples: [
+				'!brew guinness blonde',
+				'!brew death by coconut',
+				'!brew Monday Night Brewing'
+			],
 			group: 'ref',
 			guildOnly: true,
 			memberName: 'brew',
@@ -53,6 +61,7 @@ export default class BrewCommand extends Command {
 	 * @memberof BrewCommand
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
+		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
 		const brewEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/twitter/103/beer-mug_1f37a.png',
@@ -69,7 +78,8 @@ export default class BrewCommand extends Command {
 
 		request(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(args.query)}&key=${breweryDbApiKey}`, (err: Error, res: RequestResponse, body: string) => {
 			if (err !== undefined && err !== null) {
-				sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
+				msg.client.emit('warn', `Error in command ref:brew: ${err}`);
+				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			} else if (typeof body !== 'undefined') {
 				const response = JSON.parse(body);
 				const result = response.data[0];
@@ -140,6 +150,6 @@ export default class BrewCommand extends Command {
 			}
 			return msg.embed(brewEmbed);
 		});
-		return sendSimpleEmbeddedMessage(msg, 'Loading...');
+		return response;
 	}
 }

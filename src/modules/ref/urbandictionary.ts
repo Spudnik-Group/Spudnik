@@ -1,3 +1,4 @@
+import { oneLine } from 'common-tags';
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
@@ -23,15 +24,26 @@ export default class UrbanCommand extends Command {
 				{
 					default: '',
 					key: 'query',
-					prompt: 'what should I look up on Urban Dictionary?\n',
+					prompt: 'What should I look up on Urban Dictionary?\n',
 					type: 'string'
 				}
 			],
-			description: 'Looks something up on Urban Dictionary. If no query is supplied, returns a random thing.',
+			description: 'Returns the Urban Dictionary result of the supplied query. If no query is supplied, returns a random thing.',
+			details: oneLine`
+				syntax: \`!urban (query)\`\n
+				\n
+				Supplying no query will return a random result.\n
+				Urban Dictionary results are NSFW.
+			`,
+			examples: [
+				'!urban',
+				'!urban shorty'
+			],
 			group: 'ref',
 			guildOnly: true,
 			memberName: 'urban',
 			name: 'urban',
+			nsfw: true,
 			throttling: {
 				duration: 3,
 				usages: 2
@@ -48,6 +60,7 @@ export default class UrbanCommand extends Command {
 	 * @memberof UrbanCommand
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
+		const response = sendSimpleEmbeddedMessage(msg, 'Loading...');
 		const targetWord = args.query === '' ? require('urban').random() : require('urban')(args.query);
 		try {
 			targetWord.first((json: any) => {
@@ -71,12 +84,13 @@ export default class UrbanCommand extends Command {
 					footer: {
 						text: example
 					},
-					title: title
+					title
 				});
 			});
 		} catch (err) {
-			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
+			msg.client.emit('warn', `Error in command ref:urban: ${err}`);
+			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 		}
-		return sendSimpleEmbeddedMessage(msg, 'Loading...');
+		return response;
 	}
 }

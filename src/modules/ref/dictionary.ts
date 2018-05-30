@@ -1,3 +1,4 @@
+import { oneLine } from 'common-tags';
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import * as request from 'request';
@@ -27,11 +28,18 @@ export default class DefineCommand extends Command {
 			args: [
 				{
 					key: 'query',
-					prompt: 'what should I look up in the dictionary?\n',
+					prompt: 'What should I look up in the dictionary?\n',
 					type: 'string'
 				}
 			],
-			description: 'Looks up a word in the Merriam-Webster Collegiate Dictionary.',
+			description: 'Returns the definition of a supplied word. Uses the Merriam-Webster Collegiate Dictionary API.',
+			details: oneLine`
+				syntax: \`!define <word>\`
+			`,
+			examples: [
+				'!define outstanding',
+				'!define useful'
+			],
 			group: 'ref',
 			guildOnly: true,
 			memberName: 'define',
@@ -52,11 +60,13 @@ export default class DefineCommand extends Command {
 	 * @memberof DefineCommand
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
+		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
 		const word = args.query;
 
 		request(`http://www.dictionaryapi.com/api/v1/references/collegiate/xml/${word}?key=${dictionaryApiKey}`, (err: Error, res: RequestResponse, body: any) => {
 			if (err !== undefined && err !== null) {
-				sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
+				msg.client.emit('warn', `Error in command ref:define: ${err}`);
+				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			}
 			let definitionResult = '';
 			require('xml2js').Parser().parseString(body, (err: Error, result: any) => {
@@ -105,6 +115,6 @@ export default class DefineCommand extends Command {
 				});
 			});
 		});
-		return sendSimpleEmbeddedMessage(msg, 'Loading...');
+		return response;
 	}
 }

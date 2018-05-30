@@ -1,3 +1,4 @@
+import { oneLine } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { Requester } from 'node-duckduckgo';
@@ -23,11 +24,18 @@ export default class DdgCommand extends Command {
 			args: [
 				{
 					key: 'query',
-					prompt: 'what did you want DuckDuckGo to look up?\n',
+					prompt: 'What did you want to look up on DuckDuckGo?\n',
 					type: 'string'
 				}
 			],
-			description: 'Used to retrieve an instant answer from DuckDuckGo.',
+			description: 'Returns an instant answer from DuckDuckGo for the supplied query.',
+			details: oneLine`
+				syntax: \`!ddg <query>\`
+			`,
+			examples: [
+				'!ddg fortnite',
+				'!ddg github'
+			],
 			group: 'ref',
 			guildOnly: true,
 			memberName: 'ddg',
@@ -51,6 +59,7 @@ export default class DdgCommand extends Command {
 		const ddg = new Requester('Spudnik Discord Bot');
 		ddg.no_html = 1;
 		ddg.no_redirect = 1;
+		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
 		const ddgEmbed: MessageEmbed = new MessageEmbed({
 			color: getEmbedColor(msg),
 			description: '',
@@ -62,7 +71,8 @@ export default class DdgCommand extends Command {
 
 		ddg.request(args.query, (err, response, body) => {
 			if (err !== undefined && err !== null) {
-				sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
+				msg.client.emit('warn', `Error in command ref:ddg: ${err}`);
+				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			} else if (typeof body !== 'undefined') {
 				const result = JSON.parse(body);
 				if (result.answer) {
@@ -75,6 +85,6 @@ export default class DdgCommand extends Command {
 			}
 			return msg.embed(ddgEmbed);
 		});
-		return sendSimpleEmbeddedMessage(msg, 'Loading...');
+		return response;
 	}
 }

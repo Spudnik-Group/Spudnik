@@ -1,3 +1,4 @@
+import { oneLine } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { RequestResponse } from 'request';
@@ -23,13 +24,19 @@ export default class CocktailCommand extends Command {
 		super(client, {
 			args: [
 				{
-					default: '',
 					key: 'query',
-					prompt: 'what cocktail should I look up?\n',
+					prompt: 'What cocktail should I look up?\n',
 					type: 'string'
 				}
 			],
-			description: 'Used to retrieve information about a cocktail.',
+			description: 'Returns information about a cocktail. Uses the CocktailDB API.',
+			details: oneLine`
+				syntax: \`!cocktail <cocktail name>\`
+			`,
+			examples: [
+				'!cocktail bloody mary',
+				'!cocktail dark and stormy'
+			],
 			group: 'ref',
 			guildOnly: true,
 			memberName: 'cocktail',
@@ -50,6 +57,7 @@ export default class CocktailCommand extends Command {
 	 * @memberof CocktailCommand
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
+		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
 		const cocktailEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/240/twitter/103/cocktail-glass_1f378.png',
@@ -62,7 +70,8 @@ export default class CocktailCommand extends Command {
 
 		request(`http://www.thecocktaildb.com/api/json/v1/1/search.php?s=${encodeURIComponent(args.query)}`, (err: Error, res: RequestResponse, body: any) => {
 			if (err !== undefined && err !== null) {
-				sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
+				msg.client.emit('warn', `Error in command ref:cocktail: ${err}`);
+				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			}
 			const response = JSON.parse(body);
 			if (typeof response !== 'undefined' && response.drinks !== null) {
@@ -120,6 +129,6 @@ export default class CocktailCommand extends Command {
 				return msg.embed(cocktailEmbed);
 			}
 		});
-		return sendSimpleEmbeddedMessage(msg, 'Loading...');
+		return response;
 	}
 }
