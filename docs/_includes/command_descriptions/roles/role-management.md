@@ -1,0 +1,1 @@
+Used to add or remove a role to/from the list of self assignable roles, list available roles, and set the default role.

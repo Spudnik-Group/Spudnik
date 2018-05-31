@@ -1,0 +1,6 @@
+usage:
+- "!goodbye message <message to display>"
+- "!goodbye"
+- "!goodbye channel"
+- "!goodbye enable"
+- "!goodbye disable"

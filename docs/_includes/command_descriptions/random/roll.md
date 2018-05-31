@@ -1,0 +1,1 @@
+Roll one die with x sides, or multiple dice using d20 syntax. Default value is 10.
