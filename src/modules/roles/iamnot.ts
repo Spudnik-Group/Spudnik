@@ -27,6 +27,7 @@ export default class IAmNotCommand extends Command {
 				}
 			],
 			description: 'Used to remove a role from yourself.',
+			details: '`@role_name` must be a mentionable role that is in the list of roles added using the `!role add` command.\n',
 			examples: ['!iamnot @role_name'],
 			group: 'roles',
 			guildOnly: true,

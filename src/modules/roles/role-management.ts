@@ -108,6 +108,7 @@ export default class RoleManagementCommands extends Command {
 					roleEmbed.description = 'No role specified!';
 					return msg.embed(roleEmbed);
 				}
+
 				if (Array.isArray(guildAssignableRoles) && guildAssignableRoles.includes(args.role.id)) {
 					guildAssignableRoles = guildAssignableRoles.filter((i: string) => i !== args.role.id);
 
@@ -167,6 +168,7 @@ export default class RoleManagementCommands extends Command {
 						return msg.embed(roleEmbed);
 					});
 				}
+
 				return msg.client.provider.set(msg.guild, 'defaultRole', args.role.id).then(() => {
 					roleEmbed.description = `Added default role '${args.role.name}'.`;
 					return msg.embed(roleEmbed);

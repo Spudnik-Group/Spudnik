@@ -1,3 +1,4 @@
+import { oneLine } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
@@ -27,6 +28,7 @@ export default class IAmNotCommand extends Command {
 				}
 			],
 			description: 'Used to add a role to yourself.',
+			details: '`@role_name` must be a mentionable role that is in the list of roles added using the `!role add` command.\n',
 			examples: ['!iam @role_name'],
 			group: 'roles',
 			guildOnly: true,

@@ -30,7 +30,7 @@ export default class AcceptCommand extends Command {
 			],
 			description: oneLine`
 				Accept the guild rules, and be auto-assigned the default role.\n
-				Sets the channel to listen for the accept command.
+				Sets the channel to listen for the accept command.\n
 				`,
 			examples: [
 				'!accept',
@@ -82,6 +82,7 @@ export default class AcceptCommand extends Command {
 				acceptEmbed.description = `Accept channel set to <#${args.channel.id}>.`;
 
 				msg.delete();
+
 				return msg.embed(acceptEmbed);
 			}).catch(() => {
 				acceptEmbed.description = 'There was an error processing the request.';
@@ -92,6 +93,7 @@ export default class AcceptCommand extends Command {
 		} else if (args.channel === undefined) {
 			const acceptRole: string = msg.client.provider.get(msg.guild, 'defaultRole');
 			const role: Role | undefined = msg.guild.roles.get(acceptRole);
+
 			if (role && !msg.member.roles.has(acceptRole)) {
 				msg.member.roles.add(acceptRole).then((member) => {
 					member.send(`The default role of ${role.name} for the guild ${msg.guild.name} has been applied.`);
