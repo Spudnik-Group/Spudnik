@@ -1,3 +1,4 @@
+import { oneLine } from 'common-tags';
 import { Channel, Message, MessageEmbed, Role } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
@@ -27,7 +28,10 @@ export default class AcceptCommand extends Command {
 					type: 'channel'
 				}
 			],
-			description: 'Accept the guild rules, and be auto-assigned the default role.',
+			description: oneLine`
+				Accept the guild rules, and be auto-assigned the default role.\n
+				Sets the channel to listen for the accept command.
+				`,
 			examples: [
 				'!accept',
 				'!accept #channel_name'
