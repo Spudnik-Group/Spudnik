@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedMessage, sendSimpleEmbeddedError } from '../../lib/helpers';
 
 /**
  * Simulate dice rolling.
@@ -29,7 +29,6 @@ export default class RollCommand extends Command {
 			description: 'roll one die with x sides, or multiple dice using d20 syntax. Default value is 10',
 			details: '[# of sides] or [# of dice]d[# of sides]( + [# of dice]d[# of sides] + ...)',
 			group: 'random',
-			guildOnly: true,
 			memberName: 'roll',
 			name: 'roll'
 		});
@@ -44,6 +43,24 @@ export default class RollCommand extends Command {
 	 * @memberof RollCommand
 	 */
 	public async run(msg: CommandMessage, args: { roll: string }): Promise<Message | Message[]> {
+		if (args.roll.split('d').length > 1) {
+			const eachDie = args.roll.split('+');
+			let passing = 0;
+			let response = '';
+			for (const i in eachDie) {
+				if (+eachDie[i].split('d')[0] < 50) {
+					passing += 1;
+				}
+			}
+			if (passing === eachDie.length) {
+				response = `${msg.author} rolled a ${require('d20').roll(args.roll)}`;
+			} else {
+				return sendSimpleEmbeddedError(msg, `${msg.author} tried to roll too many dice at once!`, 3000);
+			}
+
+			return sendSimpleEmbeddedMessage(msg, `${response}`);
+		}
+
 		return sendSimpleEmbeddedMessage(msg, `${msg.author} rolled a ${require('d20').roll(args.roll)}`);
 	}
 }

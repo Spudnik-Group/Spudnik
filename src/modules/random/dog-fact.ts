@@ -1,8 +1,8 @@
 import chalk from 'chalk';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import * as request from 'request';
 import { RequestResponse } from 'request';
+import * as rp from 'request-promise';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
@@ -22,9 +22,9 @@ export default class DogFactCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Gives a Random Dog Fact.',
+			description: 'Returns a random dog fact.',
+			examples: ['!dog-fact'],
 			group: 'random',
-			guildOnly: true,
 			memberName: 'dog-fact',
 			name: 'dog-fact',
 			throttling: {
@@ -42,27 +42,22 @@ export default class DogFactCommand extends Command {
 	 * @memberof DogFactCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
-		request('https://dog-api.kinduff.com/api/facts', (err: Error, res: RequestResponse, body: string) => {
-			try {
-				if (err) {
-					return sendSimpleEmbeddedError(msg, 'Error getting fact. Try again?');
-				}
+		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
+		rp('https://dog-api.kinduff.com/api/facts')
+			.then((content) => {
+				const data = JSON.parse(content);
 
-				const data = JSON.parse(body);
-				if (data && data.facts && data.facts[0]) {
-					return msg.embed(new MessageEmbed({
-						color: getEmbedColor(msg),
-						description: data.facts[0],
-						title: ':dog: Fact'
-					}));
-				}
-			} catch (err) {
-				const msgTxt = 'command dog-fact failed :disappointed_relieved:';
-				//TODO: add debug logging: msgTxt += `\n${err.stack}`;
-				console.log(chalk.red(err));
-				return sendSimpleEmbeddedError(msg, msgTxt);
-			}
-		});
-		return sendSimpleEmbeddedMessage(msg, 'Loading...');
+				return msg.embed(new MessageEmbed({
+					color: getEmbedColor(msg),
+					description: data.facts[0],
+					title: ':dog: Fact'
+				}));
+			})
+			.catch((err: Error) => {
+				msg.client.emit('warn', `Error in command random:dog-fact: ${err}`);
+
+				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+			});
+		return response;
 	}
 }

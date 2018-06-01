@@ -23,8 +23,8 @@ export default class SmiffFactCommand extends Command {
 		super(client, {
 			aliases: ['smith-fact', 'willsmith'],
 			description: 'Gives a Random Will Smith Fact.',
+			examples: ['!smifffact'],
 			group: 'random',
-			guildOnly: true,
 			memberName: 'smiff-fact',
 			name: 'smiff-fact',
 			throttling: {

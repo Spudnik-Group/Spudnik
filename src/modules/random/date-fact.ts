@@ -2,6 +2,7 @@ import chalk from 'chalk';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { RequestResponse } from 'request';
+import * as rp from 'request-promise';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
@@ -21,9 +22,9 @@ export default class DateFactCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Gives a Random Date Fact.',
+			description: 'Returns a random date fact.',
+			examples: ['!date-fact'],
 			group: 'random',
-			guildOnly: true,
 			memberName: 'date-fact',
 			name: 'date-fact',
 			throttling: {
@@ -41,27 +42,22 @@ export default class DateFactCommand extends Command {
 	 * @memberof DateFactCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
-		require('request')('http://numbersapi.com/random/date?json', (err: Error, res: RequestResponse, body: string) => {
-			try {
-				if (err) {
-					return sendSimpleEmbeddedError(msg, 'Error getting fact. Try again?');
-				}
+		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
+		rp('http://numbersapi.com/random/date?json')
+			.then((content) => {
+				const data = JSON.parse(content);
 
-				const data = JSON.parse(body);
-				if (data && data.text) {
-					return msg.embed(new MessageEmbed({
-						color: getEmbedColor(msg),
-						description: data.text,
-						title: 'Date Fact'
-					}));
-				}
-			} catch (err) {
-				const msgTxt = 'command date-fact failed :disappointed_relieved:';
-				//TODO: add debug logging: msgTxt += `\n${err.stack}`;
-				console.log(chalk.red(err));
-				return sendSimpleEmbeddedError(msg, msgTxt);
-			}
-		});
-		return sendSimpleEmbeddedMessage(msg, 'Loading...');
+				return msg.embed(new MessageEmbed({
+					color: getEmbedColor(msg),
+					description: data.text,
+					title: 'Date Fact'
+				}));
+			})
+			.catch((err: Error) => {
+				msg.client.emit('warn', `Error in command random:date-fact: ${err}`);
+
+				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+			});
+		return response;
 	}
 }

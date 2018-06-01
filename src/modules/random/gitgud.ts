@@ -1,4 +1,5 @@
-import { Message } from 'discord.js';
+import { oneLine } from 'common-tags';
+import { Message, GuildMember } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { resolveMention, sendSimpleEmbeddedImage } from '../../lib/helpers';
 
@@ -23,12 +24,15 @@ export default class GitGudCommand extends Command {
 					default: '',
 					key: 'mention',
 					prompt: 'Who should gitgud?',
-					type: 'string'
+					type: 'member'
 				}
 			],
 			description: 'Informs someone that they should "git gud".',
+			details: oneLine`
+				syntax: \`!gitgud (@user mention)\`
+			`,
+			examples: ['!gitgud', '!gitgud @Nebula#1337'],
 			group: 'random',
-			guildOnly: true,
 			memberName: 'gitgud',
 			name: 'gitgud',
 			throttling: {
@@ -46,10 +50,10 @@ export default class GitGudCommand extends Command {
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof GitGudCommand
 	 */
-	public async run(msg: CommandMessage, args: { mention: string }): Promise<Message | Message[]> {
+	public async run(msg: CommandMessage, args: { mention: GuildMember }): Promise<Message | Message[]> {
 		if (args.mention && args.mention !== null) {
 			return msg.embed({ image: { url: 'http://i.imgur.com/NqpPXHu.jpg' } }, '', {
-				reply: resolveMention(args.mention)
+				reply: args.mention
 			});
 		}
 		return sendSimpleEmbeddedImage(msg, 'http://i.imgur.com/NqpPXHu.jpg');

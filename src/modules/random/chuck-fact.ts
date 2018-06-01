@@ -1,8 +1,8 @@
 import chalk from 'chalk';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import * as request from 'request';
 import { RequestResponse } from 'request';
+import * as rp from 'request-promise';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
@@ -23,9 +23,9 @@ export default class ChuckFactCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
 			aliases: ['chucknorris', 'norrisfact', 'chuck-norris'],
-			description: 'Gives a Random Chuck Norris Fact.',
+			description: 'Returns a random Chuck Norris fact.',
+			examples: ['!chuck-fact'],
 			group: 'random',
-			guildOnly: true,
 			memberName: 'chuck-fact',
 			name: 'chuck-fact',
 			throttling: {
@@ -43,27 +43,22 @@ export default class ChuckFactCommand extends Command {
 	 * @memberof ChuckFactCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
-		request('http://api.icndb.com/jokes/random', (err: Error, res: RequestResponse, body: string) => {
-			try {
-				if (err) {
-					return sendSimpleEmbeddedError(msg, 'Error getting fact. Try again?');
-				}
+		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
+		rp('http://api.icndb.com/jokes/random')
+			.then((content) => {
+				const data = JSON.parse(content);
 
-				const data = JSON.parse(body);
-				if (data && data.value && data.value.joke) {
-					msg.embed(new MessageEmbed({
-						color: getEmbedColor(msg),
-						description: data.value.joke,
-						title: 'Chuck Norris Fact'
-					}));
-				}
-			} catch (err) {
-				const msgTxt = 'failed to retrieve Chuck Norris fact. He probably kicked it. :disappointed_relieved:';
-				//TODO: add debug logging: msgTxt += `\n${err.stack}`;
-				console.log(chalk.red(err));
-				return sendSimpleEmbeddedError(msg, msgTxt, 3000);
-			}
-		});
-		return sendSimpleEmbeddedMessage(msg, 'Loading...');
+				return msg.embed(new MessageEmbed({
+					color: getEmbedColor(msg),
+					description: data.value.joke,
+					title: 'Chuck Norris Fact'
+				}));
+			})
+			.catch((err: Error) => {
+				msg.client.emit('warn', `Error in command random:chuck-fact: ${err}`);
+
+				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+			});
+		return response;
 	}
 }

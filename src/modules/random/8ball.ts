@@ -30,8 +30,9 @@ export default class EightBallCommand extends Command {
 				}
 			],
 			description: 'Ask the magic 8 ball a question.',
+			details: 'syntax: `!8ball <query>`',
+			examples: ['!8ball Is my life on the right track?'],
 			group: 'random',
-			guildOnly: true,
 			memberName: '8ball',
 			name: '8ball',
 			throttling: {

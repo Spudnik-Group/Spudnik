@@ -1,8 +1,8 @@
 import chalk from 'chalk';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import * as request from 'request';
 import { RequestResponse } from 'request';
+import * as rp from 'request-promise';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
@@ -22,9 +22,9 @@ export default class YearFactCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Gives a Random Year Fact.',
+			description: 'Returns a random year fact.',
+			examples: ['!yearfact'],
 			group: 'random',
-			guildOnly: true,
 			memberName: 'year-fact',
 			name: 'year-fact',
 			throttling: {
@@ -42,27 +42,20 @@ export default class YearFactCommand extends Command {
 	 * @memberof YearFactCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
-		request('http://numbersapi.com/random/year?json', (err: Error, res: RequestResponse, body: string) => {
-			try {
-				if (err) {
-					return sendSimpleEmbeddedError(msg, 'Error getting fact. Try again?');
-				}
-
-				const data = JSON.parse(body);
-				if (data && data.text) {
-					return msg.embed(new MessageEmbed({
-						color: getEmbedColor(msg),
-						description: data.text,
-						title: 'Year Fact'
-					}));
-				}
-			} catch (err) {
-				const msgTxt = 'command year-fact failed :disappointed_relieved:';
-				//TODO: add debug logging: msgTxt += `\n${err.stack}`;
-				console.log(chalk.red(err));
-				return sendSimpleEmbeddedError(msg, msgTxt);
-			}
-		});
-		return sendSimpleEmbeddedMessage(msg, 'Loading...');
+		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
+		rp('http://numbersapi.com/random/year?json')
+			.then((content) => {
+				const data = JSON.parse(content);
+				return msg.embed(new MessageEmbed({
+					color: getEmbedColor(msg),
+					description: data.text,
+					title: 'Year Fact'
+				}));
+			})
+			.catch((err: Error) => {
+				msg.client.emit('warn', `Error in command random:year-fact: ${err}`);
+				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+			});
+		return response;
 	}
 }
