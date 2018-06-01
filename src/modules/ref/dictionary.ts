@@ -1,13 +1,14 @@
 import { oneLine } from 'common-tags';
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import * as request from 'request';
-import { RequestResponse } from 'request';
 import { Config } from '../../lib/config';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
+// tslint:disable-next-line:no-var-requires
+const mw = require('mw-dict');
 const dictionaryApiKey: string = Config.getDictionaryApiKey();
+const dict = new mw.CollegiateDictionary(dictionaryApiKey);
 
 /**
  * Post the definition of a word.
@@ -62,58 +63,38 @@ export default class DefineCommand extends Command {
 		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
 		const word = args.query;
 
-		request(`http://www.dictionaryapi.com/api/v1/references/collegiate/xml/${word}?key=${dictionaryApiKey}`, (err: Error, res: RequestResponse, body: any) => {
-			if (err !== undefined && err !== null) {
+		dict.lookup(word)
+			.then((result: any) => {
+				console.dir(result);
+			})
+			.catch((err: any) => {
 				msg.client.emit('warn', `Error in command ref:define: ${err}`);
-				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
-			}
-			let definitionResult = '';
-			require('xml2js').Parser().parseString(body, (err: Error, result: any) => {
-				const wordList = result.entry_list.entry;
-				let phonetic = '';
-				phonetic += wordList[0].pr.map((entry: any) => {
-					if (typeof entry === 'object') {
-						return entry._;
-					}
-					return entry;
-				}).join('\n');
-				definitionResult += `*[${phonetic}]*\n`;
-				definitionResult += `Hear it: http://media.merriam-webster.com/soundc11/${wordList[0].sound[0].wav[0].slice(0, 1)}/${wordList[0].sound[0].wav[0]}\n\n`;
-				wordList.forEach((wordResult: any) => {
-					let defList = '';
-					let defArray = wordResult.def[0].dt;
-					if (wordResult.ew[0] !== word) {
-						return;
-					}
-					definitionResult += '__' + wordResult.fl[0] + '__\n';
-					defArray = defArray.filter((item: any) => {
-						if (typeof item === 'object') {
-							item._ = item._.trim();
-							return item._ !== ':';
-						}
-						item = item.trim();
-						return item !== ':';
-					});
-					defList += defArray.map((entry: any) => {
-						if (typeof entry === 'object') {
-							return entry._;
-						}
-						return entry;
-					}).join('\n');
-					definitionResult += `${defList}\n\n`;
-				});
-
-				return msg.embed({
-					color: getEmbedColor(msg),
-					description: definitionResult,
-					footer: {
-						icon_url: 'http://www.dictionaryapi.com/images/info/branding-guidelines/mw-logo-light-background-50x50.png',
-						text: 'powered by Merriam-Webster\'s Collegiate® Dictionary'
-					},
-					title: word
-				});
+				return sendSimpleEmbeddedError(msg, 'Word not found.', 3000);
 			});
-		});
+
 		return response;
 	}
 }
+/*
+[{
+	word: 'delicious',
+	functional_label: 'adjective',
+	pronunciation: ['http://media.merriam-webster.com/soundc11/d/delici01.wav'],
+	etymology: 'Middle English, from Middle French, from Late Latin [deliciosus,] from Latin [deliciae] delights, from [delicere] to allure',
+	definition: [[Object], [Object]],
+	popularity: 'Top 30% of words'
+},
+	{
+		word: 'Delicious',
+		functional_label: 'noun',
+		pronunciation: [],
+		etymology: '',
+		definition: [[Object]]
+	},
+	{
+		word: 'Red Delicious',
+		functional_label: 'noun',
+		pronunciation: [],
+		etymology: '',
+		definition: [[Object]]
+	} */
