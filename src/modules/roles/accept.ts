@@ -48,20 +48,6 @@ export default class AcceptCommand extends Command {
 	}
 
 	/**
-	 * Determine if a member has permission to run the "accept" command.
-	 *
-	 * @param {CommandMessage} msg
-	 * @returns {boolean}
-	 * @memberof AcceptCommand
-	 */
-	public hasPermission(msg: CommandMessage): boolean {
-		const defaultRoleId: string = msg.client.provider.get(msg.guild, 'defaultRole');
-		const tosChannelId: string = msg.client.provider.get(msg.guild, 'tosChannel');
-
-		return defaultRoleId !== undefined && msg.guild.roles.has(defaultRoleId) && tosChannelId !== undefined && tosChannelId === msg.channel.id;
-	}
-
-	/**
 	 * Run the "accept" command.
 	 *
 	 * @param {CommandMessage} msg
@@ -77,31 +63,38 @@ export default class AcceptCommand extends Command {
 			color: getEmbedColor(msg)
 		});
 
-		if (msg.member.hasPermission('MANAGE_ROLES') && args.channel instanceof Channel) {
-			return msg.client.provider.set(msg.guild, 'tosChannel', args.channel.id).then(() => {
-				acceptEmbed.description = `Accept channel set to <#${args.channel.id}>.`;
+		if (args.channel instanceof Channel) {
+			if (msg.member.hasPermission('MANAGE_ROLES')) {
+				return msg.client.provider.set(msg.guild, 'tosChannel', args.channel.id).then(() => {
+					acceptEmbed.description = `Accept channel set to <#${args.channel.id}>.`;
+
+					msg.delete();
+
+					return msg.embed(acceptEmbed);
+				}).catch((context) => {
+					msg.client.emit('error', `Unsuccessful setting of accept command channel.\nCommand: 'accept'\nContext: ${context}`);
+					sendSimpleEmbeddedError(msg, 'Failed to set accept channel.', 5000);
+
+					return msg.delete();
+				});
+			} else {
+				acceptEmbed.description = 'You do not have permission to run this command.';
 
 				msg.delete();
 
 				return msg.embed(acceptEmbed);
-			}).catch(() => {
-				acceptEmbed.description = 'There was an error processing the request.';
-
-				msg.delete();
-				return msg.embed(acceptEmbed);
-			});
-		} else if (args.channel === undefined) {
+			}
+		} else if (args.channel === '') {
 			const acceptRole: string = msg.client.provider.get(msg.guild, 'defaultRole');
 			const role: Role | undefined = msg.guild.roles.get(acceptRole);
+			const acceptChannel: string = msg.client.provider.get(msg.guild, 'tosChannel');
 
-			if (role && !msg.member.roles.has(acceptRole)) {
+			if (role && !msg.member.roles.has(acceptRole) && msg.channel.id === acceptChannel) {
 				msg.member.roles.add(acceptRole).then((member) => {
 					member.send(`The default role of ${role.name} for the guild ${msg.guild.name} has been applied.`);
 				}).catch((context) => {
-					msg.client.emit('error', `Unsuccessful setting of permission.\nCommand: 'accept'\nContext: ${context}`);
+					msg.client.emit('error', `Unsuccessful setting of role.\nCommand: 'accept'\nContext: ${context}`);
 					sendSimpleEmbeddedError(msg, 'Failed to assign default role.', 5000);
-
-					return msg.delete();
 				});
 
 				return msg.delete();
