@@ -1,8 +1,7 @@
 import { oneLine } from 'common-tags';
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import * as request from 'request';
-import { RequestResponse } from 'request';
+import * as rp from 'request-promise';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
@@ -69,9 +68,9 @@ export default class XkcdCommand extends Command {
 			url += `${args.comicNumber}/`;
 		}
 		url += 'info.0.json';
-		request({ url: url }, (err: Error, res: RequestResponse, body: string) => {
-			try {
-				const comic = JSON.parse(body);
+		rp(url)
+			.then((content) => {
+				const comic = JSON.parse(content);
 				msg.delete();
 				return msg.embed({
 					color: getEmbedColor(msg),
@@ -83,13 +82,12 @@ export default class XkcdCommand extends Command {
 					},
 					title: `XKCD ${comic.num} ${comic.title}`
 				});
-			} catch (err) {
-				msg.delete();
+			})
+			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command misc:xkcd: ${err}`);
-				return sendSimpleEmbeddedError(msg, `Couldn't fetch an XKCD for ${args.comicNumber}`, 3000);
-			}
-		});
 
+				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+			});
 		return response;
 	}
 }

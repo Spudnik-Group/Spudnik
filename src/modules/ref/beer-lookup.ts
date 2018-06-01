@@ -1,8 +1,7 @@
 import { oneLine } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { RequestResponse } from 'request';
-import * as request from 'request';
+import * as rp from 'request-promise';
 import { Config } from '../../lib/config';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
@@ -75,80 +74,82 @@ export default class BrewCommand extends Command {
 			}
 		});
 
-		request(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(args.query)}&key=${breweryDbApiKey}`, (err: Error, res: RequestResponse, body: string) => {
-			if (err !== undefined && err !== null) {
+		rp(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(args.query)}&key=${breweryDbApiKey}`)
+			.then((content) => {
+				const response = JSON.parse(content);
+				if (typeof response !== 'undefined') {
+					const result = response.data[0];
+					if (typeof result.description !== 'undefined') {
+						const fields: any = [];
+						let thumbnail = '';
+						if (typeof result.labels !== 'undefined') {
+							thumbnail = result.labels.medium;
+						}
+
+						if (typeof result.images !== 'undefined') {
+							thumbnail = result.images.squareMedium;
+						}
+						if (typeof result.name !== 'undefined') {
+							brewEmbed.title = result.name;
+						}
+						if (typeof result.style !== 'undefined') {
+							fields.push({
+								name: `Style: ${result.style.name}`,
+								value: result.style.description
+							});
+						}
+						if (typeof result.abv !== 'undefined') {
+							fields.push({
+								inline: true,
+								name: 'ABV (Alcohol By Volume)',
+								value: `${result.abv}%`
+							});
+						}
+						if (typeof result.ibu !== 'undefined') {
+							fields.push({
+								inline: true,
+								name: 'IBU (International Bitterness Units)',
+								value: `${result.ibu}/100`
+							});
+						}
+
+						if (typeof result.website !== 'undefined') {
+							fields.push({
+								inline: true,
+								name: 'Website',
+								value: result.website
+							});
+						}
+
+						if (typeof result.established !== 'undefined') {
+							fields.push({
+								inline: true,
+								name: 'Year Established',
+								value: result.established
+							});
+						}
+
+						if (fields !== []) {
+							brewEmbed.fields = fields;
+						}
+						if (thumbnail !== '') {
+							brewEmbed.thumbnail = {
+								url: thumbnail
+							};
+						}
+						brewEmbed.description = `\n${result.description}\n\n`;
+					} else {
+						brewEmbed.description = `${response.data[0].name} is a good beer, but I don't have a good way to describe it.`;
+					}
+				} else {
+					brewEmbed.description = "Damn, I've never heard of that. Where do I need to go to find it?";
+				}
+				return msg.embed(brewEmbed);
+			})
+			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command ref:brew: ${err}`);
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
-			} else if (typeof body !== 'undefined') {
-				const response = JSON.parse(body);
-				const result = response.data[0];
-				if (typeof result.description !== 'undefined') {
-					const fields: any = [];
-					let thumbnail = '';
-					if (typeof result.labels !== 'undefined') {
-						thumbnail = result.labels.medium;
-					}
-
-					if (typeof result.images !== 'undefined') {
-						thumbnail = result.images.squareMedium;
-					}
-					if (typeof result.name !== 'undefined') {
-						brewEmbed.title = result.name;
-					}
-					if (typeof result.style !== 'undefined') {
-						fields.push({
-							name: `Style: ${result.style.name}`,
-							value: result.style.description
-						});
-					}
-					if (typeof result.abv !== 'undefined') {
-						fields.push({
-							inline: true,
-							name: 'ABV (Alcohol By Volume)',
-							value: `${result.abv}%`
-						});
-					}
-					if (typeof result.ibu !== 'undefined') {
-						fields.push({
-							inline: true,
-							name: 'IBU (International Bitterness Units)',
-							value: `${result.ibu}/100`
-						});
-					}
-
-					if (typeof result.website !== 'undefined') {
-						fields.push({
-							inline: true,
-							name: 'Website',
-							value: result.website
-						});
-					}
-
-					if (typeof result.established !== 'undefined') {
-						fields.push({
-							inline: true,
-							name: 'Year Established',
-							value: result.established
-						});
-					}
-
-					if (fields !== []) {
-						brewEmbed.fields = fields;
-					}
-					if (thumbnail !== '') {
-						brewEmbed.thumbnail = {
-							url: thumbnail
-						};
-					}
-					brewEmbed.description = `\n${result.description}\n\n`;
-				} else {
-					brewEmbed.description = `${response.data[0].name} is a good beer, but I don't have a good way to describe it.`;
-				}
-			} else {
-				brewEmbed.description = "Damn, I've never heard of that. Where do I need to go to find it?";
-			}
-			return msg.embed(brewEmbed);
-		});
+			});
 		return response;
 	}
 }
