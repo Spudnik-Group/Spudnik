@@ -1,7 +1,7 @@
+import { oneLine } from 'common-tags';
 import { Message, MessageEmbed, Role } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
-import { oneLine } from 'common-tags';
 import { sendSimpleEmbeddedError } from '../../lib/helpers';
 
 /**
@@ -187,7 +187,7 @@ export default class RoleManagementCommands extends Command {
 				return msg.client.provider.set(msg.guild, 'defaultRole', args.role.id)
 					.then(() => {
 						roleEmbed.description = `Added default role '${args.role.name}'.`;
-						return msg.embed(roleEmbed)
+						return msg.embed(roleEmbed);
 					})
 					.catch((err: Error) => {
 						msg.client.emit('warn', `Error in command roles:role-default: ${err}`);
