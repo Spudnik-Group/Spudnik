@@ -28,9 +28,10 @@ export default class AdblockCommand extends Command {
 			],
 			description: 'Enable or disable the adblock feature.',
 			details: oneLine`
-				syntax: \`!adblock enable|disable\`\n
+				syntax: \`!adblock <enable|disable>\`\n
 				\n
 				Supplying no subcommand returns an error.\n
+				Manage Messages permission required.
 			`,
 			examples: [
 				'!adblock enable',

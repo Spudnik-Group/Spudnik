@@ -50,14 +50,17 @@ export default class PruneCommand extends Command {
 				}
 			],
 			description: 'Deletes messages.',
-			details: oneLine`Deletes messages.\n
-				\n
+			details: oneLine`
+				syntax: \`!prune <number> (filter) (@userMention)\`\n\n
 				List of filters:\n
 				\`invites\`: Messages containing an invite\n
 				\`user <userMention>\`: Messages sent by @user\n
 				\`bots\`: Messages sent by bots\n
 				\`uploads\`: Messages containing an attachment\n
-				\`links\`: Messages containing a link`,
+				\`links\`: Messages containing a link\n
+				\n
+				Manage Message permission required.
+				`,
 			examples: [
 				'!prune 50',
 				'!prune 15 links',

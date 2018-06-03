@@ -23,20 +23,20 @@ export default class KickCommand extends Command {
 			args: [
 				{
 					key: 'member',
-					prompt: 'who needs the boot?\n',
+					prompt: 'Who needs the boot?\n',
 					type: 'member'
 				},
 				{
 					key: 'reason',
-					prompt: 'why do you want to kick this noob?\n',
+					prompt: 'Why do you want to kick this noob?\n',
 					type: 'string'
 				}
 			],
-			description: 'Kicks the user.',
+			description: 'Kicks a user.',
 			details: oneLine`
-				syntax: \`!kick userMention <reason>\`\n
+				syntax: \`!kick <@userMention> <reason>\`\n
 				\n
-				User must be kicked with reason.\n
+				Kick Members permission required.
 			`,
 			examples: [
 				'!kick @user being a pleb'

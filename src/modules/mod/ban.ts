@@ -23,7 +23,7 @@ export default class BanCommand extends Command {
 			args: [
 				{
 					key: 'member',
-					prompt: 'WQho needs the banhammer?',
+					prompt: 'Who needs the banhammer?',
 					type: 'member'
 				},
 				{
@@ -40,10 +40,9 @@ export default class BanCommand extends Command {
 			],
 			description: 'Bans the user, optionally deleting messages from them in the last x days.',
 			details: oneLine`
-				syntax: \`!ban userMention <reason> (daysOfMessages)\`\n
+				syntax: \`!ban <@userMention> <reason> (daysOfMessages)\`\n
 				\n
-				User must be banned with reason.\n
-				\`daysOfMessages\` is not required but must be an integer if supplied.\n
+				Ban Members permission required.
 			`,
 			examples: [
 				'!ban @user being a pleb',

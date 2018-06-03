@@ -1,5 +1,5 @@
 import { oneLine } from 'common-tags';
-import { Message, GuildMember } from 'discord.js';
+import { GuildMember, Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { resolveMention, sendSimpleEmbeddedImage } from '../../lib/helpers';
 

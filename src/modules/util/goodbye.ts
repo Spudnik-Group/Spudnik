@@ -29,7 +29,7 @@ export default class GoodbyeCommand extends Command {
 				{
 					default: '',
 					key: 'content',
-					prompt: 'channelMention or goodbye text\n',
+					prompt: '#channelMention or goodbye text\n',
 					type: 'channel|string'
 				}
 			],

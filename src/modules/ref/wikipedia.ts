@@ -52,27 +52,29 @@ export default class WikiCommand extends Command {
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
 		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
-		require('wikijs').default().search(args.query, 1).then((data: any) => {
-			require('wikijs').default().page(data.results[0]).then((page: any) => {
-				page.summary().then((summary: any) => {
-					const sumText = summary.toString().split('\n');
-					const continuation = () => {
-						const paragraph = sumText.shift();
-						if (paragraph) {
-							return msg.embed({
-								color: getEmbedColor(msg),
-								description: `${paragraph}\n\n${page.raw.fullurl}`,
-								title: page.raw.title
-							});
-						}
-					};
-					continuation();
+		require('wikijs').default().search(args.query, 1)
+			.then((data: any) => {
+				require('wikijs').default().page(data.results[0]).then((page: any) => {
+					page.summary().then((summary: any) => {
+						const sumText = summary.toString().split('\n');
+						const continuation = () => {
+							const paragraph = sumText.shift();
+							if (paragraph) {
+								return msg.embed({
+									color: getEmbedColor(msg),
+									description: `${paragraph}\n\n${page.raw.fullurl}`,
+									title: page.raw.title
+								});
+							}
+						};
+						continuation();
+					});
 				});
+			})
+			.catch((err: Error) => {
+				msg.client.emit('warn', `Error in command ref:wiki: ${err}`);
+				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			});
-		}, (err: Error) => {
-			msg.client.emit('warn', `Error in command ref:wiki: ${err}`);
-			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
-		});
 		return response;
 	}
 }
