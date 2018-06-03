@@ -29,12 +29,15 @@ export default class AcceptCommand extends Command {
 				}
 			],
 			description: oneLine`
-				Accept the guild rules, and be auto-assigned the default role.\n
-				Sets the channel to listen for the accept command.\n
-				`,
+				syntax: \`!accept (#channelMention)\`\n
+				\n
+				No Arguement: Accept the guild rules, and be auto-assigned the default role.\n
+				With #channelMention: Sets the channel to listen for the accept command.\n
+				Manage Roles permission required (for setting TOS channel).
+			`,
 			examples: [
 				'!accept',
-				'!accept #channel_name'
+				'!accept #channelMention'
 			],
 			group: 'roles',
 			guildOnly: true,
@@ -65,24 +68,22 @@ export default class AcceptCommand extends Command {
 
 		if (args.channel instanceof Channel) {
 			if (msg.member.hasPermission('MANAGE_ROLES')) {
-				return msg.client.provider.set(msg.guild, 'tosChannel', args.channel.id).then(() => {
-					acceptEmbed.description = `Accept channel set to <#${args.channel.id}>.`;
+				return msg.client.provider.set(msg.guild, 'tosChannel', args.channel.id)
+					.then(() => {
+						acceptEmbed.description = `Accept channel set to <#${args.channel.id}>.`;
 
-					msg.delete();
+						msg.delete();
 
-					return msg.embed(acceptEmbed);
-				}).catch((context) => {
-					msg.client.emit('error', `Unsuccessful setting of accept command channel.\nCommand: 'accept'\nContext: ${context}`);
-					sendSimpleEmbeddedError(msg, 'Failed to set accept channel.', 5000);
-
-					return msg.delete();
-				});
+						return msg.embed(acceptEmbed);
+					})
+					.catch((err: Error) => {
+						msg.delete();
+						msg.client.emit('warn', `Error in command roles:accept: ${err}`);
+						return sendSimpleEmbeddedError(msg, 'Failed to set accept channel.', 3000);
+					});
 			} else {
-				acceptEmbed.description = 'You do not have permission to run this command.';
-
 				msg.delete();
-
-				return msg.embed(acceptEmbed);
+				return sendSimpleEmbeddedError(msg, 'You do not have permission to run this command.', 3000);
 			}
 		} else if (args.channel === '') {
 			const acceptRole: string = msg.client.provider.get(msg.guild, 'defaultRole');
@@ -90,12 +91,14 @@ export default class AcceptCommand extends Command {
 			const acceptChannel: string = msg.client.provider.get(msg.guild, 'tosChannel');
 
 			if (role && !msg.member.roles.has(acceptRole) && msg.channel.id === acceptChannel) {
-				msg.member.roles.add(acceptRole).then((member) => {
-					member.send(`The default role of ${role.name} for the guild ${msg.guild.name} has been applied.`);
-				}).catch((context) => {
-					msg.client.emit('error', `Unsuccessful setting of role.\nCommand: 'accept'\nContext: ${context}`);
-					sendSimpleEmbeddedError(msg, 'Failed to assign default role.', 5000);
-				});
+				msg.member.roles.add(acceptRole)
+					.then((member) => {
+						member.send(`The default role of ${role.name} for the guild ${msg.guild.name} has been applied.`);
+					})
+					.catch((err: Error) => {
+						msg.client.emit('warn', `Error in command roles:accept: ${err}`);
+						return sendSimpleEmbeddedError(msg, 'Failed to assign default role.', 3000);
+					});
 
 				return msg.delete();
 			} else {

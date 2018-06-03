@@ -29,7 +29,7 @@ export default class WelcomeCommand extends Command {
 				{
 					default: '',
 					key: 'content',
-					prompt: 'channelMention or welcome text\n',
+					prompt: '#channelMention or welcome text\n',
 					type: 'channel|string'
 				}
 			],

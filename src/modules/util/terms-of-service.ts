@@ -42,7 +42,7 @@ export default class TermsOfServiceCommand extends Command {
 			],
 			description: 'Used to configure the Terms of Service for a guild.',
 			details: oneLine`
-				syntax: \`!tos <channel|title|body|list> (channel mention | message number) (text)\n
+				syntax: \`!tos <channel|title|body|list> (#channelMention | message number) (text)\n
 				\n
 				\`channel <#channelMention>\` - Sets the channel to display the terms of service in.\n
 				\`title <info block number> <text>\` - Edit the title of a terms of service info block.\n

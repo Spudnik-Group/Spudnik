@@ -2,6 +2,7 @@ import { oneLine } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError } from '../../lib/helpers';
 
 /**
  * Allows a member to assign a role to themselves.
@@ -21,15 +22,14 @@ export default class IAmNotCommand extends Command {
 		super(client, {
 			args: [
 				{
-					default: '',
 					key: 'query',
-					prompt: 'what role do you want added to yourself?\n',
+					prompt: 'What role do you want added to yourself?\n',
 					type: 'string'
 				}
 			],
 			description: 'Used to add a role to yourself.',
-			details: '`@role_name` must be a mentionable role that is in the list of roles added using the `!role add` command.\n',
-			examples: ['!iam @role_name'],
+			details: 'syntax: `!iam @roleMention`',
+			examples: ['!iam @Fortnite'],
 			group: 'roles',
 			guildOnly: true,
 			memberName: 'iam',
@@ -65,14 +65,10 @@ export default class IAmNotCommand extends Command {
 
 				return msg.embed(roleEmbed);
 			} else {
-				roleEmbed.description = `You already have the role ${role.name}.`;
-
-				return msg.embed(roleEmbed);
+				return sendSimpleEmbeddedError(msg, `You already have the role ${role.name}.`, 3000);
 			}
 		} else {
-			roleEmbed.description = `Cannot find ${args.query} in list of assignable roles.`;
-
-			return msg.embed(roleEmbed);
+			return sendSimpleEmbeddedError(msg, `Cannot find ${args.query} in list of assignable roles.`, 3000);
 		}
 	}
 }
