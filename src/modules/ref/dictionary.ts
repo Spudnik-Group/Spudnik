@@ -1,5 +1,5 @@
 import { oneLine } from 'common-tags';
-import { Message } from 'discord.js';
+import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { Config } from '../../lib/config';
 import { getEmbedColor } from '../../lib/custom-helpers';
@@ -62,10 +62,50 @@ export default class DefineCommand extends Command {
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
 		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
 		const word = args.query;
+		const dictionaryEmbed: MessageEmbed = new MessageEmbed({
+			color: getEmbedColor(msg),
+			description: '',
+			footer: {
+				icon_url: 'http://www.dictionaryapi.com/images/info/branding-guidelines/mw-logo-light-background-50x50.png',
+				text: 'powered by Merriam-Webster\'s Collegiate® Dictionary'
+			},
+			title: `Definition Result: ${word}`
+		});
+
+		function renderDefinition(sensesIn: any) {
+			return sensesIn
+				.map(({ number, meanings, synonyms, illustrations, senses }) => `
+					${number ? '*' + number + '.*' : ''}
+					${meanings && meanings.length ? meanings.join(' ') : ''}
+					${synonyms && synonyms.length ? synonyms.map((s: any) => '_' + s + '_').join(', ') : ''}
+					${illustrations && illustrations.length ? illustrations.map((i: any) => '* ' + i).join('\n') : ''}
+					${senses && senses.length ? renderDefinition(senses) : ''}
+				`)
+				.join('\n');
+		}
 
 		dict.lookup(word)
 			.then((result: any) => {
-				console.dir(result);
+				dictionaryEmbed.fields = [
+					{
+						name: 'Functional Label:',
+						value: result[0].functional_label
+					},
+					{
+						name: 'Pronunciation:',
+						value: result[0].pronunciation
+					},
+					{
+						name: 'Etymology:',
+						value: result[0].etymology
+					},
+					{
+						name: 'Popularity:',
+						value: result[0].popularity
+					}
+				];
+				dictionaryEmbed.description = '';
+				return msg.embed(dictionaryEmbed);
 			})
 			.catch((err: any) => {
 				msg.client.emit('warn', `Error in command ref:define: ${err}`);
@@ -75,26 +115,3 @@ export default class DefineCommand extends Command {
 		return response;
 	}
 }
-/*
-[{
-	word: 'delicious',
-	functional_label: 'adjective',
-	pronunciation: ['http://media.merriam-webster.com/soundc11/d/delici01.wav'],
-	etymology: 'Middle English, from Middle French, from Late Latin [deliciosus,] from Latin [deliciae] delights, from [delicere] to allure',
-	definition: [[Object], [Object]],
-	popularity: 'Top 30% of words'
-},
-	{
-		word: 'Delicious',
-		functional_label: 'noun',
-		pronunciation: [],
-		etymology: '',
-		definition: [[Object]]
-	},
-	{
-		word: 'Red Delicious',
-		functional_label: 'noun',
-		pronunciation: [],
-		etymology: '',
-		definition: [[Object]]
-	} */
