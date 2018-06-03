@@ -74,12 +74,12 @@ export default class DefineCommand extends Command {
 
 		function renderDefinition(sensesIn: any) {
 			return sensesIn
-				.map(({ number, meanings, synonyms, illustrations, senses }) => `
-					${number ? '*' + number + '.*' : ''}
-					${meanings && meanings.length ? meanings.join(' ') : ''}
-					${synonyms && synonyms.length ? synonyms.map((s: any) => '_' + s + '_').join(', ') : ''}
-					${illustrations && illustrations.length ? illustrations.map((i: any) => '* ' + i).join('\n') : ''}
-					${senses && senses.length ? renderDefinition(senses) : ''}
+				.map((def: any) => oneLine`
+					${def.number ? '*' + def.number + '.*' : ''} 
+					${def.meanings && def.meanings.length ? def.meanings.join(' ') : ''} 
+					${def.synonyms && def.synonyms.length ? def.synonyms.map((s: any) => '_' + s + '_').join(', ') : ''} 
+					${def.illustrations && def.illustrations.length ? def.illustrations.map((i: any) => '* ' + i).join('\n') : ''} 
+					${def.senses && def.senses.length ? renderDefinition(def.senses) : ''}
 				`)
 				.join('\n');
 		}
@@ -93,7 +93,7 @@ export default class DefineCommand extends Command {
 					},
 					{
 						name: 'Pronunciation:',
-						value: result[0].pronunciation
+						value: result[0].pronunciation[0]
 					},
 					{
 						name: 'Etymology:',
@@ -104,7 +104,7 @@ export default class DefineCommand extends Command {
 						value: result[0].popularity
 					}
 				];
-				dictionaryEmbed.description = '';
+				dictionaryEmbed.description = renderDefinition(result[0].definition);
 				return msg.embed(dictionaryEmbed);
 			})
 			.catch((err: any) => {
