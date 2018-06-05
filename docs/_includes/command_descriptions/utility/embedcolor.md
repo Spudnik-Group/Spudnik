@@ -1,0 +1,1 @@
+Change the default embed color the bot uses for responses.

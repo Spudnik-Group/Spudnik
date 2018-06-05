@@ -1,0 +1,1 @@
+Used to set the emoji to trigger saving a message to the starboard, show the current starboard settings, change the starboard channel, and enables or disables the starboard.

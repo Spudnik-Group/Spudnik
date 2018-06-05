@@ -22,8 +22,8 @@ export default class CoinFlipCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Flips a coin for you.',
+			examples: ['!coinflip'],
 			group: 'random',
-			guildOnly: true,
 			memberName: 'coinflip',
 			name: 'coinflip',
 			throttling: {

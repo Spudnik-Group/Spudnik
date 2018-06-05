@@ -1,0 +1,1 @@
+Looks up a word in the Merriam-Webster Collegiate Dictionary.

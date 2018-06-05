@@ -36,9 +36,12 @@ export default class StatsCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
 			aliases: ['statistics'],
-			description: 'Displays statistics about the bot.',
+			description: 'Returns statistics about the bot.',
+			examples: [
+				'!stats',
+				'!statistics'
+			],
 			group: 'misc',
-			guildOnly: true,
 			memberName: 'stats',
 			name: 'stats',
 			throttling: {

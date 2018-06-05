@@ -1,0 +1,15 @@
+title: Spudnik
+email: comrades@spudnik.io
+description: >- # this means to ignore newlines until "baseurl:"
+  A robust Discord chat bot focused on
+  guild management and adding interesting
+  and useful functionality to your server.
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "https://docs.spudnik.io" # the base hostname & protocol for your site, e.g. http://example.com
+github_username:  Spudnik-Group
+repository: Spudnik-Group/Spudnik
+
+# Build settings
+markdown: kramdown
+plugins:
+  - jekyll-feed

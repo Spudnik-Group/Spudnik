@@ -1,0 +1,1 @@
+Enable or disable the adblock feature.

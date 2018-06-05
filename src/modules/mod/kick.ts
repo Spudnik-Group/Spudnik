@@ -1,3 +1,4 @@
+import { oneLine } from 'common-tags';
 import { GuildMember, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
@@ -19,8 +20,27 @@ export default class KickCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Kicks the user.',
-			details: '<user> [reason] [daysOfMessages]',
+			args: [
+				{
+					key: 'member',
+					prompt: 'Who needs the boot?\n',
+					type: 'member'
+				},
+				{
+					key: 'reason',
+					prompt: 'Why do you want to kick this noob?\n',
+					type: 'string'
+				}
+			],
+			description: 'Kicks a user.',
+			details: oneLine`
+				syntax: \`!kick <@userMention> <reason>\`\n
+				\n
+				Kick Members permission required.
+			`,
+			examples: [
+				'!kick @user being a pleb'
+			],
 			group: 'mod',
 			guildOnly: true,
 			memberName: 'kick',
@@ -28,19 +48,7 @@ export default class KickCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			},
-			args: [
-				{
-					key: 'member',
-					prompt: 'who needs the boot?\n',
-					type: 'member'
-				},
-				{
-					key: 'reason',
-					prompt: 'why do you want to kick this noob?\n',
-					type: 'string'
-				}
-			]
+			}
 		});
 	}
 
@@ -52,7 +60,7 @@ export default class KickCommand extends Command {
 	 * @memberof KickCommand
 	 */
 	public hasPermission(msg: CommandMessage): boolean {
-		return msg.client.isOwner(msg.author) || msg.member.hasPermission(['KICK_MEMBERS']);
+		return msg.member.hasPermission(['KICK_MEMBERS']);
 	}
 
 	/**
@@ -66,26 +74,34 @@ export default class KickCommand extends Command {
 	public async run(msg: CommandMessage, args: { member: GuildMember, reason: string }): Promise<Message | Message[] | any> {
 		const memberToKick: GuildMember = args.member;
 		const kickEmbed: MessageEmbed = new MessageEmbed({
-			color: getEmbedColor(msg),
 			author: {
-				name: 'Das Boot',
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/eject-symbol_23cf.png'
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/eject-symbol_23cf.png',
+				name: 'Das Boot'
 			},
+			color: getEmbedColor(msg),
 			description: ''
 		});
 
 		if (!memberToKick.kickable || !(msg.member.roles.highest.comparePositionTo(memberToKick.roles.highest) > 0)) {
 			return sendSimpleEmbeddedError(msg, `I can't kick ${memberToKick}. Do they have the same or a higher role than me or you?`);
 		}
+
 		memberToKick.kick(args.reason)
 			.then(() => {
 				kickEmbed.description = `Kicking ${memberToKick} from ${msg.guild} for ${args.reason}!`;
+
 				return msg.embed(kickEmbed);
 			})
 			.catch((err: Error) => {
-				msg.client.emit('error', `Error with command 'ban'\nBanning ${memberToKick} from ${msg.guild} failed!\nError: ${err}`);
+				msg.client.emit('error',
+					oneLine`Error with command 'ban'\n
+						Banning ${memberToKick} from ${msg.guild} failed!\n
+						Error: ${err}`
+				);
+
 				return sendSimpleEmbeddedMessage(msg, `Kicking ${memberToKick} failed!`);
 			});
+
 		return sendSimpleEmbeddedMessage(msg, 'Loading...');
 	}
 }

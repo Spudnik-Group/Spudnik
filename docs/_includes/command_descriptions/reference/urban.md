@@ -1,0 +1,1 @@
+Looks something up on Urban Dictionary. If no query is supplied, returns a random thing.

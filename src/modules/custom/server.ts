@@ -22,6 +22,14 @@ export default class ServerCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
 			aliases: ['servers'],
+			args: [
+				{
+					default: 'list',
+					key: 'query',
+					prompt: 'What server would you like info on?',
+					type: 'string'
+				}
+			],
 			description: 'Shows available servers.',
 			details: `list|${servers.map((server: any) => server.key).join('|')}`,
 			group: 'custom',
@@ -31,15 +39,7 @@ export default class ServerCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			},
-			args: [
-				{
-					default: 'list',
-					key: 'query',
-					prompt: 'What server would you like info on?',
-					type: 'string'
-				}
-			]
+			}
 		});
 	}
 
@@ -65,17 +65,17 @@ export default class ServerCommand extends Command {
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[] | any> {
 		if (args.query.toLowerCase() === 'list') {
 			return msg.embed(new MessageEmbed({
-				title: `${msg.guild.name} Servers`,
+				color: getEmbedColor(msg),
 				description: servers.map((server: any) => server.key).sort().join('\n'),
-				color: getEmbedColor(msg)
+				title: `${msg.guild.name} Servers`
 			}));
 		} else {
 			const info = servers.filter((server: any) => server.key.toLowerCase() === args.query.toLowerCase())[0];
 			if (info) {
 				return msg.embed(new MessageEmbed({
-					title: info.title,
+					color: getEmbedColor(msg),
 					description: info.description,
-					color: getEmbedColor(msg)
+					title: info.title
 				}));
 			}
 		}

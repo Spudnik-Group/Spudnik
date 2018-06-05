@@ -1,0 +1,1 @@
+Donate to help support the ongoing hosting and development of the bot.

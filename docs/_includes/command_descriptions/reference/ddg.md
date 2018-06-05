@@ -1,0 +1,1 @@
+Used to retrieve an instant answer from DuckDuckGo.

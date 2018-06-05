@@ -1,4 +1,5 @@
-import { GuildMember, Message, MessageEmbed } from 'discord.js';
+import { oneLine } from 'common-tags';
+import { GuildMember, Message, MessageEmbed, Role } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
@@ -19,8 +20,34 @@ export default class BanCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
+			args: [
+				{
+					key: 'member',
+					prompt: 'Who needs the banhammer?',
+					type: 'member'
+				},
+				{
+					key: 'reason',
+					prompt: 'Why do you want to ban this noob?',
+					type: 'string'
+				},
+				{
+					default: 0,
+					key: 'daysOfMessages',
+					prompt: 'How many days worth of messages would you like to delete?',
+					type: 'integer'
+				}
+			],
 			description: 'Bans the user, optionally deleting messages from them in the last x days.',
-			details: '<user> [reason] [daysOfMessages]',
+			details: oneLine`
+				syntax: \`!ban <@userMention> <reason> (daysOfMessages)\`\n
+				\n
+				Ban Members permission required.
+			`,
+			examples: [
+				'!ban @user being a pleb',
+				'!ban @user being a pleb 7'
+			],
 			group: 'mod',
 			guildOnly: true,
 			memberName: 'ban',
@@ -28,25 +55,7 @@ export default class BanCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			},
-			args: [
-				{
-					key: 'member',
-					prompt: 'who needs the banhammer?\n',
-					type: 'member'
-				},
-				{
-					key: 'reason',
-					prompt: 'why do you want to ban this noob?\n',
-					type: 'string'
-				},
-				{
-					default: 0,
-					key: 'daysOfMessages',
-					prompt: 'how many days worth of messages would you like to delete?\n',
-					type: 'integer'
-				}
-			]
+			}
 		});
 	}
 
@@ -58,7 +67,7 @@ export default class BanCommand extends Command {
 	 * @memberof BanCommand
 	 */
 	public hasPermission(msg: CommandMessage): boolean {
-		return msg.client.isOwner(msg.author) || msg.member.hasPermission(['BAN_MEMBERS']);
+		return msg.member.hasPermission(['BAN_MEMBERS']);
 	}
 
 	/**
@@ -72,37 +81,52 @@ export default class BanCommand extends Command {
 	public async run(msg: CommandMessage, args: { member: GuildMember, reason: string, daysOfMessages: number }): Promise<Message | Message[]> {
 		const memberToBan: GuildMember = args.member;
 		const banEmbed: MessageEmbed = new MessageEmbed({
-			color: getEmbedColor(msg),
 			author: {
-				name: 'Ban Hammer',
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/hammer_1f528.png'
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/hammer_1f528.png',
+				name: 'Ban Hammer'
 			},
+			color: getEmbedColor(msg),
 			description: ''
 		});
 
-		msg.delete();
-		if (!memberToBan.bannable || !(msg.member.roles.highest.comparePositionTo(memberToBan.roles.highest) > 0)) {
-			return sendSimpleEmbeddedError(msg, `I can't ban ${memberToBan}. Do they have the same or a higher role than me or you?`);
+		const highestRoleOfCallingMember: Role = msg.member.roles.highest;
+		const guild = msg.guild;
+
+		await msg.delete();
+
+		if (!memberToBan.bannable || !(highestRoleOfCallingMember.comparePositionTo(memberToBan.roles.highest) > 0)) {
+			return sendSimpleEmbeddedError(msg, `I can't ban <@${memberToBan.id}>. Do they have the same or a higher role than me or you?`);
 		}
+
 		if (args.daysOfMessages) {
 			memberToBan.ban({ days: args.daysOfMessages, reason: args.reason })
 				.then(() => {
-					banEmbed.description = `Banning ${memberToBan} from ${msg.guild} for ${args.reason}!`;
+					banEmbed.description = `Banning <@${memberToBan.id}> from ${guild.name} for ${args.reason}!`;
 					return msg.embed(banEmbed);
 				})
 				.catch((err: Error) => {
-					msg.client.emit('error', `Error with command 'ban'\nBanning ${memberToBan} from ${msg.guild} failed!\nError: ${err}`);
-					return sendSimpleEmbeddedError(msg, `Banning ${memberToBan} from ${msg.guild} failed!`, 3000);
+					msg.client.emit('error',
+						oneLine`Error with command 'ban'\n
+							Banning ${memberToBan.id} from ${msg.guild} failed!\n
+							Error: ${err}`
+					);
+
+					return sendSimpleEmbeddedError(msg, `Banning <@${memberToBan.id}> from ${guild.name} failed!`, 3000);
 				});
 		} else {
 			memberToBan.ban({ reason: args.reason })
 				.then(() => {
-					banEmbed.description = `Banning ${memberToBan} from ${msg.guild} for ${args.reason}!`;
+					banEmbed.description = `Banning <@${memberToBan.id}> from ${guild.name} for ${args.reason}!`;
 					return msg.embed(banEmbed);
 				})
 				.catch((err: Error) => {
-					msg.client.emit('error', `Error with command 'ban'\nBanning ${memberToBan} from ${msg.guild} failed!\nError: ${err}`);
-					return sendSimpleEmbeddedError(msg, `Banning ${memberToBan} from ${msg.guild} failed!`);
+					msg.client.emit('error',
+						oneLine`Error with command 'ban'\n
+							Banning ${memberToBan.id} from ${guild.name} failed!\n
+							Error: ${err}`
+					);
+
+					return sendSimpleEmbeddedError(msg, `Banning <@${memberToBan.id}> from ${guild.name} failed!`);
 				});
 		}
 

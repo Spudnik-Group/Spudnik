@@ -1,3 +1,4 @@
+import { oneLine } from 'common-tags';
 import { Channel, Message, MessageEmbed, Role } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
@@ -19,7 +20,25 @@ export default class AcceptCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Accept the guild rules, and be auto-assigned the default role.',
+			args: [
+				{
+					default: '',
+					key: 'channel',
+					prompt: 'Please provide a channel to allow the Terms of Service command to be used in.',
+					type: 'channel'
+				}
+			],
+			description: oneLine`
+				syntax: \`!accept (#channelMention)\`\n
+				\n
+				No Arguement: Accept the guild rules, and be auto-assigned the default role.\n
+				With #channelMention: Sets the channel to listen for the accept command.\n
+				Manage Roles permission required (for setting TOS channel).
+			`,
+			examples: [
+				'!accept',
+				'!accept #channelMention'
+			],
 			group: 'roles',
 			guildOnly: true,
 			memberName: 'accept',
@@ -27,30 +46,8 @@ export default class AcceptCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			},
-			args: [
-				{
-					key: 'channel',
-					prompt: 'Please provide a channel to allow the Terms of Service command to be used in.',
-					type: 'channel',
-					default: ''
-				}
-			]
+			}
 		});
-	}
-
-	/**
-	 * Determine if a member has permission to run the "accept" command.
-	 *
-	 * @param {CommandMessage} msg
-	 * @returns {boolean}
-	 * @memberof AcceptCommand
-	 */
-	public hasPermission(msg: CommandMessage): boolean {
-		const defaultRoleId: string = msg.client.provider.get(msg.guild, 'defaultRole');
-		const tosChannelId: string = msg.client.provider.get(msg.guild, 'tosChannel');
-
-		return defaultRoleId !== undefined && msg.guild.roles.has(defaultRoleId) && tosChannelId !== undefined && tosChannelId === msg.channel.id;
 	}
 
 	/**
@@ -62,37 +59,46 @@ export default class AcceptCommand extends Command {
 	 */
 	public async run(msg: CommandMessage, args: { channel: Channel }): Promise<Message | Message[]> {
 		const acceptEmbed = new MessageEmbed({
-			color: getEmbedColor(msg),
 			author: {
-				name: 'Accept',
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/ballot-box-with-check_2611.png'
-			}
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/ballot-box-with-check_2611.png',
+				name: 'Accept'
+			},
+			color: getEmbedColor(msg)
 		});
 
-		if (msg.member.hasPermission('MANAGE_ROLES') && args.channel instanceof Channel) {
-			return msg.client.provider.set(msg.guild, 'tosChannel', args.channel.id).then(() => {
-				acceptEmbed.description = `Accept channel set to <#${args.channel.id}>.`;
+		if (args.channel instanceof Channel) {
+			if (msg.member.hasPermission('MANAGE_ROLES')) {
+				return msg.client.provider.set(msg.guild, 'tosChannel', args.channel.id)
+					.then(() => {
+						acceptEmbed.description = `Accept channel set to <#${args.channel.id}>.`;
 
-				msg.delete();
-				return msg.embed(acceptEmbed);
-			}).catch(() => {
-				acceptEmbed.description = 'There was an error processing the request.';
+						msg.delete();
 
+						return msg.embed(acceptEmbed);
+					})
+					.catch((err: Error) => {
+						msg.delete();
+						msg.client.emit('warn', `Error in command roles:accept: ${err}`);
+						return sendSimpleEmbeddedError(msg, 'Failed to set accept channel.', 3000);
+					});
+			} else {
 				msg.delete();
-				return msg.embed(acceptEmbed);
-			});
-		} else if (args.channel === undefined) {
+				return sendSimpleEmbeddedError(msg, 'You do not have permission to run this command.', 3000);
+			}
+		} else if (args.channel === '') {
 			const acceptRole: string = msg.client.provider.get(msg.guild, 'defaultRole');
 			const role: Role | undefined = msg.guild.roles.get(acceptRole);
-			if (role && !msg.member.roles.has(acceptRole)) {
-				msg.member.roles.add(acceptRole).then((member) => {
-					member.send(`The default role of ${role.name} for the guild ${msg.guild.name} has been applied.`);
-				}).catch((context) => {
-					msg.client.emit('error', `Unsuccessful setting of permission.\nCommand: 'accept'\nContext: ${context}`);
-					sendSimpleEmbeddedError(msg, 'Failed to assign default role.', 5000);
+			const acceptChannel: string = msg.client.provider.get(msg.guild, 'tosChannel');
 
-					return msg.delete();
-				});
+			if (role && !msg.member.roles.has(acceptRole) && msg.channel.id === acceptChannel) {
+				msg.member.roles.add(acceptRole)
+					.then((member) => {
+						member.send(`The default role of ${role.name} for the guild ${msg.guild.name} has been applied.`);
+					})
+					.catch((err: Error) => {
+						msg.client.emit('warn', `Error in command roles:accept: ${err}`);
+						return sendSimpleEmbeddedError(msg, 'Failed to assign default role.', 3000);
+					});
 
 				return msg.delete();
 			} else {

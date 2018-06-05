@@ -1,3 +1,4 @@
+import { oneLine } from 'common-tags';
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
@@ -18,15 +19,6 @@ export default class PlayingCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'List people playing games.',
-			group: 'misc',
-			guildOnly: true,
-			memberName: 'playing',
-			name: 'playing',
-			throttling: {
-				duration: 3,
-				usages: 2
-			},
 			args: [
 				{
 					default: '',
@@ -34,7 +26,26 @@ export default class PlayingCommand extends Command {
 					prompt: 'What game are you looking for players for?\n',
 					type: 'string'
 				}
-			]
+			],
+			description: 'Returns a list of people playing games. Allows filtering.',
+			details: oneLine`
+				syntax: \`!playing [game name]\`\n
+				\n
+				Supplying no game name provides you with a list of all users who are marked with the "Playing" status type.\n
+				Supplying a game name provides you with a list of all users with that game name as their status (case insensitive)
+			`,
+			examples: [
+				'!playing',
+				'!playing fortnite'
+			],
+			group: 'misc',
+			guildOnly: true,
+			memberName: 'playing',
+			name: 'playing',
+			throttling: {
+				duration: 3,
+				usages: 2
+			}
 		});
 	}
 

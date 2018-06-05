@@ -19,7 +19,8 @@ export default class TopicCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Shows the purpose of the chat channel.',
+			description: 'Returns the purpose of the chat channel.',
+			examples: ['!topic'],
 			group: 'misc',
 			guildOnly: true,
 			memberName: 'topic',
@@ -39,22 +40,18 @@ export default class TopicCommand extends Command {
 	 * @memberof TopicCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
-		const channel = msg.channel;
-		let response = '';
-		if (channel instanceof TextChannel) {
-			response = channel.topic;
-			if (response === null) {
-				response = "There doesn't seem to be a topic for this channel. Maybe ask the mods?";
-			} else if (response.trim() === '') {
-				response = "There doesn't seem to be a topic for this channel. Maybe ask the mods?";
-			}
-			return msg.embed({
-				color: getEmbedColor(msg),
-				description: response,
-				title: channel.name,
-				thumbnail: { url: this.client.user.avatarURL }
-			});
+		const channel = msg.channel as TextChannel;
+		let response = channel.topic;
+		if (response === null) {
+			response = "There doesn't seem to be a topic for this channel. Maybe ask the mods?";
+		} else if (response.trim() === '') {
+			response = "There doesn't seem to be a topic for this channel. Maybe ask the mods?";
 		}
-		return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
+		return msg.embed({
+			color: getEmbedColor(msg),
+			description: response,
+			thumbnail: { url: this.client.user.avatarURL },
+			title: channel.name
+		});
 	}
 }
