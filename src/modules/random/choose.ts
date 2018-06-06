@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
@@ -29,9 +29,9 @@ export default class ChooseCommand extends Command {
 				}
 			],
 			description: 'Have the bot choose something for you.',
-			details: oneLine`
-				syntax: \`!choose <choices>\`\n
-				\n
+			details: stripIndents`
+				syntax: \`!choose <choices>\`
+
 				The command takes an infinite number of space-separated arguements.
 			`,
 			examples: ['!choose Chocolate Vanilla Strawberry NOTHING'],

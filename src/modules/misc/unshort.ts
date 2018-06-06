@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
@@ -28,7 +28,7 @@ export default class UnshortCommand extends Command {
 				}
 			],
 			description: 'Unshorten a link.',
-			details: oneLine`
+			details: stripIndents`
 				syntax: \`!unshort <short link>\`
 			`,
 			examples: [

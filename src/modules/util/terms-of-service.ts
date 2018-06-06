@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 import { Channel, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
@@ -41,14 +41,14 @@ export default class TermsOfServiceCommand extends Command {
 				}
 			],
 			description: 'Used to configure the Terms of Service for a guild.',
-			details: oneLine`
-				syntax: \`!tos <channel|title|body|list> (#channelMention | message number) (text)\n
-				\n
-				\`channel <#channelMention>\` - Sets the channel to display the terms of service in.\n
-				\`title <info block number> <text>\` - Edit the title of a terms of service info block.\n
-				\`body <info block number> <text>\` - Edit the body of a terms of service info block.\n
-				\`list\` - returns all the terms of service info blocks.\n
-				\n
+			details: stripIndents`
+				syntax: \`!tos <channel|title|body|list> (#channelMention | message number) (text)\`
+
+				\`channel <#channelMention>\` - Sets the channel to display the terms of service in.
+				\`title <info block number> <text>\` - Edit the title of a terms of service info block.
+				\`body <info block number> <text>\` - Edit the body of a terms of service info block.
+				\`list\` - returns all the terms of service info blocks.
+
 				Manage Guild permission required.`,
 			examples: [
 				'!tos channel #channelMention',

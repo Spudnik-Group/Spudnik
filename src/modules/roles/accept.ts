@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 import { Channel, Message, MessageEmbed, Role } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
@@ -28,7 +28,7 @@ export default class AcceptCommand extends Command {
 					type: 'channel'
 				}
 			],
-			description: oneLine`
+			description: stripIndents`
 				syntax: \`!accept (#channelMention)\`\n
 				\n
 				No Arguement: Accept the guild rules, and be auto-assigned the default role.\n

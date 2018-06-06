@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 import { Collection, GuildMember, Message, User } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
@@ -50,15 +50,16 @@ export default class PruneCommand extends Command {
 				}
 			],
 			description: 'Deletes messages.',
-			details: oneLine`
-				syntax: \`!prune <number> (filter) (@userMention)\`\n\n
-				List of filters:\n
-				\`invites\`: Messages containing an invite\n
-				\`user <userMention>\`: Messages sent by @user\n
-				\`bots\`: Messages sent by bots\n
-				\`uploads\`: Messages containing an attachment\n
+			details: stripIndents`
+				syntax: \`!prune <number> (filter) (@userMention)\`
+
+				List of filters:
+				\`invites\`: Messages containing an invite
+				\`user <userMention>\`: Messages sent by @user
+				\`bots\`: Messages sent by bots
+				\`uploads\`: Messages containing an attachment
 				\`links\`: Messages containing a link\n
-				\n
+
 				Manage Message permission required.
 				`,
 			examples: [
@@ -122,7 +123,7 @@ export default class PruneCommand extends Command {
 				messageFilter = (message: Message) => message.content.search(/https?:\/\/[^ \/\.]+\.[^ \/\.]+/) !== -1;
 			} else {
 				return sendSimpleEmbeddedError(msg,
-					oneLine`${msg.author}, that is not a valid filter.\n
+					stripIndents`${msg.author}, that is not a valid filter.\n
 						\`help prune\` for all available filters.`
 				);
 			}

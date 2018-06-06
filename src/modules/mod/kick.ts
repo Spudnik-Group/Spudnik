@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 import { GuildMember, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
@@ -33,9 +33,9 @@ export default class KickCommand extends Command {
 				}
 			],
 			description: 'Kicks a user.',
-			details: oneLine`
-				syntax: \`!kick <@userMention> <reason>\`\n
-				\n
+			details: stripIndents`
+				syntax: \`!kick <@userMention> <reason>\`
+
 				Kick Members permission required.
 			`,
 			examples: [
@@ -94,7 +94,7 @@ export default class KickCommand extends Command {
 			})
 			.catch((err: Error) => {
 				msg.client.emit('error',
-					oneLine`Error with command 'ban'\n
+					stripIndents`Error with command 'ban'\n
 						Banning ${memberToKick} from ${msg.guild} failed!\n
 						Error: ${err}`
 				);

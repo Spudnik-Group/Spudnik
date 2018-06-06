@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import * as rp from 'request-promise';
@@ -34,11 +34,10 @@ export default class XkcdCommand extends Command {
 				}
 			],
 			description: 'Returns a given XKCD comic number (or the latest if nothing specified)',
-			details: oneLine`
-				syntax: \`!xkcd (comic number)\`\n
-				\n
-				Supplying no comic number returns the latest comic.\n
-			`,
+			details: stripIndents`
+				syntax: \`!xkcd (comic number)\`
+
+				Supplying no comic number returns the latest comic.`,
 			examples: [
 				'!xkcd',
 				'!xkcd 323'
