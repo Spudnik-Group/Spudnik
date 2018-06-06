@@ -1,1 +1,2 @@
-Replies with the text you provide.
+Returns the text provided.<br />
+syntax: `!say <text>`

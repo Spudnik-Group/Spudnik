@@ -1,1 +1,1 @@
-Link to my support server!
+Returns a link to my support server!

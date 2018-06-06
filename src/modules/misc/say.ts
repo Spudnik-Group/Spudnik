@@ -25,6 +25,7 @@ export default class SayCommand extends Command {
 				}
 			],
 			description: 'Returns the text provided.',
+			details: 'syntax: `!say <text>`',
 			examples: ['!say Hi there!'],
 			group: 'misc',
 			memberName: 'say',
