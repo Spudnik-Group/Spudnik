@@ -1,3 +1,4 @@
+import { oneLine } from 'common-tags';
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
@@ -18,11 +19,6 @@ export default class AdblockCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Enable or disable the adblock feature.',
-			group: 'mod',
-			guildOnly: true,
-			memberName: 'adblock',
-			name: 'adblock',
 			args: [
 				{
 					key: 'subCommand',
@@ -30,6 +26,21 @@ export default class AdblockCommand extends Command {
 					type: 'string'
 				}
 			],
+			description: 'Enable or disable the adblock feature.',
+			details: oneLine`
+				syntax: \`!adblock <enable|disable>\`\n
+				\n
+				Supplying no subcommand returns an error.\n
+				Manage Messages permission required.
+			`,
+			examples: [
+				'!adblock enable',
+				'!adblock disable'
+			],
+			group: 'mod',
+			guildOnly: true,
+			memberName: 'adblock',
+			name: 'adblock',
 			throttling: {
 				duration: 3,
 				usages: 2
@@ -45,7 +56,7 @@ export default class AdblockCommand extends Command {
 	 * @memberof AdblockCommand
 	 */
 	public hasPermission(msg: CommandMessage): boolean {
-		return this.client.isOwner(msg.author) || msg.member.hasPermission('MANAGE_MESSAGES');
+		return msg.member.hasPermission('MANAGE_MESSAGES');
 	}
 
 	/**
@@ -57,11 +68,13 @@ export default class AdblockCommand extends Command {
 	 */
 	public async run(msg: CommandMessage, args: { subCommand: string }): Promise<Message | Message[]> {
 		const adblockEnabled = msg.client.provider.get(msg.guild.id, 'adblockEnabled', false);
+
 		if (args.subCommand === 'enable') {
 			if (adblockEnabled) {
 				return sendSimpleEmbeddedMessage(msg, 'Adblock feature already enabled!');
 			} else {
 				msg.client.provider.set(msg.guild.id, 'adblockEnabled', true);
+
 				return sendSimpleEmbeddedMessage(msg, 'Adblock feature enabled.');
 			}
 		} else if (args.subCommand === 'disable') {
@@ -69,6 +82,7 @@ export default class AdblockCommand extends Command {
 				return sendSimpleEmbeddedMessage(msg, 'Adblock feature already disabled!');
 			} else {
 				msg.client.provider.set(msg.guild.id, 'adblockEnabled', false);
+
 				return sendSimpleEmbeddedMessage(msg, 'Adblock feature disabled.');
 			}
 		} else {

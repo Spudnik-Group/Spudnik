@@ -13,6 +13,8 @@ interface IConfig {
 	getDictionaryApiKey(): string;
 	getDblApiKey(): string;
 	getHbApiKey(): string;
+	getStatusUpdateInterval(): number;
+	getBotListUpdateInterval(): number;
 }
 
 /**
@@ -47,6 +49,12 @@ export class Configuration implements IConfig {
 
 	@JsonProperty('honeybadgerApiKey', String)
 	private _honeybadgerApiKey: string = '';
+
+	@JsonProperty('botListUpdateInterval', Number)
+	private _botListUpdateInterval: number = 0;
+
+	@JsonProperty('statusUpdateInterval', Number)
+	private _statusUpdateInterval: number = 0;
 
 	/**
 	 * Get the debug flag.
@@ -126,6 +134,26 @@ export class Configuration implements IConfig {
 	 */
 	public getHbApiKey() {
 		return this._honeybadgerApiKey;
+	}
+
+	/**
+	 * Get the status update interval
+	 *
+	 * @returns {number}
+	 * @memberof Configuration
+	 */
+	public getStatusUpdateInterval() {
+		return this._statusUpdateInterval;
+	}
+
+	/**
+	 * Get the bot list update interval
+	 *
+	 * @returns {number}
+	 * @memberof Configuration
+	 */
+	public getBotListUpdateInterval() {
+		return this._botListUpdateInterval;
 	}
 
 	/**
@@ -214,6 +242,28 @@ export class Configuration implements IConfig {
 	 */
 	protected setHbApiKey(honeybadgerApiKey: string) {
 		this._honeybadgerApiKey = honeybadgerApiKey;
+	}
+
+	/**
+	 * Set the status update interval
+	 *
+	 * @protected
+	 * @param {number} statusUpdateInterval
+	 * @memberof Configuration
+	 */
+	protected setStatusUpdateInterval(statusUpdateInterval: number) {
+		this._statusUpdateInterval = statusUpdateInterval;
+	}
+
+	/**
+	 * Set the bot list update interval
+	 *
+	 * @protected
+	 * @param {number} botListUpdateInterval
+	 * @memberof Configuration
+	 */
+	protected setBotListUpdateInterval(botListUpdateInterval: number) {
+		this._botListUpdateInterval = botListUpdateInterval;
 	}
 }
 

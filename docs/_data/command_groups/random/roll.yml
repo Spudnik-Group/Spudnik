@@ -1,0 +1,4 @@
+usage:
+- "!roll"
+- "!roll 4d20"
+- "!roll 4d6"

@@ -1,0 +1,5 @@
+usage:
+- "!role add <role>"
+- "!role remove <role>"
+- "!role list"
+- "!role default <role>"

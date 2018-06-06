@@ -1,12 +1,14 @@
-import { Message } from 'discord.js';
+import { oneLine } from 'common-tags';
+import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import * as request from 'request';
-import { RequestResponse } from 'request';
 import { Config } from '../../lib/config';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
+// tslint:disable-next-line:no-var-requires
+const mw = require('mw-dict');
 const dictionaryApiKey: string = Config.getDictionaryApiKey();
+const dict = new mw.CollegiateDictionary(dictionaryApiKey);
 
 /**
  * Post the definition of a word.
@@ -24,22 +26,28 @@ export default class DefineCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Looks up a word in the Merriam-Webster Collegiate Dictionary.',
+			args: [
+				{
+					key: 'query',
+					prompt: 'What should I look up in the dictionary?\n',
+					type: 'string'
+				}
+			],
+			description: 'Returns the definition of a supplied word. Uses the Merriam-Webster Collegiate Dictionary API.',
+			details: oneLine`
+				syntax: \`!define <word>\`
+			`,
+			examples: [
+				'!define outstanding',
+				'!define useful'
+			],
 			group: 'ref',
-			guildOnly: true,
 			memberName: 'define',
 			name: 'define',
 			throttling: {
 				duration: 3,
 				usages: 2
-			},
-			args: [
-				{
-					key: 'query',
-					prompt: 'what should I look up in the dictionary?\n',
-					type: 'string'
-				}
-			]
+			}
 		});
 	}
 
@@ -52,59 +60,58 @@ export default class DefineCommand extends Command {
 	 * @memberof DefineCommand
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
+		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
 		const word = args.query;
-
-		request(`http://www.dictionaryapi.com/api/v1/references/collegiate/xml/${word}?key=${dictionaryApiKey}`, (err: Error, res: RequestResponse, body: any) => {
-			if (err !== undefined && err !== null) {
-				sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
-			}
-			let definitionResult = '';
-			require('xml2js').Parser().parseString(body, (err: Error, result: any) => {
-				const wordList = result.entry_list.entry;
-				let phonetic = '';
-				phonetic += wordList[0].pr.map((entry: any) => {
-					if (typeof entry === 'object') {
-						return entry._;
-					}
-					return entry;
-				}).join('\n');
-				definitionResult += `*[${phonetic}]*\n`;
-				definitionResult += `Hear it: http://media.merriam-webster.com/soundc11/${wordList[0].sound[0].wav[0].slice(0, 1)}/${wordList[0].sound[0].wav[0]}\n\n`;
-				wordList.forEach((wordResult: any) => {
-					let defList = '';
-					let defArray = wordResult.def[0].dt;
-					if (wordResult.ew[0] !== word) {
-						return;
-					}
-					definitionResult += '__' + wordResult.fl[0] + '__\n';
-					defArray = defArray.filter((item: any) => {
-						if (typeof item === 'object') {
-							item._ = item._.trim();
-							return item._ !== ':';
-						}
-						item = item.trim();
-						return item !== ':';
-					});
-					defList += defArray.map((entry: any) => {
-						if (typeof entry === 'object') {
-							return entry._;
-						}
-						return entry;
-					}).join('\n');
-					definitionResult += `${defList}\n\n`;
-				});
-
-				return msg.embed({
-					color: getEmbedColor(msg),
-					title: word,
-					description: definitionResult,
-					footer: {
-						text: 'powered by Merriam-Webster\'s Collegiate® Dictionary',
-						icon_url: 'http://www.dictionaryapi.com/images/info/branding-guidelines/mw-logo-light-background-50x50.png'
-					}
-				});
-			});
+		const dictionaryEmbed: MessageEmbed = new MessageEmbed({
+			color: getEmbedColor(msg),
+			description: '',
+			footer: {
+				icon_url: 'http://www.dictionaryapi.com/images/info/branding-guidelines/mw-logo-light-background-50x50.png',
+				text: 'powered by Merriam-Webster\'s Collegiate® Dictionary'
+			},
+			title: `Definition Result: ${word}`
 		});
-		return sendSimpleEmbeddedMessage(msg, 'Loading...');
+
+		function renderDefinition(sensesIn: any) {
+			return sensesIn
+				.map((def: any) => oneLine`
+					${def.number ? '*' + def.number + '.*' : ''} 
+					${def.meanings && def.meanings.length ? def.meanings.join(' ') : ''} 
+					${def.synonyms && def.synonyms.length ? def.synonyms.map((s: any) => '_' + s + '_').join(', ') : ''} 
+					${def.illustrations && def.illustrations.length ? def.illustrations.map((i: any) => '* ' + i).join('\n') : ''} 
+					${def.senses && def.senses.length ? renderDefinition(def.senses) : ''}
+				`)
+				.join('\n');
+		}
+
+		dict.lookup(word)
+			.then((result: any) => {
+				dictionaryEmbed.fields = [
+					{
+						name: 'Functional Label:',
+						value: result[0].functional_label
+					},
+					{
+						name: 'Pronunciation:',
+						value: result[0].pronunciation[0]
+					},
+					{
+						name: 'Etymology:',
+						value: result[0].etymology
+					},
+					{
+						name: 'Popularity:',
+						value: result[0].popularity
+					}
+				];
+				dictionaryEmbed.description = renderDefinition(result[0].definition);
+				return msg.embed(dictionaryEmbed);
+			})
+			.catch((err: any) => {
+				msg.client.emit('warn', `Error in command ref:define: ${err}`);
+				return sendSimpleEmbeddedError(msg, 'Word not found.', 3000);
+			});
+
+		return response;
 	}
 }

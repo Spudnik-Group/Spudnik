@@ -1,7 +1,7 @@
 {
 	"name": "spudnik",
 	"description": "An awesome chat bot for Discord.",
-	"version": "0.2.2",
+	"version": "0.3.0",
 	"license": "Apache-2.0",
 	"readme": "README.md",
 	"engines": {
@@ -18,8 +18,11 @@
 	],
 	"main": "dist/launch.js",
 	"scripts": {
+		"dev:start": "npm run test && npm run compile && npm start",
+		"test": "npm run lint",
 		"start": "node dist/launch.js",
-		"lint": "tslint && tsc"
+		"lint": "tslint",
+		"compile": "tsc"
 	},
 	"dependencies": {
 		"body-parser": "^1.17.1",
@@ -37,6 +40,7 @@
 		"moment": "^2.20.1",
 		"moment-duration-format": "^2.2.0",
 		"mongoose": "^4.11.10",
+		"mw-dict": "^3.0.0",
 		"node-duckduckgo": "^1.0.5",
 		"remove-markdown": "0.2.2",
 		"request": "^2.81.0",
@@ -46,9 +50,7 @@
 		"urban": "^0.3.1",
 		"url-unshort": "^5.0.0",
 		"uws": "^9.14.0",
-		"wikijs": "^4.5.0",
-		"winston": "^2.3.1",
-		"xml2js": "^0.4.17"
+		"wikijs": "^4.5.0"
 	},
 	"devDependencies": {
 		"@types/body-parser": "^1.16.3",
@@ -61,6 +63,6 @@
 		"@types/winston": "^2.3.1",
 		"del": "^2.2.2",
 		"nodemon": "^1.11.0",
-		"tslint": "^4.5.1"
+		"tslint": "^5.10.0"
 	}
 }

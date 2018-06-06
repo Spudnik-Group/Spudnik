@@ -1,6 +1,7 @@
-import { Message } from 'discord.js';
+import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { getEmbedColor } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 /**
  * Simulate dice rolling.
@@ -18,20 +19,19 @@ export default class RollCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			name: 'roll',
-			group: 'random',
-			memberName: 'roll',
-			guildOnly: true,
-			description: 'roll one die with x sides, or multiple dice using d20 syntax. Default value is 10',
-			details: '[# of sides] or [# of dice]d[# of sides]( + [# of dice]d[# of sides] + ...)',
 			args: [
 				{
-					default: '6',
-					key: 'roll',
+					infinite: true,
+					key: 'rolls',
 					prompt: 'What die combo would you like to roll?',
 					type: 'string'
 				}
-			]
+			],
+			description: 'roll one die with x sides, or multiple dice using d20 syntax.',
+			details: 'syntax: `!roll <# of sides|[# of dice]d[# of sides]+modifiers [# of dice]d[# of sides]+modifiers ...>`\n\nYou can supply an infinite number of rolls.',
+			group: 'random',
+			memberName: 'roll',
+			name: 'roll'
 		});
 	}
 
@@ -43,7 +43,18 @@ export default class RollCommand extends Command {
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof RollCommand
 	 */
-	public async run(msg: CommandMessage, args: { roll: string }): Promise<Message | Message[]> {
-		return sendSimpleEmbeddedMessage(msg, `${msg.author} rolled a ${require('d20').roll(args.roll)}`);
+	public async run(msg: CommandMessage, args: { rolls: string[] }): Promise<Message | Message[]> {
+		const input: string[] = args.rolls;
+		const diceEmbed: MessageEmbed = new MessageEmbed({
+			color: getEmbedColor(msg),
+			description: '',
+			title: ':game_die: Dice Roller'
+		});
+		input.forEach((item) => {
+			const result = require('d20').roll(item);
+			diceEmbed.description += `Roll: ${item} -- Result: ${result}\n`;
+		});
+
+		return msg.embed(diceEmbed);
 	}
 }

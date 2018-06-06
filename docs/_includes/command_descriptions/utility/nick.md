@@ -1,0 +1,1 @@
+Change the bot's nickname on your server, or reset it if no nickname is supplied.

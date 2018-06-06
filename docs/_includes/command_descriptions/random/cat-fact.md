@@ -1,0 +1,1 @@
+Gives a random cat fact.

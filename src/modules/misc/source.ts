@@ -18,9 +18,9 @@ export default class SourceCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Link to my source code!',
+			description: 'Returns a link to my source code!',
+			examples: ['!source'],
 			group: 'misc',
-			guildOnly: true,
 			memberName: 'source',
 			name: 'source',
 			throttling: {
@@ -38,6 +38,6 @@ export default class SourceCommand extends Command {
 	 * @memberof SourceCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
-		return sendSimpleEmbeddedMessage(msg, 'https://github.com/Spudnik-Group/Spudnik');
+		return sendSimpleEmbeddedMessage(msg, '<https://github.com/Spudnik-Group/Spudnik>');
 	}
 }

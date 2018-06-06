@@ -1,6 +1,7 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError } from '../../lib/helpers';
 
 /**
  * Allows a member to unassign a role from themselves.
@@ -18,19 +19,20 @@ export default class IAmNotCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
+			args: [
+				{
+					key: 'query',
+					prompt: 'What role do you want removed from yourself?\n',
+					type: 'string'
+				}
+			],
 			description: 'Used to remove a role from yourself.',
+			details: 'syntax: `!iamnot <@roleMention>`',
+			examples: ['!iamnot @PUBG'],
 			group: 'roles',
 			guildOnly: true,
 			memberName: 'iamnot',
-			name: 'iamnot',
-			args: [
-				{
-					default: '',
-					key: 'query',
-					prompt: 'what role do you want removed from yourself?\n',
-					type: 'string'
-				}
-			]
+			name: 'iamnot'
 		});
 	}
 
@@ -44,11 +46,11 @@ export default class IAmNotCommand extends Command {
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
 		const roleEmbed = new MessageEmbed({
-			color: getEmbedColor(msg),
 			author: {
-				name: 'Role Manager',
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/110/lock_1f512.png'
-			}
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/110/lock_1f512.png',
+				name: 'Role Manager'
+			},
+			color: getEmbedColor(msg)
 		});
 
 		const role = msg.guild.roles.find((r) => r.name.toLowerCase() === args.query.toLowerCase());
@@ -62,14 +64,10 @@ export default class IAmNotCommand extends Command {
 
 				return msg.embed(roleEmbed);
 			} else {
-				roleEmbed.description = `You do not have the role ${role.name}.`;
-
-				return msg.embed(roleEmbed);
+				return sendSimpleEmbeddedError(msg, `You do not have the role ${role.name}.`, 3000);
 			}
 		} else {
-			roleEmbed.description = `Cannot find ${args.query} in list of assignable roles.`;
-
-			return msg.embed(roleEmbed);
+			return sendSimpleEmbeddedError(msg, `Cannot find ${args.query} in list of assignable roles.`, 3000);
 		}
 	}
 }

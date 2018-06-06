@@ -1,0 +1,1 @@
+Used to retrieve information about a cocktail.

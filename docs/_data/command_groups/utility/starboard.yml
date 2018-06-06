@@ -1,0 +1,5 @@
+usage:
+- "!starboard trigger <new trigger emoji>"
+- "!starboard channel"
+- "!starboard enable"
+- "!starboard disable"

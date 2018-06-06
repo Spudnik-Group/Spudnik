@@ -1,0 +1,6 @@
+usage:
+- "!welcome message <message to display>"
+- "!welcome"
+- "!welcome channel"
+- "!welcome enable"
+- "!welcome disable"

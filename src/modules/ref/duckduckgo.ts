@@ -1,3 +1,4 @@
+import { oneLine } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { Requester } from 'node-duckduckgo';
@@ -20,22 +21,28 @@ export default class DdgCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Used to retrieve an instant answer from DuckDuckGo.',
+			args: [
+				{
+					key: 'query',
+					prompt: 'What did you want to look up on DuckDuckGo?\n',
+					type: 'string'
+				}
+			],
+			description: 'Returns an instant answer from DuckDuckGo for the supplied query.',
+			details: oneLine`
+				syntax: \`!ddg <query>\`
+			`,
+			examples: [
+				'!ddg fortnite',
+				'!ddg github'
+			],
 			group: 'ref',
-			guildOnly: true,
 			memberName: 'ddg',
 			name: 'ddg',
 			throttling: {
 				duration: 3,
 				usages: 2
-			},
-			args: [
-				{
-					key: 'query',
-					prompt: 'what did you want DuckDuckGo to look up?\n',
-					type: 'string'
-				}
-			]
+			}
 		});
 	}
 
@@ -51,18 +58,20 @@ export default class DdgCommand extends Command {
 		const ddg = new Requester('Spudnik Discord Bot');
 		ddg.no_html = 1;
 		ddg.no_redirect = 1;
+		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
 		const ddgEmbed: MessageEmbed = new MessageEmbed({
 			color: getEmbedColor(msg),
+			description: '',
 			footer: {
-				text: 'results from DuckDuckGo',
-				icon_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/DuckDuckGo_logo_and_wordmark_%282014-present%29.svg/150px-DuckDuckGo_logo_and_wordmark_%282014-present%29.svg.png'
-			},
-			description: ''
+				icon_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/DuckDuckGo_logo_and_wordmark_%282014-present%29.svg/150px-DuckDuckGo_logo_and_wordmark_%282014-present%29.svg.png',
+				text: 'results from DuckDuckGo'
+			}
 		});
 
 		ddg.request(args.query, (err, response, body) => {
 			if (err !== undefined && err !== null) {
-				sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?');
+				msg.client.emit('warn', `Error in command ref:ddg: ${err}`);
+				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			} else if (typeof body !== 'undefined') {
 				const result = JSON.parse(body);
 				if (result.answer) {
@@ -75,6 +84,6 @@ export default class DdgCommand extends Command {
 			}
 			return msg.embed(ddgEmbed);
 		});
-		return sendSimpleEmbeddedMessage(msg, 'Loading...');
+		return response;
 	}
 }

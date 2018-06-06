@@ -1,6 +1,8 @@
+import { oneLine } from 'common-tags';
 import { Message, MessageEmbed, Role } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError } from '../../lib/helpers';
 
 /**
  * Manage roles including self-assigning, listing, and setting a default role.
@@ -18,25 +20,40 @@ export default class RoleManagementCommands extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Used to add or remove a role to yourself, list available roles, and set the default role.',
-			details: 'add <role>|remove <role>|list|default <role>',
-			group: 'roles',
-			guildOnly: true,
-			memberName: 'role',
-			name: 'role',
 			args: [
 				{
 					key: 'subCommand',
-					prompt: 'add|remove|list|default\n',
+					prompt: 'What sub-command would you like to use?\nOptions are:\n* add\n* remove\n* list\n* default',
 					type: 'string'
 				},
 				{
 					default: '',
 					key: 'role',
-					prompt: 'what role do you want added to yourself?\n',
+					prompt: 'What role?\n',
 					type: 'role'
 				}
-			]
+			],
+			description: 'Used to configure the role management feature.',
+			details: oneLine`
+				syntax: \`!role <add|remove|list|default> (@roleMention)\`\n
+				\n
+				\`add <@roleMention>\` - adds the role to the list of self-assignable-roles.\n
+				\`remove <@roleMention>\` - removes the role from the list of self-assignable-roles.\n
+				\`list\` - lists the available self-assignable-roles.\n
+				\`default <@roleMention>\` - sets the default role.\n
+				\n
+				Manage Roles permission required.
+			`,
+			examples: [
+				'!role add @role_name',
+				'!role remove @role_name',
+				'!role list',
+				'!role default @role_name'
+			],
+			group: 'roles',
+			guildOnly: true,
+			memberName: 'role',
+			name: 'role'
 		});
 	}
 
@@ -61,11 +78,11 @@ export default class RoleManagementCommands extends Command {
 	 */
 	public async run(msg: CommandMessage, args: { subCommand: string, role: Role }): Promise<Message | Message[]> {
 		const roleEmbed = new MessageEmbed({
-			color: getEmbedColor(msg),
 			author: {
-				name: 'Role Manager',
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/110/lock_1f512.png'
-			}
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/110/lock_1f512.png',
+				name: 'Role Manager'
+			},
+			color: getEmbedColor(msg)
 		});
 
 		let guildAssignableRoles: string[] = msg.client.provider.get(msg.guild, 'assignableRoles', []);
@@ -85,16 +102,17 @@ export default class RoleManagementCommands extends Command {
 				if (!guildAssignableRoles.includes(args.role.id)) {
 					guildAssignableRoles.push(args.role.id);
 
-					return msg.client.provider.set(msg.guild, 'assignableRoles', guildAssignableRoles).then(() => {
-						roleEmbed.description = `Added role '${args.role.name}' to the list of assignable roles.`;
-						return msg.embed(roleEmbed);
-					}).catch(() => {
-						roleEmbed.description = 'There was an error processing the request.';
-						return msg.embed(roleEmbed);
-					});
+					return msg.client.provider.set(msg.guild, 'assignableRoles', guildAssignableRoles)
+						.then(() => {
+							roleEmbed.description = `Added role '${args.role.name}' to the list of assignable roles.`;
+							return msg.embed(roleEmbed);
+						})
+						.catch((err: Error) => {
+							msg.client.emit('warn', `Error in command roles:role-add: ${err}`);
+							return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
+						});
 				} else {
-					roleEmbed.description = `${args.role.name} is already in the list of assignable roles for this guild.`;
-					return msg.embed(roleEmbed);
+					return sendSimpleEmbeddedError(msg, `${args.role.name} is already in the list of assignable roles for this guild.`, 3000);
 				}
 			}
 			case 'remove': {
@@ -102,19 +120,21 @@ export default class RoleManagementCommands extends Command {
 					roleEmbed.description = 'No role specified!';
 					return msg.embed(roleEmbed);
 				}
+
 				if (Array.isArray(guildAssignableRoles) && guildAssignableRoles.includes(args.role.id)) {
 					guildAssignableRoles = guildAssignableRoles.filter((i: string) => i !== args.role.id);
 
-					return msg.client.provider.set(msg.guild, 'assignableRoles', guildAssignableRoles).then(() => {
-						roleEmbed.description = `Removed role '${args.role.name}' from the list of assignable roles.`;
-						return msg.embed(roleEmbed);
-					}).catch(() => {
-						roleEmbed.description = 'There was an error processing the request.';
-						return msg.embed(roleEmbed);
-					});
+					return msg.client.provider.set(msg.guild, 'assignableRoles', guildAssignableRoles)
+						.then(() => {
+							roleEmbed.description = `Removed role '${args.role.name}' from the list of assignable roles.`;
+							return msg.embed(roleEmbed);
+						})
+						.catch((err: Error) => {
+							msg.client.emit('warn', `Error in command roles:role-remove: ${err}`);
+							return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
+						});
 				} else {
-					roleEmbed.description = `Could not find role with name ${args.role.name} in the list of assignable roles for this guild.`;
-					return msg.embed(roleEmbed);
+					return sendSimpleEmbeddedError(msg, `Could not find role with name ${args.role.name} in the list of assignable roles for this guild.`, 3000);
 				}
 			}
 			case 'list': {
@@ -126,9 +146,9 @@ export default class RoleManagementCommands extends Command {
 
 					if (roles.length > 0) {
 						roleEmbed.fields.push({
+							inline: true,
 							name: 'Assignable Roles',
-							value: roles.join('\n'),
-							inline: true
+							value: roles.join('\n')
 						});
 					}
 				}
@@ -138,9 +158,9 @@ export default class RoleManagementCommands extends Command {
 
 					if (role) {
 						roleEmbed.fields.push({
+							inline: true,
 							name: 'Default Role',
-							value: role.name,
-							inline: true
+							value: role.name
 						});
 					}
 				}
@@ -153,25 +173,29 @@ export default class RoleManagementCommands extends Command {
 			}
 			case 'default': {
 				if (args.role.name === undefined) {
-					return msg.client.provider.set(msg.guild, 'defaultRole', null).then(() => {
-						roleEmbed.description = 'Removed default role.';
-						return msg.embed(roleEmbed);
-					}).catch(() => {
-						roleEmbed.description = 'There was an error processing the request.';
-						return msg.embed(roleEmbed);
-					});
+					return msg.client.provider.set(msg.guild, 'defaultRole', null)
+						.then(() => {
+							roleEmbed.description = 'Removed default role.';
+							return msg.embed(roleEmbed);
+						})
+						.catch((err: Error) => {
+							msg.client.emit('warn', `Error in command roles:role-default: ${err}`);
+							return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
+						});
 				}
-				return msg.client.provider.set(msg.guild, 'defaultRole', args.role.id).then(() => {
-					roleEmbed.description = `Added default role '${args.role.name}'.`;
-					return msg.embed(roleEmbed);
-				}).catch(() => {
-					roleEmbed.description = 'There was an error processing the request.';
-					return msg.embed(roleEmbed);
-				});
+
+				return msg.client.provider.set(msg.guild, 'defaultRole', args.role.id)
+					.then(() => {
+						roleEmbed.description = `Added default role '${args.role.name}'.`;
+						return msg.embed(roleEmbed);
+					})
+					.catch((err: Error) => {
+						msg.client.emit('warn', `Error in command roles:role-default: ${err}`);
+						return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
+					});
 			}
 			default: {
-				roleEmbed.description = 'Invalid subcommand. Please see `help roles`.';
-				return msg.embed(roleEmbed);
+				return sendSimpleEmbeddedError(msg, 'Invalid subcommand. Please see `help roles`.', 3000);
 			}
 		}
 	}

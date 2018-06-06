@@ -1,0 +1,1 @@
+Used to remove a role from yourself.

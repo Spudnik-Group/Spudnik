@@ -1,7 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import * as request from 'request';
-import { RequestResponse } from 'request';
+import * as rp from 'request-promise';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedImage, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 /**
@@ -21,8 +20,8 @@ export default class HighNoonCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Displays the High Noon XKCD comic.',
+			examples: ['!highnoon'],
 			group: 'misc',
-			guildOnly: true,
 			memberName: 'highnoon',
 			name: 'highnoon',
 			throttling: {
@@ -40,16 +39,15 @@ export default class HighNoonCommand extends Command {
 	 * @memberof HighNoonCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
-		request({
-			uri: 'http://imgs.xkcd.com/comics/now.png',
-			followAllRedirects: true
-		}, (err: Error, resp: RequestResponse) => {
-			if (resp.request.uri.href) {
-				return sendSimpleEmbeddedImage(msg, resp.request.uri.href.toString());
-			} else {
+		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
+		rp({ followAllRedirects: true, uri: 'http://imgs.xkcd.com/comics/now.png', resolveWithFullResponse: true })
+			.then((content) => {
+				return sendSimpleEmbeddedImage(msg, content.request.uri.href.toString());
+			})
+			.catch((err: Error) => {
+				msg.client.emit('warn', `Error in command misc:highnoon: ${err}`);
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
-			}
-		});
-		return sendSimpleEmbeddedMessage(msg, 'Loading...');
+			});
+		return response;
 	}
 }

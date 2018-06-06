@@ -1,0 +1,2 @@
+Supplying no game name provides you with a list of all users who are marked with the "Playing" status type.<br />
+Supplying a game name provides you with a list of all users with that game name as their status (case insensitive)

@@ -17,19 +17,18 @@ export default class SayCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			name: 'say',
-			group: 'misc',
-			memberName: 'say',
-			guildOnly: true,
-			description: 'Replies with the text you provide.',
-			examples: ['say Hi there!'],
 			args: [
 				{
 					key: 'text',
-					prompt: 'What text would you like the bot to say?',
+					prompt: 'What text would you like me to say?',
 					type: 'string'
 				}
-			]
+			],
+			description: 'Returns the text provided.',
+			examples: ['!say Hi there!'],
+			group: 'misc',
+			memberName: 'say',
+			name: 'say'
 		});
 	}
 

@@ -1,3 +1,4 @@
+import { oneLine } from 'common-tags';
 import { Collection, GuildMember, Message, User } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
@@ -18,14 +19,53 @@ export default class PruneCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			aliases: ['clean', 'purge', 'clear'],
+			aliases: [
+				'clean',
+				'purge',
+				'clear'
+			],
+			args: [
+				{
+					key: 'limit',
+					max: 100,
+					prompt: 'how many messages would you like to delete?\n',
+					type: 'integer',
+					validate: (limit: number) => {
+						if (!isNaN(Number(limit)) && limit > 0) { return true; }
+						return 'Invalid number of messages to delete.';
+					}
+				},
+				{
+					default: '',
+					key: 'filter',
+					parse: (str: string) => str.toLowerCase(),
+					prompt: 'What filter would you like to apply?\n',
+					type: 'string'
+				},
+				{
+					default: '',
+					key: 'member',
+					prompt: 'UserMention of whose messages would you like to delete?\n',
+					type: 'member'
+				}
+			],
 			description: 'Deletes messages.',
-			details: `Deletes messages. Here is a list of filters:
-				__invites:__ Messages containing an invite
-				__user @user:__ Messages sent by @user
-				__bots:__ Messages sent by bots
-				__uploads:__ Messages containing an attachment
-				__links:__ Messages containing a link`,
+			details: oneLine`
+				syntax: \`!prune <number> (filter) (@userMention)\`\n\n
+				List of filters:\n
+				\`invites\`: Messages containing an invite\n
+				\`user <userMention>\`: Messages sent by @user\n
+				\`bots\`: Messages sent by bots\n
+				\`uploads\`: Messages containing an attachment\n
+				\`links\`: Messages containing a link\n
+				\n
+				Manage Message permission required.
+				`,
+			examples: [
+				'!prune 50',
+				'!prune 15 links',
+				'!prune 50 user @user'
+			],
 			group: 'mod',
 			guildOnly: true,
 			memberName: 'prune',
@@ -33,32 +73,7 @@ export default class PruneCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			},
-			args: [
-				{
-					key: 'limit',
-					max: 100,
-					prompt: 'how many messages would you like to delete?\n',
-					validate: (limit: number) => {
-						if (!isNaN(Number(limit)) && limit > 0) { return true; }
-						return 'Invalid number of messages to delete.';
-					},
-					type: 'integer'
-				},
-				{
-					default: '',
-					key: 'filter',
-					parse: (str: string) => str.toLowerCase(),
-					prompt: 'what filter would you like to apply?\n',
-					type: 'string'
-				},
-				{
-					default: '',
-					key: 'member',
-					prompt: 'whose messages would you like to delete?\n',
-					type: 'member'
-				}
-			]
+			}
 		});
 	}
 
@@ -70,7 +85,7 @@ export default class PruneCommand extends Command {
 	 * @memberof PruneCommand
 	 */
 	public hasPermission(msg: CommandMessage): boolean {
-		return this.client.isOwner(msg.author) || msg.member.hasPermission('MANAGE_MESSAGES');
+		return msg.member.hasPermission('MANAGE_MESSAGES');
 	}
 
 	/**
@@ -106,25 +121,32 @@ export default class PruneCommand extends Command {
 			} else if (filter === 'links') {
 				messageFilter = (message: Message) => message.content.search(/https?:\/\/[^ \/\.]+\.[^ \/\.]+/) !== -1;
 			} else {
-				return sendSimpleEmbeddedError(msg, `${msg.author}, that is not a valid filter. \`help prune\` for all available filters.`);
+				return sendSimpleEmbeddedError(msg,
+					oneLine`${msg.author}, that is not a valid filter.\n
+						\`help prune\` for all available filters.`
+				);
 			}
 
-			const messages: Collection<string, Message> = await msg.channel.messages.fetch({ limit });
+			const messages: Collection<string, Message> = await msg.channel.messages.fetch({ limit: limit });
 			const messagesToDelete: Collection<string, Message> = messages.filter(messageFilter);
+
 			await sendSimpleEmbeddedMessage(msg, `Pruning ${limit} messages.`).then((response: Message | Message[]) => {
 				msg.channel.bulkDelete(messagesToDelete.array().reverse())
 					.then(() => { if (response instanceof Message) { response.delete(); } })
 					.catch((err: Error) => null);
 			});
+
 			return sendSimpleEmbeddedMessage(msg, `Pruned ${limit} messages`, 5000);
 		}
 
-		const messages: Collection<string, Message> = await msg.channel.messages.fetch({ limit });
-		await sendSimpleEmbeddedMessage(msg, `Pruning ${limit} messages.`).then((response: Message | Message[]) => {
-			msg.channel.bulkDelete(messages.array().reverse())
-				.then(() => { if (response instanceof Message) { response.delete(); } })
-				.catch((err: Error) => null);
-		});
+		const messages: Collection<string, Message> = await msg.channel.messages.fetch({ limit: limit });
+		await sendSimpleEmbeddedMessage(msg, `Pruning ${limit} messages.`)
+			.then((response: Message | Message[]) => {
+				msg.channel.bulkDelete(messages.array().reverse())
+					.then(() => { if (response instanceof Message) { response.delete(); } })
+					.catch((err: Error) => null);
+			});
+
 		return sendSimpleEmbeddedMessage(msg, `Pruned ${limit} messages`, 5000);
 	}
 }

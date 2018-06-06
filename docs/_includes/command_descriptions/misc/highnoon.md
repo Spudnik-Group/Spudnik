@@ -1,0 +1,1 @@
+Displays the High Noon XKCD comic.

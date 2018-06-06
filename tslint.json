@@ -15,7 +15,14 @@
 		"no-shadowed-variable": false,
 		"max-classes-per-file": false,
 		"forin": false,
-		"object-literal-sort-keys": false,
+		"object-literal-shorthand": [
+			true,
+			"never"
+		],
+		"object-literal-sort-keys": [
+			true,
+			"ignore-case"
+		],
 		"variable-name": [
 			true,
 			"ban-keywords",
@@ -45,7 +52,7 @@
 					"objects": "never",
 					"arrays": "never",
 					"functions": "never",
-					"typeLiterals": "ignore"
+					"typeLiterals": "never"
 				},
 				"esSpecCompliant": true
 			}
