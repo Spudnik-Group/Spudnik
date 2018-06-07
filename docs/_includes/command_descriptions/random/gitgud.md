@@ -1,1 +1,2 @@
-Informs someone that they should "git gud."
+Informs someone that they should "git gud."<br />
+syntax: \`!gitgud (@user mention)\`

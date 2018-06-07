@@ -27,8 +27,13 @@ export default class RollCommand extends Command {
 					type: 'string'
 				}
 			],
-			description: 'roll one die with x sides, or multiple dice using d20 syntax.',
+			description: 'Roll one die with x sides, or multiple dice using d20 syntax.',
 			details: 'syntax: `!roll <# of sides|[# of dice]d[# of sides]+modifiers [# of dice]d[# of sides]+modifiers ...>`\n\nYou can supply an infinite number of rolls.',
+			examples: [
+				'!roll 2d20',
+				'!roll 4d8+2',
+				'!roll 2d8+2 4d6'
+			],
 			group: 'random',
 			memberName: 'roll',
 			name: 'roll'

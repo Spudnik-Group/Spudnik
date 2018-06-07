@@ -1,1 +1,1 @@
-Gives a random Will Smith fact.
+Returns a random Will Smith fact.

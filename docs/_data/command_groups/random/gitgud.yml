@@ -1,1 +1,3 @@
-usage: "!gitgud <user>"
+usage:
+  - '!gitgud'
+  - '!gitgud @Nebula#1337'

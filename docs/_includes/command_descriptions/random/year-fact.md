@@ -1,1 +1,1 @@
-Gives a random year fact.
+Returns a random year fact.
