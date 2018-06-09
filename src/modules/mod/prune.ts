@@ -27,8 +27,8 @@ export default class PruneCommand extends Command {
 			args: [
 				{
 					key: 'limit',
-					max: 100,
-					prompt: 'how many messages would you like to delete?\n',
+					max: 50,
+					prompt: 'How many messages would you like to delete?\n',
 					type: 'integer',
 					validate: (limit: number) => {
 						if (!isNaN(Number(limit)) && limit > 0) { return true; }
@@ -45,7 +45,7 @@ export default class PruneCommand extends Command {
 				{
 					default: '',
 					key: 'member',
-					prompt: 'UserMention of whose messages would you like to delete?\n',
+					prompt: 'Whose messages would you like to delete?\n',
 					type: 'member'
 				}
 			],
