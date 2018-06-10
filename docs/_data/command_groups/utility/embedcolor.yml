@@ -1,1 +1,3 @@
-usage: "!embedcolor <hex color>"
+usage:
+  - "!embedcolor 5592405"
+  - "!embedcolor"

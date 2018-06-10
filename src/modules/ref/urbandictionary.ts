@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
@@ -29,10 +29,10 @@ export default class UrbanCommand extends Command {
 				}
 			],
 			description: 'Returns the Urban Dictionary result of the supplied query. If no query is supplied, returns a random thing.',
-			details: oneLine`
-				syntax: \`!urban (query)\`\n
-				\n
-				Supplying no query will return a random result.\n
+			details: stripIndents`
+				syntax: \`!urban (query)\`
+
+				Supplying no query will return a random result.
 				Urban Dictionary results are NSFW.
 			`,
 			examples: [

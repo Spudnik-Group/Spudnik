@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 import { GuildMember, Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { resolveMention, sendSimpleEmbeddedImage } from '../../lib/helpers';
@@ -28,7 +28,7 @@ export default class GitGudCommand extends Command {
 				}
 			],
 			description: 'Informs someone that they should "git gud".',
-			details: oneLine`
+			details: stripIndents`
 				syntax: \`!gitgud (@user mention)\`
 			`,
 			examples: ['!gitgud', '!gitgud @Nebula#1337'],

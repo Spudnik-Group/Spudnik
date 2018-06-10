@@ -1,1 +1,3 @@
-usage: "!ban <user> <reason> (days of messages)"
+usage:
+  - '!ban @user being a pleb 7'
+  - '!ban @user being a pleb'

@@ -26,6 +26,9 @@ after_failure:
 before_deploy:
 - zip -r release.zip dist/ config/ package.json README.md LICENSE
 - mkdir -p dpl_cd_upload
+- rm -rf docs
+- rm -rf scripts
+- rm -rf node_modules
 - mv release.zip dpl_cd_upload/release.zip
 - mv assets/prod/config.json config/config.json
 - mv assets/servers.json config/servers.json

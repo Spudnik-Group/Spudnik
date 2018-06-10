@@ -1,1 +1,1 @@
-Gives a random date fact.
+Returns a random date fact.

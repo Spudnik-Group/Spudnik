@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 import { Channel, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
@@ -34,18 +34,18 @@ export default class StarboardCommand extends Command {
 				}
 			],
 			description: 'Used to configure the :star: Star Board feature.',
-			details: oneLine`
-				syntax: \`!starboard <channel|trigger|enable|disable> (new starboard emoji | #channelMention)\`\n
-				\n
-				\`channel <#channelMention>\` - sets Star Board channel to the channel supplied.\n
-				\`trigger <emoji>\` - sets emoji to save to star board. If blank, shows current trigger emoji.\n
-				\`enable\` - enables the Star Board feature.\n
-				\`disable\` - disables the Star Board feature.\n
-				\n
+			details: stripIndents`
+				syntax: \`!starboard <channel|trigger|enable|disable> (new starboard emoji | #channelMention)\`
+
+				\`channel <#channelMention>\` - sets Star Board channel to the channel supplied.
+				\`trigger <emoji>\` - sets emoji to save to star board. If blank, shows current trigger emoji.
+				\`enable\` - enables the Star Board feature.
+				\`disable\` - disables the Star Board feature.
+
 				Administrator permission required.
 			`,
 			examples: [
-				'!starboard channel #channelMention',
+				'!starboard channel #starboard',
 				'!starboard trigger',
 				'!starboard trigger :stuck_out_tongue:',
 				'!starboard enable',

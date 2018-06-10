@@ -1,6 +1,6 @@
 usage:
-- "!welcome message <message to display>"
-- "!welcome"
-- "!welcome channel"
+- "!welcome message Please welcome {user} to the guild!"
+- "!welcome message"
+- "!welcome channel #general"
 - "!welcome enable"
 - "!welcome disable"

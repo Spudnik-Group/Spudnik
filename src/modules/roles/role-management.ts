@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed, Role } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
@@ -34,21 +34,21 @@ export default class RoleManagementCommands extends Command {
 				}
 			],
 			description: 'Used to configure the role management feature.',
-			details: oneLine`
-				syntax: \`!role <add|remove|list|default> (@roleMention)\`\n
-				\n
-				\`add <@roleMention>\` - adds the role to the list of self-assignable-roles.\n
-				\`remove <@roleMention>\` - removes the role from the list of self-assignable-roles.\n
-				\`list\` - lists the available self-assignable-roles.\n
-				\`default <@roleMention>\` - sets the default role.\n
-				\n
+			details: stripIndents`
+				syntax: \`!role <add|remove|list|default> (@roleMention)\`
+
+				\`add <@roleMention>\` - adds the role to the list of self-assignable-roles.
+				\`remove <@roleMention>\` - removes the role from the list of self-assignable-roles.
+				\`list\` - lists the available self-assignable-roles.
+				\`default <@roleMention>\` - sets the default role.
+
 				Manage Roles permission required.
 			`,
 			examples: [
-				'!role add @role_name',
-				'!role remove @role_name',
+				'!role add @PUBG',
+				'!role remove @Fortnite',
 				'!role list',
-				'!role default @role_name'
+				'!role default @Pleb'
 			],
 			group: 'roles',
 			guildOnly: true,

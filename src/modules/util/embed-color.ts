@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
@@ -36,11 +36,11 @@ export default class EmbedColorCommand extends Command {
 				}
 			],
 			description: 'Used to change the default embed color the bot uses for responses, or reset it.',
-			details: oneLine`
-				syntax: \`!embedcolor (hex color)\`\n
-				\n
-				Supplying no hex color resets the embed color to default.\n
-				\n
+			details: stripIndents`
+				syntax: \`!embedcolor (hex color)\`
+
+				Supplying no hex color resets the embed color to default.
+
 				Manage Guild permission required.
 			`,
 			examples: [

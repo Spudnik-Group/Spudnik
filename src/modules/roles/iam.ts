@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
@@ -27,8 +27,8 @@ export default class IAmNotCommand extends Command {
 					type: 'string'
 				}
 			],
-			description: 'Used to add a role to yourself.',
-			details: 'syntax: `!iam @roleMention`',
+			description: 'Used to add a self-assignable role to yourself.',
+			details: 'syntax: `!iam <@roleMention>`',
 			examples: ['!iam @Fortnite'],
 			group: 'roles',
 			guildOnly: true,

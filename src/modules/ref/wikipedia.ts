@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
@@ -28,7 +28,7 @@ export default class WikiCommand extends Command {
 				}
 			],
 			description: 'Returns the summary of the first matching search result from Wikipedia.',
-			details: oneLine`
+			details: stripIndents`
 				syntax: \`!wiki <query>\`
 			`,
 			examples: ['!wiki Sputnik 1'],

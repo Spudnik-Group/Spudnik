@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
@@ -27,12 +27,11 @@ export default class AdblockCommand extends Command {
 				}
 			],
 			description: 'Enable or disable the adblock feature.',
-			details: oneLine`
-				syntax: \`!adblock <enable|disable>\`\n
-				\n
-				Supplying no subcommand returns an error.\n
-				Manage Messages permission required.
-			`,
+			details: stripIndents`
+				syntax: \`!adblock <enable|disable>\`
+
+				Supplying no subcommand returns an error.
+				Manage Messages permission required.`,
 			examples: [
 				'!adblock enable',
 				'!adblock disable'

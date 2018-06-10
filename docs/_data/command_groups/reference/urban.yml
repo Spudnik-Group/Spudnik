@@ -1,1 +1,3 @@
-usage: "!urban <query>"
+usage:
+  - '!urban'
+  - '!urban shorty'

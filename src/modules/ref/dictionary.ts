@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { Config } from '../../lib/config';
@@ -34,7 +34,7 @@ export default class DefineCommand extends Command {
 				}
 			],
 			description: 'Returns the definition of a supplied word. Uses the Merriam-Webster Collegiate Dictionary API.',
-			details: oneLine`
+			details: stripIndents`
 				syntax: \`!define <word>\`
 			`,
 			examples: [
@@ -74,11 +74,11 @@ export default class DefineCommand extends Command {
 
 		function renderDefinition(sensesIn: any) {
 			return sensesIn
-				.map((def: any) => oneLine`
-					${def.number ? '*' + def.number + '.*' : ''} 
-					${def.meanings && def.meanings.length ? def.meanings.join(' ') : ''} 
-					${def.synonyms && def.synonyms.length ? def.synonyms.map((s: any) => '_' + s + '_').join(', ') : ''} 
-					${def.illustrations && def.illustrations.length ? def.illustrations.map((i: any) => '* ' + i).join('\n') : ''} 
+				.map((def: any) => stripIndents`
+					${def.number ? '*' + def.number + '.*' : ''}
+					${def.meanings && def.meanings.length ? def.meanings.join(' ') : ''}
+					${def.synonyms && def.synonyms.length ? def.synonyms.map((s: any) => '_' + s + '_').join(', ') : ''}
+					${def.illustrations && def.illustrations.length ? def.illustrations.map((i: any) => '* ' + i).join('\n') : ''}
 					${def.senses && def.senses.length ? renderDefinition(def.senses) : ''}
 				`)
 				.join('\n');

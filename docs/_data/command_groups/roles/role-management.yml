@@ -1,5 +1,5 @@
 usage:
-- "!role add <role>"
-- "!role remove <role>"
+- "!role add @PUBG"
+- "!role remove @Fortnite"
 - "!role list"
-- "!role default <role>"
+- "!role default @Pleb"

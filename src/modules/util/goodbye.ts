@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 import { Channel, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
@@ -34,16 +34,23 @@ export default class GoodbyeCommand extends Command {
 				}
 			],
 			description: 'Used to configure the message to be sent when a user leaves your guild.',
-			details: oneLine`
-				syntax: \`!goodbye <message|channel|enable|disable> (text | #channelMention)\`\n
-				\n
-				\`message (text to say goodbye/heckle)\` - Set/return the goodbye message. Use { guild } for guild name, and { user } to reference the user joining. Leave blank to show current.\n
-				\`channel <#channelMention>\` - Set the channel for the goodbye message to be displayed.\n
-				\`enable\` - Enable the goodbye message feature.\n
-				\`disable\` - Disable the goodbye message feature.\n
-				\n
+			details: stripIndents`
+				syntax: \`!goodbye <message|channel|enable|disable> (text | #channelMention)\`
+
+				\`message (text to say goodbye/heckle)\` - Set/return the goodbye message. Use { guild } for guild name, and { user } to reference the user joining. Leave blank to show current.
+				\`channel <#channelMention>\` - Set the channel for the goodbye message to be displayed.
+				\`enable\` - Enable the goodbye message feature.
+				\`disable\` - Disable the goodbye message feature.
+
 				Manage Guild permission required.
 			`,
+			examples: [
+				'!goodbye message Everyone mourn the loss of {user}',
+				'!goodbye',
+				'!goodbye channel #general',
+				'!goodbye enable',
+				'!goodbye disable'
+			],
 			group: 'util',
 			guildOnly: true,
 			memberName: 'goodbye',

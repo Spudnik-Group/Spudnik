@@ -1,4 +1,4 @@
 usage:
-- "!roll"
-- "!roll 4d20"
-- "!roll 4d6"
+- "!roll 2d20"
+- "!roll 4d8+2"
+- "!roll 2d8+2 4d6"

@@ -1,1 +1,2 @@
-Used to retrieve an instant answer from DuckDuckGo.
+Returns an instant answer from DuckDuckGo for the supplied query.<br />
+syntax: `!ddg <query>`
