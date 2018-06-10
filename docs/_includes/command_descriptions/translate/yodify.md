@@ -1,1 +1,2 @@
-Translate to Yoda speak.
+Translates text to Yoda speak.<br />
+syntax: `!yodify <text>`

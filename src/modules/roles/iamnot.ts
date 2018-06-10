@@ -26,7 +26,7 @@ export default class IAmNotCommand extends Command {
 					type: 'string'
 				}
 			],
-			description: 'Used to remove a role from yourself.',
+			description: 'Used to remove a self-assignable role from yourself.',
 			details: 'syntax: `!iamnot <@roleMention>`',
 			examples: ['!iamnot @PUBG'],
 			group: 'roles',

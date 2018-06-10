@@ -1,1 +1,9 @@
-Used to add or remove a role to/from the list of self assignable roles, list available roles, and set the default role.
+Used to configure the role management feature.<br />
+syntax: `!role <add|remove|list|default> (@roleMention)`<br />
+<br />
+`add <@roleMention>` - adds the role to the list of self-assignable-roles.<br />
+`remove <@roleMention>` - removes the role from the list of self-assignable-roles.<br />
+`list` - lists the available self-assignable-roles.<br />
+`default <@roleMention>` - sets the default role.<br />
+<br />
+Manage Roles permission required.

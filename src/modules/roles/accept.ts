@@ -28,7 +28,8 @@ export default class AcceptCommand extends Command {
 					type: 'channel'
 				}
 			],
-			description: stripIndents`
+			description: 'Allows use and configuration of the accept module.',
+			details: stripIndents`
 				syntax: \`!accept (#channelMention)\`\n
 				\n
 				No Arguement: Accept the guild rules, and be auto-assigned the default role.\n

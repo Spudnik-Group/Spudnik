@@ -42,16 +42,17 @@ export default class TermsOfServiceCommand extends Command {
 			],
 			description: 'Used to configure the Terms of Service for a guild.',
 			details: stripIndents`
-				syntax: \`!tos <channel|title|body|list> (#channelMention | message number) (text)\`
+				syntax: \`!tos (channel|title|body|list) (#channelMention | message number) (text)\`
 
 				\`channel <#channelMention>\` - Sets the channel to display the terms of service in.
 				\`title <info block number> <text>\` - Edit the title of a terms of service info block.
 				\`body <info block number> <text>\` - Edit the body of a terms of service info block.
 				\`list\` - returns all the terms of service info blocks.
+				If no subCommand is supplied, bot responds with embedded TOS content.
 
 				Manage Guild permission required.`,
 			examples: [
-				'!tos channel #channelMention',
+				'!tos channel #rules',
 				'!tos title 1 Interesting title',
 				'!tos body 1 Interesting body text',
 				'!tos list',

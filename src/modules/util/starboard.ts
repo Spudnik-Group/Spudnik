@@ -45,7 +45,7 @@ export default class StarboardCommand extends Command {
 				Administrator permission required.
 			`,
 			examples: [
-				'!starboard channel #channelMention',
+				'!starboard channel #starboard',
 				'!starboard trigger',
 				'!starboard trigger :stuck_out_tongue:',
 				'!starboard enable',

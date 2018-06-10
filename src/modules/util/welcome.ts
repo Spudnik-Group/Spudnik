@@ -44,6 +44,13 @@ export default class WelcomeCommand extends Command {
 
 				Manage Guild permission required.
 			`,
+			examples: [
+				'!welcome message Please welcome {user} to the guild!',
+				'!welcome message',
+				'!welcome channel #general',
+				'!welcome enable',
+				'!welcome disable'
+			],
 			group: 'util',
 			guildOnly: true,
 			memberName: 'welcome',

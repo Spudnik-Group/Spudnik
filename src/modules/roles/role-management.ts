@@ -45,10 +45,10 @@ export default class RoleManagementCommands extends Command {
 				Manage Roles permission required.
 			`,
 			examples: [
-				'!role add @role_name',
-				'!role remove @role_name',
+				'!role add @PUBG',
+				'!role remove @Fortnite',
 				'!role list',
-				'!role default @role_name'
+				'!role default @Pleb'
 			],
 			group: 'roles',
 			guildOnly: true,

@@ -44,6 +44,13 @@ export default class GoodbyeCommand extends Command {
 
 				Manage Guild permission required.
 			`,
+			examples: [
+				'!goodbye message Everyone mourn the loss of {user}',
+				'!goodbye',
+				'!goodbye channel #general',
+				'!goodbye enable',
+				'!goodbye disable'
+			],
 			group: 'util',
 			guildOnly: true,
 			memberName: 'goodbye',
