@@ -82,7 +82,7 @@ export default class StarboardCommand extends Command {
 	 * @memberof StarboardCommand
 	 */
 	public async run(msg: CommandMessage, args: { subCommand: string, content: Channel | string }): Promise<Message | Message[]> {
-		const starboardEmbed = new MessageEmbed({
+		const starboardEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/133/white-medium-star_2b50.png',
 				name: 'Star Board'
@@ -90,19 +90,19 @@ export default class StarboardCommand extends Command {
 			color: getEmbedColor(msg)
 		});
 
-		const starboard = msg.client.provider.get(msg.guild, 'starboardChannel');
-		const starboardTrigger = msg.client.provider.get(msg.guild, 'starboardTrigger', '⭐');
-		const starboardEnabled = msg.client.provider.get(msg.guild, 'starboardEnabled', false);
+		const starboard: Channel = msg.client.provider.get(msg.guild, 'starboardChannel');
+		const starboardTrigger: string = msg.client.provider.get(msg.guild, 'starboardTrigger', '⭐');
+		const starboardEnabled: boolean = msg.client.provider.get(msg.guild, 'starboardEnabled', false);
 		switch (args.subCommand.toLowerCase()) {
 			case 'channel': {
 				if (args.content instanceof Channel) {
 					if (starboard === args.content) {
-						starboardEmbed.description = `Star Board channel already set to <#${args.content}>!\n\n---\nStar Board feature: ${starboardEnabled ? '_Enabled_' : '_Disabled_'}\nChannel set to: <#${starboard}>\nTrigger set to: ${starboardTrigger}`;
+						starboardEmbed.description = `Star Board channel already set to ${args.content}!\n\n---\nStar Board feature: ${starboardEnabled ? '_Enabled_' : '_Disabled_'}\nChannel set to: <#${starboard.id}>\nTrigger set to: ${starboardTrigger}`;
 						return msg.embed(starboardEmbed);
 					} else {
 						return msg.client.provider.set(msg.guild, 'starboardChannel', args.content)
 							.then(() => {
-								starboardEmbed.description = `Star Board channel set to <#${args.content}>.\n\n---\nStar Board feature: ${starboardEnabled ? '_Enabled_' : '_Disabled_'}\nChannel set to: <#${starboard}>\nTrigger set to: ${starboardTrigger}`;
+								starboardEmbed.description = `Star Board channel set to ${args.content}.\n\n---\nStar Board feature: ${starboardEnabled ? '_Enabled_' : '_Disabled_'}\nChannel set to: <#${starboard.id}>\nTrigger set to: ${starboardTrigger}`;
 								return msg.embed(starboardEmbed);
 							})
 							.catch((err: Error) => {
@@ -122,7 +122,7 @@ export default class StarboardCommand extends Command {
 				} else {
 					return msg.client.provider.set(msg.guild, 'starboardTrigger', args.content)
 						.then(() => {
-							starboardEmbed.description = 'Star Board trigger set to: ' + args.content + `\n\n---\nStar Board feature: ${starboardEnabled ? '_Enabled_' : '_Disabled_'}\nChannel set to: <#${starboard}>\nTrigger set to: ${starboardTrigger}`;
+							starboardEmbed.description = `Star Board trigger set to: ${args.content}.\n\n---\nStar Board feature: ${starboardEnabled ? '_Enabled_' : '_Disabled_'}\nChannel set to: <#${starboard.id}>\nTrigger set to: ${starboardTrigger}`;
 							return msg.embed(starboardEmbed);
 						})
 						.catch((err: Error) => {
@@ -136,7 +136,7 @@ export default class StarboardCommand extends Command {
 					if (starboardEnabled === false) {
 						return msg.client.provider.set(msg.guild, 'starboardEnabled', true)
 							.then(() => {
-								starboardEmbed.description = `Star Board enabled.\n\n---\nStar Board feature: ${starboardEnabled ? '_Enabled_' : '_Disabled_'}\nChannel set to: <#${starboard}>\nTrigger set to: ${starboardTrigger}`;
+								starboardEmbed.description = `Star Board enabled.\n\n---\nStar Board feature: ${starboardEnabled ? '_Enabled_' : '_Disabled_'}\nChannel set to: <#${starboard.id}>\nTrigger set to: ${starboardTrigger}`;
 								return msg.embed(starboardEmbed);
 							})
 							.catch((err: Error) => {
@@ -155,7 +155,7 @@ export default class StarboardCommand extends Command {
 				if (starboardEnabled === true) {
 					return msg.client.provider.set(msg.guild, 'starboardEnabled', false)
 						.then(() => {
-							starboardEmbed.description = `Star Board disabled.\n\n---\nStar Board feature: ${starboardEnabled ? '_Enabled_' : '_Disabled_'}\nChannel set to: <#${starboard}>\nTrigger set to: ${starboardTrigger}`;
+							starboardEmbed.description = `Star Board disabled.\n\n---\nStar Board feature: ${starboardEnabled ? '_Enabled_' : '_Disabled_'}\nChannel set to: <#${starboard.id}>\nTrigger set to: ${starboardTrigger}`;
 							return msg.embed(starboardEmbed);
 						})
 						.catch((err: Error) => {
