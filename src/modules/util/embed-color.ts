@@ -88,7 +88,7 @@ export default class EmbedColorCommand extends Command {
 					return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
 				});
 		} else {
-			msg.client.provider.set(msg.guild, 'embedColor', args.color)
+			msg.client.provider.set(msg.guild.id, 'embedColor', args.color)
 				.then(() => {
 					return sendSimpleEmbeddedMessage(msg, `Default Embed Color changed to: ${args.color}. How do I look?`);
 				})

@@ -90,14 +90,14 @@ export default class GoodbyeCommand extends Command {
 			color: getEmbedColor(msg)
 		});
 
-		let goodbyeChannel = msg.client.provider.get(msg.guild, 'goodbyeChannel');
+		let goodbyeChannel = msg.client.provider.get(msg.guild.id, 'goodbyeChannel');
 		// Quick migration for old channel references in database
 		if (goodbyeChannel instanceof Channel) {
-			msg.client.provider.set(msg.guild, 'goodbyeChannel', goodbyeChannel.id);
+			msg.client.provider.set(msg.guild.id, 'goodbyeChannel', goodbyeChannel.id);
 			goodbyeChannel = goodbyeChannel.id;
 		}
-		const goodbyeMessage = msg.client.provider.get(msg.guild, 'goodbyeMessage', '{user} has left the server.');
-		const goodbyeEnabled = msg.client.provider.get(msg.guild, 'goodbyeEnabled', false);
+		const goodbyeMessage = msg.client.provider.get(msg.guild.id, 'goodbyeMessage', '{user} has left the server.');
+		const goodbyeEnabled = msg.client.provider.get(msg.guild.id, 'goodbyeEnabled', false);
 		switch (args.subCommand.toLowerCase()) {
 			case 'channel': {
 				if (args.content instanceof Channel) {
@@ -106,7 +106,7 @@ export default class GoodbyeCommand extends Command {
 						goodbyeEmbed.description = `Goodbye channel already set to <#${channelID}>!`;
 						return msg.embed(goodbyeEmbed);
 					} else {
-						return msg.client.provider.set(msg.guild, 'goodbyeChannel', channelID)
+						return msg.client.provider.set(msg.guild.id, 'goodbyeChannel', channelID)
 							.then(() => {
 								goodbyeEmbed.description = `Goodbye channel set to <#${channelID}>.`;
 								return msg.embed(goodbyeEmbed);
@@ -125,7 +125,7 @@ export default class GoodbyeCommand extends Command {
 					goodbyeEmbed.description = 'You must include the new message along with the `message` command. See `help goodbye` for details.\nThe current goodbye message is set to: ```' + goodbyeMessage + '```';
 					return msg.embed(goodbyeEmbed);
 				} else {
-					return msg.client.provider.set(msg.guild, 'goodbyeMessage', args.content)
+					return msg.client.provider.set(msg.guild.id, 'goodbyeMessage', args.content)
 						.then(() => {
 							goodbyeEmbed.description = 'Goodbye message set to: ```' + args.content + '```' + '\nCurrently, Goodbye messages are set to: ' + goodbyeEnabled ? '_ON_' : '_OFF_' + '\nAnd, are displaying in this channel: <#' + goodbyeChannel + '>';
 							return msg.embed(goodbyeEmbed);
@@ -138,7 +138,7 @@ export default class GoodbyeCommand extends Command {
 			}
 			case 'enable': {
 				if (goodbyeEnabled === false) {
-					return msg.client.provider.set(msg.guild, 'goodbyeEnabled', true)
+					return msg.client.provider.set(msg.guild.id, 'goodbyeEnabled', true)
 						.then(() => {
 							goodbyeEmbed.description = `Goodbye message enabled.\nGoodbye channel set to: <#${goodbyeChannel}>\nGoodbye message set to: ${goodbyeMessage}`;
 							return msg.embed(goodbyeEmbed);
@@ -154,7 +154,7 @@ export default class GoodbyeCommand extends Command {
 			}
 			case 'disable': {
 				if (goodbyeEnabled === true) {
-					return msg.client.provider.set(msg.guild, 'goodbyeEnabled', false)
+					return msg.client.provider.set(msg.guild.id, 'goodbyeEnabled', false)
 						.then(() => {
 							goodbyeEmbed.description = `Goodbye message disabled.\nGoodbye channel set to: <#${goodbyeChannel}>\nGoodbye message set to: ${goodbyeMessage}`;
 							return msg.embed(goodbyeEmbed);

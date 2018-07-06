@@ -69,7 +69,7 @@ export default class AcceptCommand extends Command {
 
 		if (args.channel instanceof Channel) {
 			if (msg.member.hasPermission('MANAGE_ROLES')) {
-				return msg.client.provider.set(msg.guild, 'tosChannel', args.channel.id)
+				return msg.client.provider.set(msg.guild.id, 'tosChannel', args.channel.id)
 					.then(() => {
 						acceptEmbed.description = `Accept channel set to <#${args.channel.id}>.`;
 
@@ -87,9 +87,9 @@ export default class AcceptCommand extends Command {
 				return sendSimpleEmbeddedError(msg, 'You do not have permission to run this command.', 3000);
 			}
 		} else if (args.channel === '') {
-			const acceptRole: string = msg.client.provider.get(msg.guild, 'defaultRole');
+			const acceptRole: string = msg.client.provider.get(msg.guild.id, 'defaultRole');
 			const role: Role | undefined = msg.guild.roles.get(acceptRole);
-			const acceptChannel: string = msg.client.provider.get(msg.guild, 'tosChannel');
+			const acceptChannel: string = msg.client.provider.get(msg.guild.id, 'tosChannel');
 
 			if (role && !msg.member.roles.has(acceptRole) && msg.channel.id === acceptChannel) {
 				msg.member.roles.add(acceptRole)

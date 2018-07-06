@@ -96,12 +96,12 @@ export default class TermsOfServiceCommand extends Command {
 			color: getEmbedColor(msg)
 		});
 
-		const tosChannel: string = await msg.client.provider.get(msg.guild, 'tosChannel');
-		const tosMessageCount: number = await msg.client.provider.get(msg.guild, 'tosMessageCount') || 0;
+		const tosChannel: string = await msg.client.provider.get(msg.guild.id, 'tosChannel');
+		const tosMessageCount: number = await msg.client.provider.get(msg.guild.id, 'tosMessageCount') || 0;
 		const tosMessages: ITOSMessage[] = [];
 
 		for (let i = 1; i < tosMessageCount + 1; i++) {
-			const tosMessage: ITOSMessage = await msg.client.provider.get(msg.guild, `tosMessage${i}`);
+			const tosMessage: ITOSMessage = await msg.client.provider.get(msg.guild.id, `tosMessage${i}`);
 			if (tosMessage) {
 				tosMessages.push(tosMessage);
 			}
@@ -121,7 +121,7 @@ export default class TermsOfServiceCommand extends Command {
 							tosEmbed.description = `Terms of Service channel already set to <#${channelID}>!`;
 							return msg.embed(tosEmbed);
 						} else {
-							return msg.client.provider.set(msg.guild, 'tosChannel', channelID)
+							return msg.client.provider.set(msg.guild.id, 'tosChannel', channelID)
 								.then(() => {
 									tosEmbed.description = `Terms of Service channel set to <#${channelID}>.`;
 									return msg.embed(tosEmbed);
@@ -181,11 +181,11 @@ export default class TermsOfServiceCommand extends Command {
 						}
 					}
 					message.title = args.text;
-					return msg.client.provider.set(msg.guild, `tosMessage${item}`, message)
+					return msg.client.provider.set(msg.guild.id, `tosMessage${item}`, message)
 						.then(async () => {
 							tosEmbed.description = `Terms of Service message #${item} ${tosEmbedUpsertMessage}.`;
 
-							await msg.client.provider.set(msg.guild, 'tosMessageCount', tosMessages.length)
+							await msg.client.provider.set(msg.guild.id, 'tosMessageCount', tosMessages.length)
 								.catch((err: Error) => {
 									msg.client.emit('warn', `Error in command util:tos: ${err}`);
 									return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
@@ -236,10 +236,10 @@ export default class TermsOfServiceCommand extends Command {
 						}
 					}
 					message.body = args.text;
-					return msg.client.provider.set(msg.guild, `tosMessage${args.item}`, message)
+					return msg.client.provider.set(msg.guild.id, `tosMessage${args.item}`, message)
 						.then(async () => {
 							tosEmbed.description = `Terms of Service message #${args.item} ${tosEmbedUpsertMessage}.`;
-							await msg.client.provider.set(msg.guild, 'tosMessageCount', tosMessages.length)
+							await msg.client.provider.set(msg.guild.id, 'tosMessageCount', tosMessages.length)
 								.catch((err: Error) => {
 									msg.client.emit('warn', `Error in command util:tos: ${err}`);
 									return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);

@@ -90,14 +90,14 @@ export default class WelcomeCommand extends Command {
 			color: getEmbedColor(msg)
 		});
 
-		let welcomeChannel = msg.client.provider.get(msg.guild, 'welcomeChannel');
+		let welcomeChannel = msg.client.provider.get(msg.guild.id, 'welcomeChannel');
 		// Quick migration for old channel references in database
 		if (welcomeChannel instanceof Channel) {
-			msg.client.provider.set(msg.guild, 'welcomeChannel', welcomeChannel.id);
+			msg.client.provider.set(msg.guild.id, 'welcomeChannel', welcomeChannel.id);
 			welcomeChannel = welcomeChannel.id;
 		}
-		const welcomeMessage = msg.client.provider.get(msg.guild, 'welcomeMessage', '@here, please Welcome {user} to {guild}!');
-		const welcomeEnabled = msg.client.provider.get(msg.guild, 'welcomeEnabled', false);
+		const welcomeMessage = msg.client.provider.get(msg.guild.id, 'welcomeMessage', '@here, please Welcome {user} to {guild}!');
+		const welcomeEnabled = msg.client.provider.get(msg.guild.id, 'welcomeEnabled', false);
 		switch (args.subCommand.toLowerCase()) {
 			case 'channel': {
 				if (args.content instanceof Channel) {
@@ -106,7 +106,7 @@ export default class WelcomeCommand extends Command {
 						welcomeEmbed.description = `Welcome channel already set to <#${channelID}>!`;
 						return msg.embed(welcomeEmbed);
 					} else {
-						return msg.client.provider.set(msg.guild, 'welcomeChannel', channelID)
+						return msg.client.provider.set(msg.guild.id, 'welcomeChannel', channelID)
 							.then(() => {
 								welcomeEmbed.description = `Welcome channel set to <#${channelID}>.`;
 								return msg.embed(welcomeEmbed);
@@ -125,7 +125,7 @@ export default class WelcomeCommand extends Command {
 					welcomeEmbed.description = 'You must include the new message along with the `message` command. See `help welcome` for details.\nThe current welcome message is set to: ```' + welcomeMessage + '```';
 					return msg.embed(welcomeEmbed);
 				} else {
-					return msg.client.provider.set(msg.guild, 'welcomeMessage', args.content)
+					return msg.client.provider.set(msg.guild.id, 'welcomeMessage', args.content)
 						.then(() => {
 							welcomeEmbed.description = 'Welcome message set to: ```' + args.content + '```' + '\nCurrently, Welcome messages are set to: ' + welcomeEnabled ? '_ON_' : '_OFF_' + '\nAnd, are displaying in this channel: <#' + welcomeChannel + '>';
 							return msg.embed(welcomeEmbed);
@@ -138,7 +138,7 @@ export default class WelcomeCommand extends Command {
 			}
 			case 'enable': {
 				if (welcomeEnabled === false) {
-					return msg.client.provider.set(msg.guild, 'welcomeEnabled', true)
+					return msg.client.provider.set(msg.guild.id, 'welcomeEnabled', true)
 						.then(() => {
 							welcomeEmbed.description = `Welcome message enabled.\nWelcome channel set to: <#${welcomeChannel}>\nWelcome message set to: ${welcomeMessage}`;
 							return msg.embed(welcomeEmbed);
@@ -154,7 +154,7 @@ export default class WelcomeCommand extends Command {
 			}
 			case 'disable': {
 				if (welcomeEnabled === true) {
-					return msg.client.provider.set(msg.guild, 'welcomeEnabled', false)
+					return msg.client.provider.set(msg.guild.id, 'welcomeEnabled', false)
 						.then(() => {
 							welcomeEmbed.description = `Welcome message disabled.\nWelcome channel set to: <#${welcomeChannel}>\nWelcome message set to: ${welcomeMessage}`;
 							return msg.embed(welcomeEmbed);
