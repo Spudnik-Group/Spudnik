@@ -106,7 +106,9 @@ export class Spudnik {
 	private setupEvents = () => {
 		this.Discord
 			.once('ready', async () => {
-				let statuses: PresenceData[] = [
+				const users: number = this.Discord.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b);
+				const guilds: number = this.Discord.guilds.array().length;
+				const statuses: PresenceData[] = [
 					{
 						activity: {
 							name: `${this.Discord.commandPrefix}help | ${this.Discord.guilds.array().length} Servers`,
@@ -142,42 +144,17 @@ export class Spudnik {
 							name: 'docs.spudnik.io',
 							type: 'STREAMING'
 						}
+					},
+					{
+						activity: {
+							name: `and Assisting ${users} users on ${guilds} servers`,
+							type: 'WATCHING'
+						}
 					}
 				];
 
 				console.log(chalk.magenta(`Logged into Discord! Serving in ${this.Discord.guilds.array().length} Discord servers`));
 				console.log(chalk.blue('---Spudnik Launch Success---'));
-
-				if (this.Config.getDblApiKey() !== '') {
-					let upvotes: number = 0;
-
-					const users: number = this.Discord.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b);
-					const guilds: number = this.Discord.guilds.array().length;
-
-					const dbl: DBLAPI = new DBLAPI(this.Config.getDblApiKey(), this.Discord);
-
-					dbl.getVotes().then((votes: DBLAPI.Vote[]) => {
-						this.Discord.provider.set('0', 'dblUpvotes', votes.length);
-						upvotes = votes.length;
-
-						statuses.push({
-							activity: {
-								name: `Upvoted ${upvotes} times on discordbots.org`,
-								type: 'WATCHING'
-							}
-						});
-					});
-
-					statuses.push({
-						activity: {
-							name: `Assisting ${users} users on ${guilds} servers`,
-							type: 'WATCHING'
-						}
-					});
-
-					// Bot Listing Interval Events
-					setInterval(() => statuses = this.updateDiscordBotList(this.Config, this.Discord, statuses), this.Config.getStatusUpdateInterval(), true);
-				}
 
 				// Update bot status, using array of possible statuses
 				let statusIndex: number = -1;
