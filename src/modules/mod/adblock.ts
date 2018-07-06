@@ -66,13 +66,13 @@ export default class AdblockCommand extends Command {
 	 * @memberof AdblockCommand
 	 */
 	public async run(msg: CommandMessage, args: { subCommand: string }): Promise<Message | Message[]> {
-		const adblockEnabled = msg.client.provider.get(msg.guild.id, 'adblockEnabled', false);
+		const adblockEnabled = msg.client.provider.get(msg.guild, 'adblockEnabled', false);
 
 		if (args.subCommand === 'enable') {
 			if (adblockEnabled) {
 				return sendSimpleEmbeddedMessage(msg, 'Adblock feature already enabled!');
 			} else {
-				msg.client.provider.set(msg.guild.id, 'adblockEnabled', true);
+				msg.client.provider.set(msg.guild, 'adblockEnabled', true);
 
 				return sendSimpleEmbeddedMessage(msg, 'Adblock feature enabled.');
 			}
@@ -80,7 +80,7 @@ export default class AdblockCommand extends Command {
 			if (!adblockEnabled) {
 				return sendSimpleEmbeddedMessage(msg, 'Adblock feature already disabled!');
 			} else {
-				msg.client.provider.set(msg.guild.id, 'adblockEnabled', false);
+				msg.client.provider.set(msg.guild, 'adblockEnabled', false);
 
 				return sendSimpleEmbeddedMessage(msg, 'Adblock feature disabled.');
 			}
