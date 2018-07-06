@@ -290,7 +290,7 @@ export class Spudnik {
 				const welcomeEnabled = this.Discord.provider.get(guild, 'welcomeEnabled', false);
 
 				if (welcomeEnabled) {
-					const welcomeChannel = this.Discord.provider.get(guild, 'welcomeChannel', guild.systemChannelID);
+					const welcomeChannel = this.Discord.provider.get(guild, 'welcomeChannel');
 					const welcomeMessage = this.Discord.provider.get(guild, 'welcomeMessage', '@here, please Welcome {user} to {guild}!');
 					const message = welcomeMessage.replace('{guild}', guild.name).replace('{user}', `<@${member.id}>`);
 					const channel = guild.channels.get(welcomeChannel);
@@ -306,7 +306,7 @@ export class Spudnik {
 				const goodbyeEnabled = this.Discord.provider.get(guild, 'goodbyeEnabled', false);
 
 				if (goodbyeEnabled) {
-					const goodbyeChannel = this.Discord.provider.get(guild, 'goodbyeChannel', guild.systemChannelID);
+					const goodbyeChannel = this.Discord.provider.get(guild, 'goodbyeChannel');
 					const goodbyeMessage = this.Discord.provider.get(guild, 'goodbyeMessage', '{user} has left the server.');
 					const message = goodbyeMessage.replace('{guild}', guild.name).replace('{user}', `<@${member.id}>`);
 					const channel = guild.channels.get(goodbyeChannel);
@@ -318,7 +318,7 @@ export class Spudnik {
 				}
 			})
 			.on('disconnected', (err: Error) => {
-				this.Honeybadger.notify(chalk.red(`Disconnected from Discord!\nError: ${err}`));
+				this.Honeybadger.notify(`Disconnected from Discord!\nError: ${err}`);
 				console.log(chalk.red('Disconnected from Discord!'));
 			})
 			.on('error', (err: Error) => {
@@ -326,9 +326,7 @@ export class Spudnik {
 				console.error(err);
 			})
 			.on('warn', (err: Error) => {
-				if (this.Config.getDebug()) {
-					console.warn(err);
-				}
+				console.warn(err);
 			})
 			.on('debug', (err: Error) => {
 				if (this.Config.getDebug()) {
