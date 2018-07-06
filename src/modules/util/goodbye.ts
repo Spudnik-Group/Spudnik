@@ -90,25 +90,34 @@ export default class GoodbyeCommand extends Command {
 			color: getEmbedColor(msg)
 		});
 
-		const goodbyeChannel = msg.client.provider.get(msg.guild, 'goodbyeChannel', msg.guild.systemChannelID);
+		let goodbyeChannel = msg.client.provider.get(msg.guild, 'goodbyeChannel');
+		// Quick migration for old channel references in database
+		if (goodbyeChannel instanceof Channel) {
+			msg.client.provider.set(msg.guild, 'goodbyeChannel', goodbyeChannel.id);
+			goodbyeChannel = goodbyeChannel.id;
+		}
 		const goodbyeMessage = msg.client.provider.get(msg.guild, 'goodbyeMessage', '{user} has left the server.');
 		const goodbyeEnabled = msg.client.provider.get(msg.guild, 'goodbyeEnabled', false);
 		switch (args.subCommand.toLowerCase()) {
 			case 'channel': {
-				const channelID = (args.content as Channel).id;
-				if (goodbyeChannel && goodbyeChannel === channelID) {
-					goodbyeEmbed.description = `Goodbye channel already set to <#${channelID}>!`;
-					return msg.embed(goodbyeEmbed);
+				if (args.content instanceof Channel) {
+					const channelID = (args.content as Channel).id;
+					if (goodbyeChannel && goodbyeChannel === channelID) {
+						goodbyeEmbed.description = `Goodbye channel already set to <#${channelID}>!`;
+						return msg.embed(goodbyeEmbed);
+					} else {
+						return msg.client.provider.set(msg.guild, 'goodbyeChannel', channelID)
+							.then(() => {
+								goodbyeEmbed.description = `Goodbye channel set to <#${channelID}>.`;
+								return msg.embed(goodbyeEmbed);
+							})
+							.catch((err: Error) => {
+								msg.client.emit('warn', `Error in command util:goodbye: ${err}`);
+								return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
+							});
+					}
 				} else {
-					return msg.client.provider.set(msg.guild, 'goodbyeChannel', channelID)
-						.then(() => {
-							goodbyeEmbed.description = `Goodbye channel set to <#${channelID}>.`;
-							return msg.embed(goodbyeEmbed);
-						})
-						.catch((err: Error) => {
-							msg.client.emit('warn', `Error in command util:goodbye: ${err}`);
-							return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
-						});
+					return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
 				}
 			}
 			case 'message': {

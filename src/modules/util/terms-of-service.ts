@@ -115,20 +115,24 @@ export default class TermsOfServiceCommand extends Command {
 		if (args.arg1.length > 0) {
 			switch (args.arg1.toLowerCase()) {
 				case 'channel':
-					const channelID = (args.item as Channel).id;
-					if (tosChannel && tosChannel === channelID) {
-						tosEmbed.description = `Terms of Service channel already set to <#${channelID}>!`;
-						return msg.embed(tosEmbed);
+					if (args.item instanceof Channel) {
+						const channelID = (args.item as Channel).id;
+						if (tosChannel && tosChannel === channelID) {
+							tosEmbed.description = `Terms of Service channel already set to <#${channelID}>!`;
+							return msg.embed(tosEmbed);
+						} else {
+							return msg.client.provider.set(msg.guild, 'tosChannel', channelID)
+								.then(() => {
+									tosEmbed.description = `Terms of Service channel set to <#${channelID}>.`;
+									return msg.embed(tosEmbed);
+								})
+								.catch((err: Error) => {
+									msg.client.emit('warn', `Error in command util:tos: ${err}`);
+									return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
+								});
+						}
 					} else {
-						return msg.client.provider.set(msg.guild, 'tosChannel', channelID)
-							.then(() => {
-								tosEmbed.description = `Terms of Service channel set to <#${channelID}>.`;
-								return msg.embed(tosEmbed);
-							})
-							.catch((err: Error) => {
-								msg.client.emit('warn', `Error in command util:tos: ${err}`);
-								return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
-							});
+						return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
 					}
 				case 'list':
 					tosEmbed.description = '';
