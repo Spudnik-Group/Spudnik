@@ -5,9 +5,15 @@ import { CommandMessage } from 'discord.js-commando';
  *
  * @export
  * @param {CommandMessage} msg
- * @returns {string}
+ * @returns {number}
  */
-export function getEmbedColor(msg: CommandMessage): string {
-	const embedColor = msg.client.provider.get(msg.guild, 'embedColor', 5592405);
+export function getEmbedColor(msg: CommandMessage): number {
+	let embedColor: number = parseInt(msg.client.provider.get(msg.guild, 'embedColor', '555555'), 16);
+
+	// This shouldn't happen, but if it does, return the default embed color
+	if (embedColor > parseInt('FFFFFF', 16)) {
+		embedColor = parseInt('555555', 16);
+	}
+
 	return embedColor;
 }
