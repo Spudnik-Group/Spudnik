@@ -1,1 +1,2 @@
-Used to add a role to yourself.
+Used to add a self-assignable role to yourself.<br />
+syntax: `!iam <@roleMention>`

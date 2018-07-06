@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
@@ -27,7 +27,7 @@ export default class LeetCommand extends Command {
 				}
 			],
 			description: 'Converts boring regular text to 1337.',
-			details: oneLine`
+			details: stripIndents`
 				syntax: \`!leet <text>\`
 			`,
 			examples: ['!leet Give me better input than this'],

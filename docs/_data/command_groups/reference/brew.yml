@@ -1,1 +1,4 @@
-usage: "!brew <brewery or brew name>"
+usage:
+  - '!brew guinness blonde'
+  - '!brew death by coconut'
+  - '!brew Monday Night Brewing'

@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 import { Channel, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
@@ -34,16 +34,23 @@ export default class GoodbyeCommand extends Command {
 				}
 			],
 			description: 'Used to configure the message to be sent when a user leaves your guild.',
-			details: oneLine`
-				syntax: \`!goodbye <message|channel|enable|disable> (text | #channelMention)\`\n
-				\n
-				\`message (text to say goodbye/heckle)\` - Set/return the goodbye message. Use { guild } for guild name, and { user } to reference the user joining. Leave blank to show current.\n
-				\`channel <#channelMention>\` - Set the channel for the goodbye message to be displayed.\n
-				\`enable\` - Enable the goodbye message feature.\n
-				\`disable\` - Disable the goodbye message feature.\n
-				\n
+			details: stripIndents`
+				syntax: \`!goodbye <message|channel|enable|disable> (text | #channelMention)\`
+
+				\`message (text to say goodbye/heckle)\` - Set/return the goodbye message. Use { guild } for guild name, and { user } to reference the user joining. Leave blank to show current.
+				\`channel <#channelMention>\` - Set the channel for the goodbye message to be displayed.
+				\`enable\` - Enable the goodbye message feature.
+				\`disable\` - Disable the goodbye message feature.
+
 				Manage Guild permission required.
 			`,
+			examples: [
+				'!goodbye message Everyone mourn the loss of {user}',
+				'!goodbye',
+				'!goodbye channel #general',
+				'!goodbye enable',
+				'!goodbye disable'
+			],
 			group: 'util',
 			guildOnly: true,
 			memberName: 'goodbye',
@@ -83,25 +90,34 @@ export default class GoodbyeCommand extends Command {
 			color: getEmbedColor(msg)
 		});
 
-		const goodbyeChannel = msg.client.provider.get(msg.guild, 'goodbyeChannel', msg.guild.systemChannelID);
-		const goodbyeMessage = msg.client.provider.get(msg.guild, 'goodbyeMessage', '{user} has left the server.');
-		const goodbyeEnabled = msg.client.provider.get(msg.guild, 'goodbyeEnabled', false);
+		let goodbyeChannel = msg.client.provider.get(msg.guild.id, 'goodbyeChannel');
+		// Quick migration for old channel references in database
+		if (goodbyeChannel instanceof Channel) {
+			msg.client.provider.set(msg.guild.id, 'goodbyeChannel', goodbyeChannel.id);
+			goodbyeChannel = goodbyeChannel.id;
+		}
+		const goodbyeMessage = msg.client.provider.get(msg.guild.id, 'goodbyeMessage', '{user} has left the server.');
+		const goodbyeEnabled = msg.client.provider.get(msg.guild.id, 'goodbyeEnabled', false);
 		switch (args.subCommand.toLowerCase()) {
 			case 'channel': {
-				const channelID = (args.content as Channel).id;
-				if (goodbyeChannel && goodbyeChannel === channelID) {
-					goodbyeEmbed.description = `Goodbye channel already set to <#${channelID}>!`;
-					return msg.embed(goodbyeEmbed);
+				if (args.content instanceof Channel) {
+					const channelID = (args.content as Channel).id;
+					if (goodbyeChannel && goodbyeChannel === channelID) {
+						goodbyeEmbed.description = `Goodbye channel already set to <#${channelID}>!`;
+						return msg.embed(goodbyeEmbed);
+					} else {
+						return msg.client.provider.set(msg.guild.id, 'goodbyeChannel', channelID)
+							.then(() => {
+								goodbyeEmbed.description = `Goodbye channel set to <#${channelID}>.`;
+								return msg.embed(goodbyeEmbed);
+							})
+							.catch((err: Error) => {
+								msg.client.emit('warn', `Error in command util:goodbye: ${err}`);
+								return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
+							});
+					}
 				} else {
-					return msg.client.provider.set(msg.guild, 'goodbyeChannel', channelID)
-						.then(() => {
-							goodbyeEmbed.description = `Goodbye channel set to <#${channelID}>.`;
-							return msg.embed(goodbyeEmbed);
-						})
-						.catch((err: Error) => {
-							msg.client.emit('warn', `Error in command util:goodbye: ${err}`);
-							return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
-						});
+					return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
 				}
 			}
 			case 'message': {
@@ -109,7 +125,7 @@ export default class GoodbyeCommand extends Command {
 					goodbyeEmbed.description = 'You must include the new message along with the `message` command. See `help goodbye` for details.\nThe current goodbye message is set to: ```' + goodbyeMessage + '```';
 					return msg.embed(goodbyeEmbed);
 				} else {
-					return msg.client.provider.set(msg.guild, 'goodbyeMessage', args.content)
+					return msg.client.provider.set(msg.guild.id, 'goodbyeMessage', args.content)
 						.then(() => {
 							goodbyeEmbed.description = 'Goodbye message set to: ```' + args.content + '```' + '\nCurrently, Goodbye messages are set to: ' + goodbyeEnabled ? '_ON_' : '_OFF_' + '\nAnd, are displaying in this channel: <#' + goodbyeChannel + '>';
 							return msg.embed(goodbyeEmbed);
@@ -122,7 +138,7 @@ export default class GoodbyeCommand extends Command {
 			}
 			case 'enable': {
 				if (goodbyeEnabled === false) {
-					return msg.client.provider.set(msg.guild, 'goodbyeEnabled', true)
+					return msg.client.provider.set(msg.guild.id, 'goodbyeEnabled', true)
 						.then(() => {
 							goodbyeEmbed.description = `Goodbye message enabled.\nGoodbye channel set to: <#${goodbyeChannel}>\nGoodbye message set to: ${goodbyeMessage}`;
 							return msg.embed(goodbyeEmbed);
@@ -138,7 +154,7 @@ export default class GoodbyeCommand extends Command {
 			}
 			case 'disable': {
 				if (goodbyeEnabled === true) {
-					return msg.client.provider.set(msg.guild, 'goodbyeEnabled', false)
+					return msg.client.provider.set(msg.guild.id, 'goodbyeEnabled', false)
 						.then(() => {
 							goodbyeEmbed.description = `Goodbye message disabled.\nGoodbye channel set to: <#${goodbyeChannel}>\nGoodbye message set to: ${goodbyeMessage}`;
 							return msg.embed(goodbyeEmbed);

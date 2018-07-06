@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 import { Channel, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
@@ -41,20 +41,22 @@ export default class TermsOfServiceCommand extends Command {
 				}
 			],
 			description: 'Used to configure the Terms of Service for a guild.',
-			details: oneLine`
-				syntax: \`!tos <channel|title|body|list> (#channelMention | message number) (text)\n
-				\n
-				\`channel <#channelMention>\` - Sets the channel to display the terms of service in.\n
-				\`title <info block number> <text>\` - Edit the title of a terms of service info block.\n
-				\`body <info block number> <text>\` - Edit the body of a terms of service info block.\n
-				\`list\` - returns all the terms of service info blocks.\n
-				\n
+			details: stripIndents`
+				syntax: \`!tos (channel|title|body|list) (#channelMention | message number) (text)\`
+
+				\`channel <#channelMention>\` - Sets the channel to display the terms of service in.
+				\`title <info block number> <text>\` - Edit the title of a terms of service info block.
+				\`body <info block number> <text>\` - Edit the body of a terms of service info block.
+				\`list\` - returns all the terms of service info blocks.
+				If no subCommand is supplied, bot responds with embedded TOS content.
+
 				Manage Guild permission required.`,
 			examples: [
-				'!tos channel #channelMention',
+				'!tos channel #rules',
 				'!tos title 1 Interesting title',
 				'!tos body 1 Interesting body text',
-				'!tos list'
+				'!tos list',
+				'!tos'
 			],
 			group: 'util',
 			guildOnly: true,
@@ -86,7 +88,7 @@ export default class TermsOfServiceCommand extends Command {
 	 * @memberof TermsOfServiceCommand
 	 */
 	public async run(msg: CommandMessage, args: { arg1: string, item: Channel | number, text: string }): Promise<Message | Message[]> {
-		const tosEmbed = new MessageEmbed({
+		const tosEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/ballot-box-with-check_2611.png',
 				name: 'Terms of Service'
@@ -94,155 +96,184 @@ export default class TermsOfServiceCommand extends Command {
 			color: getEmbedColor(msg)
 		});
 
-		const tosChannel: string = await msg.client.provider.get(msg.guild, 'tosChannel');
-		const tosMessageCount: number = await msg.client.provider.get(msg.guild, 'tosMessageCount') || 0;
+		const tosChannel: string = await msg.client.provider.get(msg.guild.id, 'tosChannel');
+		const tosMessageCount: number = await msg.client.provider.get(msg.guild.id, 'tosMessageCount') || 0;
 		const tosMessages: ITOSMessage[] = [];
 
 		for (let i = 1; i < tosMessageCount + 1; i++) {
-			const tosMessage: ITOSMessage = await msg.client.provider.get(msg.guild, `tosMessage${i}`);
+			const tosMessage: ITOSMessage = await msg.client.provider.get(msg.guild.id, `tosMessage${i}`);
 			if (tosMessage) {
 				tosMessages.push(tosMessage);
 			}
 		}
+
 		let message: ITOSMessage;
 
-		switch (args.arg1.toLowerCase()) {
-			case 'channel':
-				const channelID = (args.item as Channel).id;
-				if (tosChannel && tosChannel === channelID) {
-					tosEmbed.description = `Terms of Service channel already set to <#${channelID}>!`;
+		let item: Channel | number = args.item;
+		let tosEmbedUpsertMessage = 'updated';
+
+		if (args.arg1.length > 0) {
+			switch (args.arg1.toLowerCase()) {
+				case 'channel':
+					if (args.item instanceof Channel) {
+						const channelID = (args.item as Channel).id;
+						if (tosChannel && tosChannel === channelID) {
+							tosEmbed.description = `Terms of Service channel already set to <#${channelID}>!`;
+							return msg.embed(tosEmbed);
+						} else {
+							return msg.client.provider.set(msg.guild.id, 'tosChannel', channelID)
+								.then(() => {
+									tosEmbed.description = `Terms of Service channel set to <#${channelID}>.`;
+									return msg.embed(tosEmbed);
+								})
+								.catch((err: Error) => {
+									msg.client.emit('warn', `Error in command util:tos: ${err}`);
+									return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
+								});
+						}
+					} else {
+						return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
+					}
+				case 'list':
+					tosEmbed.description = '';
+					tosMessages.map((message, index) => {
+						tosEmbed.description += `${index + 1} - ${message.title}\n`;
+					});
+
 					return msg.embed(tosEmbed);
-				} else {
-					return msg.client.provider.set(msg.guild, 'tosChannel', channelID)
-						.then(() => {
-							tosEmbed.description = `Terms of Service channel set to <#${channelID}>.`;
+				case 'title':
+					item = +args.item;
+					message = tosMessages[item - 1];
+					if (!isNaN(Number(item)) && Number.isInteger(Number(item)) && item > 0 && args.text.length > 0) {
+						if (args.item === tosMessageCount + 1) {
+							tosEmbedUpsertMessage = 'added';
+						} else if (args.item > tosMessageCount + 2) {
+							return sendSimpleEmbeddedError(msg, 'You must supply either an already existing message number or one greater than the current count.', 3000);
+						}
+
+						if (!message) {
+							message = {
+								body: '',
+								id: item - 1,
+								title: ''
+							};
+							tosMessages.push(message);
+						}
+
+					} else {
+						if (tosChannel && tosChannel === msg.channel.id) {
+							if (tosMessages && tosMessages.length > 0) {
+								const tosEmbeds = tosMessages.map((message) => {
+									tosEmbed.author.name = message.title;
+									tosEmbed.author.iconURL = undefined;
+									tosEmbed.description = message.body;
+
+									return msg.embed(tosEmbed);
+								});
+
+								return tosEmbeds[0]; // I don't like this...
+							} else {
+								tosEmbed.description = 'There are no terms of service messages set.';
+								return msg.embed(tosEmbed);
+							}
+						} else {
+							return msg.delete();
+						}
+					}
+					message.title = args.text;
+					return msg.client.provider.set(msg.guild.id, `tosMessage${item}`, message)
+						.then(async () => {
+							tosEmbed.description = `Terms of Service message #${item} ${tosEmbedUpsertMessage}.`;
+
+							await msg.client.provider.set(msg.guild.id, 'tosMessageCount', tosMessages.length)
+								.catch((err: Error) => {
+									msg.client.emit('warn', `Error in command util:tos: ${err}`);
+									return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
+								});
+
 							return msg.embed(tosEmbed);
 						})
 						.catch((err: Error) => {
 							msg.client.emit('warn', `Error in command util:tos: ${err}`);
 							return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
 						});
-				}
-			case 'list':
-				tosEmbed.description = '';
-				tosMessages.map((message, index) => {
-					tosEmbed.description += `${index + 1} - ${message.title}\n`;
-				});
-				return msg.embed(tosEmbed);
-			case 'title':
-				let item: number = +args.item;
-				let tosEmbedUpsertMessage = 'updated';
-				message = tosMessages[item - 1];
-				if (!isNaN(Number(item)) && Number.isInteger(Number(item)) && item > 0 && args.text.length > 0) {
-					if (args.item === tosMessageCount + 1) {
-						tosEmbedUpsertMessage = 'added';
-					} else if (args.item > tosMessageCount + 2) {
-						return sendSimpleEmbeddedError(msg, 'You must supply either an already existing message number or one greater than the current count.', 3000);
-					}
-
-					if (!message) {
-						message = {
-							body: '',
-							id: item - 1,
-							title: ''
-						};
-						tosMessages.push(message);
-					}
-
-				} else {
-					if (tosChannel && tosChannel === msg.channel.id) {
-						if (tosMessages && tosMessages.length > 0) {
-							const tosEmbeds = tosMessages.map((message) => {
-								tosEmbed.author.name = message.title;
-								tosEmbed.author.iconURL = undefined;
-								tosEmbed.description = message.body;
-
-								return msg.embed(tosEmbed);
-							});
-
-							return tosEmbeds[0]; // I don't like this...
-						} else {
-							tosEmbed.description = 'There are no terms of service messages set.';
-							return msg.embed(tosEmbed);
+				case 'body':
+					item = +args.item;
+					message = tosMessages[item - 1];
+					if (args.arg1.length > 0 && !isNaN(Number(args.item)) && Number.isInteger(Number(args.item)) && args.item > 0 && args.text.length > 0) {
+						if (args.item === tosMessageCount + 1) {
+							tosEmbedUpsertMessage = 'added';
+						} else if (args.item > tosMessageCount + 2) {
+							return sendSimpleEmbeddedError(msg, 'You must supply either an already existing message number or one greater than the current count.', 3000);
 						}
-					} else {
-						return msg.delete();
-					}
-				}
-				message.title = args.text;
-				return msg.client.provider.set(msg.guild, `tosMessage${item}`, message)
-					.then(async () => {
-						tosEmbed.description = `Terms of Service message #${item} ${tosEmbedUpsertMessage}.`;
+						if (!message) {
+							message = {
+								body: '',
+								id: item - 1,
+								title: ''
+							};
+							tosMessages.push(message);
+						}
 
-						await msg.client.provider.set(msg.guild, 'tosMessageCount', tosMessages.length)
-							.catch((err: Error) => {
-								msg.client.emit('warn', `Error in command util:tos: ${err}`);
-								return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
-							});
+					} else {
+						if (tosChannel && tosChannel === msg.channel.id) {
+							if (tosMessages && tosMessages.length > 0) {
+								const tosEmbeds = tosMessages.map((message) => {
+									tosEmbed.author.name = message.title;
+									tosEmbed.author.iconURL = undefined;
+									tosEmbed.description = message.body;
+
+									return msg.embed(tosEmbed);
+								});
+
+								return tosEmbeds[0]; // I don't like this...
+							} else {
+								tosEmbed.description = 'There are no terms of service messages set.';
+								return msg.embed(tosEmbed);
+							}
+						} else {
+							return msg.delete();
+						}
+					}
+					message.body = args.text;
+					return msg.client.provider.set(msg.guild.id, `tosMessage${args.item}`, message)
+						.then(async () => {
+							tosEmbed.description = `Terms of Service message #${args.item} ${tosEmbedUpsertMessage}.`;
+							await msg.client.provider.set(msg.guild.id, 'tosMessageCount', tosMessages.length)
+								.catch((err: Error) => {
+									msg.client.emit('warn', `Error in command util:tos: ${err}`);
+									return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
+								});
+
+							return msg.embed(tosEmbed);
+						})
+						.catch((err: Error) => {
+							msg.client.emit('warn', `Error in command util:tos: ${err}`);
+							return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
+						});
+
+				default:
+					return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+			}
+		} else {
+			if (tosChannel && tosChannel === msg.channel.id) {
+				if (tosMessages && tosMessages.length > 0) {
+					const tosEmbeds: Promise<Message | Message[]> = tosMessages.map((message) => {
+						tosEmbed.author.name = message.title;
+						tosEmbed.author.iconURL = undefined;
+						tosEmbed.description = message.body;
 
 						return msg.embed(tosEmbed);
-					})
-					.catch((err: Error) => {
-						msg.client.emit('warn', `Error in command util:tos: ${err}`);
-						return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
-					});
-			case 'body':
-				item = +args.item;
-				tosEmbedUpsertMessage = 'updated';
-				message = tosMessages[item - 1];
-				if (args.arg1.length > 0 && !isNaN(Number(args.item)) && Number.isInteger(Number(args.item)) && args.item > 0 && args.text.length > 0) {
-					if (args.item === tosMessageCount + 1) {
-						tosEmbedUpsertMessage = 'added';
-					} else if (args.item > tosMessageCount + 2) {
-						return sendSimpleEmbeddedError(msg, 'You must supply either an already existing message number or one greater than the current count.', 3000);
-					}
-					if (!message) {
-						message = {
-							body: '',
-							id: item - 1,
-							title: ''
-						};
-						tosMessages.push(message);
-					}
+					})[0];
 
+					return tosEmbeds; // I don't like this...
 				} else {
-					if (tosChannel && tosChannel === msg.channel.id) {
-						if (tosMessages && tosMessages.length > 0) {
-							const tosEmbeds = tosMessages.map((message) => {
-								tosEmbed.author.name = message.title;
-								tosEmbed.author.iconURL = undefined;
-								tosEmbed.description = message.body;
-
-								return msg.embed(tosEmbed);
-							});
-
-							return tosEmbeds[0]; // I don't like this...
-						} else {
-							tosEmbed.description = 'There are no terms of service messages set.';
-							return msg.embed(tosEmbed);
-						}
-					} else {
-						return msg.delete();
-					}
+					tosEmbed.description = 'There are no terms of service messages set.';
+					return msg.embed(tosEmbed);
 				}
-				message.body = args.text;
-				return msg.client.provider.set(msg.guild, `tosMessage${args.item}`, message)
-					.then(async () => {
-						tosEmbed.description = `Terms of Service message #${args.item} ${tosEmbedUpsertMessage}.`;
-						await msg.client.provider.set(msg.guild, 'tosMessageCount', tosMessages.length)
-							.catch((err: Error) => {
-								msg.client.emit('warn', `Error in command util:tos: ${err}`);
-								return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
-							});
-
-						return msg.embed(tosEmbed);
-					})
-					.catch((err: Error) => {
-						msg.client.emit('warn', `Error in command util:tos: ${err}`);
-						return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
-					});
-			default:
-				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+			} else {
+				return msg.delete();
+			}
 		}
 	}
 }

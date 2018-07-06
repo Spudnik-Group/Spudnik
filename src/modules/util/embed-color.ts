@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
@@ -26,7 +26,7 @@ export default class EmbedColorCommand extends Command {
 					prompt: 'What color would you like embeds to be?\n',
 					type: 'string',
 					validate: (color: string) => {
-						if (!isNaN(color.match(/^ *[a-f0-9]+ *$/i) ? parseInt(color, 16) : NaN)) {
+						if (!isNaN(color.match(/^ *[a-f0-9]{6} *$/i) ? parseInt(color, 16) : NaN)) {
 							return true;
 						} else if (color === '') {
 							return true;
@@ -36,16 +36,16 @@ export default class EmbedColorCommand extends Command {
 				}
 			],
 			description: 'Used to change the default embed color the bot uses for responses, or reset it.',
-			details: oneLine`
-				syntax: \`!embedcolor (hex color)\`\n
-				\n
-				Supplying no hex color resets the embed color to default.\n
-				\n
+			details: stripIndents`
+				syntax: \`!embedcolor (hex color)\`
+
+				Supplying no hex color resets the embed color to default.
+
 				Manage Guild permission required.
 			`,
 			examples: [
 				'!embedcolor',
-				'!embedcolor 5592405'
+				'!embedcolor 555555'
 			],
 			group: 'util',
 			guildOnly: true,
@@ -88,7 +88,7 @@ export default class EmbedColorCommand extends Command {
 					return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
 				});
 		} else {
-			msg.client.provider.set(msg.guild, 'embedColor', args.color)
+			msg.client.provider.set(msg.guild.id, 'embedColor', args.color)
 				.then(() => {
 					return sendSimpleEmbeddedMessage(msg, `Default Embed Color changed to: ${args.color}. How do I look?`);
 				})

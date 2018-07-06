@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import * as DBLAPI from 'dblapi.js';
-import { Channel, Guild, GuildChannel, GuildMember, Message, MessageAttachment, MessageEmbed, MessageReaction, PresenceData, ReactionUserStore, TextChannel } from 'discord.js';
+import { Channel, Guild, GuildChannel, GuildMember, Message, MessageAttachment, MessageEmbed, MessageReaction, PresenceData, TextChannel } from 'discord.js';
 import { CommandoClient } from 'discord.js-commando';
 import * as http from 'http';
 import Mongoose = require('mongoose');
@@ -106,7 +106,9 @@ export class Spudnik {
 	private setupEvents = () => {
 		this.Discord
 			.once('ready', async () => {
-				let statuses: PresenceData[] = [
+				const users: number = this.Discord.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b);
+				const guilds: number = this.Discord.guilds.array().length;
+				const statuses: PresenceData[] = [
 					{
 						activity: {
 							name: `${this.Discord.commandPrefix}help | ${this.Discord.guilds.array().length} Servers`,
@@ -142,42 +144,17 @@ export class Spudnik {
 							name: 'docs.spudnik.io',
 							type: 'STREAMING'
 						}
+					},
+					{
+						activity: {
+							name: `and Assisting ${users} users on ${guilds} servers`,
+							type: 'WATCHING'
+						}
 					}
 				];
 
 				console.log(chalk.magenta(`Logged into Discord! Serving in ${this.Discord.guilds.array().length} Discord servers`));
 				console.log(chalk.blue('---Spudnik Launch Success---'));
-
-				if (this.Config.getDblApiKey() !== '') {
-					let upvotes: number = 0;
-
-					const users: number = this.Discord.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b);
-					const guilds: number = this.Discord.guilds.array().length;
-
-					const dbl: DBLAPI = new DBLAPI(this.Config.getDblApiKey(), this.Discord);
-
-					dbl.getVotes().then((votes: DBLAPI.Vote[]) => {
-						this.Discord.provider.set('0', 'dblUpvotes', votes.length);
-						upvotes = votes.length;
-
-						statuses.push({
-							activity: {
-								name: `Upvoted ${upvotes} times on discordbots.org`,
-								type: 'WATCHING'
-							}
-						});
-					});
-
-					statuses.push({
-						activity: {
-							name: `Assisting ${users} users on ${guilds} servers`,
-							type: 'WATCHING'
-						}
-					});
-
-					// Bot Listing Interval Events
-					setInterval(() => statuses = this.updateDiscordBotList(this.Config, this.Discord, statuses), this.Config.getStatusUpdateInterval(), true);
-				}
 
 				// Update bot status, using array of possible statuses
 				let statusIndex: number = -1;
@@ -185,53 +162,66 @@ export class Spudnik {
 				setInterval(() => statusIndex = this.updateStatus(this.Discord, statuses, statusIndex), this.Config.getBotListUpdateInterval(), true);
 			})
 			.on('raw', async (event: any) => {
-				if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(event.t)) {
-					return;
-				}
-
+				if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(event.t)) { return; } //Ignore non-emoji related actions
 				const { d: data } = event;
-				const channel: Channel | undefined = this.Discord.channels.get(data.channel_id);
+				const channel: Channel | undefined = await this.Discord.channels.get(data.channel_id);
+				if ((channel as TextChannel).nsfw) { return; } //Ignore NSFW channels
 				const message: Message = await (channel as TextChannel).messages.fetch(data.message_id);
+				const starboardEnabled: boolean = await this.Discord.provider.get(message.guild.id, 'starboardEnabled', false);
+				if (!starboardEnabled) { return; } //Ignore if starboard isn't set up
+				const starboardChannel = await this.Discord.provider.get(message.guild.id, 'starboardChannel');
+				const starboard: GuildChannel | undefined = await message.guild.channels.get(starboardChannel);
+				if (starboard === undefined) { return; } //Ignore if starboard isn't set up
+				if (starboard === channel) { return; } //Can't star items in starboard channel
 				const emojiKey: any = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
 				const reaction: MessageReaction | undefined = message.reactions.get(emojiKey);
-				const starboardEnabled: boolean = await this.Discord.provider.get(message.guild.id, 'starboardEnabled', false);
-				const starboard: GuildChannel | undefined = await message.guild.channels.get(this.Discord.provider.get(message.guild.id, 'starboardChannel', undefined));
-				if ((channel as TextChannel).nsfw) {
+				const starred: any[] = await this.Discord.provider.get(message.guild.id, 'starboard', []);
+				const starboardTrigger = await this.Discord.provider.get(message.guild.id, 'starboardTrigger', '⭐');
+
+				// If all emojis were removed from this message, check if message is in the starboard
+				if (!reaction) {
+					if (starred.some((star: any) => star.messageId === message.id)) {
+						// Remove from the starboard
+						const starredMsg = await starred.find((msg) => msg.messageId === message.id && msg.channelId === (channel as TextChannel).id);
+						const starredEmbed = await (starboard as TextChannel).messages.fetch(starredMsg.embedId);
+						if (starredEmbed) {
+							return starredEmbed.delete();
+						}
+						return;
+					}
 					return;
 				}
+				if (message.author.id === data.user_id && !this.Discord.owners.includes(data.user_id)) {
+					return (channel as TextChannel)
+						.send(`⚠ You cannot star your own messages, **<@${data.user_id}>**!`)
+						.then((reply: Message | Message[]) => {
+							if (reply instanceof Message) {
+								reply.delete({ timeout: 3000 }).catch(() => undefined);
+							}
+						});
+				}
 
-				if (starboardEnabled && starboard !== undefined) {
-					const starboardTrigger = await this.Discord.provider.get(message.guild.id, 'starboardTrigger', '⭐');
-					const starred: any[] = await this.Discord.provider.get(message.guild.id, 'starboard', []);
+				// Check for starboard reaction
+				if (starboardTrigger === (reaction as MessageReaction).emoji.name) {
 					const stars = await message.reactions.find((mReaction: MessageReaction) => mReaction.emoji.name === starboardTrigger).users.fetch();
+					const starboardEmbed: MessageEmbed = new MessageEmbed()
+						.setAuthor(message.guild.name, message.guild.iconURL())
+						.setThumbnail(message.author.displayAvatarURL())
+						.addField('Author', message.author.toString(), true)
+						.addField('Channel', (channel as TextChannel).toString(), true)
+						.setColor(await this.Discord.provider.get(message.guild.id, 'embedColor', 5592405))
+						.setTimestamp()
+						.setFooter(`⭐ ${stars.size} | ${message.id} `);
 
-					if (message.author.id === data.user_id && !this.Discord.owners.includes(data.user_id)) {
-						return (channel as TextChannel)
-							.send(`⚠ You cannot star your own messages, **<@${data.user_id}>**!`)
-							.then((reply: Message | Message[]) => {
-								if (reply instanceof Message) {
-									reply.delete({ timeout: 3000 }).catch(() => undefined);
-								}
-							});
+					if (message.content.length > 1) { starboardEmbed.addField('Message', message.content); }
+					if ((message.attachments as any).filter((atchmt: MessageAttachment) => atchmt.attachment)) {
+						starboardEmbed.setImage((message.attachments as any).first().attachment);
 					}
-
-					// Check for 'star' (or customized starboard reaction)
-					if (starboardTrigger === (reaction as MessageReaction).emoji.name) {
-						// Check for presence of post in starboard channel
-						if (!starred.some((star: any) => star.messageId === message.id)) {
-							// Fresh star, add to starboard and starboard tracking in DB
-							(starboard as TextChannel).send({
-								embed: new MessageEmbed()
-									.setAuthor(message.guild.name, message.guild.iconURL())
-									.setThumbnail(message.author.displayAvatarURL())
-									.addField('Author', message.author.toString(), true)
-									.addField('Channel', (channel as TextChannel).toString(), true)
-									.addField('Message', !message.content.length ? '' : message.content, true)
-									.setImage((message.attachments as any).filter((atchmt: MessageAttachment) => atchmt.attachment) ? (message.attachments as any).filter((atchmt: any) => atchmt.attachment).attachment : null)
-									.setColor(await this.Discord.provider.get(message.guild.id, 'embedColor', 5592405))
-									.setTimestamp()
-									.setFooter(`⭐ ${stars.size} | ${message.id} `)
-							}).then((item) => {
+					// Check for presence of post in starboard channel
+					if (!starred.some((star: any) => star.messageId === message.id)) {
+						// Fresh star, add to starboard and starboard tracking in DB
+						(starboard as TextChannel).send({ embed: starboardEmbed })
+							.then((item) => {
 								starred.push({
 									channelId: (channel as TextChannel).id,
 									embedId: (item as Message).id,
@@ -241,30 +231,17 @@ export class Spudnik {
 							}).catch((err) => {
 								(starboard as TextChannel).send(`Failed to send embed of message ID: ${message.id}`);
 							});
-						} else {
-							// Old star, update star count
-							const starredMsg = await starred.find((msg) => msg.messageId === message.id && msg.channelId === (channel as TextChannel).id);
-							const starredEmbed = await (starboard as TextChannel).messages.fetch(starredMsg.embedId);
-							if (starredEmbed) {
-								starredEmbed.edit({
-									embed: new MessageEmbed()
-										.setAuthor(message.guild.name, message.guild.iconURL())
-										.setThumbnail(message.author.displayAvatarURL())
-										.addField('Author', message.author.toString(), true)
-										.addField('Channel', (channel as TextChannel).toString(), true)
-										.addField('Message', !message.content.length ? '' : message.content, true)
-										.setImage((message.attachments as any).filter((atchmt: MessageAttachment) => atchmt.attachment) ? (message.attachments as any).filter((atchmt: any) => atchmt.attachment).attachment : null)
-										.setColor(this.Discord.provider.get(message.guild.id, 'embedColor', 5592405))
-										.setTimestamp()
-										.setFooter(`⭐ ${stars.size} | ${message.id} `)
-								}).catch((err) => {
+					} else {
+						// Old star, update star count
+						const starredMsg = await starred.find((msg) => msg.messageId === message.id && msg.channelId === (channel as TextChannel).id);
+						const starredEmbed = await (starboard as TextChannel).messages.fetch(starredMsg.embedId);
+						if (starredEmbed) {
+							starredEmbed.edit({ embed: starboardEmbed })
+								.catch((err) => {
 									(starboard as TextChannel).send(`Failed to send embed of message ID: ${message.id}`);
 								});
-							}
 						}
 					}
-				} else {
-					return;
 				}
 			})
 			.on('message', (message: Message) => {
@@ -290,7 +267,7 @@ export class Spudnik {
 				const welcomeEnabled = this.Discord.provider.get(guild, 'welcomeEnabled', false);
 
 				if (welcomeEnabled) {
-					const welcomeChannel = this.Discord.provider.get(guild, 'welcomeChannel', guild.systemChannelID);
+					const welcomeChannel = this.Discord.provider.get(guild, 'welcomeChannel');
 					const welcomeMessage = this.Discord.provider.get(guild, 'welcomeMessage', '@here, please Welcome {user} to {guild}!');
 					const message = welcomeMessage.replace('{guild}', guild.name).replace('{user}', `<@${member.id}>`);
 					const channel = guild.channels.get(welcomeChannel);
@@ -306,7 +283,7 @@ export class Spudnik {
 				const goodbyeEnabled = this.Discord.provider.get(guild, 'goodbyeEnabled', false);
 
 				if (goodbyeEnabled) {
-					const goodbyeChannel = this.Discord.provider.get(guild, 'goodbyeChannel', guild.systemChannelID);
+					const goodbyeChannel = this.Discord.provider.get(guild, 'goodbyeChannel');
 					const goodbyeMessage = this.Discord.provider.get(guild, 'goodbyeMessage', '{user} has left the server.');
 					const message = goodbyeMessage.replace('{guild}', guild.name).replace('{user}', `<@${member.id}>`);
 					const channel = guild.channels.get(goodbyeChannel);
@@ -318,7 +295,7 @@ export class Spudnik {
 				}
 			})
 			.on('disconnected', (err: Error) => {
-				this.Honeybadger.notify(chalk.red(`Disconnected from Discord!\nError: ${err}`));
+				this.Honeybadger.notify(`Disconnected from Discord!\nError: ${err}`);
 				console.log(chalk.red('Disconnected from Discord!'));
 			})
 			.on('error', (err: Error) => {
@@ -326,9 +303,7 @@ export class Spudnik {
 				console.error(err);
 			})
 			.on('warn', (err: Error) => {
-				if (this.Config.getDebug()) {
-					console.warn(err);
-				}
+				console.warn(err);
 			})
 			.on('debug', (err: Error) => {
 				if (this.Config.getDebug()) {

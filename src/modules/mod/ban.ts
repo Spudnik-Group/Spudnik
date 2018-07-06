@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 import { GuildMember, Message, MessageEmbed, Role } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
@@ -39,9 +39,9 @@ export default class BanCommand extends Command {
 				}
 			],
 			description: 'Bans the user, optionally deleting messages from them in the last x days.',
-			details: oneLine`
-				syntax: \`!ban <@userMention> <reason> (daysOfMessages)\`\n
-				\n
+			details: stripIndents`
+				syntax: \`!ban <@userMention> <reason> (daysOfMessages)\`
+
 				Ban Members permission required.
 			`,
 			examples: [
@@ -106,7 +106,7 @@ export default class BanCommand extends Command {
 				})
 				.catch((err: Error) => {
 					msg.client.emit('error',
-						oneLine`Error with command 'ban'\n
+						stripIndents`Error with command 'ban'\n
 							Banning ${memberToBan.id} from ${msg.guild} failed!\n
 							Error: ${err}`
 					);
@@ -121,7 +121,7 @@ export default class BanCommand extends Command {
 				})
 				.catch((err: Error) => {
 					msg.client.emit('error',
-						oneLine`Error with command 'ban'\n
+						stripIndents`Error with command 'ban'\n
 							Banning ${memberToBan.id} from ${guild.name} failed!\n
 							Error: ${err}`
 					);

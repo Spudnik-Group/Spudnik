@@ -1,1 +1,1 @@
-Gives a random Chuck Norris fact.
+Returns a random Chuck Norris fact.

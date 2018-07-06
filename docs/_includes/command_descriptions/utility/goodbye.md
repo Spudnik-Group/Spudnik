@@ -1,3 +1,9 @@
-Used to set the message to be sent to the guild when someone leaves, show the current goodbye message,
-changes the channel for the message to be shown, and enables or disables the message;
-use {guild} for guild name, and {user} to reference the user that left.
+Used to configure the message to be sent when a user leaves your guild.<br />
+syntax: `!goodbye <message|channel|enable|disable> (text | #channelMention)`<br />
+<br />
+`message (text to say goodbye/heckle)` - Set/return the goodbye message. Use { guild } for guild name, and { user } to reference the user joining. Leave blank to show current.<br />
+`channel <#channelMention>` - Set the channel for the goodbye message to be displayed.<br />
+`enable` - Enable the goodbye message feature.<br />
+`disable` - Disable the goodbye message feature.<br />
+<br />
+Manage Guild permission required.

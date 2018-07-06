@@ -1,1 +1,4 @@
-usage: "!prune <number of messages> (filter) (user)"
+usage:
+  - '!prune 50'
+  - '!prune 50 user @user'
+  - '!prune 15 links'

@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
@@ -28,12 +28,11 @@ export default class PlayingCommand extends Command {
 				}
 			],
 			description: 'Returns a list of people playing games. Allows filtering.',
-			details: oneLine`
-				syntax: \`!playing [game name]\`\n
-				\n
-				Supplying no game name provides you with a list of all users who are marked with the "Playing" status type.\n
-				Supplying a game name provides you with a list of all users with that game name as their status (case insensitive)
-			`,
+			details: stripIndents`
+				syntax: \`!playing [game name]\`
+
+				Supplying no game name provides you with a list of all users who are marked with the "Playing" status type.
+				Supplying a game name provides you with a list of all users with that game name as their status (case insensitive)`,
 			examples: [
 				'!playing',
 				'!playing fortnite'

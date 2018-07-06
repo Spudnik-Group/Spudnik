@@ -1,1 +1,1 @@
-Link to my source code!
+Returns a link to my source code!

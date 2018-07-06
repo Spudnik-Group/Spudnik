@@ -1,1 +1,3 @@
-usage: "!nick (new nickname)"
+usage:
+  - "!nick AwesomeBot"
+  - "!nick"

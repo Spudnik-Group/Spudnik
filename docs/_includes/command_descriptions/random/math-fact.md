@@ -1,1 +1,1 @@
-Gives a random math fact.
+Returns a random math fact.

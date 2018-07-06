@@ -1,3 +1,9 @@
-Used to set the message to be sent to new users when they join your guild, show the current welcome message,
-changes the channel for the message to be shown, and enables or disables the message; use {guild} for guild name,
-and {user} to reference the user joining.
+Used to configure the message to be sent when a new user join your guild.<br />
+syntax: `!welcome <message|channel|enable|disable> (text | #channelMention)`<br />
+<br />
+`message (text to welcome/heckle)` - Set/return the welcome message. Use { guild } for guild name, and { user } to reference the user joining. Leave blank to show current.<br />
+`channel <#channelMention>` - Set the channel for the welcome message to be displayed.<br />
+`enable` - Enable the welcome message feature.<br />
+`disable` - Disable the welcome message feature.<br />
+<br />
+Manage Guild permission required.

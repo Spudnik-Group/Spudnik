@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed, Role } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
@@ -34,21 +34,21 @@ export default class RoleManagementCommands extends Command {
 				}
 			],
 			description: 'Used to configure the role management feature.',
-			details: oneLine`
-				syntax: \`!role <add|remove|list|default> (@roleMention)\`\n
-				\n
-				\`add <@roleMention>\` - adds the role to the list of self-assignable-roles.\n
-				\`remove <@roleMention>\` - removes the role from the list of self-assignable-roles.\n
-				\`list\` - lists the available self-assignable-roles.\n
-				\`default <@roleMention>\` - sets the default role.\n
-				\n
+			details: stripIndents`
+				syntax: \`!role <add|remove|list|default> (@roleMention)\`
+
+				\`add <@roleMention>\` - adds the role to the list of self-assignable-roles.
+				\`remove <@roleMention>\` - removes the role from the list of self-assignable-roles.
+				\`list\` - lists the available self-assignable-roles.
+				\`default <@roleMention>\` - sets the default role.
+
 				Manage Roles permission required.
 			`,
 			examples: [
-				'!role add @role_name',
-				'!role remove @role_name',
+				'!role add @PUBG',
+				'!role remove @Fortnite',
 				'!role list',
-				'!role default @role_name'
+				'!role default @Pleb'
 			],
 			group: 'roles',
 			guildOnly: true,
@@ -85,8 +85,8 @@ export default class RoleManagementCommands extends Command {
 			color: getEmbedColor(msg)
 		});
 
-		let guildAssignableRoles: string[] = msg.client.provider.get(msg.guild, 'assignableRoles', []);
-		const guildDefaultRole: string = msg.client.provider.get(msg.guild, 'defaultRole', '');
+		let guildAssignableRoles: string[] = msg.client.provider.get(msg.guild.id, 'assignableRoles', []);
+		const guildDefaultRole: string = msg.client.provider.get(msg.guild.id, 'defaultRole', '');
 
 		switch (args.subCommand.toLowerCase()) {
 			case 'add': {
@@ -102,7 +102,7 @@ export default class RoleManagementCommands extends Command {
 				if (!guildAssignableRoles.includes(args.role.id)) {
 					guildAssignableRoles.push(args.role.id);
 
-					return msg.client.provider.set(msg.guild, 'assignableRoles', guildAssignableRoles)
+					return msg.client.provider.set(msg.guild.id, 'assignableRoles', guildAssignableRoles)
 						.then(() => {
 							roleEmbed.description = `Added role '${args.role.name}' to the list of assignable roles.`;
 							return msg.embed(roleEmbed);
@@ -124,7 +124,7 @@ export default class RoleManagementCommands extends Command {
 				if (Array.isArray(guildAssignableRoles) && guildAssignableRoles.includes(args.role.id)) {
 					guildAssignableRoles = guildAssignableRoles.filter((i: string) => i !== args.role.id);
 
-					return msg.client.provider.set(msg.guild, 'assignableRoles', guildAssignableRoles)
+					return msg.client.provider.set(msg.guild.id, 'assignableRoles', guildAssignableRoles)
 						.then(() => {
 							roleEmbed.description = `Removed role '${args.role.name}' from the list of assignable roles.`;
 							return msg.embed(roleEmbed);
@@ -173,7 +173,7 @@ export default class RoleManagementCommands extends Command {
 			}
 			case 'default': {
 				if (args.role.name === undefined) {
-					return msg.client.provider.set(msg.guild, 'defaultRole', null)
+					return msg.client.provider.set(msg.guild.id, 'defaultRole', null)
 						.then(() => {
 							roleEmbed.description = 'Removed default role.';
 							return msg.embed(roleEmbed);
@@ -184,7 +184,7 @@ export default class RoleManagementCommands extends Command {
 						});
 				}
 
-				return msg.client.provider.set(msg.guild, 'defaultRole', args.role.id)
+				return msg.client.provider.set(msg.guild.id, 'defaultRole', args.role.id)
 					.then(() => {
 						roleEmbed.description = `Added default role '${args.role.name}'.`;
 						return msg.embed(roleEmbed);

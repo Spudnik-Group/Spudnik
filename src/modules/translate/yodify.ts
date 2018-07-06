@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
@@ -27,7 +27,7 @@ export default class YodifyCommand extends Command {
 				}
 			],
 			description: 'Translates text to Yoda speak.',
-			details: oneLine`
+			details: stripIndents`
 				syntax: \`!yodify <text>\`
 			`,
 			examples: ['!yodify Give me better input than this'],

@@ -26,7 +26,7 @@ export default class IAmNotCommand extends Command {
 					type: 'string'
 				}
 			],
-			description: 'Used to remove a role from yourself.',
+			description: 'Used to remove a self-assignable role from yourself.',
 			details: 'syntax: `!iamnot <@roleMention>`',
 			examples: ['!iamnot @PUBG'],
 			group: 'roles',
@@ -54,7 +54,7 @@ export default class IAmNotCommand extends Command {
 		});
 
 		const role = msg.guild.roles.find((r) => r.name.toLowerCase() === args.query.toLowerCase());
-		const guildAssignableRoles: string[] = msg.client.provider.get(msg.guild, 'assignableRoles', []);
+		const guildAssignableRoles: string[] = msg.client.provider.get(msg.guild.id, 'assignableRoles', []);
 
 		if (role && guildAssignableRoles) {
 			if (guildAssignableRoles.includes(role.id)) {

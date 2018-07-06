@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import * as rp from 'request-promise';
@@ -29,7 +29,7 @@ export default class CocktailCommand extends Command {
 				}
 			],
 			description: 'Returns information about a cocktail. Uses the CocktailDB API.',
-			details: oneLine`
+			details: stripIndents`
 				syntax: \`!cocktail <cocktail name>\`
 			`,
 			examples: [

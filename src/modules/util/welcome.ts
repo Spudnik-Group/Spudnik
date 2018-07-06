@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 import { Channel, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
@@ -34,16 +34,23 @@ export default class WelcomeCommand extends Command {
 				}
 			],
 			description: 'Used to configure the message to be sent when a new user join your guild.',
-			details: oneLine`
-				syntax: \`!welcome <message|channel|enable|disable> (text | #channelMention)\`\n
-				\n
-				\`message (text to welcome/heckle)\` - Set/return the welcome message. Use { guild } for guild name, and { user } to reference the user joining. Leave blank to show current.\n
-				\`channel <#channelMention>\` - Set the channel for the welcome message to be displayed.\n
-				\`enable\` - Enable the welcome message feature.\n
-				\`disable\` - Disable the welcome message feature.\n
-				\n
+			details: stripIndents`
+				syntax: \`!welcome <message|channel|enable|disable> (text | #channelMention)\`
+
+				\`message (text to welcome/heckle)\` - Set/return the welcome message. Use { guild } for guild name, and { user } to reference the user joining. Leave blank to show current.
+				\`channel <#channelMention>\` - Set the channel for the welcome message to be displayed.
+				\`enable\` - Enable the welcome message feature.
+				\`disable\` - Disable the welcome message feature.
+
 				Manage Guild permission required.
 			`,
+			examples: [
+				'!welcome message Please welcome {user} to the guild!',
+				'!welcome message',
+				'!welcome channel #general',
+				'!welcome enable',
+				'!welcome disable'
+			],
 			group: 'util',
 			guildOnly: true,
 			memberName: 'welcome',
@@ -83,25 +90,34 @@ export default class WelcomeCommand extends Command {
 			color: getEmbedColor(msg)
 		});
 
-		const welcomeChannel = msg.client.provider.get(msg.guild, 'welcomeChannel', msg.guild.systemChannelID);
-		const welcomeMessage = msg.client.provider.get(msg.guild, 'welcomeMessage', '@here, please Welcome {user} to {guild}!');
-		const welcomeEnabled = msg.client.provider.get(msg.guild, 'welcomeEnabled', false);
+		let welcomeChannel = msg.client.provider.get(msg.guild.id, 'welcomeChannel');
+		// Quick migration for old channel references in database
+		if (welcomeChannel instanceof Channel) {
+			msg.client.provider.set(msg.guild.id, 'welcomeChannel', welcomeChannel.id);
+			welcomeChannel = welcomeChannel.id;
+		}
+		const welcomeMessage = msg.client.provider.get(msg.guild.id, 'welcomeMessage', '@here, please Welcome {user} to {guild}!');
+		const welcomeEnabled = msg.client.provider.get(msg.guild.id, 'welcomeEnabled', false);
 		switch (args.subCommand.toLowerCase()) {
 			case 'channel': {
-				const channelID = (args.content as Channel).id;
-				if (welcomeChannel && welcomeChannel === channelID) {
-					welcomeEmbed.description = `Welcome channel already set to <#${channelID}>!`;
-					return msg.embed(welcomeEmbed);
+				if (args.content instanceof Channel) {
+					const channelID = (args.content as Channel).id;
+					if (welcomeChannel && welcomeChannel === channelID) {
+						welcomeEmbed.description = `Welcome channel already set to <#${channelID}>!`;
+						return msg.embed(welcomeEmbed);
+					} else {
+						return msg.client.provider.set(msg.guild.id, 'welcomeChannel', channelID)
+							.then(() => {
+								welcomeEmbed.description = `Welcome channel set to <#${channelID}>.`;
+								return msg.embed(welcomeEmbed);
+							})
+							.catch((err: Error) => {
+								msg.client.emit('warn', `Error in command util:welcome: ${err}`);
+								return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
+							});
+					}
 				} else {
-					return msg.client.provider.set(msg.guild, 'welcomeChannel', channelID)
-						.then(() => {
-							welcomeEmbed.description = `Welcome channel set to <#${channelID}>.`;
-							return msg.embed(welcomeEmbed);
-						})
-						.catch((err: Error) => {
-							msg.client.emit('warn', `Error in command util:welcome: ${err}`);
-							return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
-						});
+					return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
 				}
 			}
 			case 'message': {
@@ -109,7 +125,7 @@ export default class WelcomeCommand extends Command {
 					welcomeEmbed.description = 'You must include the new message along with the `message` command. See `help welcome` for details.\nThe current welcome message is set to: ```' + welcomeMessage + '```';
 					return msg.embed(welcomeEmbed);
 				} else {
-					return msg.client.provider.set(msg.guild, 'welcomeMessage', args.content)
+					return msg.client.provider.set(msg.guild.id, 'welcomeMessage', args.content)
 						.then(() => {
 							welcomeEmbed.description = 'Welcome message set to: ```' + args.content + '```' + '\nCurrently, Welcome messages are set to: ' + welcomeEnabled ? '_ON_' : '_OFF_' + '\nAnd, are displaying in this channel: <#' + welcomeChannel + '>';
 							return msg.embed(welcomeEmbed);
@@ -122,7 +138,7 @@ export default class WelcomeCommand extends Command {
 			}
 			case 'enable': {
 				if (welcomeEnabled === false) {
-					return msg.client.provider.set(msg.guild, 'welcomeEnabled', true)
+					return msg.client.provider.set(msg.guild.id, 'welcomeEnabled', true)
 						.then(() => {
 							welcomeEmbed.description = `Welcome message enabled.\nWelcome channel set to: <#${welcomeChannel}>\nWelcome message set to: ${welcomeMessage}`;
 							return msg.embed(welcomeEmbed);
@@ -138,7 +154,7 @@ export default class WelcomeCommand extends Command {
 			}
 			case 'disable': {
 				if (welcomeEnabled === true) {
-					return msg.client.provider.set(msg.guild, 'welcomeEnabled', false)
+					return msg.client.provider.set(msg.guild.id, 'welcomeEnabled', false)
 						.then(() => {
 							welcomeEmbed.description = `Welcome message disabled.\nWelcome channel set to: <#${welcomeChannel}>\nWelcome message set to: ${welcomeMessage}`;
 							return msg.embed(welcomeEmbed);

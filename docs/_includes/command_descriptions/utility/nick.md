@@ -1,1 +1,6 @@
-Change the bot's nickname on your server, or reset it if no nickname is supplied.
+Used to change the bot's nickname on your server, or reset it.<br />
+syntax: `!nick (new nickname)`<br />
+<br />
+Supplying no nickname resets the nickname to default.<br />
+<br />
+Manage Nicknames permission required.

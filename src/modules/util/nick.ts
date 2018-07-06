@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 import { GuildMember, Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
@@ -28,11 +28,11 @@ export default class NickCommand extends Command {
 				}
 			],
 			description: 'Used to change the bot\'s nickname on your server, or reset it.',
-			details: oneLine`
-				syntax: \`!nick (new nickname)\`\n
-				\n
-				Supplying no nickname resets the nickname to default.\n
-				\n
+			details: stripIndents`
+				syntax: \`!nick (new nickname)\`
+
+				Supplying no nickname resets the nickname to default.
+
 				Manage Nicknames permission required.
 			`,
 			examples: [

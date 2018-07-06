@@ -27,7 +27,7 @@ export default class LmgtfyCommand extends Command {
 				}
 			],
 			description: 'Returns a Let Me Google That For You link, so you can school a n00b.',
-			details: 'syntax: `!lmgtfy (query)`',
+			details: 'syntax: `!lmgtfy <query>`',
 			examples: ['!lmgtfy port forwarding'],
 			group: 'misc',
 			memberName: 'lmgtfy',

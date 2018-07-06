@@ -1,5 +1,6 @@
 usage:
-- "!starboard trigger <new trigger emoji>"
-- "!starboard channel"
-- "!starboard enable"
-- "!starboard disable"
+  - "!starboard trigger"
+  - "!starboard trigger :stuck_out_tongue:"
+  - "!starboard channel #starboard"
+  - "!starboard enable"
+  - "!starboard disable"

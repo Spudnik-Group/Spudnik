@@ -22,8 +22,8 @@ export default class SmiffFactCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
 			aliases: ['smith-fact', 'willsmith'],
-			description: 'Gives a Random Will Smith Fact.',
-			examples: ['!smifffact'],
+			description: 'Returns a random Will Smith fact.',
+			examples: ['!smiff-fact'],
 			group: 'random',
 			memberName: 'smiff-fact',
 			name: 'smiff-fact',

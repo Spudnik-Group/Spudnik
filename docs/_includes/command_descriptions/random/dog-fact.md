@@ -1,1 +1,1 @@
-Gives a random dog fact.
+Returns a random dog fact.

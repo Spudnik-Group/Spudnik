@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { Requester } from 'node-duckduckgo';
@@ -29,7 +29,7 @@ export default class DdgCommand extends Command {
 				}
 			],
 			description: 'Returns an instant answer from DuckDuckGo for the supplied query.',
-			details: oneLine`
+			details: stripIndents`
 				syntax: \`!ddg <query>\`
 			`,
 			examples: [

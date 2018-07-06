@@ -23,7 +23,7 @@ export default class YearFactCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Returns a random year fact.',
-			examples: ['!yearfact'],
+			examples: ['!year-fact'],
 			group: 'random',
 			memberName: 'year-fact',
 			name: 'year-fact',
