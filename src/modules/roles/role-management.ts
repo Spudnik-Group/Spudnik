@@ -85,8 +85,8 @@ export default class RoleManagementCommands extends Command {
 			color: getEmbedColor(msg)
 		});
 
-		let guildAssignableRoles: string[] = msg.client.provider.get(msg.guild, 'assignableRoles', []);
-		const guildDefaultRole: string = msg.client.provider.get(msg.guild, 'defaultRole', '');
+		let guildAssignableRoles: string[] = msg.client.provider.get(msg.guild.id, 'assignableRoles', []);
+		const guildDefaultRole: string = msg.client.provider.get(msg.guild.id, 'defaultRole', '');
 
 		switch (args.subCommand.toLowerCase()) {
 			case 'add': {
@@ -102,7 +102,7 @@ export default class RoleManagementCommands extends Command {
 				if (!guildAssignableRoles.includes(args.role.id)) {
 					guildAssignableRoles.push(args.role.id);
 
-					return msg.client.provider.set(msg.guild, 'assignableRoles', guildAssignableRoles)
+					return msg.client.provider.set(msg.guild.id, 'assignableRoles', guildAssignableRoles)
 						.then(() => {
 							roleEmbed.description = `Added role '${args.role.name}' to the list of assignable roles.`;
 							return msg.embed(roleEmbed);
@@ -124,7 +124,7 @@ export default class RoleManagementCommands extends Command {
 				if (Array.isArray(guildAssignableRoles) && guildAssignableRoles.includes(args.role.id)) {
 					guildAssignableRoles = guildAssignableRoles.filter((i: string) => i !== args.role.id);
 
-					return msg.client.provider.set(msg.guild, 'assignableRoles', guildAssignableRoles)
+					return msg.client.provider.set(msg.guild.id, 'assignableRoles', guildAssignableRoles)
 						.then(() => {
 							roleEmbed.description = `Removed role '${args.role.name}' from the list of assignable roles.`;
 							return msg.embed(roleEmbed);
@@ -173,7 +173,7 @@ export default class RoleManagementCommands extends Command {
 			}
 			case 'default': {
 				if (args.role.name === undefined) {
-					return msg.client.provider.set(msg.guild, 'defaultRole', null)
+					return msg.client.provider.set(msg.guild.id, 'defaultRole', null)
 						.then(() => {
 							roleEmbed.description = 'Removed default role.';
 							return msg.embed(roleEmbed);
@@ -184,7 +184,7 @@ export default class RoleManagementCommands extends Command {
 						});
 				}
 
-				return msg.client.provider.set(msg.guild, 'defaultRole', args.role.id)
+				return msg.client.provider.set(msg.guild.id, 'defaultRole', args.role.id)
 					.then(() => {
 						roleEmbed.description = `Added default role '${args.role.name}'.`;
 						return msg.embed(roleEmbed);
