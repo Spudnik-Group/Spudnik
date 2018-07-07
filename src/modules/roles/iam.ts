@@ -55,7 +55,7 @@ export default class IAmNotCommand extends Command {
 		});
 
 		const role = msg.guild.roles.find((r) => r.name.toLowerCase() === args.query.toLowerCase());
-		const guildAssignableRoles: string[] = msg.client.provider.get(msg.guild, 'assignableRoles', []);
+		const guildAssignableRoles: string[] = msg.client.provider.get(msg.guild.id, 'assignableRoles', []);
 
 		if (role && guildAssignableRoles) {
 			if (!msg.member.roles.keyArray().includes(role.id)) {
