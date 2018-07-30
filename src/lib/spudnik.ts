@@ -192,15 +192,6 @@ export class Spudnik {
 					}
 					return;
 				}
-				if (message.author.id === data.user_id && !this.Discord.owners.includes(data.user_id)) {
-					return (channel as TextChannel)
-						.send(`⚠ You cannot star your own messages, **<@${data.user_id}>**!`)
-						.then((reply: Message | Message[]) => {
-							if (reply instanceof Message) {
-								reply.delete({ timeout: 3000 }).catch(() => undefined);
-							}
-						});
-				}
 
 				// Check for starboard reaction
 				if (starboardTrigger === (reaction as MessageReaction).emoji.name) {
@@ -214,9 +205,19 @@ export class Spudnik {
 						.setTimestamp()
 						.setFooter(`⭐ ${stars.size} | ${message.id} `);
 
-					if (message.content.length > 1) { starboardEmbed.addField('Message', message.content); }
+					// You can't star your own messages, tool.
+					if (message.author.id === data.user_id && !this.Discord.owners.includes(data.user_id)) {
+						return (channel as TextChannel)
+							.send(`⚠ You cannot star your own messages, **<@${data.user_id}>**!`)
+							.then((reply: Message | Message[]) => {
+								if (reply instanceof Message) {
+									reply.delete({ timeout: 3000 }).catch(() => undefined);
+								}
+							});
+					}
+					if (message.content.length > 1) { starboardEmbed.addField('Message', message.content); } // Add message
 					if ((message.attachments as any).filter((atchmt: MessageAttachment) => atchmt.attachment)) {
-						starboardEmbed.setImage((message.attachments as any).first().attachment);
+						starboardEmbed.setImage((message.attachments as any).first().attachment); // Add attachments
 					}
 					// Check for presence of post in starboard channel
 					if (!starred.some((star: any) => star.messageId === message.id)) {
