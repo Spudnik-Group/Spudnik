@@ -111,7 +111,7 @@ export class Spudnik {
 				const statuses: PresenceData[] = [
 					{
 						activity: {
-							name: `${this.Discord.commandPrefix}help | ${this.Discord.guilds.array().length} Servers`,
+							name: `${this.Discord.commandPrefix}help | ${guilds} Servers`,
 							type: 'PLAYING'
 						}
 					},
@@ -153,13 +153,14 @@ export class Spudnik {
 					}
 				];
 
-				console.log(chalk.magenta(`Logged into Discord! Serving in ${this.Discord.guilds.array().length} Discord servers`));
+				console.log(chalk.magenta(`Logged into Discord! Serving in ${guilds} Discord servers`));
 				console.log(chalk.blue('---Spudnik Launch Success---'));
 
 				// Update bot status, using array of possible statuses
 				let statusIndex: number = -1;
 				statusIndex = this.updateStatus(this.Discord, statuses, statusIndex);
 				setInterval(() => statusIndex = this.updateStatus(this.Discord, statuses, statusIndex), this.Config.getBotListUpdateInterval(), true);
+				setInterval(() => this.updateStatusStats(this.Config, this.Discord, statuses), this.Config.getBotListUpdateInterval(), true);
 			})
 			.on('raw', async (event: any) => {
 				if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(event.t)) { return; } //Ignore non-emoji related actions
@@ -355,42 +356,23 @@ export class Spudnik {
 	 * @private
 	 * @memberof Spudnik
 	 */
-	private updateDiscordBotList = (config: Configuration, client: CommandoClient, statuses: PresenceData[]): PresenceData[] => {
-		console.log(chalk.red('udbl'));
-		const dbl: DBLAPI = new DBLAPI(config.getDblApiKey(), client);
-		let upvotes: number = client.provider.get('0', 'dblUpvotes', 0);
+	private updateStatusStats = (config: Configuration, client: CommandoClient, statuses: PresenceData[]): PresenceData[] => {
 		const users: number = client.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b);
 		const guilds: number = client.guilds.array().length;
 
-		// Post stats
-		dbl.postStats(client.guilds.array().length);
+		// Update Statuses
+		statuses = statuses.filter((item: PresenceData) => {
+			if (item.activity && item.activity.type !== 'WATCHING') {
+				return true;
+			}
+			return false;
+		});
 
-		// Update database with latest upvote count
-		dbl.getVotes().then((votes: DBLAPI.Vote[]) => {
-			client.provider.set('0', 'dblUpvotes', votes.length);
-			upvotes = votes.length;
-
-			// Update Statuses
-			statuses = statuses.filter((item: PresenceData) => {
-				if (item.activity && item.activity.type !== 'WATCHING') {
-					return true;
-				}
-				return false;
-			});
-
-			statuses.push({
-				activity: {
-					name: `Upvoted ${upvotes} times on discordbots.org`,
-					type: 'WATCHING'
-				}
-			});
-
-			statuses.push({
-				activity: {
-					name: `Assisting ${users} users on ${guilds} servers`,
-					type: 'WATCHING'
-				}
-			});
+		statuses.push({
+			activity: {
+				name: `and Assisting ${users} users on ${guilds} servers`,
+				type: 'WATCHING'
+			}
 		});
 
 		return statuses;
