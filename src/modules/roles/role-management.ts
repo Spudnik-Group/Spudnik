@@ -20,6 +20,7 @@ export default class RoleManagementCommands extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
+			aliases: ['roles'],
 			args: [
 				{
 					key: 'subCommand',
