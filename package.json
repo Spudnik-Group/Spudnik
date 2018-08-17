@@ -28,7 +28,7 @@
 		"body-parser": "^1.17.1",
 		"chalk": "^2.0.1",
 		"d20": "^1.4.1",
-		"discord.js": "11.4.2",
+		"discord.js": "github:discordjs/discord.js",
 		"discord.js-commando": "github:discordjs/Commando",
 		"erlpack": "github:hammerandchisel/erlpack",
 		"express": "^4.16.2",
