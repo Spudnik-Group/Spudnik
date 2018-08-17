@@ -1,5 +1,4 @@
 import chalk from 'chalk';
-import * as DBLAPI from 'dblapi.js';
 import { Channel, Guild, GuildChannel, GuildMember, Message, MessageAttachment, MessageEmbed, MessageReaction, PresenceData, TextChannel } from 'discord.js';
 import { CommandoClient } from 'discord.js-commando';
 import * as http from 'http';
@@ -111,7 +110,7 @@ export class Spudnik {
 				const statuses: PresenceData[] = [
 					{
 						activity: {
-							name: `${this.Discord.commandPrefix}help | ${this.Discord.guilds.array().length} Servers`,
+							name: `${this.Discord.commandPrefix}help | ${guilds} Servers`,
 							type: 'PLAYING'
 						}
 					},
@@ -153,13 +152,14 @@ export class Spudnik {
 					}
 				];
 
-				console.log(chalk.magenta(`Logged into Discord! Serving in ${this.Discord.guilds.array().length} Discord servers`));
+				console.log(chalk.magenta(`Logged into Discord! Serving in ${guilds} Discord servers`));
 				console.log(chalk.blue('---Spudnik Launch Success---'));
 
 				// Update bot status, using array of possible statuses
 				let statusIndex: number = -1;
 				statusIndex = this.updateStatus(this.Discord, statuses, statusIndex);
 				setInterval(() => statusIndex = this.updateStatus(this.Discord, statuses, statusIndex), this.Config.getBotListUpdateInterval(), true);
+				setInterval(() => this.updateStatusStats(this.Config, this.Discord, statuses), this.Config.getBotListUpdateInterval(), true);
 			})
 			.on('raw', async (event: any) => {
 				if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(event.t)) { return; } //Ignore non-emoji related actions
@@ -191,15 +191,6 @@ export class Spudnik {
 					}
 					return;
 				}
-				if (message.author.id === data.user_id && !this.Discord.owners.includes(data.user_id)) {
-					return (channel as TextChannel)
-						.send(`⚠ You cannot star your own messages, **<@${data.user_id}>**!`)
-						.then((reply: Message | Message[]) => {
-							if (reply instanceof Message) {
-								reply.delete({ timeout: 3000 }).catch(() => undefined);
-							}
-						});
-				}
 
 				// Check for starboard reaction
 				if (starboardTrigger === (reaction as MessageReaction).emoji.name) {
@@ -213,9 +204,19 @@ export class Spudnik {
 						.setTimestamp()
 						.setFooter(`⭐ ${stars.size} | ${message.id} `);
 
-					if (message.content.length > 1) { starboardEmbed.addField('Message', message.content); }
+					// You can't star your own messages, tool.
+					if (message.author.id === data.user_id && !this.Discord.owners.includes(data.user_id)) {
+						return (channel as TextChannel)
+							.send(`⚠ You cannot star your own messages, **<@${data.user_id}>**!`)
+							.then((reply: Message | Message[]) => {
+								if (reply instanceof Message) {
+									reply.delete({ timeout: 3000 }).catch(() => undefined);
+								}
+							});
+					}
+					if (message.content.length > 1) { starboardEmbed.addField('Message', message.content); } // Add message
 					if ((message.attachments as any).filter((atchmt: MessageAttachment) => atchmt.attachment)) {
-						starboardEmbed.setImage((message.attachments as any).first().attachment);
+						starboardEmbed.setImage((message.attachments as any).first().attachment); // Add attachments
 					}
 					// Check for presence of post in starboard channel
 					if (!starred.some((star: any) => star.messageId === message.id)) {
@@ -265,25 +266,25 @@ export class Spudnik {
 			.on('guildMemberAdd', (member: GuildMember) => {
 				const guild = member.guild;
 				const welcomeEnabled = this.Discord.provider.get(guild, 'welcomeEnabled', false);
+				const welcomeChannel = this.Discord.provider.get(guild, 'welcomeChannel');
 
-				if (welcomeEnabled) {
-					const welcomeChannel = this.Discord.provider.get(guild, 'welcomeChannel');
+				if (welcomeEnabled && welcomeChannel) {
 					const welcomeMessage = this.Discord.provider.get(guild, 'welcomeMessage', '@here, please Welcome {user} to {guild}!');
 					const message = welcomeMessage.replace('{guild}', guild.name).replace('{user}', `<@${member.id}>`);
 					const channel = guild.channels.get(welcomeChannel);
 					if (channel && channel.type === 'text') {
 						(channel as TextChannel).send(message);
 					} else {
-						this.Discord.emit('error', `There was an error trying to welcome a new guild member in ${guild}, the channel may not exist or was set to a non-text channel`);
+						this.Discord.emit('error', `There was an error trying to welcome a new guild member in ${guild}, the channel may no longer exist or was set to a non-text channel`);
 					}
 				}
 			})
 			.on('guildMemberRemove', (member: GuildMember) => {
 				const guild = member.guild;
 				const goodbyeEnabled = this.Discord.provider.get(guild, 'goodbyeEnabled', false);
+				const goodbyeChannel = this.Discord.provider.get(guild, 'goodbyeChannel');
 
-				if (goodbyeEnabled) {
-					const goodbyeChannel = this.Discord.provider.get(guild, 'goodbyeChannel');
+				if (goodbyeEnabled && goodbyeChannel) {
 					const goodbyeMessage = this.Discord.provider.get(guild, 'goodbyeMessage', '{user} has left the server.');
 					const message = goodbyeMessage.replace('{guild}', guild.name).replace('{user}', `<@${member.id}>`);
 					const channel = guild.channels.get(goodbyeChannel);
@@ -355,42 +356,23 @@ export class Spudnik {
 	 * @private
 	 * @memberof Spudnik
 	 */
-	private updateDiscordBotList = (config: Configuration, client: CommandoClient, statuses: PresenceData[]): PresenceData[] => {
-		console.log(chalk.red('udbl'));
-		const dbl: DBLAPI = new DBLAPI(config.getDblApiKey(), client);
-		let upvotes: number = client.provider.get('0', 'dblUpvotes', 0);
+	private updateStatusStats = (config: Configuration, client: CommandoClient, statuses: PresenceData[]): PresenceData[] => {
 		const users: number = client.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b);
 		const guilds: number = client.guilds.array().length;
 
-		// Post stats
-		dbl.postStats(client.guilds.array().length);
+		// Update Statuses
+		statuses = statuses.filter((item: PresenceData) => {
+			if (item.activity && item.activity.type !== 'WATCHING') {
+				return true;
+			}
+			return false;
+		});
 
-		// Update database with latest upvote count
-		dbl.getVotes().then((votes: DBLAPI.Vote[]) => {
-			client.provider.set('0', 'dblUpvotes', votes.length);
-			upvotes = votes.length;
-
-			// Update Statuses
-			statuses = statuses.filter((item: PresenceData) => {
-				if (item.activity && item.activity.type !== 'WATCHING') {
-					return true;
-				}
-				return false;
-			});
-
-			statuses.push({
-				activity: {
-					name: `Upvoted ${upvotes} times on discordbots.org`,
-					type: 'WATCHING'
-				}
-			});
-
-			statuses.push({
-				activity: {
-					name: `Assisting ${users} users on ${guilds} servers`,
-					type: 'WATCHING'
-				}
-			});
+		statuses.push({
+			activity: {
+				name: `and Assisting ${users} users on ${guilds} servers`,
+				type: 'WATCHING'
+			}
 		});
 
 		return statuses;
