@@ -1,7 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { GuildMember, Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { resolveMention, sendSimpleEmbeddedImage } from '../../lib/helpers';
 
 /**
  * Post the "gitgud" image at someone.
@@ -51,11 +50,18 @@ export default class GitGudCommand extends Command {
 	 * @memberof GitGudCommand
 	 */
 	public async run(msg: CommandMessage, args: { mention: GuildMember }): Promise<Message | Message[]> {
+		const gitgudImageURL = 'http://i.imgur.com/NqpPXHu.jpg';
+
 		if (args.mention && args.mention !== null) {
-			return msg.embed({ image: { url: 'http://i.imgur.com/NqpPXHu.jpg' } }, '', {
+			msg.delete();
+
+			return msg.embed({ image: { url: gitgudImageURL } }, '', {
 				reply: args.mention
 			});
+		} else {
+			msg.delete();
+
+			return msg.embed({ image: { url: gitgudImageURL } });
 		}
-		return sendSimpleEmbeddedImage(msg, 'http://i.imgur.com/NqpPXHu.jpg');
 	}
 }

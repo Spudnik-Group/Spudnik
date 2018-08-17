@@ -1,5 +1,4 @@
 import chalk from 'chalk';
-import * as DBLAPI from 'dblapi.js';
 import { Channel, Guild, GuildChannel, GuildMember, Message, MessageAttachment, MessageEmbed, MessageReaction, PresenceData, TextChannel } from 'discord.js';
 import { CommandoClient } from 'discord.js-commando';
 import * as http from 'http';
@@ -268,25 +267,25 @@ export class Spudnik {
 			.on('guildMemberAdd', (member: GuildMember) => {
 				const guild = member.guild;
 				const welcomeEnabled = this.Discord.provider.get(guild, 'welcomeEnabled', false);
+				const welcomeChannel = this.Discord.provider.get(guild, 'welcomeChannel');
 
-				if (welcomeEnabled) {
-					const welcomeChannel = this.Discord.provider.get(guild, 'welcomeChannel');
+				if (welcomeEnabled && welcomeChannel) {
 					const welcomeMessage = this.Discord.provider.get(guild, 'welcomeMessage', '@here, please Welcome {user} to {guild}!');
 					const message = welcomeMessage.replace('{guild}', guild.name).replace('{user}', `<@${member.id}>`);
 					const channel = guild.channels.get(welcomeChannel);
 					if (channel && channel.type === 'text') {
 						(channel as TextChannel).send(message);
 					} else {
-						this.Discord.emit('error', `There was an error trying to welcome a new guild member in ${guild}, the channel may not exist or was set to a non-text channel`);
+						this.Discord.emit('error', `There was an error trying to welcome a new guild member in ${guild}, the channel may no longer exist or was set to a non-text channel`);
 					}
 				}
 			})
 			.on('guildMemberRemove', (member: GuildMember) => {
 				const guild = member.guild;
 				const goodbyeEnabled = this.Discord.provider.get(guild, 'goodbyeEnabled', false);
+				const goodbyeChannel = this.Discord.provider.get(guild, 'goodbyeChannel');
 
-				if (goodbyeEnabled) {
-					const goodbyeChannel = this.Discord.provider.get(guild, 'goodbyeChannel');
+				if (goodbyeEnabled && goodbyeChannel) {
 					const goodbyeMessage = this.Discord.provider.get(guild, 'goodbyeMessage', '{user} has left the server.');
 					const message = goodbyeMessage.replace('{guild}', guild.name).replace('{user}', `<@${member.id}>`);
 					const channel = guild.channels.get(goodbyeChannel);
