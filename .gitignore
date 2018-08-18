@@ -17,3 +17,5 @@ package-lock.json
 
 #config files
 config/*.json
+
+assets\.zip
