@@ -22,3 +22,5 @@ config/*/*.json
 assets\.zip
 
 config/*.json
+
+assets/
