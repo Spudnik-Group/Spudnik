@@ -1,7 +1,7 @@
 {
 	"name": "spudnik",
 	"description": "An awesome chat bot for Discord.",
-	"version": "0.4.0",
+	"version": "0.4.5",
 	"license": "Apache-2.0",
 	"readme": "README.md",
 	"engines": {
@@ -28,7 +28,6 @@
 		"body-parser": "^1.17.1",
 		"chalk": "^2.0.1",
 		"d20": "^1.4.1",
-		"dblapi.js": "^2.0.1",
 		"discord.js": "github:discordjs/discord.js",
 		"discord.js-commando": "github:discordjs/Commando",
 		"erlpack": "github:hammerandchisel/erlpack",

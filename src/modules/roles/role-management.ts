@@ -20,6 +20,7 @@ export default class RoleManagementCommands extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
+			aliases: ['roles'],
 			args: [
 				{
 					key: 'subCommand',
@@ -148,7 +149,9 @@ export default class RoleManagementCommands extends Command {
 						roleEmbed.fields.push({
 							inline: true,
 							name: 'Assignable Roles',
-							value: roles.join('\n')
+							value: roles.sort((a, b) => {
+								return a.localeCompare(b, 'en', { sensitivity: 'base' });
+							}).join('\n')
 						});
 					}
 				}
