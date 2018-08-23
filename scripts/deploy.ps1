@@ -2,4 +2,4 @@
 
 unzip ./config.zip -d ./config
 
-./node_modules/forever/binforever start -c "npm start" ./
+./node_modules/forever/bin/forever start -c "npm start" ./
