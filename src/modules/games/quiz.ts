@@ -1,27 +1,25 @@
 import { stripIndents } from 'common-tags';
-import { Collection, Message, MessageEmbed, User } from 'discord.js';
+import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor } from '../../lib/custom-helpers';
-import { awaitPlayers, delay, list, randomRange, sendSimpleEmbeddedError, shuffle, verify } from '../../lib/helpers';
+import { list, shuffle } from '../../lib/helpers';
 const types: string[] = ['multiple', 'boolean'];
 const difficulties: string[] = ['easy', 'medium', 'hard'];
 const choices: string[] = ['A', 'B', 'C', 'D'];
 
 /**
- * Starts a game of Balloon Pop.
+ * Starts a game of Quiz.
  *
  * @export
- * @class BalloonPopCommand
+ * @class QuizCommand
  * @extends {Command}
  */
-export default class BalloonPopCommand extends Command {
-	private playing = new Set();
+export default class QuizCommand extends Command {
 
 	/**
-	 * Creates an instance of BalloonPopCommand.
+	 * Creates an instance of QuizCommand.
 	 *
 	 * @param {CommandoClient} client
-	 * @memberof BalloonPopCommand
+	 * @memberof QuizCommand
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
@@ -57,11 +55,11 @@ export default class BalloonPopCommand extends Command {
 	}
 
 	/**
-	 * Run the "BalloonPop" command.
+	 * Run the "Quiz" command.
 	 *
 	 * @param {CommandMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
-	 * @memberof BalloonPopCommand
+	 * @memberof QuizCommand
 	 */
 	public async run(msg: CommandMessage, args: { type: string, difficulty: string }): Promise<Message | Message[]> {
 		try {

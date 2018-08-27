@@ -1,8 +1,7 @@
 import { stripIndents } from 'common-tags';
-import { Collection, Message, MessageEmbed, User } from 'discord.js';
+import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor } from '../../lib/custom-helpers';
-import { awaitPlayers, delay, randomRange, sendSimpleEmbeddedError, verify, list } from '../../lib/helpers';
+import { list } from '../../lib/helpers';
 const difficulties: string[] = ['easy', 'medium', 'hard', 'extreme', 'impossible'];
 const operations = ['+', '-', '*'];
 const maxValues: any = {
@@ -14,20 +13,19 @@ const maxValues: any = {
 };
 
 /**
- * Starts a game of Balloon Pop.
+ * Starts a game of Math Quiz.
  *
  * @export
- * @class BalloonPopCommand
+ * @class MathQuizCommand
  * @extends {Command}
  */
-export default class BalloonPopCommand extends Command {
-	private playing = new Set();
+export default class MathQuizCommand extends Command {
 
 	/**
-	 * Creates an instance of BalloonPopCommand.
+	 * Creates an instance of MathQuizCommand.
 	 *
 	 * @param {CommandoClient} client
-	 * @memberof BalloonPopCommand
+	 * @memberof MathQuizCommand
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
@@ -51,11 +49,11 @@ export default class BalloonPopCommand extends Command {
 	}
 
 	/**
-	 * Run the "BalloonPop" command.
+	 * Run the "MathQuiz" command.
 	 *
 	 * @param {CommandMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
-	 * @memberof BalloonPopCommand
+	 * @memberof MathQuizCommand
 	 */
 	public async run(msg: CommandMessage, args: { difficulty: string }): Promise<Message | Message[]> {
 		const value1 = Math.floor(Math.random() * maxValues[args.difficulty]) + 1;
