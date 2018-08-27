@@ -1,5 +1,4 @@
 import chalk from 'chalk';
-import * as crypto from 'crypto';
 import { Message } from 'discord.js';
 import { CommandMessage } from 'discord.js-commando';
 import * as fs from 'fs';
@@ -241,7 +240,7 @@ export function base64(text: string, mode = 'encode') {
 }
 
 export function hash(text: string, algorithm: any) {
-	return crypto.createHash(algorithm).update(text).digest('hex');
+	return require('crypto').createHash(algorithm).update(text).digest('hex');
 }
 
 export function today(timeZone: number) {
@@ -262,7 +261,7 @@ export function tomorrow(timeZone: number) {
 	return thisDate;
 }
 
-export async function awaitPlayers(msg: Message, max: number, min: number, { text = 'join game', time = 30000 } = {}) {
+export async function awaitPlayers(msg: any, max: number, min: number, { text = 'join game', time = 30000 } = {}) {
 	const joined: any[] = [];
 	joined.push(msg.author.id);
 	const filter = (res: any) => {
@@ -292,4 +291,17 @@ export async function verify(channel: any, user: any, time = 30000) {
 	if (yes.includes(choice)) { return true; }
 	if (no.includes(choice)) { return false; }
 	return false;
+}
+
+/**
+ * Escapes any Discord-flavour markdown in a string.
+ * @param {string} text Content to escape
+ * @param {boolean} [onlyCodeBlock=false] Whether to only escape codeblocks (takes priority)
+ * @param {boolean} [onlyInlineCode=false] Whether to only escape inline code
+ * @returns {string}
+ */
+export function escapeMarkdown(text: string, onlyCodeBlock = false, onlyInlineCode = false) {
+	if (onlyCodeBlock) { return text.replace(/```/g, '`\u200b``'); }
+	if (onlyInlineCode) { return text.replace(/\\(`|\\)/g, '$1').replace(/(`|\\)/g, '\\$1'); }
+	return text.replace(/\\(\*|_|`|~|\\)/g, '$1').replace(/(\*|_|`|~|\\)/g, '\\$1');
 }
