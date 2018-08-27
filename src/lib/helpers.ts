@@ -4,7 +4,6 @@ import { CommandMessage } from 'discord.js-commando';
 import * as fs from 'fs';
 import { getEmbedColor } from './custom-helpers';
 
-const { IMGUR_KEY } = process.env;
 const yes = ['yes', 'y', 'ye', 'yeah', 'yup', 'yea'];
 const no = ['no', 'n', 'nah', 'nope'];
 
@@ -261,18 +260,28 @@ export function tomorrow(timeZone: number) {
 	return thisDate;
 }
 
-export async function awaitPlayers(msg: any, max: number, min: number, { text = 'join game', time = 30000 } = {}) {
+export async function awaitPlayers(msg: any, max: number, min: number, { text = 'join game', time = 30000, dmCheck = false } = {}) {
 	const joined: any[] = [];
 	joined.push(msg.author.id);
 	const filter = (res: any) => {
-		if (msg.author.bot) { return false; }
+		if (res.author.bot) { return false; }
 		if (joined.includes(res.author.id)) { return false; }
 		if (res.content.toLowerCase() !== text.toLowerCase()) { return false; }
 		joined.push(res.author.id);
+		res.react('✅').catch(() => null);
 		return true;
 	};
 	const verify = await msg.channel.awaitMessages(filter, { max: max, time: time });
 	verify.set(msg.id, msg);
+	if (dmCheck) {
+		for (const message of verify.values()) {
+			try {
+				await message.author.send('Hi! Just testing that DMs work, pay this no mind.');
+			} catch (err) {
+				verify.delete(message.id);
+			}
+		}
+	}
 	if (verify.size < min) { return false; }
 	return verify.map((message: any) => message.author);
 }
