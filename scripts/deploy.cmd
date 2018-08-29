@@ -78,7 +78,7 @@ IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
 
 :: 4. Start App
 pushd %DEPLOYMENT_TARGET%
-call forever start -c "npm start" ./
+call node "%appdata%\npm\node_modules\forever\bin\forever" start -c "npm start" ./
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
