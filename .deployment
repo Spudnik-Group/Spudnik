@@ -1,2 +1,2 @@
 [config]
-command = powershell scripts/deploy.ps1
+command = scripts/deploy.cmd
