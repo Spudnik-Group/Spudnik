@@ -55,8 +55,8 @@ echo '--------'
 call npm install forever -g --silent
 
 :: Decrypt and unzip assets
-appveyor-tools/secure-file -decrypt config.zip.enc -secret %encrypt_secret%
-unzip config.zip -d config
+call "./appveyor-tools/secure-file" -decrypt "./config.zip.enc" -secret %encrypt_secret%
+call unzip "./config.zip" -d "./config"
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Deployment
