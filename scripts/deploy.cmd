@@ -14,6 +14,24 @@ IF %ERRORLEVEL% NEQ 0 (
   goto error
 )
 
+IF NOT DEFINED KUDU_SYNC_COMMAND (
+  :: Install kudu sync
+  echo ---Installing Kudu Sync---
+  call npm install kudusync -g --silent
+  IF !ERRORLEVEL! NEQ 0 goto error
+
+  :: Locally just running "kuduSync" would also work
+  SET KUDU_SYNC_COMMAND=node "%appdata%\npm\node_modules\kuduSync\bin\kuduSync"
+)
+
+:: Install forever
+echo --Installing Forever---
+call npm install forever -g --silent
+
+:: Install Build Prereqs
+echo ---Installing Build Prereqs---
+call npm install windows-build-tools node-gyp -g --silent
+
 :: Setup
 :: -----
 
@@ -37,25 +55,10 @@ IF NOT DEFINED NEXT_MANIFEST_PATH (
   )
 )
 
-IF NOT DEFINED KUDU_SYNC_COMMAND (
-  :: Install kudu sync
-  echo ---Installing Kudu Sync---
-  call npm install kudusync -g --silent
-  IF !ERRORLEVEL! NEQ 0 goto error
-
-  :: Locally just running "kuduSync" would also work
-  SET KUDU_SYNC_COMMAND=node "%appdata%\npm\node_modules\kuduSync\bin\kuduSync"
-)
-
-echo '--------'
-call pwd
-echo '--------'
-
-:: Install forever
-call npm install forever -g --silent
-
 :: Decrypt and unzip assets
+echo ---Decrypting Config---
 call "./appveyor-tools/secure-file" -decrypt "./config.zip.enc" -secret %encrypt_secret%
+echo ---Unzip Config---
 call unzip "./config.zip" -d "./config"
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -65,6 +68,7 @@ call unzip "./config.zip" -d "./config"
 echo ---Handling node.js deployment---
 
 :: 1. Kill Previous Process
+echo ---Kill Previous Process---
 call node "%appdata%\npm\node_modules\forever\bin\forever" stopall
 
 :: 2. KuduSync
@@ -75,13 +79,15 @@ IF !ERRORLEVEL! NEQ 0 goto error
 :: 3. Install npm packages
 IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
   pushd %DEPLOYMENT_TARGET%
-  call npm install --production
+  echo ---NPM Install---
+  call npm install --production --silent
   IF !ERRORLEVEL! NEQ 0 goto error
   popd
 )
 
 :: 4. Start App
 pushd %DEPLOYMENT_TARGET%
+echo ---Start App---
 call node "%appdata%\npm\node_modules\forever\bin\forever" start -c "npm start" ./
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
