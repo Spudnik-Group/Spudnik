@@ -39,7 +39,7 @@ IF NOT DEFINED NEXT_MANIFEST_PATH (
 
 IF NOT DEFINED KUDU_SYNC_COMMAND (
   :: Install kudu sync
-  echo Installing Kudu Sync
+  echo ---Installing Kudu Sync---
   call npm install kudusync -g --silent
   IF !ERRORLEVEL! NEQ 0 goto error
 
@@ -47,18 +47,22 @@ IF NOT DEFINED KUDU_SYNC_COMMAND (
   SET KUDU_SYNC_COMMAND=node "%appdata%\npm\node_modules\kuduSync\bin\kuduSync"
 )
 
+echo '--------'
+call pwd
+echo '--------'
+
 :: Install forever
 call npm install forever -g --silent
 
 :: Decrypt and unzip assets
-./appveyor-tools/secure-file -decrypt ./config.zip.enc -secret %encrypt_secret%
-unzip ./config.zip -d ./config
+appveyor-tools/secure-file -decrypt config.zip.enc -secret %encrypt_secret%
+unzip config.zip -d config
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Deployment
 :: ----------
 
-echo Handling node.js deployment.
+echo ---Handling node.js deployment---
 
 :: 1. Kill Previous Process
 call node "%appdata%\npm\node_modules\forever\bin\forever" stopall
