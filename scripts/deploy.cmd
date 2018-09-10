@@ -78,16 +78,7 @@ echo Kudu Sync from "%DEPLOYMENT_SOURCE%" to "%DEPLOYMENT_TARGET%"
 call %KUDU_SYNC_COMMAND% -q -f "%DEPLOYMENT_SOURCE%" -t "%DEPLOYMENT_TARGET%" -n "%NEXT_MANIFEST_PATH%" -p "%PREVIOUS_MANIFEST_PATH%" -i ".git;.deployment;deploy.cmd" 2>nul
 IF !ERRORLEVEL! NEQ 0 goto error
 
-:: 3. Install npm packages
-IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
-  pushd %DEPLOYMENT_TARGET%
-  echo ---NPM Install---
-  call npm install --production --silent
-  IF !ERRORLEVEL! NEQ 0 goto error
-  popd
-)
-
-:: 4. Start App
+:: 3. Start App
 pushd %DEPLOYMENT_TARGET%
 echo ---Start App---
 call node "%appdata%\npm\node_modules\forever\bin\forever" start -c "npm start" ./
