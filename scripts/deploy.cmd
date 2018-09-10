@@ -52,11 +52,6 @@ IF NOT DEFINED KUDU_SYNC_COMMAND (
 echo --Installing Forever---
 call npm install forever -g --silent
 
-:: Install Build Prereqs
-echo ---Installing Build Prereqs---
-call npm install windows-build-tools node-gyp -g --silent
-
-
 :: Decrypt and unzip assets
 echo ---Decrypting Config---
 call "./appveyor-tools/secure-file" -decrypt "./config.zip.enc" -secret %encrypt_secret%
@@ -81,7 +76,7 @@ IF !ERRORLEVEL! NEQ 0 goto error
 :: 3. Start App
 pushd %DEPLOYMENT_TARGET%
 echo ---Start App---
-call node "%appdata%\npm\node_modules\forever\bin\forever" start "./dist/launch.js"
+call node "%appdata%\npm\node_modules\forever\bin\forever" start ".\dist\launch.js"
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
