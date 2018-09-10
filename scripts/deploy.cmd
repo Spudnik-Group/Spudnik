@@ -43,7 +43,6 @@ IF NOT DEFINED KUDU_SYNC_COMMAND (
   :: Install kudu sync
   echo ---Installing Kudu Sync---
   call npm install kudusync -g --silent
-  IF !ERRORLEVEL! NEQ 0 goto error
 
   :: Locally just running "kuduSync" would also work
   SET KUDU_SYNC_COMMAND=node "%appdata%\npm\node_modules\kuduSync\bin\kuduSync"
