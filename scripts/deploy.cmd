@@ -81,7 +81,7 @@ IF !ERRORLEVEL! NEQ 0 goto error
 :: 3. Start App
 pushd %DEPLOYMENT_TARGET%
 echo ---Start App---
-call node "%appdata%\npm\node_modules\forever\bin\forever" start -c "npm start" ./
+call node "%appdata%\npm\node_modules\forever\bin\forever" start "./dist/launch.js"
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
