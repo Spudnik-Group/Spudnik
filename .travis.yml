@@ -10,13 +10,10 @@ branches:
 before_install:
 - export AUTHOR_NAME="$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"
 script:
-- if [ $TRAVIS_PULL_REQUEST == false ] && [ $TRAVIS_BRANCH IN ("master", "staging") ] && [ $TRAVIS_TAG == false ]; then
-    echo ---Decrypting Assets---;
+- if [ ($TRAVIS_PULL_REQUEST == false) && ($TRAVIS_BRANCH IN ("master", "staging")) && ($TRAVIS_TAG == false) ]; then
     gpg --passphrase $encrypt_key assets.zip.gpg;
-    echo '---Unzipping Assets---'';
     unzip assets.zip -d ./;
   fi
-- echo '---Compiling---''
 - tsc
 after_success:
 - chmod +x ./scripts/build_success.sh
@@ -27,25 +24,21 @@ after_failure:
 before_deploy:
 - rm -rf docs
 - rm -rf node_modules
-- if [ $TRAVIS_TAG == true ] && [ $TRAVIS_BRANCH == "master" ]; then
-    echo '---Packaging RELEASE package---';
+- if [ ($TRAVIS_TAG == true) && ($TRAVIS_BRANCH == "master") ]; then
     zip -r release.zip dist/ config/ package.json README.md LICENSE;
     mkdir -p dpl_cd_upload;
     mv release.zip dpl_cd_upload/release.zip;
   fi
-- if [ $TRAVIS_TAG == false ] && [ $TRAVIS_BRANCH IN ("master", "staging") ]; then
-    echo '---Adding Production node_modules---';
-    npm i --production
+- if [ ($TRAVIS_TAG == false) && ($TRAVIS_BRANCH IN ("master", "staging")) ]; then
+    npm i --production;
   fi
-- if [ $TRAVIS_TAG == false ] && [ $TRAVIS_BRANCH == "master" ]; then
-  echo '---Packaging PROD package---';
-  mv assets/prod/config.json config/config.json
-  cp assets/servers.json config/servers.json
+- if [ ($TRAVIS_TAG == false) && ($TRAVIS_BRANCH == "master") ]; then
+    mv assets/prod/config.json config/config.json;
+    cp assets/servers.json config/servers.json;
   fi
-- if [ $TRAVIS_TAG == false ] && [ $TRAVIS_BRANCH == "staging" ]; then
-  echo '---Packaging STAGE package---';
-  mv assets/staging/config.json config/config.json
-  cp assets/servers.json config/servers.json
+- if [ ($TRAVIS_TAG == false) && ($TRAVIS_BRANCH == "staging") ]; then
+    mv assets/staging/config.json config/config.json;
+    cp assets/servers.json config/servers.json;
   fi
 deploy:
 - provider: releases
@@ -61,8 +54,7 @@ deploy:
   app:
     master: spudnik-bot
     staging: spudnik-bot-staging
-  run:
-    - "forever stopall"
+  run: "forever stopall"
 after_deploy:
 - chmod +x ./scripts/deploy_success.sh
 - "./scripts/deploy_success.sh"
