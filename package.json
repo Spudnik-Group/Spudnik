@@ -33,6 +33,7 @@
 		"erlpack": "hammerandchisel/erlpack",
 		"express": "^4.16.2",
 		"feedparser": "2.2.x",
+		"forever": "^0.15.3",
 		"honeybadger": "^1.2.1",
 		"json2typescript": "^1.0.5",
 		"leet": "^1.3.0",
