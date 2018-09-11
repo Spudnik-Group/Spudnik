@@ -48,10 +48,6 @@ IF NOT DEFINED KUDU_SYNC_COMMAND (
   SET KUDU_SYNC_COMMAND=node "%appdata%\npm\node_modules\kuduSync\bin\kuduSync"
 )
 
-:: Install forever
-echo --Installing Forever---
-call npm install forever -g --silent
-
 :: Decrypt and unzip assets
 echo ---Decrypting Config---
 call "./appveyor-tools/secure-file" -decrypt "./config.zip.enc" -secret %encrypt_secret%
@@ -66,7 +62,7 @@ echo ---Handling node.js deployment---
 
 :: 1. Kill Previous Process
 echo ---Kill Previous Process---
-call node "%appdata%\npm\node_modules\forever\bin\forever" stopall
+call node "%DEPLOYMENT_TARGET%\node_modules\forever\bin\forever" stopall
 
 :: 2. KuduSync
 echo Kudu Sync from "%DEPLOYMENT_SOURCE%" to "%DEPLOYMENT_TARGET%"
@@ -76,7 +72,7 @@ IF !ERRORLEVEL! NEQ 0 goto error
 :: 3. Start App
 pushd %DEPLOYMENT_TARGET%
 echo ---Start App---
-call node "%appdata%\npm\node_modules\forever\bin\forever" start ".\dist\launch.js"
+call node "%DEPLOYMENT_TARGET%\node_modules\forever\bin\forever" start ".\dist\launch.js"
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
