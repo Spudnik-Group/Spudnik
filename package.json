@@ -18,7 +18,7 @@
 	],
 	"main": "dist/launch.js",
 	"scripts": {
-		"preinstall": "npm i -g windows-build-tools node-gyp typescript",
+		"preinstall": "npm i -g node-gyp typescript",
 		"lint": "tslint",
 		"test": "npm run lint",
 		"dev:start": "npm run test && npm start",
