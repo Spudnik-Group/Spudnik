@@ -1,0 +1,1 @@
+web: forever start ".\dist\launch.js"

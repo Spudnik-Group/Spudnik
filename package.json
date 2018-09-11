@@ -18,11 +18,12 @@
 	],
 	"main": "dist/launch.js",
 	"scripts": {
-		"dev:start": "npm run test && npm run compile && npm start",
-		"test": "npm run lint",
-		"start": "node dist/launch.js",
+		"preinstall": "npm i -g windows-build-tools node-gyp typescript",
 		"lint": "tslint",
-		"compile": "tsc"
+		"test": "npm run lint",
+		"dev:start": "npm run test && npm start",
+		"prestart": "tsc",
+		"start": "node dist/launch.js"
 	},
 	"dependencies": {
 		"body-parser": "^1.17.1",
