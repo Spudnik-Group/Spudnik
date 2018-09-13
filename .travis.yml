@@ -20,14 +20,59 @@ after_failure:
 before_deploy:
 - rm -rf docs
 - rm -rf node_modules
-- if [ $TRAVIS_TAG == true ]; then
+- |
+  if [ $TRAVIS_TAG == true ]; then
     if [ $TRAVIS_BRANCH == "master" ]; then
       zip -r release.zip dist/ config/ package.json README.md LICENSE;
       mkdir -p dpl_cd_upload;
       mv release.zip dpl_cd_upload/release.zip;
     fi
   fi
-- if [ $TRAVIS_TAG == false ]; then
+- |
+  if [ $TRAVIS_TAG == false ]; then
+    if [ $TRAVIS_BRANCH == "master" ]; then
+      gpg --passphrase $encrypt_key assets.zip.gpg;
+      unzip assets.zip -d ./;
+      npm i --production;
+      mv assets/prod/config.json config/config.json;
+      cp assets/servers.json config/servers.json;
+    fi
+    if [ $TRAVIS_BRANCH == "staging" ]; then
+      gpg --passphrase $encrypt_key assets.zip.gpg;
+      unzip assets.zip -d ./;
+      npm i --production;
+      mv assets/staging/config.json config/config.json;
+      cp assets/servers.json config/servers.json;
+    fi
+  fi
+deploy:
+- provider: releases
+  api_key:
+    secure: psyXNxaghO2uL7dgEUJstRzG8lDS8i1ccXqEMIdhNsx90J3lCqzzp5v1wynb7Hfi+29FPAFeLG2VuPTVu51iMIPHR7mc1j7eTsyrCLy6WspdaIyTlcc87Qa3hsLZO2d3MuAwKTWgDrlreuv5Z3dLG17nVWLm+7wN3L5LB1HJ4ItomBFqfN6hd8Flc6m/2h34ixkT3J8gJJR3auEOd8wnixp5t1oLXfqeyxH9W9Yl/yk4wjHD1dQtx0t/TnuLogxna6iqRyf6n+GI9WnbKxH12Pp/whoXTlYNbzx1AT91CawaRfOgviuYLwq3fE7hsWe4upgHa/lcECW/Zg3lX1ymQyDDiLfj2+XFHvFquOQou4KIAXacgmGVofsXfpgbJ/kztRXPP5EURcrrKzHBOU/87Xk4kDfAit1FPddCoROAef+rnXSmsdyEyYPP/K2CSbiTM1BIOiM8YYB8f5jhUDo9AJv8syscOWH1EjmOexR3sa3pzQW+dZSWAneG7Fn2oDrx7j/ZMLWn/5MmgMyW2b4uC2TpjZCDGTWwv1kfUoJTXd/Ru78UQbT7+SPdI4Q9lNEONV3LTMAViqnv4pH8SZ4TcNUmspVnZMKxSX3nN77W6MOq0Cwt6dEYR2Fh10XyqqXD1eWbRThkUAMffQBOpYH+4wHOZUAGi2g6e0sVQq5UzHE=
+  file: dpl_cd_upload/release.zip
+  skip_cleanup: true
+  on:
+    tags: true
+- provider: heroku
+  skip_cleanup: true
+  api_key: $heroku_api_key
+  app:
+    master: spudnik-bot
+    staging: spudnik-bot-staging
+  run: "forever stopall"
+after_deploy:
+- chmod +x ./scripts/deploy_success.sh
+- "./scripts/deploy_success.sh"
+- |
+  if [ $TRAVIS_TAG == true ]; then
+    if [ $TRAVIS_BRANCH == "master" ]; then
+      zip -r release.zip dist/ config/ package.json README.md LICENSE;
+      mkdir -p dpl_cd_upload;
+      mv release.zip dpl_cd_upload/release.zip;
+    fi
+  fi
+- |
+  if [ $TRAVIS_TAG == false ]; then
     if [ $TRAVIS_BRANCH == "master" ]; then
       gpg --passphrase $encrypt_key assets.zip.gpg;
       unzip assets.zip -d ./;
