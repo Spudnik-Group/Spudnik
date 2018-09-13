@@ -21,9 +21,10 @@
 		"preinstall": "npm i -g node-gyp typescript",
 		"lint": "tslint",
 		"test": "npm run lint",
-		"dev:start": "npm run test && npm start",
 		"prestart": "tsc",
-		"start": "forever dist/launch.js"
+		"start": "forever dist/launch.js",
+		"start:dev": "npm run test && npm start",
+		"start:docs": "bundle exec jekyll serve"
 	},
 	"dependencies": {
 		"body-parser": "^1.18.3",
