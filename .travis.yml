@@ -62,6 +62,3 @@ deploy:
   app:
     master: spudnik-bot
     staging: spudnik-bot-staging
-after_deploy:
-- chmod +x ./scripts/deploy_success.sh
-- "./scripts/deploy_success.sh"
