@@ -22,7 +22,7 @@
 		"lint": "tslint",
 		"test": "npm run lint",
 		"prestart": "tsc",
-		"start": "forever dist/launch.js",
+		"start": "node dist/launch.js",
 		"start:dev": "npm run test && npm start",
 		"start:docs": "bundle exec jekyll serve"
 	},
@@ -35,7 +35,6 @@
 		"erlpack": "github:hammerandchisel/erlpack",
 		"express": "^4.16.3",
 		"feedparser": "2.2.x",
-		"forever": "^0.15.3",
 		"honeybadger": "^1.3.0",
 		"json2typescript": "^1.0.6",
 		"leet": "^1.3.0",
