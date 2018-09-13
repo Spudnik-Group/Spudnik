@@ -28,7 +28,7 @@ before_deploy:
 - rm -f code-of-conduct.md
 - rm -f CODEOWNERS
 - |
-  if [ "$TRAVIS_TAG" == "true" ]; then
+  if [ -n "$TRAVIS_TAG" ]; then
     if [ "$TRAVIS_BRANCH" == "master" ]; then
       zip -r release.zip dist/ config/ package.json README.md LICENSE
       mkdir -p dpl_cd_upload
@@ -36,7 +36,7 @@ before_deploy:
     fi
   fi
 - |
-  if [ "$TRAVIS_TAG" == "false" ]; then
+  if [ -z "$TRAVIS_TAG" ]; then
     gpg --passphrase $encrypt_key assets.zip.gpg
     unzip assets.zip -d ./
     if [ "$TRAVIS_BRANCH" == "master" ]; then
