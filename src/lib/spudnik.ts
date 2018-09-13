@@ -11,6 +11,7 @@ import { MongoProvider } from './providers/mongodb-provider';
 const honeyBadger = require('honeybadger');
 const { version }: { version: string } = require('../../package');
 // tslint:enable:no-var-requires
+const PORT = process.env.PORT || 1337;
 
 /**
  * The Spudnik Discord Bot.
@@ -344,10 +345,10 @@ export class Spudnik {
 		http.createServer((request, response) => {
 			response.writeHead(200, { 'Content-Type': 'text/plain' });
 			response.end('Ok!');
-		}).listen(1337);
+		}).listen(PORT);
 
 		// Print URL for accessing server
-		console.log('Heartbeat running on port 1337');
+		console.log(`Heartbeat running on port ${PORT}`);
 	}
 
 	/**
