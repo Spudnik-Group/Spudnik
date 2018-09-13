@@ -4,11 +4,11 @@ import { CommandoClient } from 'discord.js-commando';
 import * as http from 'http';
 import Mongoose = require('mongoose');
 import * as path from 'path';
+import * as Rollbar from 'rollbar';
 import { Configuration } from './config';
 import { MongoProvider } from './providers/mongodb-provider';
 
 // tslint:disable:no-var-requires
-const honeyBadger = require('honeybadger');
 const { version }: { version: string } = require('../../package');
 // tslint:enable:no-var-requires
 const PORT = process.env.PORT || 1337;
@@ -22,7 +22,7 @@ const PORT = process.env.PORT || 1337;
 export class Spudnik {
 	public Config: Configuration;
 	public Discord: CommandoClient;
-	private Honeybadger: any;
+	private Rollbar: any;
 
 	/**
 	 * Creates an instance of Spudnik.
@@ -35,8 +35,10 @@ export class Spudnik {
 
 		console.log(chalk.blue('---Spudnik Stage 2 Engaged.---'));
 
-		this.Honeybadger = honeyBadger.configure({
-			apiKey: this.Config.getHbApiKey()
+		this.Rollbar = new Rollbar({
+			accessToken: this.Config.getRbApiKey(),
+			captureUncaught: true,
+			captureUnhandledRejections: true
 		});
 
 		this.Discord = new CommandoClient({
@@ -91,7 +93,7 @@ export class Spudnik {
 		this.Discord.setProvider(
 			Mongoose.connect(this.Config.getDatabaseConnection(), { useMongoClient: true }).then(() => new MongoProvider(Mongoose.connection))
 		).catch((err) => {
-			this.Honeybadger.notify(err);
+			this.Rollbar.critical(err);
 			console.error(err);
 			process.exit(-1);
 		});
@@ -297,14 +299,15 @@ export class Spudnik {
 				}
 			})
 			.on('disconnected', (err: Error) => {
-				this.Honeybadger.notify(`Disconnected from Discord!\nError: ${err}`);
+				this.Rollbar.critical(`Disconnected from Discord!\nError: ${err}`);
 				console.log(chalk.red('Disconnected from Discord!'));
 			})
 			.on('error', (err: Error) => {
-				this.Honeybadger.notify(err);
+				this.Rollbar.error(err);
 				console.error(err);
 			})
 			.on('warn', (err: Error) => {
+				this.Rollbar.warn(err);
 				console.warn(err);
 			})
 			.on('debug', (err: Error) => {
