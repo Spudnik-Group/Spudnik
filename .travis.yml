@@ -23,26 +23,26 @@ before_deploy:
 - |
   if [ $TRAVIS_TAG == true ]; then
     if [ $TRAVIS_BRANCH == "master" ]; then
-      zip -r release.zip dist/ config/ package.json README.md LICENSE;
-      mkdir -p dpl_cd_upload;
-      mv release.zip dpl_cd_upload/release.zip;
+      zip -r release.zip dist/ config/ package.json README.md LICENSE
+      mkdir -p dpl_cd_upload
+      mv release.zip dpl_cd_upload/release.zip
     fi
   fi
 - |
   if [ $TRAVIS_TAG == false ]; then
     if [ $TRAVIS_BRANCH == "master" ]; then
-      gpg --passphrase $encrypt_key assets.zip.gpg;
-      unzip assets.zip -d ./;
-      npm i --production;
-      mv assets/prod/config.json config/config.json;
-      cp assets/servers.json config/servers.json;
+      gpg --passphrase $encrypt_key assets.zip.gpg
+      unzip assets.zip -d ./
+      mkdir config
+      mv assets/prod/config.json config/config.json
+      cp assets/servers.json config/servers.json
     fi
     if [ $TRAVIS_BRANCH == "staging" ]; then
-      gpg --passphrase $encrypt_key assets.zip.gpg;
-      unzip assets.zip -d ./;
-      npm i --production;
-      mv assets/staging/config.json config/config.json;
-      cp assets/servers.json config/servers.json;
+      gpg --passphrase $encrypt_key assets.zip.gpg
+      unzip assets.zip -d ./
+      mkdir config
+      mv assets/staging/config.json config/config.json
+      cp assets/servers.json config/servers.json
     fi
   fi
 deploy:
@@ -59,7 +59,6 @@ deploy:
   app:
     master: spudnik-bot
     staging: spudnik-bot-staging
-  run: "forever stopall"
 after_deploy:
 - chmod +x ./scripts/deploy_success.sh
 - "./scripts/deploy_success.sh"
