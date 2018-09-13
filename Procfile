@@ -1,1 +1,1 @@
-web: forever start "./dist/launch.js"
+web: node "./dist/launch.js"
