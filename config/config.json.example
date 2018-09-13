@@ -6,7 +6,7 @@
 	"breweryDbApiKey": "",
 	"dictionaryApiKey": "",
 	"dblApiKey": "",
-	"honeybadgerApiKey": "",
+	"rollbarApiKey": "",
 	"botListUpdateInterval": 1800000,
 	"statusUpdateInterval": 30000
 }
