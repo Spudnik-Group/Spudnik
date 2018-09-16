@@ -1,5 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { GuildChannel, Message, TextChannel } from 'discord.js';
+import { Channel, Message, TextChannel } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError } from '../../lib/helpers';
 
@@ -7,28 +7,28 @@ import { sendSimpleEmbeddedError } from '../../lib/helpers';
  * Enable or disable the adblock feature.
  *
  * @export
- * @class WarnCommand
+ * @class MoveCommand
  * @extends {Command}
  */
-export default class WarnCommand extends Command {
+export default class MoveCommand extends Command {
 	/**
-	 * Creates an instance of WarnCommand.
+	 * Creates an instance of MoveCommand.
 	 *
 	 * @param {CommandoClient} client
-	 * @memberof WarnCommand
+	 * @memberof MoveCommand
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
 			args: [
 				{
 					key: 'messageId',
-					prompt: 'Message ID?\n',
-					type: 'integer'
+					prompt: 'Message ID?',
+					type: 'string'
 				},
 				{
-					key: 'channelRef',
+					key: 'channel',
 					prompt: 'Channel reference?',
-					type: 'channel'
+					type: 'channel|integer'
 				},
 				{
 					default: '',
@@ -58,7 +58,7 @@ export default class WarnCommand extends Command {
 	 *
 	 * @param {CommandMessage} msg
 	 * @returns {boolean}
-	 * @memberof WarnCommand
+	 * @memberof MoveCommand
 	 */
 	public hasPermission(msg: CommandMessage): boolean {
 		return msg.member.hasPermission('MANAGE_MESSAGES');
@@ -69,29 +69,36 @@ export default class WarnCommand extends Command {
 	 *
 	 * @param {CommandMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
-	 * @memberof WarnCommand
+	 * @memberof MoveCommand
 	 */
-	public async run(msg: CommandMessage, args: { messageId: string, channel: GuildChannel, reason: string }): Promise<Message | Message[]> {
-		const originalMessage: Message = msg.channel.messages.find((msg) => msg.id === args.messageId);
+	public async run(msg: CommandMessage, args: { messageId: string, channel: Channel, reason: string }): Promise<Message | Message[]> {
+		const originalChannel = msg.channel as TextChannel;
+		const originalMessage: Message = await originalChannel.messages.fetch(args.messageId);
 
 		msg.delete();
 
 		if (originalMessage !== undefined) {
-			const originalChannel: TextChannel = originalMessage.channel as TextChannel;
-			const destinationChannel: TextChannel = args.channel as TextChannel;
+			const destinationChannel = args.channel;
 
-			originalMessage.delete();
+			if (destinationChannel && destinationChannel.type === 'text') {
+				if (args.reason) {
+					(destinationChannel as TextChannel).send(stripIndents`
+						Originally posted by <@${originalMessage.author.id}>, in <#${originalChannel.id}> at ${originalMessage.createdAt}
+						Moved for: ${args.reason}
 
-			if (args.reason) {
-				return destinationChannel.send(stripIndents`
-					Originally posted by <@${originalMessage.member.id}>, in <#${originalChannel.id} (${args.reason}):
-					${originalMessage.content}`
-				);
+						${originalMessage.content}`
+					);
+				} else {
+					(destinationChannel as TextChannel).send(stripIndents`
+						Originally posted by <@${originalMessage.author.id}>, in <#${originalChannel.id}> at ${originalMessage.createdAt}:
+
+						${originalMessage.content}`
+					);
+				}
+
+				return originalMessage.delete();
 			} else {
-				return destinationChannel.send(stripIndents`
-					Originally posted by <@${originalMessage.member.id}>, in <#${originalChannel.id}:
-					${originalMessage.content}`
-				);
+				return sendSimpleEmbeddedError(msg, 'Cannot move a text message to a non-text channel.');
 			}
 
 		} else {
