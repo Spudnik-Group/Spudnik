@@ -143,7 +143,7 @@ export default class RoleManagementCommands extends Command {
 					const roles: string[] = msg.guild.roles.filter((role) => guildAssignableRoles.includes(role.id)).reduce((list: string[], role: Role) => {
 						list.push(role.name);
 						return list;
-					}, []);
+					}, []).sort();
 
 					if (roles.length > 0) {
 						roleEmbed.fields.push({
