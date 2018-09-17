@@ -1,6 +1,7 @@
 import { stripIndents } from 'common-tags';
-import { Channel, Message, TextChannel } from 'discord.js';
+import { Channel, GuildMember, Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError } from '../../lib/helpers';
 
 /**
@@ -74,31 +75,61 @@ export default class MoveCommand extends Command {
 	public async run(msg: CommandMessage, args: { messageId: string, channel: Channel, reason: string }): Promise<Message | Message[]> {
 		const originalChannel = msg.channel as TextChannel;
 		const originalMessage: Message = await originalChannel.messages.fetch(args.messageId);
+		const originalMessageAuthor: GuildMember = await originalChannel.guild.members.fetch(originalMessage.author.id);
 
 		msg.delete();
 
 		if (originalMessage !== undefined) {
 			const destinationChannel = args.channel;
 
-			if (destinationChannel && destinationChannel.type === 'text') {
-				if (args.reason) {
-					(destinationChannel as TextChannel).send(stripIndents`
-						Originally posted by <@${originalMessage.author.id}>, in <#${originalChannel.id}> at ${originalMessage.createdAt}
-						Moved for: ${args.reason}
+			if (originalMessage.embeds.length === 0) {
+				if (destinationChannel && destinationChannel.type === 'text') {
+					const moveMessage = new MessageEmbed({
+						author: {
+							icon_url: `${originalMessage.author.displayAvatarURL()}`,
+							name: `${originalMessageAuthor.displayName}`
+						},
+						color: getEmbedColor(msg),
+						description: `${originalMessage.content}`,
+						footer: {
+							text: `Originally posted at ${originalMessage.createdAt}`
+						}
+					});
 
-						${originalMessage.content}`
-					);
+					/*
+					if (originalMessage.attachments.array().length > 0) {
+						moveMessage.attachFiles(originalMessage.attachments.array());
+					}
+					*/
+
+					const fields: any = [];
+
+					fields.push({
+						inline: true,
+						name: 'Original post by:',
+						value: `<@${originalMessageAuthor.id}> in <#${originalChannel.id}>`
+					});
+
+					if (args.reason) {
+						fields.push({
+							inline: true,
+							name: 'Moved for:',
+							value: `${args.reason}`
+						});
+					}
+
+					if (fields !== []) {
+						moveMessage.fields = fields;
+					}
+
+					(destinationChannel as TextChannel).send(moveMessage);
+
+					return originalMessage.delete();
 				} else {
-					(destinationChannel as TextChannel).send(stripIndents`
-						Originally posted by <@${originalMessage.author.id}>, in <#${originalChannel.id}> at ${originalMessage.createdAt}:
-
-						${originalMessage.content}`
-					);
+					return sendSimpleEmbeddedError(msg, 'Cannot move a text message to a non-text channel.');
 				}
-
-				return originalMessage.delete();
 			} else {
-				return sendSimpleEmbeddedError(msg, 'Cannot move a text message to a non-text channel.');
+				return sendSimpleEmbeddedError(msg, 'Cannot move a message that contains an embed to a different channel.');
 			}
 
 		} else {
