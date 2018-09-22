@@ -19,12 +19,12 @@
 	"main": "dist/launch.js",
 	"scripts": {
 		"preinstall": "npm i -g node-gyp typescript",
-		"lint": "tslint",
+		"lint": "tslint ./tslint.json",
 		"test": "npm run lint",
 		"prestart": "tsc",
 		"start": "node dist/launch.js",
 		"start:dev": "npm run test && npm start",
-		"start:docs": "bundle exec jekyll serve"
+		"start:docs": "cd ./docs && bundle exec jekyll serve"
 	},
 	"dependencies": {
 		"body-parser": "^1.18.3",

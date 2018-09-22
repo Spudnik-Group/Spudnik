@@ -13,10 +13,13 @@
 		"noImplicitAny": true,
 		"moduleResolution": "node",
 		"baseUrl": ".",
-		"experimentalDecorators": true,
+		"experimentalDecorators": true
 	},
 	"exclude": [
 		"node_modules",
-		"dist"
+		"dist",
+		"docs",
+		"config",
+		"scripts"
 	]
 }
