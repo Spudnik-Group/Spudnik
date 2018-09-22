@@ -224,7 +224,7 @@ export class Spudnik {
 							});
 					}
 					if (message.content.length > 1) { starboardEmbed.addField('Message', message.content); } // Add message
-					if (message.attachments !== undefined) {
+					if (message.attachments.size > 0) {
 						starboardEmbed.setImage((message.attachments as any).first().attachment); // Add attachments
 					}
 
