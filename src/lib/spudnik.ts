@@ -1,17 +1,17 @@
 import chalk from 'chalk';
-import * as DBLAPI from 'dblapi.js';
 import { Channel, Guild, GuildChannel, GuildMember, Message, MessageAttachment, MessageEmbed, MessageReaction, PresenceData, TextChannel } from 'discord.js';
 import { CommandoClient } from 'discord.js-commando';
 import * as http from 'http';
 import Mongoose = require('mongoose');
 import * as path from 'path';
+import * as Rollbar from 'rollbar';
 import { Configuration } from './config';
 import { MongoProvider } from './providers/mongodb-provider';
 
 // tslint:disable:no-var-requires
-const honeyBadger = require('honeybadger');
 const { version }: { version: string } = require('../../package');
 // tslint:enable:no-var-requires
+const PORT = process.env.PORT || 1337;
 
 /**
  * The Spudnik Discord Bot.
@@ -22,7 +22,7 @@ const { version }: { version: string } = require('../../package');
 export class Spudnik {
 	public Config: Configuration;
 	public Discord: CommandoClient;
-	private Honeybadger: any;
+	private Rollbar: any;
 
 	/**
 	 * Creates an instance of Spudnik.
@@ -35,8 +35,10 @@ export class Spudnik {
 
 		console.log(chalk.blue('---Spudnik Stage 2 Engaged.---'));
 
-		this.Honeybadger = honeyBadger.configure({
-			apiKey: this.Config.getHbApiKey()
+		this.Rollbar = new Rollbar({
+			accessToken: this.Config.getRbApiKey(),
+			captureUncaught: true,
+			captureUnhandledRejections: true
 		});
 
 		this.Discord = new CommandoClient({
@@ -91,7 +93,7 @@ export class Spudnik {
 		this.Discord.setProvider(
 			Mongoose.connect(this.Config.getDatabaseConnection(), { useMongoClient: true }).then(() => new MongoProvider(Mongoose.connection))
 		).catch((err) => {
-			this.Honeybadger.notify(err);
+			this.Rollbar.critical(err);
 			console.error(err);
 			process.exit(-1);
 		});
@@ -111,7 +113,7 @@ export class Spudnik {
 				const statuses: PresenceData[] = [
 					{
 						activity: {
-							name: `${this.Discord.commandPrefix}help | ${this.Discord.guilds.array().length} Servers`,
+							name: `${this.Discord.commandPrefix}help | ${guilds} Servers`,
 							type: 'PLAYING'
 						}
 					},
@@ -150,31 +152,38 @@ export class Spudnik {
 							name: `and Assisting ${users} users on ${guilds} servers`,
 							type: 'WATCHING'
 						}
+					},
+					{
+						activity: {
+							name: 'For the Motherland!',
+							type: 'PLAYING'
+						}
 					}
 				];
 
-				console.log(chalk.magenta(`Logged into Discord! Serving in ${this.Discord.guilds.array().length} Discord servers`));
+				console.log(chalk.magenta(`Logged into Discord! Serving in ${guilds} Discord servers`));
 				console.log(chalk.blue('---Spudnik Launch Success---'));
 
 				// Update bot status, using array of possible statuses
 				let statusIndex: number = -1;
 				statusIndex = this.updateStatus(this.Discord, statuses, statusIndex);
 				setInterval(() => statusIndex = this.updateStatus(this.Discord, statuses, statusIndex), this.Config.getBotListUpdateInterval(), true);
+				setInterval(() => this.updateStatusStats(this.Config, this.Discord, statuses), this.Config.getBotListUpdateInterval(), true);
 			})
 			.on('raw', async (event: any) => {
 				if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(event.t)) { return; } //Ignore non-emoji related actions
 				const { d: data } = event;
-				const channel: Channel | undefined = await this.Discord.channels.get(data.channel_id);
+				const channel: Channel = await this.Discord.channels.get(data.channel_id);
 				if ((channel as TextChannel).nsfw) { return; } //Ignore NSFW channels
 				const message: Message = await (channel as TextChannel).messages.fetch(data.message_id);
 				const starboardEnabled: boolean = await this.Discord.provider.get(message.guild.id, 'starboardEnabled', false);
 				if (!starboardEnabled) { return; } //Ignore if starboard isn't set up
 				const starboardChannel = await this.Discord.provider.get(message.guild.id, 'starboardChannel');
-				const starboard: GuildChannel | undefined = await message.guild.channels.get(starboardChannel);
+				const starboard: GuildChannel = await message.guild.channels.get(starboardChannel);
 				if (starboard === undefined) { return; } //Ignore if starboard isn't set up
 				if (starboard === channel) { return; } //Can't star items in starboard channel
 				const emojiKey: any = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
-				const reaction: MessageReaction | undefined = message.reactions.get(emojiKey);
+				const reaction: MessageReaction = message.reactions.get(emojiKey);
 				const starred: any[] = await this.Discord.provider.get(message.guild.id, 'starboard', []);
 				const starboardTrigger = await this.Discord.provider.get(message.guild.id, 'starboardTrigger', '⭐');
 
@@ -191,15 +200,6 @@ export class Spudnik {
 					}
 					return;
 				}
-				if (message.author.id === data.user_id && !this.Discord.owners.includes(data.user_id)) {
-					return (channel as TextChannel)
-						.send(`⚠ You cannot star your own messages, **<@${data.user_id}>**!`)
-						.then((reply: Message | Message[]) => {
-							if (reply instanceof Message) {
-								reply.delete({ timeout: 3000 }).catch(() => undefined);
-							}
-						});
-				}
 
 				// Check for starboard reaction
 				if (starboardTrigger === (reaction as MessageReaction).emoji.name) {
@@ -213,10 +213,21 @@ export class Spudnik {
 						.setTimestamp()
 						.setFooter(`⭐ ${stars.size} | ${message.id} `);
 
-					if (message.content.length > 1) { starboardEmbed.addField('Message', message.content); }
-					if ((message.attachments as any).filter((atchmt: MessageAttachment) => atchmt.attachment)) {
-						starboardEmbed.setImage((message.attachments as any).first().attachment);
+					// You can't star your own messages, tool.
+					if (message.author.id === data.user_id && !this.Discord.owners.includes(data.user_id)) {
+						return (channel as TextChannel)
+							.send(`⚠ You cannot star your own messages, **<@${data.user_id}>**!`)
+							.then((reply: Message | Message[]) => {
+								if (reply instanceof Message) {
+									reply.delete({ timeout: 3000 }).catch(() => undefined);
+								}
+							});
 					}
+					if (message.content.length > 1) { starboardEmbed.addField('Message', message.content); } // Add message
+					if (message.attachments.size > 0) {
+						starboardEmbed.setImage((message.attachments as any).first().attachment); // Add attachments
+					}
+
 					// Check for presence of post in starboard channel
 					if (!starred.some((star: any) => star.messageId === message.id)) {
 						// Fresh star, add to starboard and starboard tracking in DB
@@ -228,7 +239,9 @@ export class Spudnik {
 									messageId: message.id
 								});
 								this.Discord.provider.set(message.guild.id, 'starboard', starred);
-							}).catch((err) => {
+							})
+							.catch((err) => {
+								this.Discord.emit('warn', err);
 								(starboard as TextChannel).send(`Failed to send embed of message ID: ${message.id}`);
 							});
 					} else {
@@ -238,6 +251,7 @@ export class Spudnik {
 						if (starredEmbed) {
 							starredEmbed.edit({ embed: starboardEmbed })
 								.catch((err) => {
+									this.Discord.emit('warn', err);
 									(starboard as TextChannel).send(`Failed to send embed of message ID: ${message.id}`);
 								});
 						}
@@ -265,27 +279,27 @@ export class Spudnik {
 			.on('guildMemberAdd', (member: GuildMember) => {
 				const guild = member.guild;
 				const welcomeEnabled = this.Discord.provider.get(guild, 'welcomeEnabled', false);
+				const welcomeChannel = this.Discord.provider.get(guild, 'welcomeChannel');
 
-				if (welcomeEnabled) {
-					const welcomeChannel = this.Discord.provider.get(guild, 'welcomeChannel');
+				if (welcomeEnabled && welcomeChannel) {
 					const welcomeMessage = this.Discord.provider.get(guild, 'welcomeMessage', '@here, please Welcome {user} to {guild}!');
 					const message = welcomeMessage.replace('{guild}', guild.name).replace('{user}', `<@${member.id}>`);
 					const channel = guild.channels.get(welcomeChannel);
 					if (channel && channel.type === 'text') {
 						(channel as TextChannel).send(message);
 					} else {
-						this.Discord.emit('error', `There was an error trying to welcome a new guild member in ${guild}, the channel may not exist or was set to a non-text channel`);
+						this.Discord.emit('error', `There was an error trying to welcome a new guild member in ${guild}, the channel may no longer exist or was set to a non-text channel`);
 					}
 				}
 			})
 			.on('guildMemberRemove', (member: GuildMember) => {
 				const guild = member.guild;
 				const goodbyeEnabled = this.Discord.provider.get(guild, 'goodbyeEnabled', false);
+				const goodbyeChannel = this.Discord.provider.get(guild, 'goodbyeChannel');
 
-				if (goodbyeEnabled) {
-					const goodbyeChannel = this.Discord.provider.get(guild, 'goodbyeChannel');
+				if (goodbyeEnabled && goodbyeChannel) {
 					const goodbyeMessage = this.Discord.provider.get(guild, 'goodbyeMessage', '{user} has left the server.');
-					const message = goodbyeMessage.replace('{guild}', guild.name).replace('{user}', `<@${member.id}>`);
+					const message = goodbyeMessage.replace('{guild}', guild.name).replace('{user}', `<@${member.id}> (${member.user.tag})`);
 					const channel = guild.channels.get(goodbyeChannel);
 					if (channel && channel.type === 'text') {
 						(channel as TextChannel).send(message);
@@ -295,14 +309,15 @@ export class Spudnik {
 				}
 			})
 			.on('disconnected', (err: Error) => {
-				this.Honeybadger.notify(`Disconnected from Discord!\nError: ${err}`);
+				this.Rollbar.critical(`Disconnected from Discord!\nError: ${err}`);
 				console.log(chalk.red('Disconnected from Discord!'));
 			})
 			.on('error', (err: Error) => {
-				this.Honeybadger.notify(err);
+				this.Rollbar.error(err);
 				console.error(err);
 			})
 			.on('warn', (err: Error) => {
+				this.Rollbar.warn(err);
 				console.warn(err);
 			})
 			.on('debug', (err: Error) => {
@@ -343,10 +358,10 @@ export class Spudnik {
 		http.createServer((request, response) => {
 			response.writeHead(200, { 'Content-Type': 'text/plain' });
 			response.end('Ok!');
-		}).listen(1337);
+		}).listen(PORT);
 
 		// Print URL for accessing server
-		console.log('Heartbeat running on port 1337');
+		console.log(`Heartbeat running on port ${PORT}`);
 	}
 
 	/**
@@ -355,42 +370,23 @@ export class Spudnik {
 	 * @private
 	 * @memberof Spudnik
 	 */
-	private updateDiscordBotList = (config: Configuration, client: CommandoClient, statuses: PresenceData[]): PresenceData[] => {
-		console.log(chalk.red('udbl'));
-		const dbl: DBLAPI = new DBLAPI(config.getDblApiKey(), client);
-		let upvotes: number = client.provider.get('0', 'dblUpvotes', 0);
+	private updateStatusStats = (config: Configuration, client: CommandoClient, statuses: PresenceData[]): PresenceData[] => {
 		const users: number = client.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b);
 		const guilds: number = client.guilds.array().length;
 
-		// Post stats
-		dbl.postStats(client.guilds.array().length);
+		// Update Statuses
+		statuses = statuses.filter((item: PresenceData) => {
+			if (item.activity && item.activity.type !== 'WATCHING') {
+				return true;
+			}
+			return false;
+		});
 
-		// Update database with latest upvote count
-		dbl.getVotes().then((votes: DBLAPI.Vote[]) => {
-			client.provider.set('0', 'dblUpvotes', votes.length);
-			upvotes = votes.length;
-
-			// Update Statuses
-			statuses = statuses.filter((item: PresenceData) => {
-				if (item.activity && item.activity.type !== 'WATCHING') {
-					return true;
-				}
-				return false;
-			});
-
-			statuses.push({
-				activity: {
-					name: `Upvoted ${upvotes} times on discordbots.org`,
-					type: 'WATCHING'
-				}
-			});
-
-			statuses.push({
-				activity: {
-					name: `Assisting ${users} users on ${guilds} servers`,
-					type: 'WATCHING'
-				}
-			});
+		statuses.push({
+			activity: {
+				name: `and Assisting ${users} users on ${guilds} servers`,
+				type: 'WATCHING'
+			}
 		});
 
 		return statuses;
