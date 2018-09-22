@@ -8,14 +8,8 @@ branches:
   except:
   - hotfix
 before_install:
-- openssl aes-256-cbc -K $encrypted_6aed427102d1_key -iv $encrypted_6aed427102d1_iv
-  -in assets.zip.enc -out assets.zip -d
 - export AUTHOR_NAME="$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"
-- npm install -g node-gyp typescript
 script:
-- openssl aes-256-cbc -K $encrypted_6aed427102d1_key -iv $encrypted_6aed427102d1_iv
-  -in assets.zip.enc -out assets.zip -d
-- unzip assets.zip -d ./
 - tsc
 after_success:
 - chmod +x ./scripts/build_success.sh
@@ -24,14 +18,36 @@ after_failure:
 - chmod +x ./scripts/build_fail.sh
 - "./scripts/build_fail.sh"
 before_deploy:
-- zip -r release.zip dist/ config/ package.json README.md LICENSE
-- mkdir -p dpl_cd_upload
 - rm -rf docs
-- rm -rf scripts
 - rm -rf node_modules
-- mv release.zip dpl_cd_upload/release.zip
-- mv assets/prod/config.json config/config.json
-- mv assets/servers.json config/servers.json
+- rm -rf src
+- rm -f tsconfig.json
+- rm -f tslint.json
+- rm -f typings.json
+- rm -f typings.d.ts
+- rm -f code-of-conduct.md
+- rm -f CODEOWNERS
+- |
+  if [ -n "$TRAVIS_TAG" ]; then
+    if [ "$TRAVIS_BRANCH" == "master" ]; then
+      zip -r release.zip dist/ config/ package.json README.md LICENSE
+      mkdir -p dpl_cd_upload
+      mv release.zip dpl_cd_upload/release.zip
+    fi
+  fi
+- |
+  if [ -z "$TRAVIS_TAG" ]; then
+    gpg --passphrase $encrypt_key assets.zip.gpg
+    unzip assets.zip -d ./
+    if [ "$TRAVIS_BRANCH" == "master" ]; then
+      mv assets/prod/config.json config/config.json
+      cp assets/servers.json config/servers.json
+    fi
+    if [ "$TRAVIS_BRANCH" == "staging" ]; then
+      mv assets/staging/config.json config/config.json
+      cp assets/servers.json config/servers.json
+    fi
+  fi
 deploy:
 - provider: releases
   api_key:
@@ -40,13 +56,9 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
-- provider: gae
+- provider: heroku
   skip_cleanup: true
-  default: true
-  keyfile: assets/gae-auth.json
-  project: spudnik-bot
-  on:
-    branch: master
-after_deploy:
-- chmod +x ./scripts/deploy_success.sh
-- "./scripts/deploy_success.sh"
+  api_key: $heroku_api_key
+  app:
+    master: spudnik-bot
+    staging: spudnik-bot-staging

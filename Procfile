@@ -1,0 +1,1 @@
+web: node "./dist/launch.js"
