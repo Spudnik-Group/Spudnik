@@ -14,9 +14,14 @@
 		"moduleResolution": "node",
 		"baseUrl": ".",
 		"experimentalDecorators": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
 	},
 	"exclude": [
 		"node_modules",
-		"dist"
+		"dist",
+		"docs",
+		"config",
+		"scripts"
 	]
 }
