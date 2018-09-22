@@ -152,6 +152,12 @@ export class Spudnik {
 							name: `and Assisting ${users} users on ${guilds} servers`,
 							type: 'WATCHING'
 						}
+					},
+					{
+						activity: {
+							name: 'For the Motherland!',
+							type: 'PLAYING'
+						}
 					}
 				];
 
