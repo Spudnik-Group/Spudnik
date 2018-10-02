@@ -127,7 +127,12 @@ export default class GoodbyeCommand extends Command {
 				} else {
 					return msg.client.provider.set(msg.guild.id, 'goodbyeMessage', args.content)
 						.then(() => {
-							goodbyeEmbed.description = 'Goodbye message set to: ```' + args.content + '```' + '\nCurrently, Goodbye messages are set to: ' + goodbyeEnabled ? '_ON_' : '_OFF_' + '\nAnd, are displaying in this channel: <#' + goodbyeChannel + '>';
+							goodbyeEmbed.description =
+								stripIndents`Goodbye message set to:
+								\`\`\`${args.content}\`\`\`
+								Currently, goodbye messages are set to: '${(goodbyeEnabled ? '_Enabled_' : '_Disabled_')}
+								And, are displaying in this channel: <#${goodbyeChannel}>`;
+
 							return msg.embed(goodbyeEmbed);
 						})
 						.catch((err: Error) => {
@@ -140,7 +145,9 @@ export default class GoodbyeCommand extends Command {
 				if (goodbyeEnabled === false) {
 					return msg.client.provider.set(msg.guild.id, 'goodbyeEnabled', true)
 						.then(() => {
-							goodbyeEmbed.description = `Goodbye message enabled.\nGoodbye channel set to: <#${goodbyeChannel}>\nGoodbye message set to: ${goodbyeMessage}`;
+							goodbyeEmbed.description =
+								stripIndents`Goodbye messages are set to: _Enabled_
+								And, are displaying in this channel: <#${goodbyeChannel}>`;
 							return msg.embed(goodbyeEmbed);
 						})
 						.catch((err: Error) => {
@@ -156,7 +163,7 @@ export default class GoodbyeCommand extends Command {
 				if (goodbyeEnabled === true) {
 					return msg.client.provider.set(msg.guild.id, 'goodbyeEnabled', false)
 						.then(() => {
-							goodbyeEmbed.description = `Goodbye message disabled.\nGoodbye channel set to: <#${goodbyeChannel}>\nGoodbye message set to: ${goodbyeMessage}`;
+							goodbyeEmbed.description = 'Goodbye message disabled.';
 							return msg.embed(goodbyeEmbed);
 						})
 						.catch((err: Error) => {

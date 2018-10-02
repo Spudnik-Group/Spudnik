@@ -127,7 +127,12 @@ export default class WelcomeCommand extends Command {
 				} else {
 					return msg.client.provider.set(msg.guild.id, 'welcomeMessage', args.content)
 						.then(() => {
-							welcomeEmbed.description = 'Welcome message set to: ```' + args.content + '```' + '\nCurrently, Welcome messages are set to: ' + welcomeEnabled ? '_ON_' : '_OFF_' + '\nAnd, are displaying in this channel: <#' + welcomeChannel + '>';
+							welcomeEmbed.description =
+								stripIndents`Welcome message set to:
+								\`\`\`${args.content}\`\`\`
+								Currently, goodbye messages are set to: '${(welcomeEnabled ? '_Enabled_' : '_Disabled_')}
+								And, are displaying in this channel: <#${welcomeChannel}>`;
+							
 							return msg.embed(welcomeEmbed);
 						})
 						.catch((err: Error) => {
