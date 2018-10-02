@@ -130,8 +130,12 @@ export default class GoodbyeCommand extends Command {
 							goodbyeEmbed.description =
 								stripIndents`Goodbye message set to:
 								\`\`\`${args.content}\`\`\`
-								Currently, goodbye messages are set to: '${(goodbyeEnabled ? '_Enabled_' : '_Disabled_')}
-								And, are displaying in this channel: <#${goodbyeChannel}>`;
+								Currently, goodbye messages are ${(goodbyeEnabled ? '_Enabled_' : '_Disabled_')}.`;
+
+							if (goodbyeEnabled && goodbyeChannel instanceof Channel)
+								goodbyeEmbed.description += `Goodbye messages are displaying in this channel: <#${goodbyeChannel}>`;
+							else if (goodbyeEnabled && goodbyeChannel! instanceof Channel)
+								goodbyeEmbed.description += 'Goodbye messages will not display, as a goodbye channel is not set. Use `goodbye channel [channel ref]`.';
 
 							return msg.embed(goodbyeEmbed);
 						})
