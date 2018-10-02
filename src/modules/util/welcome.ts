@@ -130,8 +130,12 @@ export default class WelcomeCommand extends Command {
 							welcomeEmbed.description =
 								stripIndents`Welcome message set to:
 								\`\`\`${args.content}\`\`\`
-								Currently, goodbye messages are set to: '${(welcomeEnabled ? '_Enabled_' : '_Disabled_')}
-								And, are displaying in this channel: <#${welcomeChannel}>`;
+								Currently, welcome messages are ${(welcomeEnabled ? '_Enabled_' : '_Disabled_')}.`;
+							
+							if (welcomeEnabled)
+								welcomeEmbed.description += `Welcome messages are displaying in this channel: <#${welcomeChannel}>`;
+							else if (welcomeEnabled && welcomeChannel! instanceof Channel)
+								welcomeEmbed.description += 'Welcome messages will not display, as a welcome channel is not set. Use `welcome channel [channel ref]`.';
 							
 							return msg.embed(welcomeEmbed);
 						})
