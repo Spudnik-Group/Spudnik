@@ -311,6 +311,7 @@ export class Spudnik {
 			.on('disconnected', (err: Error) => {
 				this.Rollbar.critical(`Disconnected from Discord!\nError: ${err}`);
 				console.log(chalk.red('Disconnected from Discord!'));
+				process.exit();
 			})
 			.on('error', (err: Error) => {
 				this.Rollbar.error(err);
