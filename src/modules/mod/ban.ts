@@ -38,6 +38,7 @@ export default class BanCommand extends Command {
 					type: 'integer'
 				}
 			],
+			clientPermissions: ['BAN_MEMBERS'],
 			description: 'Bans the user, optionally deleting messages from them in the last x days.',
 			details: stripIndents`
 				syntax: \`!ban <@userMention> <reason> (daysOfMessages)\`

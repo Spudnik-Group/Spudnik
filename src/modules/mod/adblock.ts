@@ -26,6 +26,7 @@ export default class AdblockCommand extends Command {
 					type: 'string'
 				}
 			],
+			clientPermissions: ['MANAGE_MESSAGES'],
 			description: 'Enable or disable the adblock feature.',
 			details: stripIndents`
 				syntax: \`!adblock <enable|disable>\`

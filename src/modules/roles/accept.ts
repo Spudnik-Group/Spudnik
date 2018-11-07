@@ -28,6 +28,7 @@ export default class AcceptCommand extends Command {
 					type: 'channel'
 				}
 			],
+			clientPermissions: ['MANAGE_ROLES'],
 			description: 'Allows use and configuration of the accept module.',
 			details: stripIndents`
 				syntax: \`!accept (#channelMention)\`\n

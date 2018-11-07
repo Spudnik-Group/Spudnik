@@ -32,6 +32,7 @@ export default class KickCommand extends Command {
 					type: 'string'
 				}
 			],
+			clientPermissions: ['KICK_MEMBERS'],
 			description: 'Kicks a user.',
 			details: stripIndents`
 				syntax: \`!kick <@userMention> <reason>\`
