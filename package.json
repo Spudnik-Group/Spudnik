@@ -1,11 +1,11 @@
 {
 	"name": "spudnik",
 	"description": "An awesome chat bot for Discord.",
-	"version": "0.4.6",
+	"version": "0.5.0",
 	"license": "Apache-2.0",
 	"readme": "README.md",
 	"engines": {
-		"node": ">=8.9.4"
+		"node": ">=8.11.3"
 	},
 	"repository": {
 		"type": "git",
