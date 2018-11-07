@@ -33,6 +33,7 @@ export default class StarboardCommand extends Command {
 					type: 'channel|string'
 				}
 			],
+			clientPermissions: ['MANAGE_MESSAGES'],
 			description: 'Used to configure the :star: Star Board feature.',
 			details: stripIndents`
 				syntax: \`!starboard <channel|trigger|enable|disable> (new starboard emoji | #channelMention)\`

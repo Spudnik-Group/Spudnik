@@ -49,6 +49,7 @@ export default class PruneCommand extends Command {
 					type: 'member'
 				}
 			],
+			clientPermissions: ['MANAGE_MESSAGES'],
 			description: 'Deletes messages.',
 			details: stripIndents`
 				syntax: \`!prune <number> (filter) (@userMention)\`
