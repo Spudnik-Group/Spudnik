@@ -26,6 +26,7 @@ export default class ChuckFactCommand extends Command {
 			description: 'Returns a random Chuck Norris fact.',
 			examples: ['!chuck-fact'],
 			group: 'random',
+			guildOnly: true,
 			memberName: 'chuck-fact',
 			name: 'chuck-fact',
 			throttling: {

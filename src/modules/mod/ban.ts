@@ -93,7 +93,7 @@ export default class BanCommand extends Command {
 		const highestRoleOfCallingMember: Role = msg.member.roles.highest;
 		const guild = msg.guild;
 
-		await msg.delete();
+		if (msg.deletable) await msg.delete();
 
 		if (!memberToBan.bannable || !(highestRoleOfCallingMember.comparePositionTo(memberToBan.roles.highest) > 0)) {
 			return sendSimpleEmbeddedError(msg, `I can't ban <@${memberToBan.id}>. Do they have the same or a higher role than me or you?`);

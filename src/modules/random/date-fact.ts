@@ -25,6 +25,7 @@ export default class DateFactCommand extends Command {
 			description: 'Returns a random date fact.',
 			examples: ['!date-fact'],
 			group: 'random',
+			guildOnly: true,
 			memberName: 'date-fact',
 			name: 'date-fact',
 			throttling: {

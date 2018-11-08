@@ -36,6 +36,7 @@ export default class ChooseCommand extends Command {
 			`,
 			examples: ['!choose Chocolate Vanilla Strawberry NOTHING'],
 			group: 'random',
+			guildOnly: true,
 			memberName: 'choose',
 			name: 'choose',
 			throttling: {

@@ -36,6 +36,7 @@ export default class UnshortCommand extends Command {
 				'!unshorten http://bit.ly/Wn2Xdz'
 			],
 			group: 'misc',
+			guildOnly: true,
 			memberName: 'unshort',
 			name: 'unshort',
 			throttling: {
@@ -58,7 +59,7 @@ export default class UnshortCommand extends Command {
 		require('url-unshort')().expand(args.query)
 			.then((url: string) => {
 				if (url) {
-					msg.delete();
+					if (msg.deletable) msg.delete();
 					return sendSimpleEmbeddedMessage(msg, `Original url is: <${url}>`);
 				}
 				return sendSimpleEmbeddedError(msg, 'This url can\'t be expanded. Make sure the protocol exists (Http/Https) and try again.', 3000);

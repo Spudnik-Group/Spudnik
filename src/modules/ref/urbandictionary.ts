@@ -40,6 +40,7 @@ export default class UrbanCommand extends Command {
 				'!urban shorty'
 			],
 			group: 'ref',
+			guildOnly: true,
 			memberName: 'urban',
 			name: 'urban',
 			nsfw: true,
