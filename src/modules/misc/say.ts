@@ -28,6 +28,7 @@ export default class SayCommand extends Command {
 			details: 'syntax: `!say <text>`',
 			examples: ['!say Hi there!'],
 			group: 'misc',
+			guildOnly: true,
 			memberName: 'say',
 			name: 'say'
 		});
@@ -42,7 +43,7 @@ export default class SayCommand extends Command {
 	 * @memberof SayCommand
 	 */
 	public async run(msg: CommandMessage, args: { text: string }): Promise<Message | Message[]> {
-		msg.delete();
+		if (msg.deletable) msg.delete();
 		return msg.say(args.text);
 	}
 }

@@ -25,6 +25,7 @@ export default class DogFactCommand extends Command {
 			description: 'Returns a random dog fact.',
 			examples: ['!dog-fact'],
 			group: 'random',
+			guildOnly: true,
 			memberName: 'dog-fact',
 			name: 'dog-fact',
 			throttling: {

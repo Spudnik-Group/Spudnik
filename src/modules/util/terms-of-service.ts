@@ -177,7 +177,7 @@ export default class TermsOfServiceCommand extends Command {
 								return msg.embed(tosEmbed);
 							}
 						} else {
-							return msg.delete();
+							if (msg.deletable) return msg.delete();
 						}
 					}
 					message.title = args.text;
@@ -232,7 +232,7 @@ export default class TermsOfServiceCommand extends Command {
 								return msg.embed(tosEmbed);
 							}
 						} else {
-							return msg.delete();
+							if (msg.deletable) return msg.delete();
 						}
 					}
 					message.body = args.text;
@@ -272,7 +272,7 @@ export default class TermsOfServiceCommand extends Command {
 					return msg.embed(tosEmbed);
 				}
 			} else {
-				return msg.delete();
+				if (msg.deletable) return msg.delete();
 			}
 		}
 	}

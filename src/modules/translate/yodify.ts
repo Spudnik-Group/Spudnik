@@ -32,6 +32,7 @@ export default class YodifyCommand extends Command {
 			`,
 			examples: ['!yodify Give me better input than this'],
 			group: 'translate',
+			guildOnly: true,
 			memberName: 'yodify',
 			name: 'yodify',
 			throttling: {
@@ -53,18 +54,18 @@ export default class YodifyCommand extends Command {
 		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
 		require('soap').createClient('http://www.yodaspeak.co.uk/webservice/yodatalk.php?wsdl', (err: Error, client: any) => {
 			if (err) {
-				msg.delete();
+				if (msg.deletable) msg.delete();
 				msg.client.emit('warn', `Error in command translate:yodify: ${err}`);
 				return sendSimpleEmbeddedError(msg, 'Lost, I am. Not found, the web service is. Hrmm...', 3000);
 			}
 
 			client.yodaTalk({ inputText: args.query }, (err: Error, result: any) => {
 				if (err) {
-					msg.delete();
+					if (msg.deletable) msg.delete();
 					msg.client.emit('warn', `Error in command translate:yodify: ${err}`);
 					return sendSimpleEmbeddedError(msg, 'Confused, I am. Disturbance in the force, there is. Hrmm...', 3000);
 				}
-				msg.delete();
+				if (msg.deletable) msg.delete();
 				return sendSimpleEmbeddedMessage(msg, result.return);
 			});
 		});

@@ -43,6 +43,7 @@ export default class XkcdCommand extends Command {
 				'!xkcd 323'
 			],
 			group: 'misc',
+			guildOnly: true,
 			memberName: 'xkcd',
 			name: 'xkcd',
 			throttling: {
@@ -70,7 +71,7 @@ export default class XkcdCommand extends Command {
 		rp(url)
 			.then((content) => {
 				const comic = JSON.parse(content);
-				msg.delete();
+				if (msg.deletable) msg.delete();
 				return msg.embed({
 					color: getEmbedColor(msg),
 					footer: {

@@ -21,6 +21,7 @@ export default class SourceCommand extends Command {
 			description: 'Returns a link to my source code!',
 			examples: ['!source'],
 			group: 'misc',
+			guildOnly: true,
 			memberName: 'source',
 			name: 'source',
 			throttling: {

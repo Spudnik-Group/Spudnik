@@ -24,6 +24,7 @@ export default class BaconCommand extends Command {
 			description: 'Blesses you with a random bacon gif.',
 			examples: ['!bacon'],
 			group: 'random',
+			guildOnly: true,
 			memberName: 'bacon',
 			name: 'bacon',
 			throttling: {

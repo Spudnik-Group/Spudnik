@@ -32,6 +32,7 @@ export default class LeetCommand extends Command {
 			`,
 			examples: ['!leet Give me better input than this'],
 			group: 'translate',
+			guildOnly: true,
 			memberName: 'leet',
 			name: 'leet',
 			throttling: {
@@ -50,7 +51,7 @@ export default class LeetCommand extends Command {
 	 * @memberof LeetCommand
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
-		msg.delete();
+		if (msg.deletable) msg.delete();
 		return sendSimpleEmbeddedMessage(msg, require('leet').convert(args.query));
 	}
 }

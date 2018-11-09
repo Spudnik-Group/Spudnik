@@ -32,6 +32,7 @@ export default class GitGudCommand extends Command {
 			`,
 			examples: ['!gitgud', '!gitgud @Nebula#1337'],
 			group: 'random',
+			guildOnly: true,
 			memberName: 'gitgud',
 			name: 'gitgud',
 			throttling: {
@@ -53,13 +54,13 @@ export default class GitGudCommand extends Command {
 		const gitgudImageURL = 'http://i.imgur.com/NqpPXHu.jpg';
 
 		if (args.mention && args.mention !== null) {
-			msg.delete();
+			if (msg.deletable) msg.delete();
 
 			return msg.embed({ image: { url: gitgudImageURL } }, '', {
 				reply: args.mention
 			});
 		} else {
-			msg.delete();
+			if (msg.deletable) msg.delete();
 
 			return msg.embed({ image: { url: gitgudImageURL } });
 		}
