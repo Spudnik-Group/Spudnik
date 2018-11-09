@@ -8,11 +8,7 @@ import { CommandMessage } from 'discord.js-commando';
  * @returns {number}
  */
 export function getEmbedColor(msg: CommandMessage): number {
-	let embedColor: number = parseInt('555555', 16);
-	if (msg.guild) {
-		embedColor = parseInt(msg.client.provider.get(msg.guild.id, 'embedColor', '555555'), 16);
-	} else {
-	}
+	embedColor = parseInt(msg.client.provider.get(msg.guild.id, 'embedColor', '555555'), 16);
 
 	// This shouldn't happen, but if it does, return the default embed color
 	if (embedColor > parseInt('FFFFFF', 16) || embedColor < 0) {
