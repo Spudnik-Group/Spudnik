@@ -74,17 +74,17 @@ export default class AcceptCommand extends Command {
 					.then(() => {
 						acceptEmbed.description = `Accept channel set to <#${args.channel.id}>.`;
 
-						msg.delete();
+						if (msg.deletable) msg.delete();
 
 						return msg.embed(acceptEmbed);
 					})
 					.catch((err: Error) => {
-						msg.delete();
+						if (msg.deletable) msg.delete();
 						msg.client.emit('warn', `Error in command roles:accept: ${err}`);
 						return sendSimpleEmbeddedError(msg, 'Failed to set accept channel.', 3000);
 					});
 			} else {
-				msg.delete();
+				if (msg.deletable) msg.delete();
 				return sendSimpleEmbeddedError(msg, 'You do not have permission to run this command.', 3000);
 			}
 		} else if (args.channel === '') {

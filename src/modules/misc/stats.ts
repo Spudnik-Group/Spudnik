@@ -42,6 +42,7 @@ export default class StatsCommand extends Command {
 				'!statistics'
 			],
 			group: 'misc',
+			guildOnly: true,
 			memberName: 'stats',
 			name: 'stats',
 			throttling: {

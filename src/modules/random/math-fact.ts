@@ -25,6 +25,7 @@ export default class MathFactCommand extends Command {
 			description: 'Returns a random math fact.',
 			examples: ['!math-fact'],
 			group: 'random',
+			guildOnly: true,
 			memberName: 'math-fact',
 			name: 'math-fact',
 			throttling: {
