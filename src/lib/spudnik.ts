@@ -169,6 +169,11 @@ export class Spudnik {
 				statusIndex = this.updateStatus(this.Discord, statuses, statusIndex);
 				setInterval(() => statusIndex = this.updateStatus(this.Discord, statuses, statusIndex), this.Config.getBotListUpdateInterval(), true);
 				setInterval(() => this.updateStatusStats(this.Config, this.Discord, statuses), this.Config.getBotListUpdateInterval(), true);
+
+				// TODO: Cleanup for old starboard code, remove this in later version
+				this.Discord.guilds.each(guild => {
+					this.Discord.provider.remove(guild.id, 'starboard');
+				});
 			})
 			.on('raw', async (event: any) => {
 				if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(event.t)) { return; } //Ignore non-emoji related actions
