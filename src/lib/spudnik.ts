@@ -175,6 +175,7 @@ export class Spudnik {
 				const { d: data } = event;
 				const channel: Channel = await this.Discord.channels.get(data.channel_id);
 				if ((channel as TextChannel).nsfw) { return; } //Ignore NSFW channels
+				if (!(channel as TextChannel).permissionsFor(this.Discord.user.id).has('READ_MESSAGE_HISTORY')) { return; } //Bot doesn't have the right permissions
 				const message: Message = await (channel as TextChannel).messages.fetch(data.message_id);
 				const starboardEnabled: boolean = await this.Discord.provider.get(message.guild.id, 'starboardEnabled', false);
 				if (!starboardEnabled) { return; } //Ignore if starboard isn't set up
