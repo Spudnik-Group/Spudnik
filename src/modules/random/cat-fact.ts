@@ -25,6 +25,7 @@ export default class CatFactCommand extends Command {
 			description: 'Returns a random cat fact.',
 			examples: ['!cat-fact'],
 			group: 'random',
+			guildOnly: true,
 			memberName: 'cat-fact',
 			name: 'cat-fact',
 			throttling: {

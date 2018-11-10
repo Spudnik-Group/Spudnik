@@ -25,6 +25,7 @@ export default class YearFactCommand extends Command {
 			description: 'Returns a random year fact.',
 			examples: ['!year-fact'],
 			group: 'random',
+			guildOnly: true,
 			memberName: 'year-fact',
 			name: 'year-fact',
 			throttling: {

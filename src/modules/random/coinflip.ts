@@ -24,6 +24,7 @@ export default class CoinFlipCommand extends Command {
 			description: 'Flips a coin for you.',
 			examples: ['!coinflip'],
 			group: 'random',
+			guildOnly: true,
 			memberName: 'coinflip',
 			name: 'coinflip',
 			throttling: {

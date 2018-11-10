@@ -36,6 +36,7 @@ export default class ChooseCommand extends Command {
 			`,
 			examples: ['!choose Chocolate Vanilla Strawberry NOTHING'],
 			group: 'random',
+			guildOnly: true,
 			memberName: 'choose',
 			name: 'choose',
 			throttling: {
@@ -60,8 +61,8 @@ export default class ChooseCommand extends Command {
 		}
 		return msg.embed({
 			author: {
-				icon_url: msg.guild.me.user.displayAvatarURL,
-				name: `${msg.guild.me.user.username}`
+				icon_url: msg.client.user.displayAvatarURL,
+				name: `${msg.client.user.username}`
 			},
 			color: getEmbedColor(msg),
 			description: `I choose ${options[getRandomInt(0, 1)]}`,

@@ -1,11 +1,11 @@
 {
 	"name": "spudnik",
 	"description": "An awesome chat bot for Discord.",
-	"version": "0.4.6",
+	"version": "0.5.0",
 	"license": "Apache-2.0",
 	"readme": "README.md",
 	"engines": {
-		"node": ">=8.9.4"
+		"node": ">=8.11.3"
 	},
 	"repository": {
 		"type": "git",
@@ -30,8 +30,8 @@
 		"body-parser": "^1.18.3",
 		"chalk": "^2.4.1",
 		"d20": "^1.4.1",
-		"discord.js": "github:discordjs/discord.js",
-		"discord.js-commando": "github:discordjs/Commando",
+		"discord.js": "github:Spudnik-Group/discord.js",
+		"discord.js-commando": "github:Spudnik-Group/Commando",
 		"erlpack": "github:hammerandchisel/erlpack",
 		"express": "^4.16.3",
 		"feedparser": "2.2.x",

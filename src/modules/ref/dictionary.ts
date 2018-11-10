@@ -42,6 +42,7 @@ export default class DefineCommand extends Command {
 				'!define useful'
 			],
 			group: 'ref',
+			guildOnly: true,
 			memberName: 'define',
 			name: 'define',
 			throttling: {

@@ -34,6 +34,7 @@ export default class RoleManagementCommands extends Command {
 					type: 'role'
 				}
 			],
+			clientPermissions: ['MANAGE_ROLES'],
 			description: 'Used to configure the role management feature.',
 			details: stripIndents`
 				syntax: \`!role <add|remove|list|default> (@roleMention)\`

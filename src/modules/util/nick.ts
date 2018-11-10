@@ -27,6 +27,7 @@ export default class NickCommand extends Command {
 					type: 'string'
 				}
 			],
+			clientPermissions: ['MANAGE_NICKNAMES'],
 			description: 'Used to change the bot\'s nickname on your server, or reset it.',
 			details: stripIndents`
 				syntax: \`!nick (new nickname)\`

@@ -27,6 +27,7 @@ export default class IAmNotCommand extends Command {
 					type: 'string'
 				}
 			],
+			clientPermissions: ['MANAGE_ROLES'],
 			description: 'Used to add a self-assignable role to yourself.',
 			details: 'syntax: `!iam <@roleMention>`',
 			examples: ['!iam @Fortnite'],
