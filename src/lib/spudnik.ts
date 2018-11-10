@@ -214,10 +214,20 @@ export class Spudnik {
 						.setTimestamp()
 						.setFooter(`⭐ ${stars.size} | ${message.id} `);
 
-					// You can't star your own messages, tool.
+					// You can't star your own messages
 					if (message.author.id === data.user_id && !this.Discord.owners.includes(data.user_id)) {
 						return (channel as TextChannel)
 							.send(`⚠ You cannot star your own messages, **<@${data.user_id}>**!`)
+							.then((reply: Message | Message[]) => {
+								if (reply instanceof Message) {
+									reply.delete({ timeout: 3000 }).catch(() => undefined);
+								}
+							});
+					}
+					// You can't star bot messages
+					if (message.author.bot) {
+						return (channel as TextChannel)
+							.send(`⚠ You cannot star bot messages, **<@${data.user_id}>**!`)
 							.then((reply: Message | Message[]) => {
 								if (reply instanceof Message) {
 									reply.delete({ timeout: 3000 }).catch(() => undefined);
