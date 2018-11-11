@@ -20,7 +20,6 @@ export default class RoleManagementCommands extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			aliases: ['roles'],
 			args: [
 				{
 					key: 'subCommand',
@@ -139,6 +138,38 @@ export default class RoleManagementCommands extends Command {
 					return sendSimpleEmbeddedError(msg, `Could not find role with name ${args.role.name} in the list of assignable roles for this guild.`, 3000);
 				}
 			}
+			
+			case 'default': {
+				if (args.role.name === undefined) {
+					return msg.client.provider.set(msg.guild.id, 'defaultRoles', [])
+						.then(() => {
+							roleEmbed.description = 'Removed default role(s).';
+							return msg.embed(roleEmbed);
+						})
+						.catch((err: Error) => {
+							msg.client.emit('warn', `Error in command roles:role-default: ${err}`);
+							return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
+						});
+				}
+
+				if (!Array.isArray(guildDefaultRoles)) {
+					guildDefaultRoles = [];
+				}
+
+				if (!guildDefaultRoles.includes(args.role.id)) {
+					guildDefaultRoles.push(args.role.id);
+
+					return msg.client.provider.set(msg.guild.id, 'defaultRoles', guildDefaultRoles)
+						.then(() => {
+							roleEmbed.description = `Added role '${args.role.name}' to the list of default roles.`;
+							return msg.embed(roleEmbed);
+						})
+						.catch((err: Error) => {
+							msg.client.emit('warn', `Error in command roles:role-add: ${err}`);
+							return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
+						});
+				}
+			}
 			case 'list': {
 				if (Array.isArray(guildAssignableRoles) && guildAssignableRoles.length > 0) {
 					const roles: string[] = msg.guild.roles.filter((role) => guildAssignableRoles.includes(role.id)).reduce((list: string[], role: Role) => {
@@ -179,40 +210,6 @@ export default class RoleManagementCommands extends Command {
 				}
 
 				return msg.embed(roleEmbed);
-			}
-			case 'default': {
-				if (args.role.name === undefined) {
-					return msg.client.provider.set(msg.guild.id, 'defaultRoles', [])
-						.then(() => {
-							roleEmbed.description = 'Removed default role(s).';
-							return msg.embed(roleEmbed);
-						})
-						.catch((err: Error) => {
-							msg.client.emit('warn', `Error in command roles:role-default: ${err}`);
-							return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
-						});
-				}
-
-				if (!Array.isArray(guildDefaultRoles)) {
-					guildDefaultRoles = [];
-				}
-
-				if (!guildDefaultRoles.includes(args.role.id)) {
-					guildDefaultRoles.push(args.role.id);
-
-					return msg.client.provider.set(msg.guild.id, 'defaultRoles', guildDefaultRoles)
-						.then(() => {
-							roleEmbed.description = `Added role '${args.role.name}' to the list of default roles.`;
-							return msg.embed(roleEmbed);
-						})
-						.catch((err: Error) => {
-							msg.client.emit('warn', `Error in command roles:role-add: ${err}`);
-							return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
-						});
-				}
-			}
-			default: {
-				return sendSimpleEmbeddedError(msg, 'Invalid subcommand. Please see `help roles`.', 3000);
 			}
 		}
 	}
