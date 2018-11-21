@@ -127,7 +127,16 @@ export default class WelcomeCommand extends Command {
 				} else {
 					return msg.client.provider.set(msg.guild.id, 'welcomeMessage', args.content)
 						.then(() => {
-							welcomeEmbed.description = 'Welcome message set to: ```' + args.content + '```' + '\nCurrently, Welcome messages are set to: ' + welcomeEnabled ? '_ON_' : '_OFF_' + '\nAnd, are displaying in this channel: <#' + welcomeChannel + '>';
+							welcomeEmbed.description =
+								stripIndents`Welcome message set to:
+								\`\`\`${args.content}\`\`\`
+								Currently, welcome messages are ${(welcomeEnabled ? '_Enabled_' : '_Disabled_')}.`;
+							
+							if (welcomeEnabled)
+								welcomeEmbed.description += `\nWelcome messages are displaying in this channel: <#${welcomeChannel}>`;
+							else if (welcomeEnabled && welcomeChannel! instanceof Channel)
+								welcomeEmbed.description += '\nWelcome messages will not display, as a welcome channel is not set. Use `welcome channel [channel ref]`.';
+							
 							return msg.embed(welcomeEmbed);
 						})
 						.catch((err: Error) => {

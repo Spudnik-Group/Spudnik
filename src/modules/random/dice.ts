@@ -35,6 +35,7 @@ export default class RollCommand extends Command {
 				'!roll 2d8+2 4d6'
 			],
 			group: 'random',
+			guildOnly: true,
 			memberName: 'roll',
 			name: 'roll'
 		});

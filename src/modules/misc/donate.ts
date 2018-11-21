@@ -21,6 +21,7 @@ export default class DonateCommand extends Command {
 			description: 'Returns options to donate to help support development and hosting of the bot.',
 			examples: ['!donate'],
 			group: 'misc',
+			guildOnly: true,
 			memberName: 'donate',
 			name: 'donate',
 			throttling: {

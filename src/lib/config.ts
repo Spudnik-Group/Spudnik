@@ -12,7 +12,7 @@ interface IConfig {
 	getBreweryDbApiKey(): string;
 	getDictionaryApiKey(): string;
 	getDblApiKey(): string;
-	getHbApiKey(): string;
+	getRbApiKey(): string;
 	getStatusUpdateInterval(): number;
 	getBotListUpdateInterval(): number;
 }
@@ -47,8 +47,8 @@ export class Configuration implements IConfig {
 	@JsonProperty('dblApiKey', String)
 	private _dblApiKey: string = '';
 
-	@JsonProperty('honeybadgerApiKey', String)
-	private _honeybadgerApiKey: string = '';
+	@JsonProperty('rollbarApiKey', String)
+	private _rollbarApiKey: string = '';
 
 	@JsonProperty('botListUpdateInterval', Number)
 	private _botListUpdateInterval: number = 0;
@@ -127,13 +127,13 @@ export class Configuration implements IConfig {
 	}
 
 	/**
-	 * Get the Honeybadger API key
+	 * Get the RollBar API key
 	 *
 	 * @returns {string}
 	 * @memberof Configuration
 	 */
-	public getHbApiKey() {
-		return this._honeybadgerApiKey;
+	public getRbApiKey() {
+		return this._rollbarApiKey;
 	}
 
 	/**
@@ -234,14 +234,14 @@ export class Configuration implements IConfig {
 	}
 
 	/**
-	 * Set the Honeybadger API key.
+	 * Set the RollBar API key.
 	 *
 	 * @protected
-	 * @param {string} honeybadgerApiKey
+	 * @param {string} rollbarApiKey
 	 * @memberof Configuration
 	 */
-	protected setHbApiKey(honeybadgerApiKey: string) {
-		this._honeybadgerApiKey = honeybadgerApiKey;
+	protected setRbApiKey(rollbarApiKey: string) {
+		this._rollbarApiKey = rollbarApiKey;
 	}
 
 	/**

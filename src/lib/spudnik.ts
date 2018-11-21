@@ -4,13 +4,14 @@ import { CommandoClient } from 'discord.js-commando';
 import * as http from 'http';
 import Mongoose = require('mongoose');
 import * as path from 'path';
+import * as Rollbar from 'rollbar';
 import { Configuration } from './config';
 import { MongoProvider } from './providers/mongodb-provider';
 
 // tslint:disable:no-var-requires
-const honeyBadger = require('honeybadger');
 const { version }: { version: string } = require('../../package');
 // tslint:enable:no-var-requires
+const PORT = process.env.PORT || 1337;
 
 /**
  * The Spudnik Discord Bot.
@@ -21,7 +22,7 @@ const { version }: { version: string } = require('../../package');
 export class Spudnik {
 	public Config: Configuration;
 	public Discord: CommandoClient;
-	private Honeybadger: any;
+	private Rollbar: any;
 
 	/**
 	 * Creates an instance of Spudnik.
@@ -34,8 +35,10 @@ export class Spudnik {
 
 		console.log(chalk.blue('---Spudnik Stage 2 Engaged.---'));
 
-		this.Honeybadger = honeyBadger.configure({
-			apiKey: this.Config.getHbApiKey()
+		this.Rollbar = new Rollbar({
+			accessToken: this.Config.getRbApiKey(),
+			captureUncaught: true,
+			captureUnhandledRejections: true
 		});
 
 		this.Discord = new CommandoClient({
@@ -91,7 +94,7 @@ export class Spudnik {
 		this.Discord.setProvider(
 			Mongoose.connect(this.Config.getDatabaseConnection(), { useMongoClient: true }).then(() => new MongoProvider(Mongoose.connection))
 		).catch((err) => {
-			this.Honeybadger.notify(err);
+			this.Rollbar.critical(err);
 			console.error(err);
 			process.exit(-1);
 		});
@@ -150,6 +153,12 @@ export class Spudnik {
 							name: `and Assisting ${users} users on ${guilds} servers`,
 							type: 'WATCHING'
 						}
+					},
+					{
+						activity: {
+							name: 'For the Motherland!',
+							type: 'PLAYING'
+						}
 					}
 				];
 
@@ -165,17 +174,17 @@ export class Spudnik {
 			.on('raw', async (event: any) => {
 				if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(event.t)) { return; } //Ignore non-emoji related actions
 				const { d: data } = event;
-				const channel: Channel | undefined = await this.Discord.channels.get(data.channel_id);
+				const channel: Channel = await this.Discord.channels.get(data.channel_id);
 				if ((channel as TextChannel).nsfw) { return; } //Ignore NSFW channels
 				const message: Message = await (channel as TextChannel).messages.fetch(data.message_id);
 				const starboardEnabled: boolean = await this.Discord.provider.get(message.guild.id, 'starboardEnabled', false);
 				if (!starboardEnabled) { return; } //Ignore if starboard isn't set up
 				const starboardChannel = await this.Discord.provider.get(message.guild.id, 'starboardChannel');
-				const starboard: GuildChannel | undefined = await message.guild.channels.get(starboardChannel);
+				const starboard: GuildChannel = await message.guild.channels.get(starboardChannel);
 				if (starboard === undefined) { return; } //Ignore if starboard isn't set up
 				if (starboard === channel) { return; } //Can't star items in starboard channel
 				const emojiKey: any = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
-				const reaction: MessageReaction | undefined = message.reactions.get(emojiKey);
+				const reaction: MessageReaction = message.reactions.get(emojiKey);
 				const starred: any[] = await this.Discord.provider.get(message.guild.id, 'starboard', []);
 				const starboardTrigger = await this.Discord.provider.get(message.guild.id, 'starboardTrigger', '⭐');
 
@@ -216,9 +225,10 @@ export class Spudnik {
 							});
 					}
 					if (message.content.length > 1) { starboardEmbed.addField('Message', message.content); } // Add message
-					if ((message.attachments as any).filter((atchmt: MessageAttachment) => atchmt.attachment)) {
+					if (message.attachments.size > 0) {
 						starboardEmbed.setImage((message.attachments as any).first().attachment); // Add attachments
 					}
+
 					// Check for presence of post in starboard channel
 					if (!starred.some((star: any) => star.messageId === message.id)) {
 						// Fresh star, add to starboard and starboard tracking in DB
@@ -230,7 +240,9 @@ export class Spudnik {
 									messageId: message.id
 								});
 								this.Discord.provider.set(message.guild.id, 'starboard', starred);
-							}).catch((err) => {
+							})
+							.catch((err) => {
+								this.Discord.emit('warn', err);
 								(starboard as TextChannel).send(`Failed to send embed of message ID: ${message.id}`);
 							});
 					} else {
@@ -240,6 +252,7 @@ export class Spudnik {
 						if (starredEmbed) {
 							starredEmbed.edit({ embed: starboardEmbed })
 								.catch((err) => {
+									this.Discord.emit('warn', err);
 									(starboard as TextChannel).send(`Failed to send embed of message ID: ${message.id}`);
 								});
 						}
@@ -287,7 +300,7 @@ export class Spudnik {
 
 				if (goodbyeEnabled && goodbyeChannel) {
 					const goodbyeMessage = this.Discord.provider.get(guild, 'goodbyeMessage', '{user} has left the server.');
-					const message = goodbyeMessage.replace('{guild}', guild.name).replace('{user}', `<@${member.id}>`);
+					const message = goodbyeMessage.replace('{guild}', guild.name).replace('{user}', `<@${member.id}> (${member.user.tag})`);
 					const channel = guild.channels.get(goodbyeChannel);
 					if (channel && channel.type === 'text') {
 						(channel as TextChannel).send(message);
@@ -297,14 +310,16 @@ export class Spudnik {
 				}
 			})
 			.on('disconnected', (err: Error) => {
-				this.Honeybadger.notify(`Disconnected from Discord!\nError: ${err}`);
+				this.Rollbar.critical(`Disconnected from Discord!\nError: ${err}`);
 				console.log(chalk.red('Disconnected from Discord!'));
+				process.exit();
 			})
 			.on('error', (err: Error) => {
-				this.Honeybadger.notify(err);
+				this.Rollbar.error(err);
 				console.error(err);
 			})
 			.on('warn', (err: Error) => {
+				this.Rollbar.warn(err);
 				console.warn(err);
 			})
 			.on('debug', (err: Error) => {
@@ -345,10 +360,10 @@ export class Spudnik {
 		http.createServer((request, response) => {
 			response.writeHead(200, { 'Content-Type': 'text/plain' });
 			response.end('Ok!');
-		}).listen(1337);
+		}).listen(PORT);
 
 		// Print URL for accessing server
-		console.log('Heartbeat running on port 1337');
+		console.log(`Heartbeat running on port ${PORT}`);
 	}
 
 	/**

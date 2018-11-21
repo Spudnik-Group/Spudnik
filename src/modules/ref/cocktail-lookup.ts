@@ -37,6 +37,7 @@ export default class CocktailCommand extends Command {
 				'!cocktail dark and stormy'
 			],
 			group: 'ref',
+			guildOnly: true,
 			memberName: 'cocktail',
 			name: 'cocktail',
 			throttling: {

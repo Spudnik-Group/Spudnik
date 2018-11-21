@@ -1,5 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { Message, MessageEmbed } from 'discord.js';
+import { Message, MessageEmbed, Role } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError } from '../../lib/helpers';
@@ -27,9 +27,10 @@ export default class IAmNotCommand extends Command {
 					type: 'string'
 				}
 			],
+			clientPermissions: ['MANAGE_ROLES'],
 			description: 'Used to add a self-assignable role to yourself.',
-			details: 'syntax: `!iam <@roleMention>`',
-			examples: ['!iam @Fortnite'],
+			details: 'syntax: `!iam <role name>`',
+			examples: ['!iam Fortnite'],
 			group: 'roles',
 			guildOnly: true,
 			memberName: 'iam',
@@ -54,7 +55,7 @@ export default class IAmNotCommand extends Command {
 			color: getEmbedColor(msg)
 		});
 
-		const role = msg.guild.roles.find((r) => r.name.toLowerCase() === args.query.toLowerCase());
+		const role = msg.guild.roles.find((r: Role) => r.name.toLowerCase() === args.query.toLowerCase());
 		const guildAssignableRoles: string[] = msg.client.provider.get(msg.guild.id, 'assignableRoles', []);
 
 		if (role && guildAssignableRoles) {

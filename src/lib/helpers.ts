@@ -19,8 +19,8 @@ const no = ['no', 'n', 'nah', 'nope'];
 export function sendSimpleEmbeddedMessage(msg: CommandMessage, text: string, timeout?: number): Promise<Message | Message[]> {
 	const promise: Promise<Message | Message[]> = msg.embed({
 		author: {
-			icon_url: msg.guild.me.user.displayAvatarURL,
-			name: `${msg.guild.me.user.username}`
+			icon_url: msg.client.user.displayAvatarURL,
+			name: `${msg.client.user.username}`
 		},
 		color: getEmbedColor(msg),
 		description: `${text}`
@@ -50,8 +50,8 @@ export function sendSimpleEmbeddedMessage(msg: CommandMessage, text: string, tim
 export function sendSimpleEmbeddedError(msg: CommandMessage, text: string, timeout?: number): Promise<Message | Message[]> {
 	const promise: Promise<Message | Message[]> = msg.embed({
 		author: {
-			icon_url: msg.guild.me.user.displayAvatarURL,
-			name: `${msg.guild.me.user.username}`
+			icon_url: msg.client.user.displayAvatarURL,
+			name: `${msg.client.user.username}`
 		},
 		color: 16711680,
 		description: `${text}`
@@ -81,8 +81,8 @@ export function sendSimpleEmbeddedError(msg: CommandMessage, text: string, timeo
 export function sendSimpleEmbeddedSuccess(msg: CommandMessage, text: string, timeout?: number): Promise<Message | Message[]> {
 	const promise: Promise<Message | Message[]> = msg.embed({
 		author: {
-			icon_url: msg.guild.me.user.displayAvatarURL,
-			name: `${msg.guild.me.user.username}`
+			icon_url: msg.client.user.displayAvatarURL,
+			name: `${msg.client.user.username}`
 		},
 		color: 3447003,
 		description: `${text}`
@@ -112,8 +112,8 @@ export function sendSimpleEmbeddedSuccess(msg: CommandMessage, text: string, tim
 export function sendSimpleEmbeddedImage(msg: CommandMessage, url: string, description?: string): Promise<Message | Message[]> {
 	return msg.embed({
 		author: {
-			icon_url: msg.guild.me.user.displayAvatarURL,
-			name: `${msg.guild.me.user.username}`
+			icon_url: msg.client.user.displayAvatarURL,
+			name: `${msg.client.user.username}`
 		},
 		color: 3447003,
 		description: description,
