@@ -268,7 +268,7 @@ export async function awaitPlayers(msg: any, max: number, min: number, { text = 
 		if (joined.includes(res.author.id)) { return false; }
 		if (res.content.toLowerCase() !== text.toLowerCase()) { return false; }
 		joined.push(res.author.id);
-		res.react('✅').catch(() => null);
+		res.react('✅').catch((): void => null);
 		return true;
 	};
 	const verify = await msg.channel.awaitMessages(filter, { max: max, time: time });

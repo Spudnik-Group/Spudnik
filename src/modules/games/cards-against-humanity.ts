@@ -246,11 +246,11 @@ export default class CardsAgainstHumanityCommand extends Command {
 			if (res.author.bot) { return false; }
 			if (players.has(res.author.id) && res.content.toLowerCase() !== 'leave game') { return false; }
 			if (czars[0] === res.author.id || players.size >= 10) {
-				res.react('❌').catch(() => null);
+				res.react('❌').catch((): void => null);
 				return false;
 			}
 			if (!['join game', 'leave game'].includes(res.content.toLowerCase())) { return false; }
-			res.react('✅').catch(() => null);
+			res.react('✅').catch((): void => null);
 			return true;
 		};
 		const collector = channel.createMessageCollector(filter);
@@ -274,7 +274,7 @@ export default class CardsAgainstHumanityCommand extends Command {
 		});
 		collector.on('collect', (msg: any) => {
 			const player = players.get(msg.author.id);
-			msg.reply(`You have **${player.points}** point${player.points > 1 ? 's' : ''}.`).catch(() => null);
+			msg.reply(`You have **${player.points}** point${player.points > 1 ? 's' : ''}.`).catch((): void => null);
 		});
 		return collector;
 	}
