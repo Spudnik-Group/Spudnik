@@ -39,7 +39,8 @@ export class Spudnik {
 		this.Rollbar = new Rollbar({
 			accessToken: this.Config.getRbApiKey(),
 			captureUncaught: true,
-			captureUnhandledRejections: true
+			captureUnhandledRejections: true,
+			environment: process.env.NODE_ENV
 		});
 
 		this.Discord = new CommandoClient({
