@@ -183,7 +183,7 @@ export class Spudnik {
 				const channel: Channel = await this.Discord.channels.get(data.channel_id);
 				if (starboardGuildBlacklist.includes((channel as TextChannel).guild.id)) { return; } //Guild is on Blacklist, ignore.
 				if ((channel as TextChannel).nsfw) { return; } //Ignore NSFW channels
-				if (!(channel as TextChannel).permissionsFor(this.Discord.user.id).has('READ_MESSAGE_HISTORY')) { return; } //Bot doesn't have the right permissions
+				if (!(channel as TextChannel).permissionsFor(this.Discord.user.id).has('READ_MESSAGE_HISTORY')) { return; } //Bot doesn't have the right permissions to retrieve the message
 				const message: Message = await (channel as TextChannel).messages.fetch(data.message_id);
 				const starboardEnabled: boolean = await this.Discord.provider.get(message.guild.id, 'starboardEnabled', false);
 				if (!starboardEnabled) { return; } //Ignore if starboard isn't set up
@@ -191,6 +191,14 @@ export class Spudnik {
 				const starboard: GuildChannel = await message.guild.channels.get(starboardChannel);
 				if (starboard === undefined) { return; } //Ignore if starboard isn't set up
 				if (starboard === channel) { return; } //Can't star items in starboard channel
+				if (!starboard.permissionsFor(this.Discord.user.id).has('MANAGE_MESSAGES') ||
+					!starboard.permissionsFor(this.Discord.user.id).has('READ_MESSAGE_HISTORY') ||
+					!starboard.permissionsFor(this.Discord.user.id).has('SEND_MESSAGES') ||
+					!starboard.permissionsFor(this.Discord.user.id).has('EMBED_LINKS') ||
+					!starboard.permissionsFor(this.Discord.user.id).has('ATTACH_FILES')) {
+					//Bot doesn't have the right permissions in the starboard channel
+					return;
+				}
 				const emojiKey: any = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
 				const reaction: MessageReaction = message.reactions.get(emojiKey);
 				const starred = await (starboard as TextChannel).messages.fetch({ limit: 100 });
@@ -228,7 +236,9 @@ export class Spudnik {
 							.send(`⚠ You cannot star your own messages, **<@${data.user_id}>**!`)
 							.then((reply: Message | Message[]) => {
 								if (reply instanceof Message) {
-									reply.delete({ timeout: 3000 }).catch(() => undefined);
+									if (reply.deletable) {
+										reply.delete({ timeout: 3000 });
+									}
 								}
 							});
 					}
@@ -238,7 +248,9 @@ export class Spudnik {
 							.send(`⚠ You cannot star bot messages, **<@${data.user_id}>**!`)
 							.then((reply: Message | Message[]) => {
 								if (reply instanceof Message) {
-									reply.delete({ timeout: 3000 }).catch(() => undefined);
+									if (reply.deletable) {
+										reply.delete({ timeout: 3000 });
+									}
 								}
 							});
 					}
@@ -255,16 +267,16 @@ export class Spudnik {
 						if (starredEmbed) {
 							starredEmbed.edit({ embed: starboardEmbed })
 								.catch((err) => {
-									this.Discord.emit('warn', err);
-									(starboard as TextChannel).send(`Failed to send embed of message ID: ${message.id}`);
+									this.Discord.emit('warn', `Failed to edit starboard embed. Message ID: ${message.id}\nError: ${err}`);
+									return;
 								});
 						}
 					} else {
 						// Fresh star, add to starboard
 						(starboard as TextChannel).send({ embed: starboardEmbed })
 							.catch((err) => {
-								this.Discord.emit('warn', err);
-								(starboard as TextChannel).send(`Failed to send embed of message ID: ${message.id}`);
+								this.Discord.emit('warn', `Failed to send new starboard embed. Message ID: ${message.id}\nError: ${err}`);
+								return;
 							});
 					}
 				}
@@ -280,7 +292,12 @@ export class Spudnik {
 									.setDescription('Only mods may paste invites to other servers!')
 							}).then((reply: Message | Message[]) => {
 								if (reply instanceof Message) {
-									reply.delete({ timeout: 3000 }).catch(() => undefined);
+									if (reply.deletable) {
+										reply.delete({ timeout: 3000 })
+											.catch((err) => {
+												this.Discord.emit('warn', `- Error with Adblock Feature -\nFailed to delete my own message: ${reply.id}\nError: ${err}`);
+											});
+									}
 								}
 							});
 						}
