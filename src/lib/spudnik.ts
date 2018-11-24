@@ -12,6 +12,7 @@ import { MongoProvider } from './providers/mongodb-provider';
 const { version }: { version: string } = require('../../package');
 // tslint:enable:no-var-requires
 const PORT = process.env.PORT || 1337;
+const starboardGuildBlacklist: string[] = JSON.parse(process.env.STARBOARD_GUILD_BLACKLIST) || [];
 
 /**
  * The Spudnik Discord Bot.
@@ -178,8 +179,8 @@ export class Spudnik {
 			.on('raw', async (event: any) => {
 				if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(event.t)) { return; } //Ignore non-emoji related actions
 				const { d: data } = event;
-				// TODO: add check for DBL guild and ignore it
 				const channel: Channel = await this.Discord.channels.get(data.channel_id);
+				if (starboardGuildBlacklist.includes((channel as TextChannel).guild.id)) { return; } //Guild is on Blacklist, ignore.
 				if ((channel as TextChannel).nsfw) { return; } //Ignore NSFW channels
 				if (!(channel as TextChannel).permissionsFor(this.Discord.user.id).has('READ_MESSAGE_HISTORY')) { return; } //Bot doesn't have the right permissions
 				const message: Message = await (channel as TextChannel).messages.fetch(data.message_id);
