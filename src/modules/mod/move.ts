@@ -1,11 +1,10 @@
-import { stripIndents } from 'common-tags';
 import { Channel, GuildMember, Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError } from '../../lib/helpers';
 
 /**
- * Enable or disable the adblock feature.
+ * Enable or disable the Move feature.
  *
  * @export
  * @class MoveCommand
@@ -38,6 +37,7 @@ export default class MoveCommand extends Command {
 					type: 'string'
 				}
 			],
+			clientPermissions: ['MANAGE_MESSAGES'],
 			description: 'Moves a message to a different channel.',
 			examples: [
 				'!move 1234567890 #channel',
@@ -55,7 +55,7 @@ export default class MoveCommand extends Command {
 	}
 
 	/**
-	 * Determine if a member has permission to run the "adblock" command.
+	 * Determine if a member has permission to run the "move" command.
 	 *
 	 * @param {CommandMessage} msg
 	 * @returns {boolean}
@@ -66,7 +66,7 @@ export default class MoveCommand extends Command {
 	}
 
 	/**
-	 * Run the "warn" command.
+	 * Run the "Move" command.
 	 *
 	 * @param {CommandMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
@@ -95,12 +95,6 @@ export default class MoveCommand extends Command {
 							text: `Originally posted at ${originalMessage.createdAt}`
 						}
 					});
-
-					/*
-					if (originalMessage.attachments.array().length > 0) {
-						moveMessage.attachFiles(originalMessage.attachments.array());
-					}
-					*/
 
 					const fields: any = [];
 
