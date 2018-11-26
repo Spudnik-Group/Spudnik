@@ -5,7 +5,6 @@ import * as http from 'http';
 import Mongoose = require('mongoose');
 import * as path from 'path';
 import * as Rollbar from 'rollbar';
-import { Configuration } from './config';
 import { MongoProvider } from './providers/mongodb-provider';
 
 // tslint:disable:no-var-requires
@@ -13,6 +12,17 @@ const { version }: { version: string } = require('../../package');
 // tslint:enable:no-var-requires
 const PORT = process.env.PORT || 1337;
 const starboardGuildBlacklist: string[] = JSON.parse(process.env.STARBOARD_GUILD_BLACKLIST) || [];
+
+interface Configuration {
+	'botListUpdateInterval': number;
+	'dblApiKey': string;
+	'debug': boolean;
+	'mongoDB': string;
+	'owner': string | string[];
+	'rollbarApiKey': string;
+	'statusUpdateInterval': number;
+	'token': string;
+}
 
 /**
  * The Spudnik Discord Bot.
@@ -37,7 +47,7 @@ export class Spudnik {
 		console.log(chalk.blue('---Spudnik Stage 2 Engaged.---'));
 
 		this.Rollbar = new Rollbar({
-			accessToken: this.Config.getRbApiKey(),
+			accessToken: this.Config.rollbarApiKey,
 			captureUncaught: true,
 			captureUnhandledRejections: true,
 			environment: process.env.NODE_ENV
@@ -48,7 +58,7 @@ export class Spudnik {
 			invite: 'https://spudnik.io/support',
 			messageCacheLifetime: 30,
 			messageSweepInterval: 60,
-			owner: this.Config.getOwner(),
+			owner: this.Config.owner,
 			unknownCommandResponse: false
 		});
 
@@ -92,7 +102,7 @@ export class Spudnik {
 		Mongoose.Promise = require('bluebird').Promise;
 
 		this.Discord.setProvider(
-			Mongoose.connect(this.Config.getDatabaseConnection(), { useMongoClient: true }).then(() => new MongoProvider(Mongoose.connection))
+			Mongoose.connect(this.Config.mongoDB, { useMongoClient: true }).then(() => new MongoProvider(Mongoose.connection))
 		).catch((err) => {
 			this.Rollbar.critical(err);
 			console.error(err);
@@ -168,8 +178,8 @@ export class Spudnik {
 				// Update bot status, using array of possible statuses
 				let statusIndex: number = -1;
 				statusIndex = this.updateStatus(this.Discord, statuses, statusIndex);
-				setInterval(() => statusIndex = this.updateStatus(this.Discord, statuses, statusIndex), this.Config.getBotListUpdateInterval(), true);
-				setInterval(() => this.updateStatusStats(this.Config, this.Discord, statuses), this.Config.getBotListUpdateInterval(), true);
+				setInterval(() => statusIndex = this.updateStatus(this.Discord, statuses, statusIndex), this.Config.statusUpdateInterval, true);
+				setInterval(() => this.updateStatusStats(this.Config, this.Discord, statuses), this.Config.botListUpdateInterval, true);
 
 				// TODO: Cleanup for old starboard code, remove this in later version
 				this.Discord.guilds.each(guild => {
@@ -349,12 +359,12 @@ export class Spudnik {
 				console.warn(err);
 			})
 			.on('debug', (err: Error) => {
-				if (this.Config.getDebug()) {
+				if (this.Config.debug) {
 					console.info(err);
 				}
 			})
 			.on('commandError', (cmd, err) => {
-				if (this.Config.getDebug()) {
+				if (this.Config.debug) {
 					console.error(`Error in command ${cmd.groupID}:${cmd.memberName}`, err);
 				}
 			});
@@ -367,9 +377,9 @@ export class Spudnik {
 	 * @memberof Spudnik
 	 */
 	private login = () => {
-		if (this.Config.getToken()) {
+		if (this.Config.token) {
 			console.log(chalk.magenta('Logging in to Discord...'));
-			this.Discord.login(this.Config.getToken());
+			this.Discord.login(this.Config.token);
 		} else {
 			console.error('Spudnik must have a Discord bot token...');
 			process.exit(-1);
