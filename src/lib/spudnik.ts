@@ -70,7 +70,6 @@ export class Spudnik {
 	private setupCommands = () => {
 		this.Discord.registry
 			.registerGroups([
-				['custom', 'Custom'],
 				['misc', 'Misc'],
 				['mod', 'Moderation'],
 				['random', 'Random'],
