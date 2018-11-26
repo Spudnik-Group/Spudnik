@@ -88,7 +88,7 @@ export default class RoleManagementCommands extends Command {
 		});
 
 		let guildAssignableRoles: string[] = msg.client.provider.get(msg.guild.id, 'assignableRoles', []);
-		const guildDefaultRole: string = msg.client.provider.get(msg.guild.id, 'defaultRole', '');
+		let guildDefaultRoles: string[] = msg.client.provider.get(msg.guild.id, 'defaultRoles', []);
 
 		switch (args.subCommand.toLowerCase()) {
 			case 'add': {
@@ -144,7 +144,7 @@ export default class RoleManagementCommands extends Command {
 					const roles: string[] = msg.guild.roles.filter((role) => guildAssignableRoles.includes(role.id)).reduce((list: string[], role: Role) => {
 						list.push(role.name);
 						return list;
-					}, []);
+					}, []).sort();
 
 					if (roles.length > 0) {
 						roleEmbed.fields.push({
@@ -157,14 +157,19 @@ export default class RoleManagementCommands extends Command {
 					}
 				}
 
-				if (guildDefaultRole !== '') {
-					const role: Role = msg.guild.roles.find((r) => r.id === guildDefaultRole);
+				if (Array.isArray(guildDefaultRoles) && guildDefaultRoles.length > 0) {
+					const roles: string[] = msg.guild.roles.filter((role) => guildDefaultRoles.includes(role.id)).reduce((list: string[], role: Role) => {
+						list.push(role.name);
+						return list;
+					}, []).sort();
 
-					if (role) {
+					if (roles.length > 0) {
 						roleEmbed.fields.push({
 							inline: true,
-							name: 'Default Role',
-							value: role.name
+							name: 'Default Roles',
+							value: roles.sort((a, b) => {
+								return a.localeCompare(b, 'en', { sensitivity: 'base' });
+							}).join('\n')
 						});
 					}
 				}
@@ -177,9 +182,9 @@ export default class RoleManagementCommands extends Command {
 			}
 			case 'default': {
 				if (args.role.name === undefined) {
-					return msg.client.provider.set(msg.guild.id, 'defaultRole', null)
+					return msg.client.provider.set(msg.guild.id, 'defaultRoles', [])
 						.then(() => {
-							roleEmbed.description = 'Removed default role.';
+							roleEmbed.description = 'Removed default role(s).';
 							return msg.embed(roleEmbed);
 						})
 						.catch((err: Error) => {
@@ -188,15 +193,23 @@ export default class RoleManagementCommands extends Command {
 						});
 				}
 
-				return msg.client.provider.set(msg.guild.id, 'defaultRole', args.role.id)
-					.then(() => {
-						roleEmbed.description = `Added default role '${args.role.name}'.`;
-						return msg.embed(roleEmbed);
-					})
-					.catch((err: Error) => {
-						msg.client.emit('warn', `Error in command roles:role-default: ${err}`);
-						return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
-					});
+				if (!Array.isArray(guildDefaultRoles)) {
+					guildDefaultRoles = [];
+				}
+
+				if (!guildDefaultRoles.includes(args.role.id)) {
+					guildDefaultRoles.push(args.role.id);
+
+					return msg.client.provider.set(msg.guild.id, 'defaultRoles', guildDefaultRoles)
+						.then(() => {
+							roleEmbed.description = `Added role '${args.role.name}' to the list of default roles.`;
+							return msg.embed(roleEmbed);
+						})
+						.catch((err: Error) => {
+							msg.client.emit('warn', `Error in command roles:role-add: ${err}`);
+							return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
+						});
+				}
 			}
 			default: {
 				return sendSimpleEmbeddedError(msg, 'Invalid subcommand. Please see `help roles`.', 3000);
