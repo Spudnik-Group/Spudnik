@@ -29,11 +29,9 @@ before_deploy:
 - rm -f CODEOWNERS
 - |
   if [ -n "$TRAVIS_TAG" ]; then
-    if [ "$TRAVIS_BRANCH" == "master" ]; then
-      zip -r release.zip dist/ config/ package.json README.md LICENSE
-      mkdir -p dpl_cd_upload
-      mv release.zip dpl_cd_upload/release.zip
-    fi
+    zip -r release.zip dist/ config/ package.json README.md LICENSE
+    mkdir -p dpl_cd_upload
+    mv release.zip dpl_cd_upload/release.zip
   fi
 - |
   if [ -z "$TRAVIS_TAG" ]; then
@@ -56,6 +54,7 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
+  draft: true
 - provider: heroku
   skip_cleanup: true
   api_key: $heroku_api_key
