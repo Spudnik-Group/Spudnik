@@ -11,7 +11,7 @@ import { MongoProvider } from './providers/mongodb-provider';
 const { version }: { version: string } = require('../../package');
 // tslint:enable:no-var-requires
 const PORT = process.env.PORT || 1337;
-const starboardGuildBlacklist: string[] = JSON.parse(process.env.STARBOARD_GUILD_BLACKLIST) || [];
+const starboardGuildBlacklist: string[] = process.env.STARBOARD_GUILD_BLACKLIST ? process.env.STARBOARD_GUILD_BLACKLIST.split(',') : [];
 
 interface Configuration {
 	'botListUpdateInterval': number;
