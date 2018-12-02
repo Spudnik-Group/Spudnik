@@ -18,11 +18,11 @@ export default class PongCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Used to return the ping.',
-			examples: ['!Pong'],
+			examples: ['!pong'],
 			group: 'util',
 			guildOnly: true,
-			memberName: 'Pong',
-			name: 'Pong',
+			memberName: 'pong',
+			name: 'pong',
 			throttling: {
 				duration: 3,
 				usages: 2
