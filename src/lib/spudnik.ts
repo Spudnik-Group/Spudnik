@@ -46,12 +46,14 @@ export class Spudnik {
 
 		console.log(chalk.blue('---Spudnik Stage 2 Engaged.---'));
 
-		this.Rollbar = new Rollbar({
-			accessToken: this.Config.rollbarApiKey,
-			captureUncaught: true,
-			captureUnhandledRejections: true,
-			environment: process.env.NODE_ENV
-		});
+		if (!this.Config.debug && process.env.NODE_ENV !== 'development') {
+			this.Rollbar = new Rollbar({
+				accessToken: this.Config.rollbarApiKey,
+				captureUncaught: true,
+				captureUnhandledRejections: true,
+				environment: process.env.NODE_ENV
+			});
+		}
 
 		this.Discord = new CommandoClient({
 			commandPrefix: '!',
@@ -180,11 +182,6 @@ export class Spudnik {
 				statusIndex = this.updateStatus(this.Discord, statuses, statusIndex);
 				setInterval(() => statusIndex = this.updateStatus(this.Discord, statuses, statusIndex), this.Config.statusUpdateInterval, true);
 				setInterval(() => this.updateStatusStats(this.Config, this.Discord, statuses), this.Config.botListUpdateInterval, true);
-
-				// TODO: Cleanup for old starboard code, remove this in later version
-				this.Discord.guilds.each(guild => {
-					this.Discord.provider.remove(guild.id, 'starboard');
-				});
 			})
 			.on('raw', async (event: any) => {
 				if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(event.t)) { return; } //Ignore non-emoji related actions
