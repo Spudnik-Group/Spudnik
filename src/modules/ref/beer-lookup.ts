@@ -2,11 +2,10 @@ import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import * as rp from 'request-promise';
-import { Config } from '../../lib/config';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
-const breweryDbApiKey: string = Config.getBreweryDbApiKey();
+const breweryDbApiKey: string = process.env.spud_brewdbapi;
 
 /**
  * Post information about an alcoholic brew.
