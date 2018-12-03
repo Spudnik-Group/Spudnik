@@ -1,0 +1,3 @@
+usage:
+- "!move 1234567890 #channel"
+- "!move 1234567890 #channel rule violation"

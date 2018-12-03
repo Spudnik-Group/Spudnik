@@ -19,7 +19,7 @@
 	"main": "dist/launch.js",
 	"scripts": {
 		"preinstall": "npm i -g node-gyp typescript",
-		"lint": "tslint ./tslint.json",
+		"lint": "tslint -p .\tslint.json",
 		"test": "npm run lint",
 		"prestart": "tsc",
 		"start": "node dist/launch.js",

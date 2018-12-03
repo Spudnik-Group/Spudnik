@@ -1,13 +1,12 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { Config } from '../../lib/config';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 // tslint:disable-next-line:no-var-requires
 const mw = require('mw-dict');
-const dictionaryApiKey: string = Config.getDictionaryApiKey();
+const dictionaryApiKey: string = process.env.spud_dictionaryapi;
 const dict = new mw.CollegiateDictionary(dictionaryApiKey);
 
 /**
