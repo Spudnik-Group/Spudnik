@@ -46,12 +46,14 @@ export class Spudnik {
 
 		console.log(chalk.blue('---Spudnik Stage 2 Engaged.---'));
 
-		this.Rollbar = new Rollbar({
-			accessToken: this.Config.rollbarApiKey,
-			captureUncaught: true,
-			captureUnhandledRejections: true,
-			environment: process.env.NODE_ENV
-		});
+		if (!this.Config.debug && process.env.NODE_ENV !== 'development') {
+			this.Rollbar = new Rollbar({
+				accessToken: this.Config.rollbarApiKey,
+				captureUncaught: true,
+				captureUnhandledRejections: true,
+				environment: process.env.NODE_ENV
+			});
+		}
 
 		this.Discord = new CommandoClient({
 			commandPrefix: '!',
@@ -180,11 +182,6 @@ export class Spudnik {
 				statusIndex = this.updateStatus(this.Discord, statuses, statusIndex);
 				setInterval(() => statusIndex = this.updateStatus(this.Discord, statuses, statusIndex), this.Config.statusUpdateInterval, true);
 				setInterval(() => this.updateStatusStats(this.Config, this.Discord, statuses), this.Config.botListUpdateInterval, true);
-
-				// TODO: Cleanup for old starboard code, remove this in later version
-				this.Discord.guilds.each(guild => {
-					this.Discord.provider.remove(guild.id, 'starboard');
-				});
 			})
 			.on('raw', async (event: any) => {
 				if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(event.t)) { return; } //Ignore non-emoji related actions
@@ -200,9 +197,7 @@ export class Spudnik {
 				const starboard: GuildChannel = await message.guild.channels.get(starboardChannel);
 				if (starboard === undefined) { return; } //Ignore if starboard isn't set up
 				if (starboard === channel) { return; } //Can't star items in starboard channel
-				if (!starboard.permissionsFor(this.Discord.user.id).has('MANAGE_MESSAGES') ||
-					!starboard.permissionsFor(this.Discord.user.id).has('READ_MESSAGE_HISTORY') ||
-					!starboard.permissionsFor(this.Discord.user.id).has('SEND_MESSAGES') ||
+				if (!starboard.permissionsFor(this.Discord.user.id).has('SEND_MESSAGES') ||
 					!starboard.permissionsFor(this.Discord.user.id).has('EMBED_LINKS') ||
 					!starboard.permissionsFor(this.Discord.user.id).has('ATTACH_FILES')) {
 					//Bot doesn't have the right permissions in the starboard channel
@@ -210,18 +205,20 @@ export class Spudnik {
 				}
 				const emojiKey: any = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
 				const reaction: MessageReaction = message.reactions.get(emojiKey);
-				const starred = await (starboard as TextChannel).messages.fetch({ limit: 100 });
+				const starboardMessages = await (starboard as TextChannel).messages.fetch({ limit: 100 });
 				const starboardTrigger: string = await this.Discord.provider.get(message.guild.id, 'starboardTrigger', '⭐');
+				const existingStar = starboardMessages.find(m => {
+					// Need this filter if there are non-starboard posts in the starboard channel.
+					if (m.embeds[0].footer) {
+						return m.embeds[0].footer.text.startsWith('⭐') && m.embeds[0].footer.text.endsWith(message.id);
+					}
+				});
 
 				// If all emojis were removed from this message, check if message is in the starboard
 				if (!reaction) {
-					if (starred.some((star) => star.id === message.id)) {
+					if (existingStar) {
 						// Remove from the starboard
-						const starredMsg = await starred.find((msg) => msg.id === message.id);
-						const starredEmbed = await (starboard as TextChannel).messages.fetch(starredMsg.id);
-						if (starredEmbed) {
-							return starredEmbed.delete();
-						}
+						existingStar.delete()
 						return;
 					}
 					return;
@@ -269,17 +266,13 @@ export class Spudnik {
 					}
 
 					// Check for presence of post in starboard channel
-					if (starred.some((star) => star.embeds[0].footer.text.startsWith(starboardTrigger) && star.embeds[0].footer.text.endsWith(message.id))) {
+					if (existingStar) {
 						// Old star, update star count
-						const starredMsg = await starred.find((msg) => msg.id === message.id && msg.channel.id === (channel as TextChannel).id);
-						const starredEmbed = await (starboard as TextChannel).messages.fetch(starredMsg.id);
-						if (starredEmbed) {
-							starredEmbed.edit({ embed: starboardEmbed })
-								.catch((err) => {
-									this.Discord.emit('warn', `Failed to edit starboard embed. Message ID: ${message.id}\nError: ${err}`);
-									return;
-								});
-						}
+						existingStar.edit({ embed: starboardEmbed })
+							.catch((err) => {
+								this.Discord.emit('warn', `Failed to edit starboard embed. Message ID: ${message.id}\nError: ${err}`);
+								return;
+							});
 					} else {
 						// Fresh star, add to starboard
 						(starboard as TextChannel).send({ embed: starboardEmbed })
