@@ -30,8 +30,8 @@ export default class RoleCommand extends Command {
 			],
 			group: 'roles',
 			guildOnly: true,
-			memberName: 'role',
-			name: 'role'
+			memberName: 'roles',
+			name: 'roles'
 		});
 	}
 
