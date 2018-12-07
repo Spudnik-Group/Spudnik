@@ -52,6 +52,7 @@ export default class PlayingCommand extends Command {
 	 * Run the "playing" command.
 	 *
 	 * @param {CommandMessage} msg
+	 * @param {{ game: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof PlayingCommand
 	 */

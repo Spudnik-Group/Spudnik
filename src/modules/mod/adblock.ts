@@ -63,6 +63,7 @@ export default class AdblockCommand extends Command {
 	 * Run the "adblock" command.
 	 *
 	 * @param {CommandMessage} msg
+	 * @param {{ subCommand: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof AdblockCommand
 	 */

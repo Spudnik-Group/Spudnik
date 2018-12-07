@@ -50,7 +50,7 @@ export default class ChooseCommand extends Command {
 	 * Run the "choose" command.
 	 *
 	 * @param {CommandMessage} msg
-	 * @param {{ choice1: string, choice2: string }} args
+	 * @param {{ choices: string[] }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof ChooseCommand
 	 */

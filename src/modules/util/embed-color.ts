@@ -73,6 +73,7 @@ export default class EmbedColorCommand extends Command {
 	 * Run the "embedColor" command.
 	 *
 	 * @param {CommandMessage} msg
+	 * @param {{ color: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof EmbedColorCommand
 	 */

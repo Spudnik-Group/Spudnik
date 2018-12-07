@@ -77,7 +77,7 @@ export default class WelcomeCommand extends Command {
 	 * Run the "welcome" command.
 	 *
 	 * @param {CommandMessage} msg
-	 * @param {{ subCommand: string, content: string }} args
+	 * @param {{ subCommand: string, content: Channel | string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof WelcomeCommand
 	 */

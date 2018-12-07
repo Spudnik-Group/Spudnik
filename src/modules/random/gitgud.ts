@@ -46,7 +46,7 @@ export default class GitGudCommand extends Command {
 	 * Run the "gitgud" command.
 	 *
 	 * @param {CommandMessage} msg
-	 * @param {{ mention: string }} args
+	 * @param {{ mention: GuildMember }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof GitGudCommand
 	 */

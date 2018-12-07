@@ -80,7 +80,7 @@ export default class StarboardCommand extends Command {
 	 * Run the "starboard" command.
 	 *
 	 * @param {CommandMessage} msg
-	 * @param {{ limit: number, filter: string, member: GuildMember }} args
+	 * @param {{ subCommand: string, content: Channel | string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof StarboardCommand
 	 */

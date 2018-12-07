@@ -69,6 +69,7 @@ export default class MoveCommand extends Command {
 	 * Run the "Move" command.
 	 *
 	 * @param {CommandMessage} msg
+	 * @param {{ messageId: string, channel: Channel, reason: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof MoveCommand
 	 */

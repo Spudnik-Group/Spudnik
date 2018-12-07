@@ -84,6 +84,7 @@ export default class TermsOfServiceCommand extends Command {
 	 * Run the "tos" command.
 	 *
 	 * @param {CommandMessage} msg
+	 * @param {{ arg1: string, item: Channel | number, text: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof TermsOfServiceCommand
 	 */

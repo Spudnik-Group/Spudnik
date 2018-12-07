@@ -39,11 +39,10 @@ export default class RoleCommand extends Command {
 	 * Run the "roles" command.
 	 *
 	 * @param {CommandMessage} msg
-	 * @param {{ }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof RoleCommand
 	 */
-	public async run(msg: CommandMessage, args: {}): Promise<Message | Message[]> {
+	public async run(msg: CommandMessage): Promise<Message | Message[]> {
 		const roleEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/110/lock_1f512.png',

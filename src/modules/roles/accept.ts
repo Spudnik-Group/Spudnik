@@ -56,6 +56,7 @@ export default class AcceptCommand extends Command {
 	 * Run the "accept" command.
 	 *
 	 * @param {CommandMessage} msg
+	 * @param {{ channel: Channel }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof AcceptCommand
 	 */

@@ -66,6 +66,7 @@ export default class NickCommand extends Command {
 	 * Run the "nick" command.
 	 *
 	 * @param {CommandMessage} msg
+	 * @param {{ nickName: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof NickCommand
 	 */

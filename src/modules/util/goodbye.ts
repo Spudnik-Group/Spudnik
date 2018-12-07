@@ -77,7 +77,7 @@ export default class GoodbyeCommand extends Command {
 	 * Run the "goodbye" command.
 	 *
 	 * @param {CommandMessage} msg
-	 * @param {{ subCommand: string, content: string }} args
+	 * @param {{ subCommand: string, content: Channel | string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof GoodbyeCommand
 	 */

@@ -45,7 +45,7 @@ export default class RollCommand extends Command {
 	 * Run the "roll" command.
 	 *
 	 * @param {CommandMessage} msg
-	 * @param {{ roll: string }} args
+	 * @param {{ rolls: string[] }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof RollCommand
 	 */
