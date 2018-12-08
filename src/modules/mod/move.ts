@@ -1,4 +1,4 @@
-import { Channel, GuildMember, Message, MessageEmbed, TextChannel } from 'discord.js';
+import { Channel, GuildMember, Message, MessageEmbed, TextChannel, MessageAttachment } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError } from '../../lib/helpers';
@@ -82,48 +82,57 @@ export default class MoveCommand extends Command {
 		if (originalMessage !== undefined) {
 			const destinationChannel = args.channel;
 
-			if (originalMessage.embeds.length === 0) {
-				if (destinationChannel && destinationChannel.type === 'text') {
-					const moveMessage = new MessageEmbed({
-						author: {
-							icon_url: `${originalMessage.author.displayAvatarURL()}`,
-							name: `${originalMessageAuthor.displayName}`
-						},
-						color: getEmbedColor(msg),
-						description: `${originalMessage.content}`,
-						footer: {
-							text: `Originally posted at ${originalMessage.createdAt}`
-						}
-					});
+			if (destinationChannel && destinationChannel.type === 'text') {
+				const moveMessage = new MessageEmbed({
+					author: {
+						icon_url: `${originalMessage.author.displayAvatarURL()}`,
+						name: `${originalMessageAuthor.displayName}`
+					},
+					color: getEmbedColor(msg),
+					description: `${originalMessage.content}`,
+					footer: {
+						text: `Originally posted at ${originalMessage.createdAt}`
+					}
+				});
 
-					const fields: any = [];
+				const fields: any = [];
 
+				fields.push({
+					inline: true,
+					name: 'Original post by:',
+					value: `<@${originalMessageAuthor.id}> in <#${originalChannel.id}>`
+				});
+
+				if (args.reason) {
 					fields.push({
 						inline: true,
-						name: 'Original post by:',
-						value: `<@${originalMessageAuthor.id}> in <#${originalChannel.id}>`
+						name: 'Moved for:',
+						value: `${args.reason}`
 					});
+				}
 
-					if (args.reason) {
-						fields.push({
-							inline: true,
-							name: 'Moved for:',
-							value: `${args.reason}`
-						});
-					}
+				if (fields !== []) {
+					moveMessage.fields = fields;
+				}
 
-					if (fields !== []) {
-						moveMessage.fields = fields;
-					}
+				moveMessage.attachFiles(originalMessage.attachments.map(a => a.attachment.toString()));
 
-					(destinationChannel as TextChannel).send(moveMessage);
+				if (originalMessage.embeds.length === 0) {
+					await (destinationChannel as TextChannel).send(moveMessage);
 
 					return originalMessage.delete();
 				} else {
-					return sendSimpleEmbeddedError(msg, 'Cannot move a text message to a non-text channel.');
+					const messages: MessageEmbed[] = new Array();
+
+					messages.push(moveMessage);
+					messages.concat(originalMessage.embeds);
+					
+					await (destinationChannel as TextChannel).send(messages);
+					
+					return originalMessage.delete();
 				}
 			} else {
-				return sendSimpleEmbeddedError(msg, 'Cannot move a message that contains an embed to a different channel.');
+				return sendSimpleEmbeddedError(msg, 'Cannot move a text message to a non-text channel.');
 			}
 
 		} else {
