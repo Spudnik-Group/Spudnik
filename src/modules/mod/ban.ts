@@ -100,7 +100,7 @@ export default class BanCommand extends Command {
 		}
 
 		if (args.daysOfMessages) {
-			memberToBan.ban({ days: args.daysOfMessages, reason: args.reason })
+			memberToBan.ban({ days: args.daysOfMessages, reason: `Banned by: ${msg.author} for: ${args.reason}` })
 				.then(() => {
 					banEmbed.description = `Banning <@${memberToBan.id}> from ${guild.name} for ${args.reason}!`;
 					return msg.embed(banEmbed);
@@ -115,7 +115,7 @@ export default class BanCommand extends Command {
 					return sendSimpleEmbeddedError(msg, `Banning <@${memberToBan.id}> from ${guild.name} failed!`, 3000);
 				});
 		} else {
-			memberToBan.ban({ reason: args.reason })
+			memberToBan.ban({ reason: `Banned by: ${msg.author} for: ${args.reason}` })
 				.then(() => {
 					banEmbed.description = `Banning <@${memberToBan.id}> from ${guild.name} for ${args.reason}!`;
 					return msg.embed(banEmbed);

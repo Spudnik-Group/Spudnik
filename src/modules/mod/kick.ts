@@ -83,11 +83,13 @@ export default class KickCommand extends Command {
 			description: ''
 		});
 
+		if (msg.deletable) await msg.delete();
+		
 		if (!memberToKick.kickable || !(msg.member.roles.highest.comparePositionTo(memberToKick.roles.highest) > 0)) {
 			return sendSimpleEmbeddedError(msg, `I can't kick ${memberToKick}. Do they have the same or a higher role than me or you?`);
 		}
 
-		memberToKick.kick(args.reason)
+		memberToKick.kick(`Kicked by: ${msg.author} for: ${args.reason}`)
 			.then(() => {
 				kickEmbed.description = `Kicking ${memberToKick} from ${msg.guild} for ${args.reason}!`;
 
@@ -95,7 +97,7 @@ export default class KickCommand extends Command {
 			})
 			.catch((err: Error) => {
 				msg.client.emit('error',
-					stripIndents`Error with command 'ban'\n
+					stripIndents`Error with command 'kick'\n
 						Banning ${memberToKick} from ${msg.guild} failed!\n
 						Error: ${err}`
 				);
