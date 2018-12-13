@@ -116,7 +116,9 @@ export default class MoveCommand extends Command {
 					moveMessage.fields = fields;
 				}
 
-				moveMessage.attachFiles(originalMessage.attachments.map(a => a.attachment.toString()));
+				if(originalMessage.attachments.some(attachment => { return attachment.url !== '' })){
+					moveMessage.image = { url: originalMessage.attachments.first().url }
+				}
 
 				if (originalMessage.embeds.length === 0) {
 					await (destinationChannel as TextChannel).send(moveMessage);

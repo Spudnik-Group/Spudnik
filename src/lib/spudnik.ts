@@ -6,6 +6,7 @@ import Mongoose = require('mongoose');
 import * as path from 'path';
 import * as Rollbar from 'rollbar';
 import { MongoSettingsProvider } from './providers/mongo-settings-provider';
+import { handleReady } from '../handlers/handle-ready';
 
 // tslint:disable:no-var-requires
 const { version }: { version: string } = require('../../package');
@@ -13,7 +14,7 @@ const { version }: { version: string } = require('../../package');
 const PORT = process.env.PORT || 1337;
 const starboardGuildBlacklist: string[] = process.env.STARBOARD_GUILD_BLACKLIST ? process.env.STARBOARD_GUILD_BLACKLIST.split(',') : [];
 
-interface Configuration {
+export interface Configuration {
 	'botListUpdateInterval': number;
 	'dblApiKey': string;
 	'debug': boolean;
@@ -120,69 +121,7 @@ export class Spudnik {
 	 */
 	private setupEvents = () => {
 		this.Discord
-			.once('ready', async () => {
-				const users: number = this.Discord.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b);
-				const guilds: number = this.Discord.guilds.array().length;
-				const statuses: PresenceData[] = [
-					{
-						activity: {
-							name: `${this.Discord.commandPrefix}help | ${guilds} Servers`,
-							type: 'PLAYING'
-						}
-					},
-					{
-						activity: {
-							name: 'spudnik.io',
-							type: 'STREAMING'
-						}
-					},
-					{
-						activity: {
-							name: `${this.Discord.commandPrefix}donate 💕`,
-							type: 'PLAYING'
-						}
-					},
-					{
-						activity: {
-							name: `Version: v${version} | ${this.Discord.commandPrefix}help`,
-							type: 'STREAMING'
-						}
-					},
-					{
-						activity: {
-							name: `spudnik.io/support | ${this.Discord.commandPrefix}support`,
-							type: 'PLAYING'
-						}
-					},
-					{
-						activity: {
-							name: 'docs.spudnik.io',
-							type: 'STREAMING'
-						}
-					},
-					{
-						activity: {
-							name: `and Assisting ${users} users on ${guilds} servers`,
-							type: 'WATCHING'
-						}
-					},
-					{
-						activity: {
-							name: 'For the Motherland!',
-							type: 'PLAYING'
-						}
-					}
-				];
-
-				console.log(chalk.magenta(`Logged into Discord! Serving in ${guilds} Discord servers`));
-				console.log(chalk.blue('---Spudnik Launch Success---'));
-
-				// Update bot status, using array of possible statuses
-				let statusIndex: number = -1;
-				statusIndex = this.updateStatus(this.Discord, statuses, statusIndex);
-				setInterval(() => statusIndex = this.updateStatus(this.Discord, statuses, statusIndex), this.Config.statusUpdateInterval, true);
-				setInterval(() => this.updateStatusStats(this.Config, this.Discord, statuses), this.Config.botListUpdateInterval, true);
-			})
+			.once('ready', () => handleReady(version, this.Discord, this.Config))
 			.on('raw', async (event: any) => {
 				if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(event.t)) { return; } //Ignore non-emoji related actions
 				const { d: data } = event;
@@ -393,49 +332,5 @@ export class Spudnik {
 
 		// Print URL for accessing server
 		console.log(`Heartbeat running on port ${PORT}`);
-	}
-
-	/**
-	 * Updates discord bot list stats and status messages on interval
-	 *
-	 * @private
-	 * @memberof Spudnik
-	 */
-	private updateStatusStats = (config: Configuration, client: CommandoClient, statuses: PresenceData[]): PresenceData[] => {
-		const users: number = client.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b);
-		const guilds: number = client.guilds.array().length;
-
-		// Update Statuses
-		statuses = statuses.filter((item: PresenceData) => {
-			if (item.activity && item.activity.type !== 'WATCHING') {
-				return true;
-			}
-			return false;
-		});
-
-		statuses.push({
-			activity: {
-				name: `and Assisting ${users} users on ${guilds} servers`,
-				type: 'WATCHING'
-			}
-		});
-
-		return statuses;
-	}
-
-	/**
-	 * Updates bot status on interval
-	 *
-	 * @private
-	 * @memberof Spudnik
-	 */
-	private updateStatus = (client: CommandoClient, statuses: PresenceData[], statusIndex: number): number => {
-		++statusIndex;
-		if (statusIndex >= statuses.length) {
-			statusIndex = 0;
-		}
-		client.user.setPresence(statuses[statusIndex]);
-
-		return statusIndex;
 	}
 }
