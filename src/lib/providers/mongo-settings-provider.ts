@@ -21,7 +21,7 @@ const settingsSchema: Schema = new Schema({
  * @class MongoProvider
  * @extends {SettingProvider}
  */
-export class MongoProvider extends SettingProvider {
+export class MongoSettingsProvider extends SettingProvider {
 	private db: Connection;
 	private settings: Map<string, any>;
 	private listeners: Map<string, any>;
