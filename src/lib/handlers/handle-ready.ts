@@ -3,7 +3,7 @@ import { Guild, PresenceData } from 'discord.js';
 import { CommandoClient } from 'discord.js-commando';
 import { Configuration } from 'src/lib/spudnik';
 
-export function handleReady(version: string, client: CommandoClient, config: Configuration) {
+export async function handleReady(version: string, client: CommandoClient, config: Configuration) {
 	const users: number = client.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b);
 	const guilds: number = client.guilds.array().length;
 	const statuses: PresenceData[] = [
