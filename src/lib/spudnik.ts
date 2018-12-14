@@ -132,7 +132,7 @@ export class Spudnik {
 			.on('guildMemberRemove', (member: GuildMember) => handleGuildMemberRemove(member, this.Discord))
 			.on('disconnected', (err: Error) => handleDisconnected(err, this.Rollbar))
 			.on('error', (err: Error) => handleError(err, this.Rollbar))
-			.on('warn', (err: Error) => handleWarn(err, this.Rollbar))
+			.on('warn', (err: Error) => handleWarn(err, this.Discord))
 			.on('debug', (err: Error) => handleDebug(err))
 			.on('commandError', (cmd, err) => handleCommandError(cmd, err));
 	}
