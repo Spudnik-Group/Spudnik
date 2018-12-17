@@ -1,5 +1,5 @@
 export function handleDebug(err: Error) {
-	if (this.Config.debug) {
+	if (process.env.spud_debug) {
 		console.info(err);
 	}
 }
