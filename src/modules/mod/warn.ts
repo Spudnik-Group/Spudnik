@@ -167,9 +167,14 @@ export default class WarnCommand extends Command {
 			} else {
 				// No document for current guild
 				let newWarning = new warningModel({
-					id: args.member.id,
-					points: args.points,
-					tag: args.member.user.tag
+					guild: msg.guild.id,
+					warnings: [
+						{
+							id: args.member.id,
+							points: args.points,
+							tag: args.member.user.tag
+						}
+					]
 				});
 				newWarning.save((err: any, item: IWarningsModel) => {
 					if (err) {
