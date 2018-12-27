@@ -32,7 +32,7 @@ export default class AdblockCommand extends Command {
 				syntax: \`!adblock <enable|disable>\`
 
 				Supplying no subcommand returns an error.
-				Manage Messages permission required.`,
+				MANAGE_MESSAGES permission required.`,
 			examples: [
 				'!adblock enable',
 				'!adblock disable'
@@ -44,19 +44,9 @@ export default class AdblockCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			}
+			},
+			userPermissions: ['MANAGE_MESSAGES']
 		});
-	}
-
-	/**
-	 * Determine if a member has permission to run the "adblock" command.
-	 *
-	 * @param {CommandMessage} msg
-	 * @returns {boolean}
-	 * @memberof AdblockCommand
-	 */
-	public hasPermission(msg: CommandMessage): boolean {
-		return msg.member.hasPermission('MANAGE_MESSAGES');
 	}
 
 	/**

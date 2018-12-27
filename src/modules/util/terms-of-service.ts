@@ -50,7 +50,7 @@ export default class TermsOfServiceCommand extends Command {
 				\`list\` - returns all the terms of service info blocks.
 				If no subCommand is supplied, bot responds with embedded TOS content.
 
-				Manage Guild permission required.`,
+				MANAGE_GUILD permission required.`,
 			examples: [
 				'!tos channel #rules',
 				'!tos title 1 Interesting title',
@@ -65,19 +65,9 @@ export default class TermsOfServiceCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			}
+			},
+			userPermissions: ['MANAGE_GUILD']
 		});
-	}
-
-	/**
-	 * Determine if a member has permission to run the "accept" command.
-	 *
-	 * @param {CommandMessage} msg
-	 * @returns {boolean}
-	 * @memberof TermsOfServiceCommand
-	 */
-	public hasPermission(msg: CommandMessage): boolean {
-		return this.client.isOwner(msg.author) || msg.member.hasPermission('MANAGE_GUILD');
 	}
 
 	/**

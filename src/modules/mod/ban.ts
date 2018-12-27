@@ -43,7 +43,7 @@ export default class BanCommand extends Command {
 			details: stripIndents`
 				syntax: \`!ban <@userMention> <reason> (daysOfMessages)\`
 
-				Ban Members permission required.
+				BAN_MEMBERS permission required.
 			`,
 			examples: [
 				'!ban @user being a pleb',
@@ -56,19 +56,9 @@ export default class BanCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			}
+			},
+			userPermissions: ['BAN_MEMBERS']
 		});
-	}
-
-	/**
-	 * Determine if a member has permission to run the "ban" command.
-	 *
-	 * @param {CommandMessage} msg
-	 * @returns {boolean}
-	 * @memberof BanCommand
-	 */
-	public hasPermission(msg: CommandMessage): boolean {
-		return msg.member.hasPermission(['BAN_MEMBERS']);
 	}
 
 	/**

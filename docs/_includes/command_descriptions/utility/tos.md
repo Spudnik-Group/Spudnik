@@ -7,4 +7,4 @@ syntax: `!tos (channel|title|body|list) (#channelMention | message number) (text
 `list` - returns all the terms of service info blocks.<br />
 If no subCommand is supplied, bot responds with embedded TOS content.<br />
 <br />
-Manage Guild permission required.
+MANAGE_GUILD permission required.

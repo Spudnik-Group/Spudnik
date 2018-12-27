@@ -6,4 +6,4 @@ syntax: `!role <add|remove|list|default> (@roleMention)`<br />
 `list` - lists the available self-assignable-roles.<br />
 `default <@roleMention>` - sets the default role.<br />
 <br />
-Manage Roles permission required.
+MANAGE_ROLES permission required.
