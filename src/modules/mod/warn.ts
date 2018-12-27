@@ -211,7 +211,5 @@ export default class WarnCommand extends Command {
 			// Send the success response
 			return msg.embed(warnEmbed);
 		});
-
-		
 	}
 }
