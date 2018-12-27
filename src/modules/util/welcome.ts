@@ -42,7 +42,7 @@ export default class WelcomeCommand extends Command {
 				\`enable\` - Enable the welcome message feature.
 				\`disable\` - Disable the welcome message feature.
 
-				Manage Guild permission required.
+				MANAGE_GUILD permission required.
 			`,
 			examples: [
 				'!welcome message Please welcome {user} to the guild!',
@@ -58,19 +58,9 @@ export default class WelcomeCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			}
+			},
+			userPermissions: ['MANAGE_GUILD']
 		});
-	}
-
-	/**
-	 * Determine if a member has permission to run the "welcome" command.
-	 *
-	 * @param {CommandMessage} msg
-	 * @returns {boolean}
-	 * @memberof WelcomeCommand
-	 */
-	public hasPermission(msg: CommandMessage): boolean {
-		return this.client.isOwner(msg.author) || msg.member.hasPermission('MANAGE_GUILD');
 	}
 
 	/**

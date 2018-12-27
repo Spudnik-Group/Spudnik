@@ -9,4 +9,4 @@ List of filters:
 - `uploads`: Messages containing an attachment
 - `links`: Messages containing a link\n
 <br />
-Manage Message permission required.
+MANAGE_MESSAGES permission required.

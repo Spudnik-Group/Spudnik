@@ -34,7 +34,7 @@ export default class NickCommand extends Command {
 
 				Supplying no nickname resets the nickname to default.
 
-				Manage Nicknames permission required.
+				MANAGE_NICKNAMES permission required.
 			`,
 			examples: [
 				'!nick',
@@ -47,19 +47,9 @@ export default class NickCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			}
+			},
+			userPermissions: ['MANAGE_NICKNAMES']
 		});
-	}
-
-	/**
-	 * Determine if a member has permission to run the "nick" command.
-	 *
-	 * @param {CommandMessage} msg
-	 * @returns {boolean}
-	 * @memberof NickCommand
-	 */
-	public hasPermission(msg: CommandMessage): boolean {
-		return this.client.isOwner(msg.author) || msg.member.hasPermission('MANAGE_NICKNAMES');
 	}
 
 	/**

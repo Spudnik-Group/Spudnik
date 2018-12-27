@@ -33,7 +33,7 @@ export default class StarboardCommand extends Command {
 					type: 'channel|string'
 				}
 			],
-			clientPermissions: ['SEND_MESSAGES', 'EMBED_LINKS', 'READ_MESSAGE_HISTORY', 'ATTACH_FILES'],
+			clientPermissions: ['EMBED_LINKS', 'READ_MESSAGE_HISTORY', 'ATTACH_FILES'],
 			description: 'Used to configure the :star: Star Board feature.',
 			details: stripIndents`
 				syntax: \`!starboard <status|channel|trigger|enable|disable> (new starboard emoji | #channelMention)\`
@@ -61,19 +61,9 @@ export default class StarboardCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			}
+			},
+			userPermissions: ['ADMINISTRATOR']
 		});
-	}
-
-	/**
-	 * Determine if a member has permission to run the "starboard" command.
-	 *
-	 * @param {CommandMessage} msg
-	 * @returns {boolean}
-	 * @memberof StarboardCommand
-	 */
-	public hasPermission(msg: CommandMessage): boolean {
-		return this.client.isOwner(msg.author) || msg.member.hasPermission('ADMINISTRATOR');
 	}
 
 	/**

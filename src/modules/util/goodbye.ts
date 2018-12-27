@@ -42,7 +42,7 @@ export default class GoodbyeCommand extends Command {
 				\`enable\` - Enable the goodbye message feature.
 				\`disable\` - Disable the goodbye message feature.
 
-				Manage Guild permission required.
+				MANAGE_GUILD permission required.
 			`,
 			examples: [
 				'!goodbye message Everyone mourn the loss of {user}',
@@ -58,19 +58,9 @@ export default class GoodbyeCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			}
+			},
+			userPermissions: ['MANAGE_GUILD']
 		});
-	}
-
-	/**
-	 * Determine if a member has permission to run the "goodbye" command.
-	 *
-	 * @param {CommandMessage} msg
-	 * @returns {boolean}
-	 * @memberof GoodbyeCommand
-	 */
-	public hasPermission(msg: CommandMessage): boolean {
-		return this.client.isOwner(msg.author) || msg.member.hasPermission('MANAGE_GUILD');
 	}
 
 	/**

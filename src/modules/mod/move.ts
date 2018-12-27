@@ -2,6 +2,7 @@ import { Channel, GuildMember, Message, MessageEmbed, TextChannel, MessageAttach
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError } from '../../lib/helpers';
+import { stripIndents } from 'common-tags';
 
 /**
  * Enable or disable the Move feature.
@@ -39,6 +40,11 @@ export default class MoveCommand extends Command {
 			],
 			clientPermissions: ['MANAGE_MESSAGES'],
 			description: 'Moves a message to a different channel.',
+			details: stripIndents`
+				syntax: \`!move <messageId> <#channel> (reason)\`\
+
+				MANAGE_MESSAGES permission required.
+			`,
 			examples: [
 				'!move 1234567890 #channel',
 				'!move 1234567890 #channel rule violation'
@@ -50,19 +56,9 @@ export default class MoveCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			}
+			},
+			userPermissions: ['MANAGE_MESSAGES']
 		});
-	}
-
-	/**
-	 * Determine if a member has permission to run the "move" command.
-	 *
-	 * @param {CommandMessage} msg
-	 * @returns {boolean}
-	 * @memberof MoveCommand
-	 */
-	public hasPermission(msg: CommandMessage): boolean {
-		return msg.member.hasPermission('MANAGE_MESSAGES');
 	}
 
 	/**

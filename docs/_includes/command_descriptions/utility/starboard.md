@@ -7,4 +7,4 @@ syntax: `!starboard <status|channel|trigger|enable|disable> (new starboard emoji
 `enable` - enables the Star Board feature.<br />
 `disable` - disables the Star Board feature.<br />
 <br />
-Administrator permission required.
+ADMINISTRATOR permission required.

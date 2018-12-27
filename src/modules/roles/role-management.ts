@@ -43,7 +43,7 @@ export default class RoleManagementCommands extends Command {
 				\`list\` - lists the available self-assignable-roles.
 				\`default <@roleMention>\` - sets the default role.
 
-				Manage Roles permission required.
+				MANAGE_ROLES permission required.
 			`,
 			examples: [
 				'!role add @PUBG',
@@ -54,19 +54,9 @@ export default class RoleManagementCommands extends Command {
 			group: 'roles',
 			guildOnly: true,
 			memberName: 'role',
-			name: 'role'
+			name: 'role',
+			userPermissions: ['MANAGE_ROLES']
 		});
-	}
-
-	/**
-	 * Determine if a member has permission to run the "role" command.
-	 *
-	 * @param {CommandMessage} msg
-	 * @returns {boolean}
-	 * @memberof RoleManagementCommands
-	 */
-	public hasPermission(msg: CommandMessage): boolean {
-		return msg.member.hasPermission('MANAGE_ROLES');
 	}
 
 	/**

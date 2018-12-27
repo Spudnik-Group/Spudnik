@@ -6,4 +6,4 @@ syntax: `!welcome <message|channel|enable|disable> (text | #channelMention)`<br 
 `enable` - Enable the welcome message feature.<br />
 `disable` - Disable the welcome message feature.<br />
 <br />
-Manage Guild permission required.
+MANAGE_GUILD permission required.

@@ -37,7 +37,7 @@ export default class KickCommand extends Command {
 			details: stripIndents`
 				syntax: \`!kick <@userMention> <reason>\`
 
-				Kick Members permission required.
+				KICK_MEMBERS permission required.
 			`,
 			examples: [
 				'!kick @user being a pleb'
@@ -49,19 +49,9 @@ export default class KickCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			}
+			},
+			userPermissions: ['KICK_MEMBERS']
 		});
-	}
-
-	/**
-	 * Determine if a member has permission to run the "kick" command.
-	 *
-	 * @param {CommandMessage} msg
-	 * @returns {boolean}
-	 * @memberof KickCommand
-	 */
-	public hasPermission(msg: CommandMessage): boolean {
-		return msg.member.hasPermission(['KICK_MEMBERS']);
 	}
 
 	/**

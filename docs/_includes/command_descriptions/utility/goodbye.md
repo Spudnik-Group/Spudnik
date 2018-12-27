@@ -6,4 +6,4 @@ syntax: `!goodbye <message|channel|enable|disable> (text | #channelMention)`<br 
 `enable` - Enable the goodbye message feature.<br />
 `disable` - Disable the goodbye message feature.<br />
 <br />
-Manage Guild permission required.
+MANAGE_GUILD permission required.
