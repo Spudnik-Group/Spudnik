@@ -148,7 +148,7 @@ export default class WarnCommand extends Command {
 				} else {
 					// No previous warnings present
 					// Update document with new warning
-					warningModel.update({ 'guild': msg.guild.id }, { '$push': { 'id': args.member.id, 'points': args.points, 'tag': args.member.user.tag } }, (err: any, raw: any) => {
+					warningModel.update({ 'guild': msg.guild.id }, { '$push': { 'warnings': {'id': args.member.id, 'points': args.points, 'tag': args.member.user.tag} } }, (err: any, raw: any) => {
 						if (err) {
 							// Emit warn event for debugging
 							msg.client.emit('warn', stripIndents`
