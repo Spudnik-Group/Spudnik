@@ -1,8 +1,9 @@
 import { stripIndents } from 'common-tags';
-import { GuildMember, Message, MessageEmbed } from 'discord.js';
+import { GuildMember, Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, startTyping, deleteCommandMessages, stopTyping } from '../../lib/helpers';
+import moment = require('moment');
 
 /**
  * Kick a member from the guild.
@@ -63,6 +64,7 @@ export default class KickCommand extends Command {
 	 * @memberof KickCommand
 	 */
 	public async run(msg: CommandMessage, args: { member: GuildMember, reason: string }): Promise<Message | Message[] | any> {
+		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
 		const memberToKick: GuildMember = args.member;
 		const kickEmbed: MessageEmbed = new MessageEmbed({
 			author: {
@@ -71,30 +73,46 @@ export default class KickCommand extends Command {
 			},
 			color: getEmbedColor(msg),
 			description: ''
-		});
+		}).setTimestamp();
 
-		if (msg.deletable) await msg.delete();
+		startTyping(msg);
 		
+		// Check if user is able to kick the mentioned user
 		if (!memberToKick.kickable || !(msg.member.roles.highest.comparePositionTo(memberToKick.roles.highest) > 0)) {
 			return sendSimpleEmbeddedError(msg, `I can't kick ${memberToKick}. Do they have the same or a higher role than me or you?`);
 		}
 
 		memberToKick.kick(`Kicked by: ${msg.author} for: ${args.reason}`)
 			.then(() => {
-				kickEmbed.description = `Kicking ${memberToKick} from ${msg.guild} for ${args.reason}!`;
+				// Set up embed message
+				kickEmbed.setDescription(stripIndents`
+					**Member:** ${memberToKick.user.tag} (${memberToKick.id})
+					**Action:** Kick
+					**Reason:** ${args.reason}
+				`);
 
+				// Log the event in the mod log
+				if (msg.guild.settings.get('modlogs', true)) {
+					modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, kickEmbed);
+				}
+				deleteCommandMessages(msg, this.client);
+				stopTyping(msg);
+
+				// Send the success response
 				return msg.embed(kickEmbed);
 			})
 			.catch((err: Error) => {
-				msg.client.emit('error',
-					stripIndents`Error with command 'kick'\n
-						Banning ${memberToKick} from ${msg.guild} failed!\n
-						Error: ${err}`
-				);
-
-				return sendSimpleEmbeddedMessage(msg, `Kicking ${memberToKick} failed!`);
+				// Emit warn event for debugging
+				msg.client.emit('warn', stripIndents`
+				Error occurred in \`kick\` command!
+				**Server:** ${msg.guild.name} (${msg.guild.id})
+				**Author:** ${msg.author.tag} (${msg.author.id})
+				**Time:** ${moment(msg.createdTimestamp).format('MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+				**Input:** \`${args.member.user.tag} (${args.member.id})\` || \`${args.reason}\`
+				**Error Message:** ${err}`);
+				// Inform the user the command failed
+				stopTyping(msg);
+				return sendSimpleEmbeddedError(msg, `Kicking ${args.member} for ${args.reason} failed!`);
 			});
-
-		return sendSimpleEmbeddedMessage(msg, 'Loading...');
 	}
 }

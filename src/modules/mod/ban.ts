@@ -1,8 +1,9 @@
 import { stripIndents } from 'common-tags';
-import { GuildMember, Message, MessageEmbed, Role } from 'discord.js';
+import { GuildMember, Message, MessageEmbed, Role, TextChannel } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
+import moment = require('moment');
 
 /**
  * Ban a member and optionally delete past messages.
@@ -70,6 +71,7 @@ export default class BanCommand extends Command {
 	 * @memberof BanCommand
 	 */
 	public async run(msg: CommandMessage, args: { member: GuildMember, reason: string, daysOfMessages: number }): Promise<Message | Message[]> {
+		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
 		const memberToBan: GuildMember = args.member;
 		const banEmbed: MessageEmbed = new MessageEmbed({
 			author: {
@@ -78,49 +80,64 @@ export default class BanCommand extends Command {
 			},
 			color: getEmbedColor(msg),
 			description: ''
-		});
-
+		}).setTimestamp();
 		const highestRoleOfCallingMember: Role = msg.member.roles.highest;
-		const guild = msg.guild;
 
-		if (msg.deletable) await msg.delete();
+		startTyping(msg);
 
+		// Check if user is able to ban the mentioned user
 		if (!memberToBan.bannable || !(highestRoleOfCallingMember.comparePositionTo(memberToBan.roles.highest) > 0)) {
 			return sendSimpleEmbeddedError(msg, `I can't ban <@${memberToBan.id}>. Do they have the same or a higher role than me or you?`);
 		}
 
 		if (args.daysOfMessages) {
+			// Ban and delete messages
 			memberToBan.ban({ days: args.daysOfMessages, reason: `Banned by: ${msg.author} for: ${args.reason}` })
-				.then(() => {
-					banEmbed.description = `Banning <@${memberToBan.id}> from ${guild.name} for ${args.reason}!`;
-					return msg.embed(banEmbed);
-				})
 				.catch((err: Error) => {
-					msg.client.emit('error',
-						stripIndents`Error with command 'ban'\n
-							Banning ${memberToBan.id} from ${msg.guild} failed!\n
-							Error: ${err}`
-					);
-
-					return sendSimpleEmbeddedError(msg, `Banning <@${memberToBan.id}> from ${guild.name} failed!`, 3000);
+					// Emit warn event for debugging
+					msg.client.emit('warn', stripIndents`
+					Error occurred in \`ban\` command!
+					**Server:** ${msg.guild.name} (${msg.guild.id})
+					**Author:** ${msg.author.tag} (${msg.author.id})
+					**Time:** ${moment(msg.createdTimestamp).format('MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+					**Input:** \`${args.member.user.tag} (${args.member.id})\` || \`${args.reason}\`
+					**Error Message:** ${err}`);
+					// Inform the user the command failed
+					stopTyping(msg);
+					return sendSimpleEmbeddedError(msg, `Banning ${args.member} for ${args.reason} failed!`);
 				});
 		} else {
+			// Ban
 			memberToBan.ban({ reason: `Banned by: ${msg.author} for: ${args.reason}` })
-				.then(() => {
-					banEmbed.description = `Banning <@${memberToBan.id}> from ${guild.name} for ${args.reason}!`;
-					return msg.embed(banEmbed);
-				})
 				.catch((err: Error) => {
-					msg.client.emit('error',
-						stripIndents`Error with command 'ban'\n
-							Banning ${memberToBan.id} from ${guild.name} failed!\n
-							Error: ${err}`
-					);
-
-					return sendSimpleEmbeddedError(msg, `Banning <@${memberToBan.id}> from ${guild.name} failed!`);
+					// Emit warn event for debugging
+					msg.client.emit('warn', stripIndents`
+					Error occurred in \`ban\` command!
+					**Server:** ${msg.guild.name} (${msg.guild.id})
+					**Author:** ${msg.author.tag} (${msg.author.id})
+					**Time:** ${moment(msg.createdTimestamp).format('MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+					**Input:** \`${args.member.user.tag} (${args.member.id})\` || \`${args.reason}\`
+					**Error Message:** ${err}`);
+					// Inform the user the command failed
+					stopTyping(msg);
+					return sendSimpleEmbeddedError(msg, `Banning ${args.member} for ${args.reason} failed!`);
 				});
 		}
 
-		return sendSimpleEmbeddedMessage(msg, 'Loading...');
+		// Set up embed message
+		banEmbed.setDescription(stripIndents`
+			**Member:** ${args.member.user.tag} (${args.member.id})
+			**Action:** Ban
+			**Reason:** ${args.reason}`);
+		
+		// Log the event in the mod log
+		if (msg.guild.settings.get('modlogs', true)) {
+			modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, banEmbed);
+		}
+		deleteCommandMessages(msg, this.client);
+		stopTyping(msg);
+
+		// Send the success response
+		return msg.embed(banEmbed);
 	}
 }
