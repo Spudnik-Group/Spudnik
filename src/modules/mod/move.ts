@@ -1,11 +1,11 @@
-import { Channel, GuildMember, Message, MessageEmbed, TextChannel, MessageAttachment } from 'discord.js';
+import { Channel, GuildMember, Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError } from '../../lib/helpers';
+import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, startTyping, deleteCommandMessages, stopTyping } from '../../lib/helpers';
 import { stripIndents } from 'common-tags';
 
 /**
- * Enable or disable the Move feature.
+ * Moves messages to different channels.
  *
  * @export
  * @class MoveCommand
@@ -70,36 +70,36 @@ export default class MoveCommand extends Command {
 	 * @memberof MoveCommand
 	 */
 	public async run(msg: CommandMessage, args: { messageId: string, channel: Channel, reason: string }): Promise<Message | Message[]> {
+		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
 		const originalChannel = msg.channel as TextChannel;
 		const originalMessage: Message = await originalChannel.messages.fetch(args.messageId);
 		const originalMessageAuthor: GuildMember = await originalChannel.guild.members.fetch(originalMessage.author.id);
 
-		msg.delete();
+		startTyping(msg);
 
 		if (originalMessage !== undefined) {
 			const destinationChannel = args.channel;
 
 			if (destinationChannel && destinationChannel.type === 'text') {
+				// Set up embed message
 				const moveMessage = new MessageEmbed({
 					author: {
-						icon_url: `${originalMessage.author.displayAvatarURL()}`,
+						icon_url: `${originalMessageAuthor.user.displayAvatarURL()}`,
 						name: `${originalMessageAuthor.displayName}`
 					},
 					color: getEmbedColor(msg),
-					description: `${originalMessage.content}`,
+					description: `${originalMessage.content}\n`,
 					footer: {
 						text: `Originally posted at ${originalMessage.createdAt}`
 					}
 				});
-
+				// Set up embed fields
 				const fields: any = [];
-
 				fields.push({
 					inline: true,
 					name: 'Original post by:',
 					value: `<@${originalMessageAuthor.id}> in <#${originalChannel.id}>`
 				});
-
 				if (args.reason) {
 					fields.push({
 						inline: true,
@@ -107,34 +107,59 @@ export default class MoveCommand extends Command {
 						value: `${args.reason}`
 					});
 				}
-
 				if (fields !== []) {
 					moveMessage.fields = fields;
 				}
 
+				// Add attachments, if any
 				if(originalMessage.attachments.some(attachment => { return attachment.url !== '' })){
 					moveMessage.image = { url: originalMessage.attachments.first().url }
 				}
 
 				if (originalMessage.embeds.length === 0) {
+					// Send the message to the correct channel
 					await (destinationChannel as TextChannel).send(moveMessage);
-
-					return originalMessage.delete();
 				} else {
+					// Build the messages array
 					const messages: MessageEmbed[] = new Array();
-
 					messages.push(moveMessage);
 					messages.concat(originalMessage.embeds);
 					
+					// Send the messages to the correct channel
 					await (destinationChannel as TextChannel).send(messages);
-					
-					return originalMessage.delete();
 				}
+
+				// Delete the original message, now that it's been moved
+				originalMessage.delete();
+
+				// Log the event in the mod log
+				if (msg.guild.settings.get('modlogs', true)) {
+					const moveModMessage: MessageEmbed = new MessageEmbed({
+						author: {
+							icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/rightwards-arrow-with-hook_21aa.png',
+							name: 'Move it!'
+						},
+						color: getEmbedColor(msg),
+						description: stripIndents`
+							**Moderator:** ${msg.author.tag} (${msg.author.id})
+							**Member:** ${originalMessageAuthor.user.tag} (${originalMessageAuthor.id})
+							**Action:** Move
+							**Channels:** From- <#${originalChannel.id}> ==> To- <#${destinationChannel.id}
+							**Reason:** ${args.reason}
+						`
+					}).setTimestamp();
+					modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, moveModMessage);
+				}
+				deleteCommandMessages(msg, this.client);
+				stopTyping(msg);
+
 			} else {
+				stopTyping(msg);
 				return sendSimpleEmbeddedError(msg, 'Cannot move a text message to a non-text channel.');
 			}
 
 		} else {
+			stopTyping(msg);
 			return sendSimpleEmbeddedError(msg, `Could not find the message with supplied id (${args.messageId}) in this channel.`);
 		}
 	}

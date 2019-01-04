@@ -126,6 +126,7 @@ export default class BanCommand extends Command {
 
 		// Set up embed message
 		banEmbed.setDescription(stripIndents`
+			**Moderator:** ${msg.author.tag} (${msg.author.id})
 			**Member:** ${args.member.user.tag} (${args.member.id})
 			**Action:** Ban
 			**Reason:** ${args.reason}`);

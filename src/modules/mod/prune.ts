@@ -1,7 +1,8 @@
 import { stripIndents } from 'common-tags';
-import { Collection, GuildMember, Message, User } from 'discord.js';
+import { Collection, GuildMember, Message, User, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, deleteCommandMessages, startTyping, stopTyping } from '../../lib/helpers';
+import { getEmbedColor, modLogMessage } from 'src/lib/custom-helpers';
 
 /**
  * Deletes previous messages.
@@ -75,19 +76,9 @@ export default class PruneCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			}
+			},
+			userPermissions: ['MANAGE_MESSAGES']
 		});
-	}
-
-	/**
-	 * Determine if a member has permission to run the "prune" command.
-	 *
-	 * @param {CommandMessage} msg
-	 * @returns {boolean}
-	 * @memberof PruneCommand
-	 */
-	public hasPermission(msg: CommandMessage): boolean {
-		return msg.member.hasPermission('MANAGE_MESSAGES');
 	}
 
 	/**
@@ -99,9 +90,12 @@ export default class PruneCommand extends Command {
 	 * @memberof PruneCommand
 	 */
 	public async run(msg: CommandMessage, args: { limit: number, filter: string, member: GuildMember }): Promise<Message | Message[]> {
-		await msg.delete();
+		await deleteCommandMessages(msg, this.client);
 		const { filter, limit } = args;
+		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
 		let messageFilter: (message: Message) => boolean;
+
+		startTyping(msg);
 
 		if (filter) {
 			if (filter === 'invite') {
@@ -112,6 +106,7 @@ export default class PruneCommand extends Command {
 					const user: User = member.user;
 					messageFilter = (message: Message) => message.author.id === user.id;
 				} else {
+					stopTyping(msg);
 					return sendSimpleEmbeddedError(msg, `${msg.author}, you have to mention someone.`);
 				}
 			} else if (filter === 'bots') {
@@ -123,6 +118,7 @@ export default class PruneCommand extends Command {
 			} else if (filter === 'links') {
 				messageFilter = (message: Message) => message.content.search(/https?:\/\/[^ \/\.]+\.[^ \/\.]+/) !== -1;
 			} else {
+				stopTyping(msg);
 				return sendSimpleEmbeddedError(msg,
 					stripIndents`${msg.author}, that is not a valid filter.\n
 						\`help prune\` for all available filters.`
@@ -132,12 +128,31 @@ export default class PruneCommand extends Command {
 			const messages: Collection<string, Message> = await msg.channel.messages.fetch({ limit: limit });
 			const messagesToDelete: Collection<string, Message> = messages.filter(messageFilter);
 
-			await sendSimpleEmbeddedMessage(msg, `Pruning ${limit} messages.`).then((response: Message | Message[]) => {
-				msg.channel.bulkDelete(messagesToDelete.array().reverse())
-					.then(() => { if (response instanceof Message) { response.delete(); } })
-					.catch((err: Error) => null);
-			});
+			await sendSimpleEmbeddedMessage(msg, `Pruning ${limit} messages.`)
+				.then((response: Message | Message[]) => {
+					msg.channel.bulkDelete(messagesToDelete.array().reverse())
+						.then(() => { if (response instanceof Message) { response.delete(); } })
+						.catch((err: Error) => null);
+				});
 
+			// Log the event in the mod log
+			const modlogEmbed: MessageEmbed = new MessageEmbed({
+				author: {
+					iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/black-scissors_2702.png',
+					name: 'Prune'
+				},
+				color: getEmbedColor(msg),
+				description: stripIndents`
+					**Moderator:** ${msg.author.tag} (${msg.author.id})
+					**Action:** Prune
+					**Details:** Deleted ${args.limit} messages from <#${msg.channel.id}>
+					**Filter:** ${args.filter}
+				`
+			}).setTimestamp();
+			modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, modlogEmbed);
+
+			// Send the success response
+			stopTyping(msg);
 			return sendSimpleEmbeddedMessage(msg, `Pruned ${limit} messages`, 5000);
 		}
 
@@ -149,6 +164,23 @@ export default class PruneCommand extends Command {
 					.catch((err: Error) => null);
 			});
 
+		// Log the event in the mod log
+		const modlogEmbed: MessageEmbed = new MessageEmbed({
+			author: {
+				iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/black-scissors_2702.png',
+				name: 'Prune'
+			},
+			color: getEmbedColor(msg),
+			description: stripIndents`
+				**Moderator:** ${msg.author.tag} (${msg.author.id})
+				**Action:** Prune
+				**Details:** Deleted ${args.limit} messages from <#${msg.channel.id}>
+			`
+		}).setTimestamp();
+		modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, modlogEmbed);
+
+		// Send the success response
+		stopTyping(msg);
 		return sendSimpleEmbeddedMessage(msg, `Pruned ${limit} messages`, 5000);
 	}
 }

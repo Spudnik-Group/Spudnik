@@ -86,6 +86,7 @@ export default class KickCommand extends Command {
 			.then(() => {
 				// Set up embed message
 				kickEmbed.setDescription(stripIndents`
+					**Moderator:** ${msg.author.tag} (${msg.author.id})
 					**Member:** ${memberToKick.user.tag} (${memberToKick.id})
 					**Action:** Kick
 					**Reason:** ${args.reason}
