@@ -25,7 +25,13 @@ export default class AdblockCommand extends Command {
 				{
 					key: 'subCommand',
 					prompt: 'Would you like to enable or disable the feature?\n',
-					type: 'string'
+					type: 'string',
+					validate: (subCommand: string) => {
+						const allowedSubCommands = ['enable', 'disable'];
+						if (allowedSubCommands.indexOf(subCommand) < 0) {
+							return 'You provided an invalid subcommand.'
+						}
+					}
 				}
 			],
 			clientPermissions: ['MANAGE_MESSAGES'],
@@ -74,45 +80,20 @@ export default class AdblockCommand extends Command {
 
 		if (args.subCommand === 'enable') {
 			if (adblockEnabled) {
+				stopTyping(msg);
 				return sendSimpleEmbeddedMessage(msg, 'Adblock feature already enabled!');
 			} else {
 				msg.client.provider.set(msg.guild.id, 'adblockEnabled', true)
-					.catch((err: Error) => {
-						// Emit warn event for debugging
-						msg.client.emit('warn', stripIndents`
-						Error occurred in \`adblock\` command!
-						**Server:** ${msg.guild.name} (${msg.guild.id})
-						**Author:** ${msg.author.tag} (${msg.author.id})
-						**Time:** ${moment(msg.createdTimestamp).format('MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
-						**Input:** \`${args.subCommand}\`
-						**Error Message:** ${err}`);
-						// Inform the user the command failed
-						stopTyping(msg);
-						return sendSimpleEmbeddedError(msg, 'Enabling adblock feature failed!');
-					});
+					.catch((err: Error) => this.catchError(msg, args, err));
 			}
 		} else if (args.subCommand === 'disable') {
 			if (!adblockEnabled) {
+				stopTyping(msg);
 				return sendSimpleEmbeddedMessage(msg, 'Adblock feature already disabled!');
 			} else {
 				msg.client.provider.set(msg.guild.id, 'adblockEnabled', false)
-					.catch((err: Error) => {
-						// Emit warn event for debugging
-						msg.client.emit('warn', stripIndents`
-						Error occurred in \`adblock\` command!
-						**Server:** ${msg.guild.name} (${msg.guild.id})
-						**Author:** ${msg.author.tag} (${msg.author.id})
-						**Time:** ${moment(msg.createdTimestamp).format('MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
-						**Input:** \`${args.subCommand}\`
-						**Error Message:** ${err}`);
-						// Inform the user the command failed
-						stopTyping(msg);
-						return sendSimpleEmbeddedError(msg, 'Disabling adblock feature failed!');
-					});
+					.catch((err: Error) => this.catchError(msg, args, err));
 			}
-		} else {
-			stopTyping(msg);
-			return sendSimpleEmbeddedError(msg, 'Invalid subcommand! See `help adblock` for details.');
 		}
 		
 		// Set up embed message
@@ -130,5 +111,23 @@ export default class AdblockCommand extends Command {
 
 		// Send the success response
 		return msg.embed(adblockEmbed);
+	}
+
+	private catchError(msg: CommandMessage, args: { subCommand: string }, err: Error) {
+		// Emit warn event for debugging
+		msg.client.emit('warn', stripIndents`
+		Error occurred in \`adblock\` command!
+		**Server:** ${msg.guild.name} (${msg.guild.id})
+		**Author:** ${msg.author.tag} (${msg.author.id})
+		**Time:** ${moment(msg.createdTimestamp).format('MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+		**Input:** \`Adblock ${args.subCommand}\`
+		**Error Message:** ${err}`);
+		// Inform the user the command failed
+		stopTyping(msg);
+		if (args.subCommand === 'enable') {
+			return sendSimpleEmbeddedError(msg, 'Enabling adblock feature failed!');
+		} else {
+			return sendSimpleEmbeddedError(msg, 'Disabling adblock feature failed!');
+		}
 	}
 }

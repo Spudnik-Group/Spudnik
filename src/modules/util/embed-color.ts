@@ -1,7 +1,9 @@
 import { stripIndents } from 'common-tags';
-import { Message } from 'discord.js';
+import { Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
+import { modLogMessage } from 'src/lib/custom-helpers';
+import moment = require('moment');
 
 /**
  * Change the default embed color for the server.
@@ -68,26 +70,64 @@ export default class EmbedColorCommand extends Command {
 	 * @memberof EmbedColorCommand
 	 */
 	public async run(msg: CommandMessage, args: { color: string }): Promise<Message | Message[]> {
-		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
-		if (args.color === '') {
+		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
+		const embedColorEmbed: MessageEmbed = new MessageEmbed({
+			author: {
+				iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/artist-palette_1f3a8.png',
+				name: 'Embed Color'
+			},
+			description: ''
+		}).setTimestamp();
+
+		startTyping(msg);
+
+		if (!args.color) {
 			msg.client.provider.remove(msg.guild, 'embedColor')
 				.then(() => {
-					return sendSimpleEmbeddedMessage(msg, 'Default Embed Color cleared.');
+					// Set up embed message
+					embedColorEmbed.setDescription(stripIndents`
+						**Member:** ${msg.author.tag} (${msg.author.id})
+						**Action:** Embed Color Reset
+					`);
 				})
-				.catch((err: Error) => {
-					msg.client.emit('warn', `Error in command util:embedcolor: ${err}`);
-					return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
-				});
+				.catch((err: Error) => this.catchError(msg, args, err));
 		} else {
 			msg.client.provider.set(msg.guild.id, 'embedColor', args.color)
 				.then(() => {
-					return sendSimpleEmbeddedMessage(msg, `Default Embed Color changed to: ${args.color}. How do I look?`);
+					// Set up embed message
+					embedColorEmbed.setDescription(stripIndents`
+						**Member:** ${msg.author.tag} (${msg.author.id})
+						**Action:** Embed Color set to ${args.color}
+					`);
 				})
-				.catch((err: Error) => {
-					msg.client.emit('warn', `Error in command util:embedcolor: ${err}`);
-					return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
-				});
+				.catch((err: Error) => this.catchError(msg, args, err));
 		}
-		return response;
+		// Log the event in the mod log
+		if (msg.guild.settings.get('modlogs', true)) {
+			modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, embedColorEmbed);
+		}
+		deleteCommandMessages(msg, this.client);
+		stopTyping(msg);
+
+		// Send the success response
+		return msg.embed(embedColorEmbed);
+	}
+
+	private catchError(msg: CommandMessage, args: { color: string }, err: Error) {
+		// Emit warn event for debugging
+		msg.client.emit('warn', stripIndents`
+		Error occurred in \`embedcolor\` command!
+		**Server:** ${msg.guild.name} (${msg.guild.id})
+		**Author:** ${msg.author.tag} (${msg.author.id})
+		**Time:** ${moment(msg.createdTimestamp).format('MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+		**Input:** \`${args.color}\`
+		**Error Message:** ${err}`);
+		// Inform the user the command failed
+		stopTyping(msg);
+		if (!args.color) {
+			return sendSimpleEmbeddedError(msg, 'There was an error resetting the embed color.');
+		} else {
+			return sendSimpleEmbeddedError(msg, `There was an error setting the embed color to ${args.color}`)
+		}
 	}
 }

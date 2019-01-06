@@ -106,19 +106,7 @@ export default class WarnCommand extends Command {
 
 		// Check for guild's warnings
 		warningModel.findOne({ guild: msg.guild.id }, (err: any, res: IWarningsModel) => {
-			if (err) {
-				// Emit warn event for debugging
-				msg.client.emit('warn', stripIndents`
-				Error occurred in \`warn\` command!
-				**Server:** ${msg.guild.name} (${msg.guild.id})
-				**Author:** ${msg.author.tag} (${msg.author.id})
-				**Time:** ${moment(msg.createdTimestamp).format('MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
-				**Input:** \`${args.member.user.tag} (${args.member.id})\`|| \`${args.points}\` || \`${args.reason}\`
-				**Error Message:** ${err}`);
-				// Inform the user the command failed
-				stopTyping(msg);
-				return sendSimpleEmbeddedError(msg, `Warning ${args.member} failed!`);
-			}
+			if (err) this.catchError(msg, args, err);
 			if (res) {
 				// Warnings present for current guild
 				const warningsForCurrentGuild: IWarningsObject[] = res.warnings;
@@ -131,37 +119,13 @@ export default class WarnCommand extends Command {
 					previousPoints = warningForCurrentMember[0].points;
 					// Update previous warning points
 					warningModel.update({ 'guild': msg.guild.id, 'warnings.id': args.member }, { '$set': { 'warnings.$.points': args.points + previousPoints } }, (err: any, raw: any) => {
-						if (err) {
-							// Emit warn event for debugging
-							msg.client.emit('warn', stripIndents`
-							Error occurred in \`warn\` command!
-							**Server:** ${msg.guild.name} (${msg.guild.id})
-							**Author:** ${msg.author.tag} (${msg.author.id})
-							**Time:** ${moment(msg.createdTimestamp).format('MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
-							**Input:** \`${args.member.user.tag} (${args.member.id})\`|| \`${args.points}\` || \`${args.reason}\`
-							**Error Message:** ${err}`);
-							// Inform the user the command failed
-							stopTyping(msg);
-							return sendSimpleEmbeddedError(msg, `Warning ${args.member} failed!`);
-						}
+						if (err) this.catchError(msg, args, err);
 					});
 				} else {
 					// No previous warnings present
 					// Update document with new warning
-					warningModel.update({ 'guild': msg.guild.id }, { '$push': { 'warnings': {'id': args.member.id, 'points': args.points, 'tag': args.member.user.tag} } }, (err: any, raw: any) => {
-						if (err) {
-							// Emit warn event for debugging
-							msg.client.emit('warn', stripIndents`
-							Error occurred in \`warn\` command!
-							**Server:** ${msg.guild.name} (${msg.guild.id})
-							**Author:** ${msg.author.tag} (${msg.author.id})
-							**Time:** ${moment(msg.createdTimestamp).format('MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
-							**Input:** \`${args.member.user.tag} (${args.member.id})\`|| \`${args.points}\` || \`${args.reason}\`
-							**Error Message:** ${err}`);
-							// Inform the user the command failed
-							stopTyping(msg);
-							return sendSimpleEmbeddedError(msg, `Warning ${args.member} failed!`);
-						}
+					warningModel.update({ 'guild': msg.guild.id }, { '$push': { 'warnings': {'id': args.member.id, 'points': args.points, 'tag': args.member.user.tag} } }, (err: any) => {
+						if (err) this.catchError(msg, args, err);
 					});
 				}
 			} else {
@@ -177,19 +141,7 @@ export default class WarnCommand extends Command {
 					]
 				});
 				newWarning.save((err: any, item: IWarningsModel) => {
-					if (err) {
-						// Emit warn event for debugging
-						msg.client.emit('warn', stripIndents`
-						Error occurred in \`warn\` command!
-						**Server:** ${msg.guild.name} (${msg.guild.id})
-						**Author:** ${msg.author.tag} (${msg.author.id})
-						**Time:** ${moment(msg.createdTimestamp).format('MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
-						**Input:** \`${args.member.user.tag} (${args.member.id})\`|| \`${args.points}\` || \`${args.reason}\`
-						**Error Message:** ${err}`);
-						// Inform the user the command failed
-						stopTyping(msg);
-						return sendSimpleEmbeddedError(msg, `Warning ${args.member} failed!`);
-					}
+					if (err) this.catchError(msg, args, err);
 				});
 			}
 
@@ -211,5 +163,19 @@ export default class WarnCommand extends Command {
 			// Send the success response
 			return msg.embed(warnEmbed);
 		});
+	}
+	
+	private catchError(msg: CommandMessage, args: { member: GuildMember, points: number, reason: string }, err: Error) {
+		// Emit warn event for debugging
+		msg.client.emit('warn', stripIndents`
+		Error occurred in \`warn\` command!
+		**Server:** ${msg.guild.name} (${msg.guild.id})
+		**Author:** ${msg.author.tag} (${msg.author.id})
+		**Time:** ${moment(msg.createdTimestamp).format('MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+		**Input:** \`${args.member.user.tag} (${args.member.id})\`|| \`${args.points}\` || \`${args.reason}\`
+		**Error Message:** ${err}`);
+		// Inform the user the command failed
+		stopTyping(msg);
+		return sendSimpleEmbeddedError(msg, `Warning ${args.member} failed!`);
 	}
 }
