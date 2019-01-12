@@ -82,7 +82,7 @@ export default class EmbedColorCommand extends Command {
 		startTyping(msg);
 
 		if (!args.color) {
-			msg.client.provider.remove(msg.guild, 'embedColor')
+			msg.guild.settings.remove('embedColor')
 				.then(() => {
 					// Set up embed message
 					embedColorEmbed.setDescription(stripIndents`
@@ -92,7 +92,7 @@ export default class EmbedColorCommand extends Command {
 				})
 				.catch((err: Error) => this.catchError(msg, args, err));
 		} else {
-			msg.client.provider.set(msg.guild.id, 'embedColor', args.color)
+			msg.guild.settings.set('embedColor', args.color)
 				.then(() => {
 					// Set up embed message
 					embedColorEmbed.setDescription(stripIndents`

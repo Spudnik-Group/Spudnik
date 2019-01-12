@@ -93,35 +93,11 @@ export default class BanCommand extends Command {
 		if (args.daysOfMessages) {
 			// Ban and delete messages
 			memberToBan.ban({ days: args.daysOfMessages, reason: `Banned by: ${msg.author} for: ${args.reason}` })
-				.catch((err: Error) => {
-					// Emit warn event for debugging
-					msg.client.emit('warn', stripIndents`
-					Error occurred in \`ban\` command!
-					**Server:** ${msg.guild.name} (${msg.guild.id})
-					**Author:** ${msg.author.tag} (${msg.author.id})
-					**Time:** ${moment(msg.createdTimestamp).format('MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
-					**Input:** \`${args.member.user.tag} (${args.member.id})\` || \`${args.reason}\`
-					**Error Message:** ${err}`);
-					// Inform the user the command failed
-					stopTyping(msg);
-					return sendSimpleEmbeddedError(msg, `Banning ${args.member} for ${args.reason} failed!`);
-				});
+				.catch((err: Error) => this.catchError(msg, args, err));
 		} else {
 			// Ban
 			memberToBan.ban({ reason: `Banned by: ${msg.author} for: ${args.reason}` })
-				.catch((err: Error) => {
-					// Emit warn event for debugging
-					msg.client.emit('warn', stripIndents`
-					Error occurred in \`ban\` command!
-					**Server:** ${msg.guild.name} (${msg.guild.id})
-					**Author:** ${msg.author.tag} (${msg.author.id})
-					**Time:** ${moment(msg.createdTimestamp).format('MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
-					**Input:** \`${args.member.user.tag} (${args.member.id})\` || \`${args.reason}\`
-					**Error Message:** ${err}`);
-					// Inform the user the command failed
-					stopTyping(msg);
-					return sendSimpleEmbeddedError(msg, `Banning ${args.member} for ${args.reason} failed!`);
-				});
+				.catch((err: Error) => this.catchError(msg, args, err));
 		}
 
 		// Set up embed message
@@ -140,5 +116,19 @@ export default class BanCommand extends Command {
 
 		// Send the success response
 		return msg.embed(banEmbed);
+	}
+
+	private catchError(msg: CommandMessage, args: { member: GuildMember, reason: string, daysOfMessages: number }, err: Error) {
+		// Emit warn event for debugging
+		msg.client.emit('warn', stripIndents`
+		Error occurred in \`ban\` command!
+		**Server:** ${msg.guild.name} (${msg.guild.id})
+		**Author:** ${msg.author.tag} (${msg.author.id})
+		**Time:** ${moment(msg.createdTimestamp).format('MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+		**Input:** \`${args.member.user.tag} (${args.member.id})\` || \`${args.reason}\`
+		**Error Message:** ${err}`);
+		// Inform the user the command failed
+		stopTyping(msg);
+		return sendSimpleEmbeddedError(msg, `Banning ${args.member} for ${args.reason} failed!`);
 	}
 }

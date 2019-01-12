@@ -77,7 +77,7 @@ export default class MoveCommand extends Command {
 
 		startTyping(msg);
 
-		if (originalMessage !== undefined) {
+		if (originalMessage) {
 			const destinationChannel = args.channel;
 
 			if (destinationChannel && destinationChannel.type === 'text') {

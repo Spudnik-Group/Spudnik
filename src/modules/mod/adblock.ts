@@ -67,7 +67,7 @@ export default class AdblockCommand extends Command {
 	 */
 	public async run(msg: CommandMessage, args: { subCommand: string }): Promise<Message | Message[]> {
 		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
-		const adblockEnabled = msg.client.provider.get(msg.guild.id, 'adblockEnabled', false);
+		const adblockEnabled = msg.guild.settings.get('adblockEnabled', false);
 		const adblockEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				name: '🛑 Adblock'
@@ -81,17 +81,17 @@ export default class AdblockCommand extends Command {
 		if (args.subCommand === 'enable') {
 			if (adblockEnabled) {
 				stopTyping(msg);
-				return sendSimpleEmbeddedMessage(msg, 'Adblock feature already enabled!');
+				return sendSimpleEmbeddedMessage(msg, 'Adblock feature already enabled!', 3000);
 			} else {
-				msg.client.provider.set(msg.guild.id, 'adblockEnabled', true)
+				msg.guild.settings.set('adblockEnabled', true)
 					.catch((err: Error) => this.catchError(msg, args, err));
 			}
 		} else if (args.subCommand === 'disable') {
 			if (!adblockEnabled) {
 				stopTyping(msg);
-				return sendSimpleEmbeddedMessage(msg, 'Adblock feature already disabled!');
+				return sendSimpleEmbeddedMessage(msg, 'Adblock feature already disabled!', 3000);
 			} else {
-				msg.client.provider.set(msg.guild.id, 'adblockEnabled', false)
+				msg.guild.settings.set('adblockEnabled', false)
 					.catch((err: Error) => this.catchError(msg, args, err));
 			}
 		}

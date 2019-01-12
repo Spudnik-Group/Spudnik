@@ -114,7 +114,7 @@ export default class WarnCommand extends Command {
 				const warningForCurrentMember = warningsForCurrentGuild.filter((item) => {
 					return item.id === args.member.id;
 				});
-				if (warningForCurrentMember.length > 0) {
+				if (warningForCurrentMember.length) {
 					// Previous warnings present
 					previousPoints = warningForCurrentMember[0].points;
 					// Update previous warning points
