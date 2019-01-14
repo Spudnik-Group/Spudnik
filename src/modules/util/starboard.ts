@@ -197,7 +197,9 @@ export default class StarboardCommand extends Command {
 		
 		// Log the event in the mod log
 		if (msg.guild.settings.get('modlogs', true)) {
-			modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, starboardEmbed);
+			if (args.subCommand.toLowerCase() !== 'status') {
+				modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, starboardEmbed);
+			}
 		}
 		deleteCommandMessages(msg, this.client);
 		stopTyping(msg);

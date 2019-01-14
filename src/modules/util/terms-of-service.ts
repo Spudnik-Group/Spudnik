@@ -239,7 +239,10 @@ export default class TermsOfServiceCommand extends Command {
 		
 		// Log the event in the mod log
 		if (msg.guild.settings.get('modlogs', true)) {
-			modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, tosEmbed);
+			if (args.subCommand.toLowerCase() !== 'status') {
+				modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, tosEmbed);
+		
+			}
 		}
 		deleteCommandMessages(msg, this.client);
 		stopTyping(msg);
