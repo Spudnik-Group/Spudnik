@@ -28,9 +28,8 @@ export default class GoodbyeCommand extends Command {
 					type: 'string',
 					validate: (subCommand: string) => {
 						const allowedSubCommands = ['message', 'channel', 'enable', 'disable'];
-						if (allowedSubCommands.indexOf(subCommand) < 0) {
-							return 'You provided an invalid subcommand.'
-						}
+						if (allowedSubCommands.indexOf(subCommand) !== -1) return true;
+						return 'You provided an invalid subcommand.';
 					}
 				},
 				{
@@ -114,6 +113,7 @@ export default class GoodbyeCommand extends Command {
 					stopTyping(msg);
 					return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
 				}
+				break;
 			}
 			case 'message': {
 				if (!args.content) {
@@ -136,6 +136,7 @@ export default class GoodbyeCommand extends Command {
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				}
+				break;
 			}
 			case 'enable': {
 				if (!goodbyeEnabled) {
@@ -154,6 +155,7 @@ export default class GoodbyeCommand extends Command {
 					stopTyping(msg);
 					return sendSimpleEmbeddedMessage(msg, 'Goodbye message already enabled!', 3000);
 				}
+				break;
 			}
 			case 'disable': {
 				if (goodbyeEnabled) {
@@ -172,6 +174,7 @@ export default class GoodbyeCommand extends Command {
 					stopTyping(msg);
 					return sendSimpleEmbeddedMessage(msg, 'Goodbye message already disabled!', 3000);
 				}
+				break;
 			}
 		}
 		
@@ -198,19 +201,23 @@ export default class GoodbyeCommand extends Command {
 		switch (args.subCommand) {
 			case 'enable': {
 				goodbyeUserWarn = 'Enabling goodbye feature failed!';
+				break;
 			}
 			case 'disable': {
 				goodbyeUserWarn = 'Disabling goodbye feature failed!';
+				break;
 			}
 			case 'message': {
 				goodbyeWarn += stripIndents`
 					**Message:** ${args.content}`;
 				goodbyeUserWarn = 'Failed saving new goodbye message!';
+				break;
 			}
 			case 'channel': {
 				goodbyeWarn += stripIndents`
 					**Channel:** ${args.content}`;
 				goodbyeUserWarn = 'Failed setting new goodbye channel!';
+				break;
 			}
 		}
 		goodbyeWarn += stripIndents`

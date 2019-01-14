@@ -2,7 +2,7 @@ import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
-import { getEmbedColor, modLogMessage } from 'src/lib/custom-helpers';
+import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
 import moment = require('moment');
 
 /**
@@ -28,9 +28,8 @@ export default class AdblockCommand extends Command {
 					type: 'string',
 					validate: (subCommand: string) => {
 						const allowedSubCommands = ['enable', 'disable'];
-						if (allowedSubCommands.indexOf(subCommand) < 0) {
-							return 'You provided an invalid subcommand.'
-						}
+						if (allowedSubCommands.indexOf(subCommand) !== -1) return true;
+						return 'You provided an invalid subcommand.';
 					}
 				}
 			],

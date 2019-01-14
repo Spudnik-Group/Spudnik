@@ -2,7 +2,7 @@ import { stripIndents } from 'common-tags';
 import { Collection, GuildMember, Message, User, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, deleteCommandMessages, startTyping, stopTyping } from '../../lib/helpers';
-import { getEmbedColor, modLogMessage } from 'src/lib/custom-helpers';
+import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
 import moment = require('moment');
 
 /**
@@ -46,9 +46,8 @@ export default class PruneCommand extends Command {
 					validate: (filter: string) => {
 						const allowedFilters = ['invites', 'user', 'bots', 'uploads', 'links'];
 						if (filter === '') return true;
-						if (allowedFilters.indexOf(filter) < 0) {
-							return 'You provided an invalid filter.'
-						}
+						if (allowedFilters.indexOf(filter) !== -1) return true;
+						return 'You provided an invalid filter.';
 					}
 				},
 				{
@@ -109,6 +108,7 @@ export default class PruneCommand extends Command {
 			switch (filter) {
 				case 'invite': {
 					messageFilter = (message: Message) => message.content.search(/(discord\.gg\/.+|discordapp\.com\/invite\/.+)/i) !== -1;
+					break;
 				}
 				case 'user': {
 					if (args.member) {
@@ -119,18 +119,23 @@ export default class PruneCommand extends Command {
 						stopTyping(msg);
 						return sendSimpleEmbeddedError(msg, `${msg.author}, you have to mention someone.`);
 					}
+					break;
 				}
 				case 'bots': {
 					messageFilter = (message: Message) => message.author.bot;
+					break;
 				}
 				case 'you': {
 					messageFilter = (message: Message) => message.author.id === this.client.user.id;
+					break;
 				}
 				case 'upload': {
 					messageFilter = (message: Message) => message.attachments.size !== 0;
+					break;
 				}
 				case 'links': {
 					messageFilter = (message: Message) => message.content.search(/https?:\/\/[^ \/\.]+\.[^ \/\.]+/) !== -1;
+					break;
 				}
 			}
 

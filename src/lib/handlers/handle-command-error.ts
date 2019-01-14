@@ -1,5 +1,5 @@
 export function handleCommandError(cmd: any, err: Error) {
-	if (this.Config.debug) {
+	if (process.env.spud_debug) {
 		console.error(`Error in command ${cmd.groupID}:${cmd.memberName}`, err);
 	}
 }

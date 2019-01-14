@@ -2,7 +2,7 @@ import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
-import { modLogMessage } from 'src/lib/custom-helpers';
+import { modLogMessage } from '../../lib/custom-helpers';
 import moment = require('moment');
 
 /**

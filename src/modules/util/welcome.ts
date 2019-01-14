@@ -28,9 +28,8 @@ export default class WelcomeCommand extends Command {
 					type: 'string',
 					validate: (subCommand: string) => {
 						const allowedSubCommands = ['message', 'channel', 'enable', 'disable'];
-						if (allowedSubCommands.indexOf(subCommand) < 0) {
-							return 'You provided an invalid subcommand.'
-						}
+						if (allowedSubCommands.indexOf(subCommand) !== -1) return true;
+						return 'You provided an invalid subcommand.';
 					}
 				},
 				{
@@ -115,6 +114,7 @@ export default class WelcomeCommand extends Command {
 					stopTyping(msg);
 					return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
 				}
+				break;
 			}
 			case 'message': {
 				if (!args.content) {
@@ -137,6 +137,7 @@ export default class WelcomeCommand extends Command {
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				}
+				break;
 			}
 			case 'enable': {
 				if (!welcomeEnabled) {
@@ -155,6 +156,7 @@ export default class WelcomeCommand extends Command {
 					stopTyping(msg);
 					return sendSimpleEmbeddedMessage(msg, 'Welcome message already enabled!', 3000);
 				}
+				break;
 			}
 			case 'disable': {
 				if (welcomeEnabled) {
@@ -173,6 +175,7 @@ export default class WelcomeCommand extends Command {
 					stopTyping(msg);
 					return sendSimpleEmbeddedMessage(msg, 'Welcome message already disabled!', 3000);
 				}
+				break;
 			}
 		}
 		
@@ -199,19 +202,23 @@ export default class WelcomeCommand extends Command {
 		switch (args.subCommand) {
 			case 'enable': {
 				welcomeUserWarn = 'Enabling welcome feature failed!';
+				break;
 			}
 			case 'disable': {
 				welcomeUserWarn = 'Disabling welcome feature failed!';
+				break;
 			}
 			case 'message': {
 				welcomeWarn += stripIndents`
 					**Message:** ${args.content}`;
 					welcomeUserWarn = 'Failed saving new welcome message!';
+					break;
 			}
 			case 'channel': {
 				welcomeWarn += stripIndents`
 					**Channel:** ${args.content}`;
 				welcomeUserWarn = 'Failed setting new welcome channel!';
+				break;
 			}
 		}
 		welcomeWarn += stripIndents`
