@@ -1,8 +1,8 @@
 import { stripIndents } from 'common-tags';
-import { Message } from 'discord.js';
+import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
 
 /**
  * Post an Urban Dictionary definition.
@@ -60,37 +60,37 @@ export default class UrbanCommand extends Command {
 	 * @memberof UrbanCommand
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
-		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
-		const targetWord = args.query === '' ? require('urban').random() : require('urban')(args.query);
-		try {
-			targetWord.first((json: any) => {
-				let title = `Urban Dictionary: ${args.query}`;
-				let message;
-				let example;
+		const targetWord = args.query === '' ? require('urban-dictionary').random() : require('urban-dictionary').term(args.query);
+		const responseEmbed: MessageEmbed = new MessageEmbed({
+			color: getEmbedColor(msg),
+			description: ''
+		});
 
-				if (json) {
-					title = `Urban Dictionary: ${json.word}`;
-					message = `${json.definition}`;
-					if (json.example) {
-						example = `Example: ${json.example}`;
-					}
-				} else {
-					message = 'No matches found';
+		startTyping(msg);
+
+		targetWord.then((json: any) => {
+			responseEmbed.setTitle(`Urban Dictionary: ${args.query}`);
+
+			if (json) {
+				responseEmbed.setTitle(`Urban Dictionary: ${json.word}`);
+				responseEmbed.setDescription(`${json.definition}`);
+				if (json.example) {
+					responseEmbed.setFooter(`Example: ${json.example}`);
 				}
-
-				return msg.embed({
-					color: getEmbedColor(msg),
-					description: message,
-					footer: {
-						text: example
-					},
-					title: title
-				});
-			});
-		} catch (err) {
+			} else {
+				responseEmbed.setDescription('No matches found');
+			}
+		})
+		.catch((err: Error) => {
 			msg.client.emit('warn', `Error in command ref:urban: ${err}`);
+			stopTyping(msg);
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
-		}
-		return response;
+		});	
+
+		deleteCommandMessages(msg, this.client);
+		stopTyping(msg);
+
+		// Send the success response
+		return msg.embed(responseEmbed);
 	}
 }
