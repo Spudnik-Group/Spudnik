@@ -3,7 +3,7 @@ import { Channel, Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, startTyping, sendSimpleEmbeddedMessage, stopTyping, deleteCommandMessages } from '../../lib/helpers';
-import moment = require('moment');
+import * as dateFns from 'date-fns';
 
 /**
  * Manage notifications when someone leaves the guild.
@@ -195,10 +195,10 @@ export default class GoodbyeCommand extends Command {
 		Error occurred in \`goodbye\` command!
 		**Server:** ${msg.guild.name} (${msg.guild.id})
 		**Author:** ${msg.author.tag} (${msg.author.id})
-		**Time:** ${moment(msg.createdTimestamp).format('MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
-		**Input:** \`Goodbye ${args.subCommand}\``;
+		**Time:** ${dateFns.format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+		**Input:** \`Goodbye ${args.subCommand.toLowerCase()}\``;
 		let goodbyeUserWarn = '';
-		switch (args.subCommand) {
+		switch (args.subCommand.toLowerCase()) {
 			case 'enable': {
 				goodbyeUserWarn = 'Enabling goodbye feature failed!';
 				break;

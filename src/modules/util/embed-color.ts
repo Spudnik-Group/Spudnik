@@ -3,7 +3,7 @@ import { Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
 import { modLogMessage } from '../../lib/custom-helpers';
-import moment = require('moment');
+import * as dateFns from 'date-fns';
 
 /**
  * Change the default embed color for the server.
@@ -119,7 +119,7 @@ export default class EmbedColorCommand extends Command {
 		Error occurred in \`embedcolor\` command!
 		**Server:** ${msg.guild.name} (${msg.guild.id})
 		**Author:** ${msg.author.tag} (${msg.author.id})
-		**Time:** ${moment(msg.createdTimestamp).format('MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+		**Time:** ${dateFns.format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
 		**Input:** \`${args.color}\`
 		**Error Message:** ${err}`);
 		// Inform the user the command failed

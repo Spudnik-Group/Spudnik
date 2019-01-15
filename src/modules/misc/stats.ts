@@ -1,20 +1,8 @@
 import { stripIndents } from 'common-tags';
 import { Guild, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import * as moment from 'moment';
-import 'moment-duration-format';
 import { getEmbedColor } from '../../lib/custom-helpers';
-
-interface IDuration extends moment.Duration {
-	format: (template?: string, precision?: number, settings?: IDurationSettings) => string;
-}
-
-interface IDurationSettings {
-	forceLength: boolean;
-	precision: number;
-	template: string;
-	trim: boolean | 'left' | 'right';
-}
+import * as dateFns from 'date-fns';
 
 // tslint:disable-next-line:no-var-requires
 const { version, dependencies }: { version: string, dependencies: any } = require('../../../package');
@@ -60,11 +48,11 @@ export default class StatsCommand extends Command {
 	 * @memberof StatsCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
-		const duration: IDuration = moment.duration(this.client.uptime) as IDuration;
+		const duration = (s: any) => dateFns.distanceInWords(0, s * 1000, { includeSeconds: true })
 		let statsEmbed: MessageEmbed = new MessageEmbed()
 			.setColor(getEmbedColor(msg))
 			.setDescription('**Spudnik Statistics**')
-			.addField('❯ Uptime', duration.format('d[ d] h[ h] m[ m] s[ s]'), true)
+			.addField('❯ Uptime', duration(this.client.uptime), true)
 			.addField('❯ Process Stats', stripIndents`
 						• Memory Usage: ${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB
 						• Node Version: ${process.version}
