@@ -29,13 +29,11 @@ export default class TermsOfServiceCommand extends Command {
 		super(client, {
 			args: [
 				{
-					default: '',
 					key: 'subCommand',
 					prompt: 'What sub-command would you like to use?\nOptions are:\n* channel\n* title\n* body\n* list',
 					type: 'string',
 					validate: (subCommand: string) => {
 						const allowedSubcommands = ['channel', 'title', 'body', 'list', 'status'];
-						if (subCommand === '') return true;
 						if (allowedSubcommands.indexOf(subCommand) !== -1) return true
 						return 'You provided an invalid subcommand.';
 					}
@@ -55,14 +53,13 @@ export default class TermsOfServiceCommand extends Command {
 			],
 			description: 'Used to configure the Terms of Service for a guild.',
 			details: stripIndents`
-				syntax: \`!tos (channel|title|body|list) (#channelMention | message number) (text)\`
+				syntax: \`!tos (channel|title|body|list|status) (#channelMention | message number) (text)\`
 
 				\`channel <#channelMention>\` - Sets the channel to display the terms of service in.
 				\`title <info block number> <text>\` - Edit the title of a terms of service info block.
 				\`body <info block number> <text>\` - Edit the body of a terms of service info block.
-				\`list\` - returns all the terms of service info blocks.
+				\`list\` - returns all the terms of service embedded blocks.
 				\`status\` - returns details on the terms of service feature.
-				If no subCommand is supplied, bot responds with embedded TOS content.
 
 				MANAGE_GUILD permission required.`,
 			examples: [
@@ -70,7 +67,7 @@ export default class TermsOfServiceCommand extends Command {
 				'!tos title 1 Interesting title',
 				'!tos body 1 Interesting body text',
 				'!tos list',
-				'!tos'
+				'!tos status'
 			],
 			group: 'util',
 			guildOnly: true,
