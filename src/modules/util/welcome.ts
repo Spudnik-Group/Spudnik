@@ -1,8 +1,9 @@
 import { stripIndents } from 'common-tags';
-import { Channel, Message, MessageEmbed } from 'discord.js';
+import { Channel, Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError } from '../../lib/helpers';
+import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, startTyping, stopTyping, sendSimpleEmbeddedMessage, deleteCommandMessages } from '../../lib/helpers';
+import * as dateFns from 'date-fns';
 
 /**
  * Manage notifications when someone joins the guild.
@@ -24,7 +25,12 @@ export default class WelcomeCommand extends Command {
 				{
 					key: 'subCommand',
 					prompt: 'What sub-command would you like to use?\nOptions are:\n* channel\n* message\n* enable\n* disable',
-					type: 'string'
+					type: 'string',
+					validate: (subCommand: string) => {
+						const allowedSubCommands = ['message', 'channel', 'enable', 'disable'];
+						if (allowedSubCommands.indexOf(subCommand) !== -1) return true;
+						return 'You provided an invalid subcommand.';
+					}
 				},
 				{
 					default: '',
@@ -42,7 +48,7 @@ export default class WelcomeCommand extends Command {
 				\`enable\` - Enable the welcome message feature.
 				\`disable\` - Disable the welcome message feature.
 
-				Manage Guild permission required.
+				MANAGE_GUILD permission required.
 			`,
 			examples: [
 				'!welcome message Please welcome {user} to the guild!',
@@ -58,26 +64,16 @@ export default class WelcomeCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			}
+			},
+			userPermissions: ['MANAGE_GUILD']
 		});
-	}
-
-	/**
-	 * Determine if a member has permission to run the "welcome" command.
-	 *
-	 * @param {CommandMessage} msg
-	 * @returns {boolean}
-	 * @memberof WelcomeCommand
-	 */
-	public hasPermission(msg: CommandMessage): boolean {
-		return this.client.isOwner(msg.author) || msg.member.hasPermission('MANAGE_GUILD');
 	}
 
 	/**
 	 * Run the "welcome" command.
 	 *
 	 * @param {CommandMessage} msg
-	 * @param {{ subCommand: string, content: string }} args
+	 * @param {{ subCommand: string, content: Channel | string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof WelcomeCommand
 	 */
@@ -88,98 +84,150 @@ export default class WelcomeCommand extends Command {
 				name: 'Server Welcome Message'
 			},
 			color: getEmbedColor(msg)
-		});
+		}).setTimestamp();
+		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
+		const welcomeChannel = msg.guild.settings.get(msg.guild.id, 'welcomeChannel');
+		const welcomeMessage = msg.guild.settings.get('welcomeMessage', '@here, please Welcome {user} to {guild}!');
+		const welcomeEnabled = msg.guild.settings.get('welcomeEnabled', false);
 
-		let welcomeChannel = msg.client.provider.get(msg.guild.id, 'welcomeChannel');
-		// Quick migration for old channel references in database
-		if (welcomeChannel instanceof Channel) {
-			msg.client.provider.set(msg.guild.id, 'welcomeChannel', welcomeChannel.id);
-			welcomeChannel = welcomeChannel.id;
-		}
-		const welcomeMessage = msg.client.provider.get(msg.guild.id, 'welcomeMessage', '@here, please Welcome {user} to {guild}!');
-		const welcomeEnabled = msg.client.provider.get(msg.guild.id, 'welcomeEnabled', false);
+		startTyping(msg);
+
 		switch (args.subCommand.toLowerCase()) {
 			case 'channel': {
 				if (args.content instanceof Channel) {
 					const channelID = (args.content as Channel).id;
 					if (welcomeChannel && welcomeChannel === channelID) {
-						welcomeEmbed.description = `Welcome channel already set to <#${channelID}>!`;
-						return msg.embed(welcomeEmbed);
+						stopTyping(msg);
+						return sendSimpleEmbeddedMessage(msg, `Welcome channel already set to <#${channelID}>!`, 3000);
 					} else {
-						return msg.client.provider.set(msg.guild.id, 'welcomeChannel', channelID)
+						msg.guild.settings.set('welcomeChannel', channelID)
 							.then(() => {
-								welcomeEmbed.description = `Welcome channel set to <#${channelID}>.`;
-								return msg.embed(welcomeEmbed);
+								// Set up embed message
+								welcomeEmbed.setDescription(stripIndents`
+									**Member:** ${msg.author.tag} (${msg.author.id})
+									**Action:** Welcome Channel set to <#${channelID}>}
+								`);
 							})
-							.catch((err: Error) => {
-								msg.client.emit('warn', `Error in command util:welcome: ${err}`);
-								return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
-							});
+							.catch((err: Error) => this.catchError(msg, args, err));
 					}
 				} else {
+					stopTyping(msg);
 					return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
 				}
+				break;
 			}
 			case 'message': {
-				if (args.content === undefined || args.content === '') {
-					welcomeEmbed.description = 'You must include the new message along with the `message` command. See `help welcome` for details.\nThe current welcome message is set to: ```' + welcomeMessage + '```';
-					return msg.embed(welcomeEmbed);
+				if (!args.content) {
+					stopTyping(msg);
+					return sendSimpleEmbeddedMessage(msg, 'You must include the new message along with the `message` command. See `help welcome` for details.\nCurrent Welcome Message: ```' + welcomeMessage + '```', 3000);
 				} else {
-					return msg.client.provider.set(msg.guild.id, 'welcomeMessage', args.content)
+					msg.guild.settings.set('welcomeMessage', args.content)
 						.then(() => {
-							welcomeEmbed.description =
-								stripIndents`Welcome message set to:
-								\`\`\`${args.content}\`\`\`
-								Currently, welcome messages are ${(welcomeEnabled ? '_Enabled_' : '_Disabled_')}.`;
-							
-							if (welcomeEnabled)
-								welcomeEmbed.description += `\nWelcome messages are displaying in this channel: <#${welcomeChannel}>`;
+							// Set up embed message
+							welcomeEmbed.setDescription(stripIndents`
+								**Member:** ${msg.author.tag} (${msg.author.id})
+								**Action:** Welcome message set to:
+								\`\`\`${args.content}\`\`\`\n
+								Welcome Message: ${(welcomeEnabled ? '_Enabled_' : '_Disabled_')}
+							`);
+							if (welcomeEnabled && welcomeChannel instanceof Channel)
+								welcomeEmbed.description += `\nWelcome channel: <#${welcomeChannel}>`;
 							else if (welcomeEnabled && welcomeChannel! instanceof Channel)
 								welcomeEmbed.description += '\nWelcome messages will not display, as a welcome channel is not set. Use `welcome channel [channel ref]`.';
-							
-							return msg.embed(welcomeEmbed);
 						})
-						.catch((err: Error) => {
-							msg.client.emit('warn', `Error in command util:welcome: ${err}`);
-							return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
-						});
+						.catch((err: Error) => this.catchError(msg, args, err));
 				}
+				break;
 			}
 			case 'enable': {
-				if (welcomeEnabled === false) {
-					return msg.client.provider.set(msg.guild.id, 'welcomeEnabled', true)
+				if (!welcomeEnabled) {
+					msg.guild.settings.set('welcomeEnabled', true)
 						.then(() => {
-							welcomeEmbed.description = `Welcome message enabled.\nWelcome channel set to: <#${welcomeChannel}>\nWelcome message set to: ${welcomeMessage}`;
-							return msg.embed(welcomeEmbed);
+							// Set up embed message
+							welcomeEmbed.setDescription(stripIndents`
+								**Member:** ${msg.author.tag} (${msg.author.id})
+								**Action:** Welcome messages set to:
+								_Enabled_\n
+								Welcome Channel: <#${welcomeChannel}>
+							`);
 						})
-						.catch((err: Error) => {
-							msg.client.emit('warn', `Error in command util:welcome: ${err}`);
-							return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
-						});
+						.catch((err: Error) => this.catchError(msg, args, err));
 				} else {
-					welcomeEmbed.description = 'Welcome message is already enabled! Disable with `welcome disable`';
-					return msg.embed(welcomeEmbed);
+					stopTyping(msg);
+					return sendSimpleEmbeddedMessage(msg, 'Welcome message already enabled!', 3000);
 				}
+				break;
 			}
 			case 'disable': {
-				if (welcomeEnabled === true) {
-					return msg.client.provider.set(msg.guild.id, 'welcomeEnabled', false)
+				if (welcomeEnabled) {
+					msg.guild.settings.set('welcomeEnabled', false)
 						.then(() => {
-							welcomeEmbed.description = `Welcome message disabled.\nWelcome channel set to: <#${welcomeChannel}>\nWelcome message set to: ${welcomeMessage}`;
-							return msg.embed(welcomeEmbed);
+							// Set up embed message
+							welcomeEmbed.setDescription(stripIndents`
+								**Member:** ${msg.author.tag} (${msg.author.id})
+								**Action:** Welcome messages set to:
+								_Disabled_\n
+								Welcome Channel: <#${welcomeChannel}>
+							`);
 						})
-						.catch((err: Error) => {
-							msg.client.emit('warn', `Error in command util:welcome: ${err}`);
-							return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
-						});
+						.catch((err: Error) => this.catchError(msg, args, err));
 				} else {
-					welcomeEmbed.description = 'Welcome message is already disabled! Enable with `welcome enable`';
-					return msg.embed(welcomeEmbed);
+					stopTyping(msg);
+					return sendSimpleEmbeddedMessage(msg, 'Welcome message already disabled!', 3000);
 				}
-			}
-			default: {
-				return sendSimpleEmbeddedError(msg, 'Invalid subcommand. Please see `help welcome`.', 3000);
+				break;
 			}
 		}
+		
+		// Log the event in the mod log
+		if (msg.guild.settings.get('modlogEnabled', true)) {
+			modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, welcomeEmbed);
+		}
+		deleteCommandMessages(msg, this.client);
+		stopTyping(msg);
+
+		// Send the success response
+		return msg.embed(welcomeEmbed);
+	}
+	
+	private catchError(msg: CommandMessage, args: { subCommand: string, content: Channel | string }, err: Error) {
+		// Build warning message
+		let welcomeWarn = stripIndents`
+		Error occurred in \`welcome\` command!
+		**Server:** ${msg.guild.name} (${msg.guild.id})
+		**Author:** ${msg.author.tag} (${msg.author.id})
+		**Time:** ${dateFns.format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+		**Input:** \`Welcome ${args.subCommand.toLowerCase()}\``;
+		let welcomeUserWarn = '';
+		switch (args.subCommand.toLowerCase()) {
+			case 'enable': {
+				welcomeUserWarn = 'Enabling welcome feature failed!';
+				break;
+			}
+			case 'disable': {
+				welcomeUserWarn = 'Disabling welcome feature failed!';
+				break;
+			}
+			case 'message': {
+				welcomeWarn += stripIndents`
+					**Message:** ${args.content}`;
+					welcomeUserWarn = 'Failed saving new welcome message!';
+					break;
+			}
+			case 'channel': {
+				welcomeWarn += stripIndents`
+					**Channel:** ${args.content}`;
+				welcomeUserWarn = 'Failed setting new welcome channel!';
+				break;
+			}
+		}
+		welcomeWarn += stripIndents`
+			**Error Message:** ${err}`;
+		
+		stopTyping(msg);
+		// Emit warn event for debugging
+		msg.client.emit('warn', welcomeWarn);
+		// Inform the user the command failed
+		return sendSimpleEmbeddedError(msg, welcomeUserWarn);
 	}
 }

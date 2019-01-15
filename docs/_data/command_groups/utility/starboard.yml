@@ -1,4 +1,5 @@
 usage:
+  - "!starboard status"
   - "!starboard trigger"
   - "!starboard trigger :stuck_out_tongue:"
   - "!starboard channel #starboard"

@@ -1,10 +1,8 @@
-import chalk from 'chalk';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { RequestResponse } from 'request';
 import * as rp from 'request-promise';
 import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
 
 /**
  * Post a random fact about the year.
@@ -43,20 +41,29 @@ export default class YearFactCommand extends Command {
 	 * @memberof YearFactCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
-		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
+		const responseEmbed: MessageEmbed = new MessageEmbed({
+			color: getEmbedColor(msg),
+			description: '',
+			title: 'Year Fact'
+		});
+
+		startTyping(msg);
+
 		rp('http://numbersapi.com/random/year?json')
 			.then((content) => {
 				const data = JSON.parse(content);
-				return msg.embed(new MessageEmbed({
-					color: getEmbedColor(msg),
-					description: data.text,
-					title: 'Year Fact'
-				}));
+				responseEmbed.setDescription(data.text);
 			})
 			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command random:year-fact: ${err}`);
+				stopTyping(msg);
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			});
-		return response;
+		
+		deleteCommandMessages(msg, this.client);
+		stopTyping(msg);
+
+		// Send the success response
+		return msg.embed(responseEmbed);
 	}
 }

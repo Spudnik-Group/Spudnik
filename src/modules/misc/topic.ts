@@ -1,7 +1,7 @@
 import { Message, TextChannel } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, deleteCommandMessages, stopTyping, startTyping } from '../../lib/helpers';
 
 /**
  * Posts the topic of a channel.
@@ -42,11 +42,19 @@ export default class TopicCommand extends Command {
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
 		const channel = msg.channel as TextChannel;
 		let response = channel.topic;
+
+		startTyping(msg);
+		
 		if (response === null) {
 			response = "There doesn't seem to be a topic for this channel. Maybe ask the mods?";
 		} else if (response.trim() === '') {
 			response = "There doesn't seem to be a topic for this channel. Maybe ask the mods?";
 		}
+		
+		deleteCommandMessages(msg, this.client);
+		stopTyping(msg);
+		
+		// Send the success response
 		return msg.embed({
 			color: getEmbedColor(msg),
 			description: response,

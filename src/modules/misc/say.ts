@@ -1,5 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { deleteCommandMessages } from 'src/lib/helpers';
 
 /**
  * States a message as the bot.
@@ -43,7 +44,7 @@ export default class SayCommand extends Command {
 	 * @memberof SayCommand
 	 */
 	public async run(msg: CommandMessage, args: { text: string }): Promise<Message | Message[]> {
-		if (msg.deletable) msg.delete();
+		deleteCommandMessages(msg, this.client);
 		return msg.say(args.text);
 	}
 }

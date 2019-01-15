@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedMessage, deleteCommandMessages } from '../../lib/helpers';
 
 /**
  * Post a link to the Spudnik Command Discord Server.
@@ -39,6 +39,7 @@ export default class SupportCommand extends Command {
 	 * @memberof SupportCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
+		deleteCommandMessages(msg, this.client);
 		return sendSimpleEmbeddedMessage(msg, '<https://spudnik.io/support>');
 	}
 }

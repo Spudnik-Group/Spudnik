@@ -3,4 +3,4 @@ syntax: `!embedcolor (hex color)`<br />
 <br />
 Supplying no hex color resets the embed color to default.<br />
 <br />
-Manage Guild permission required.
+MANAGE_GUILD permission required.

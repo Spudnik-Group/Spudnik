@@ -1,7 +1,7 @@
 import { stripIndents } from 'common-tags';
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedMessage, deleteCommandMessages } from '../../lib/helpers';
 
 /**
  * Convert text to 1337 speak.
@@ -51,7 +51,7 @@ export default class LeetCommand extends Command {
 	 * @memberof LeetCommand
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
-		if (msg.deletable) msg.delete();
+		deleteCommandMessages(msg, this.client);
 		return sendSimpleEmbeddedMessage(msg, require('leet').convert(args.query));
 	}
 }

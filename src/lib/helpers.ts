@@ -1,7 +1,5 @@
-import chalk from 'chalk';
 import { Message } from 'discord.js';
-import { CommandMessage } from 'discord.js-commando';
-import * as fs from 'fs';
+import { CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from './custom-helpers';
 
 const yes = ['yes', 'y', 'ye', 'yeah', 'yup', 'yea'];
@@ -14,7 +12,7 @@ const no = ['no', 'n', 'nah', 'nope'];
  * @param {CommandMessage} msg
  * @param {string} text
  * @param {number} [timeout]
- * @returns {(Promise<Message | Message[]>)}
+ * @returns Promise<Message | Message[]>
  */
 export function sendSimpleEmbeddedMessage(msg: CommandMessage, text: string, timeout?: number): Promise<Message | Message[]> {
 	const promise: Promise<Message | Message[]> = msg.embed({
@@ -45,7 +43,7 @@ export function sendSimpleEmbeddedMessage(msg: CommandMessage, text: string, tim
  * @param {CommandMessage} msg
  * @param {string} text
  * @param {number} [timeout]
- * @returns {(Promise<Message | Message[]>)}
+ * @returns Promise<Message | Message[]>
  */
 export function sendSimpleEmbeddedError(msg: CommandMessage, text: string, timeout?: number): Promise<Message | Message[]> {
 	const promise: Promise<Message | Message[]> = msg.embed({
@@ -76,7 +74,7 @@ export function sendSimpleEmbeddedError(msg: CommandMessage, text: string, timeo
  * @param {CommandMessage} msg
  * @param {string} text
  * @param {number} [timeout]
- * @returns {(Promise<Message | Message[]>)}
+ * @returns Promise<Message | Message[]>
  */
 export function sendSimpleEmbeddedSuccess(msg: CommandMessage, text: string, timeout?: number): Promise<Message | Message[]> {
 	const promise: Promise<Message | Message[]> = msg.embed({
@@ -107,7 +105,7 @@ export function sendSimpleEmbeddedSuccess(msg: CommandMessage, text: string, tim
  * @param {CommandMessage} msg
  * @param {string} url
  * @param {string} [description]
- * @returns {(Promise<Message | Message[]>)}
+ * @returns Promise<Message | Message[]>
  */
 export function sendSimpleEmbeddedImage(msg: CommandMessage, url: string, description?: string): Promise<Message | Message[]> {
 	return msg.embed({
@@ -127,37 +125,10 @@ export function sendSimpleEmbeddedImage(msg: CommandMessage, url: string, descri
  * @export
  * @param {number} min
  * @param {number} max
- * @returns {number}
+ * @returns number
  */
 export function getRandomInt(min: number, max: number): number {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-/**
- * Get file contents.
- *
- * @export
- * @param {string} filePath
- * @returns {string}
- */
-export function getFileContents(filePath: string): string {
-	try {
-		return fs.readFileSync(filePath, 'utf-8');
-	} catch (err) {
-		console.log(chalk.red(err));
-		return '';
-	}
-}
-
-/**
- * Get json from a file.
- *
- * @export
- * @param {string} filePath
- * @returns {*}
- */
-export function getJsonObject(filePath: string): any {
-	return JSON.parse(getFileContents(filePath));
 }
 
 /**
@@ -165,7 +136,7 @@ export function getJsonObject(filePath: string): any {
  *
  * @export
  * @param {string} usertxt
- * @returns {string}
+ * @returns string
  */
 export function resolveMention(usertxt: string): string {
 	let userid = usertxt;
@@ -314,3 +285,37 @@ export function escapeMarkdown(text: string, onlyCodeBlock = false, onlyInlineCo
 	if (onlyInlineCode) { return text.replace(/\\(`|\\)/g, '$1').replace(/(`|\\)/g, '\\$1'); }
 	return text.replace(/\\(\*|_|`|~|\\)/g, '$1').replace(/(\*|_|`|~|\\)/g, '\\$1');
 }
+
+/**
+ * Delete the calling message for commands, if it's deletable by the bot
+ * 
+ * @export
+ * @param {CommandMessage} msg
+ * @param {CommandoClient} client
+ * @returns void
+ */
+export const deleteCommandMessages = (msg: CommandMessage, client: CommandoClient) => {
+	if (msg.deletable && client.provider.get(msg.guild, 'deletecommandmessages', false)) msg.delete();
+};
+
+/**
+ * Stop the bot's typing status
+ * 
+ * @export
+ * @param {CommandMessage} msg
+ * @returns void
+ */
+export const stopTyping = (msg: CommandMessage) => {
+	msg.channel.stopTyping(true);
+};
+
+/**
+ * Start the bot's typing status
+ * 
+ * @export
+ * @param {CommandMessage} msg
+ * @returns void
+ */
+export const startTyping = (msg: CommandMessage) => {
+	msg.channel.startTyping(1);
+};

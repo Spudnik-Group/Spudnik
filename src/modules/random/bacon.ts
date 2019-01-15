@@ -42,10 +42,6 @@ export default class BaconCommand extends Command {
 	 * @memberof BaconCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
-		if (bacon) {
-			return sendSimpleEmbeddedImage(msg, bacon[getRandomInt(0, bacon.length)]);
-		} else {
-			return sendSimpleEmbeddedError(msg, 'Error getting answer. Try again later?', 3000);
-		}
+		return sendSimpleEmbeddedImage(msg, bacon[getRandomInt(0, bacon.length)]);
 	}
 }

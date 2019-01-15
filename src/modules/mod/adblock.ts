@@ -1,7 +1,9 @@
 import { stripIndents } from 'common-tags';
-import { Message } from 'discord.js';
+import { Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
+import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
+import * as dateFns from 'date-fns';
 
 /**
  * Enable or disable the adblock feature.
@@ -23,7 +25,12 @@ export default class AdblockCommand extends Command {
 				{
 					key: 'subCommand',
 					prompt: 'Would you like to enable or disable the feature?\n',
-					type: 'string'
+					type: 'string',
+					validate: (subCommand: string) => {
+						const allowedSubCommands = ['enable', 'disable'];
+						if (allowedSubCommands.indexOf(subCommand) !== -1) return true;
+						return 'You provided an invalid subcommand.';
+					}
 				}
 			],
 			clientPermissions: ['MANAGE_MESSAGES'],
@@ -32,7 +39,7 @@ export default class AdblockCommand extends Command {
 				syntax: \`!adblock <enable|disable>\`
 
 				Supplying no subcommand returns an error.
-				Manage Messages permission required.`,
+				MANAGE_MESSAGES permission required.`,
 			examples: [
 				'!adblock enable',
 				'!adblock disable'
@@ -44,49 +51,82 @@ export default class AdblockCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			}
+			},
+			userPermissions: ['MANAGE_MESSAGES']
 		});
-	}
-
-	/**
-	 * Determine if a member has permission to run the "adblock" command.
-	 *
-	 * @param {CommandMessage} msg
-	 * @returns {boolean}
-	 * @memberof AdblockCommand
-	 */
-	public hasPermission(msg: CommandMessage): boolean {
-		return msg.member.hasPermission('MANAGE_MESSAGES');
 	}
 
 	/**
 	 * Run the "adblock" command.
 	 *
 	 * @param {CommandMessage} msg
+	 * @param {{ subCommand: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof AdblockCommand
 	 */
 	public async run(msg: CommandMessage, args: { subCommand: string }): Promise<Message | Message[]> {
-		const adblockEnabled = msg.client.provider.get(msg.guild.id, 'adblockEnabled', false);
+		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
+		const adblockEnabled = msg.guild.settings.get('adblockEnabled', false);
+		const adblockEmbed: MessageEmbed = new MessageEmbed({
+			author: {
+				name: '🛑 Adblock'
+			},
+			color: getEmbedColor(msg),
+			description: ''
+		}).setTimestamp();
 
-		if (args.subCommand === 'enable') {
+		startTyping(msg);
+
+		if (args.subCommand.toLowerCase() === 'enable') {
 			if (adblockEnabled) {
-				return sendSimpleEmbeddedMessage(msg, 'Adblock feature already enabled!');
+				stopTyping(msg);
+				return sendSimpleEmbeddedMessage(msg, 'Adblock feature already enabled!', 3000);
 			} else {
-				msg.client.provider.set(msg.guild.id, 'adblockEnabled', true);
-
-				return sendSimpleEmbeddedMessage(msg, 'Adblock feature enabled.');
+				msg.guild.settings.set('adblockEnabled', true)
+					.catch((err: Error) => this.catchError(msg, args, err));
 			}
-		} else if (args.subCommand === 'disable') {
+		} else if (args.subCommand.toLowerCase() === 'disable') {
 			if (!adblockEnabled) {
-				return sendSimpleEmbeddedMessage(msg, 'Adblock feature already disabled!');
+				stopTyping(msg);
+				return sendSimpleEmbeddedMessage(msg, 'Adblock feature already disabled!', 3000);
 			} else {
-				msg.client.provider.set(msg.guild.id, 'adblockEnabled', false);
-
-				return sendSimpleEmbeddedMessage(msg, 'Adblock feature disabled.');
+				msg.guild.settings.set('adblockEnabled', false)
+					.catch((err: Error) => this.catchError(msg, args, err));
 			}
+		}
+		
+		// Set up embed message
+		adblockEmbed.setDescription(stripIndents`
+			**Member:** ${msg.author.tag} (${msg.author.id})
+			**Action:** Adblock ${args.subCommand.toLowerCase()}
+		`);
+
+		// Log the event in the mod log
+		if (msg.guild.settings.get('modlogEnabled', true)) {
+			modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, adblockEmbed);
+		}
+		deleteCommandMessages(msg, this.client);
+		stopTyping(msg);
+
+		// Send the success response
+		return msg.embed(adblockEmbed);
+	}
+
+	private catchError(msg: CommandMessage, args: { subCommand: string }, err: Error) {
+		// Emit warn event for debugging
+		msg.client.emit('warn', stripIndents`
+		Error occurred in \`adblock\` command!
+		**Server:** ${msg.guild.name} (${msg.guild.id})
+		**Author:** ${msg.author.tag} (${msg.author.id})
+		**Time:** ${dateFns.format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+		**Input:** \`Adblock ${args.subCommand.toLowerCase()}\`
+		**Error Message:** ${err}`);
+		// Inform the user the command failed
+		stopTyping(msg);
+		if (args.subCommand.toLowerCase() === 'enable') {
+			return sendSimpleEmbeddedError(msg, 'Enabling adblock feature failed!');
 		} else {
-			return sendSimpleEmbeddedError(msg, 'Invalid subcommand! See `help adblock` for details.');
+			return sendSimpleEmbeddedError(msg, 'Disabling adblock feature failed!');
 		}
 	}
 }

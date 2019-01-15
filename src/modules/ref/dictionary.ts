@@ -1,13 +1,12 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { Config } from '../../lib/config';
 import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, stopTyping, startTyping, deleteCommandMessages } from '../../lib/helpers';
 
 // tslint:disable-next-line:no-var-requires
 const mw = require('mw-dict');
-const dictionaryApiKey: string = Config.getDictionaryApiKey();
+const dictionaryApiKey: string = process.env.spud_dictionaryapi;
 const dict = new mw.CollegiateDictionary(dictionaryApiKey);
 
 /**
@@ -61,7 +60,6 @@ export default class DefineCommand extends Command {
 	 * @memberof DefineCommand
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
-		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
 		const word = args.query;
 		const dictionaryEmbed: MessageEmbed = new MessageEmbed({
 			color: getEmbedColor(msg),
@@ -72,6 +70,8 @@ export default class DefineCommand extends Command {
 			},
 			title: `Definition Result: ${word}`
 		});
+
+		startTyping(msg);
 
 		function renderDefinition(sensesIn: any) {
 			return sensesIn
@@ -106,13 +106,17 @@ export default class DefineCommand extends Command {
 					}
 				];
 				dictionaryEmbed.description = renderDefinition(result[0].definition);
-				return msg.embed(dictionaryEmbed);
 			})
 			.catch((err: any) => {
 				msg.client.emit('warn', `Error in command ref:define: ${err}`);
+				stopTyping(msg);
 				return sendSimpleEmbeddedError(msg, 'Word not found.', 3000);
 			});
+		
+		deleteCommandMessages(msg, this.client);
+		stopTyping(msg);
 
-		return response;
+		// Send the success response
+		return msg.embed(dictionaryEmbed);
 	}
 }

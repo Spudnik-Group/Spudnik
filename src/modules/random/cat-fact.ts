@@ -1,10 +1,8 @@
-import chalk from 'chalk';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { RequestResponse } from 'request';
 import * as rp from 'request-promise';
 import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, stopTyping, startTyping, deleteCommandMessages } from '../../lib/helpers';
 
 /**
  * Post a random cat fact.
@@ -43,22 +41,29 @@ export default class CatFactCommand extends Command {
 	 * @memberof CatFactCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
-		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
+		const responseEmbed: MessageEmbed = new MessageEmbed({
+			color: getEmbedColor(msg),
+			description: '',
+			title: ':cat: Fact'
+		});
+
+		startTyping(msg);
+
 		rp('https://catfact.ninja/fact')
 			.then((content) => {
 				const data = JSON.parse(content);
-
-				return msg.embed(new MessageEmbed({
-					color: getEmbedColor(msg),
-					description: data.fact,
-					title: ':cat: Fact'
-				}));
+				responseEmbed.setDescription(data.fact);
 			})
 			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command random:cat-fact: ${err}`);
-
+				stopTyping(msg);
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			});
-		return response;
+		
+		deleteCommandMessages(msg, this.client);
+		stopTyping(msg);
+
+		// Send the success response
+		return msg.embed(responseEmbed);
 	}
 }
