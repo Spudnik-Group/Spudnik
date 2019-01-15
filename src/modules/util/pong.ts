@@ -1,5 +1,7 @@
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { stripIndents } from 'common-tags';
+import { startTyping, stopTyping, deleteCommandMessages } from 'src/lib/helpers';
 
 /**
  * Returns the bot's ping.
@@ -38,21 +40,20 @@ export default class PongCommand extends Command {
 	 * @memberof PongCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
-		if(!msg.editable) {
-			const pingMsg = await msg.reply('Ping.');
-			return (pingMsg as Message).edit(`
-				${msg.channel.type !== 'dm' ? `${msg.author},` : ''}
-				In Soviet Russia: Pong ping you!
-				The message round-trip took ${(pingMsg as Message).createdTimestamp - msg.createdTimestamp}ms.
-				${this.client.ping ? `The heartbeat ping is ${Math.round(this.client.ping)}ms.` : ''}
-			`);
-		} else {
-			await msg.edit('Pinging...');
-			return msg.edit(`
-			In Soviet Russia: Pong ping you!
-			The message round-trip took ${msg.editedTimestamp - msg.createdTimestamp}ms.
-				${this.client.ping ? `The heartbeat ping is ${Math.round(this.client.ping)}ms.` : ''}
-			`);
-		}
+		startTyping(msg);
+		const pingMsg = await msg.reply(stripIndents`
+			В Советской России: понг пингует вас!
+			Пинг сердцебиения составляет ${Math.round(this.client.ping)} мс
+		`);
+
+		deleteCommandMessages(msg, this.client);
+		stopTyping(msg);
+		
+		return (pingMsg as Message).edit(stripIndents`
+			${msg.channel.type !== 'dm' ? `${msg.author},` : ''}
+			In Soviet Russia: Pong pings you!
+			The message round-trip took ${(pingMsg as Message).createdTimestamp - msg.createdTimestamp}ms.
+			${this.client.ping ? `The heartbeat ping is ${Math.round(this.client.ping)}ms.` : ''}
+		`);
 	}
 }

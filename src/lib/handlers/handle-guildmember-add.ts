@@ -13,7 +13,7 @@ export function handleGuildMemberAdd(member: GuildMember, client: CommandoClient
 		if (channel && channel.type === 'text') {
 			(channel as TextChannel).send(message);
 		} else {
-			client.emit('error', `There was an error trying to welcome a new guild member in ${guild}, the channel may no longer exist or was set to a non-text channel`);
+			client.emit('warn', `There was an error trying to welcome a new guild member in ${guild}, the channel may no longer exist or was set to a non-text channel`);
 		}
 	}
 }

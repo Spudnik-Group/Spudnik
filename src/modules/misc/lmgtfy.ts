@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedMessage, deleteCommandMessages } from '../../lib/helpers';
 
 /**
  * Generates a "Let Me Google That For You" link.
@@ -49,6 +49,7 @@ export default class LmgtfyCommand extends Command {
 	 * @memberof LmgtfyCommand
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
+		deleteCommandMessages(msg, this.client);
 		return sendSimpleEmbeddedMessage(msg, `<http://lmgtfy.com/?q=${encodeURI(args.query)}>`);
 	}
 }

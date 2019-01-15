@@ -1,8 +1,8 @@
 import { stripIndents } from 'common-tags';
-import { Message } from 'discord.js';
+import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
 
 /**
  * Post a summary from Wikipedia.
@@ -52,7 +52,10 @@ export default class WikiCommand extends Command {
 	 * @memberof WikiCommand
 	 */
 	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
-		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
+		let messageOut: MessageEmbed[];
+
+		startTyping(msg);
+
 		require('wikijs').default().search(args.query, 1)
 			.then((data: any) => {
 				require('wikijs').default().page(data.results[0]).then((page: any) => {
@@ -61,11 +64,11 @@ export default class WikiCommand extends Command {
 						const continuation = () => {
 							const paragraph = sumText.shift();
 							if (paragraph) {
-								return msg.embed({
+								messageOut.push(new MessageEmbed({
 									color: getEmbedColor(msg),
 									description: `${paragraph}\n\n${page.raw.fullurl}`,
 									title: page.raw.title
-								});
+								}));
 							}
 						};
 						continuation();
@@ -74,8 +77,14 @@ export default class WikiCommand extends Command {
 			})
 			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command ref:wiki: ${err}`);
+				stopTyping(msg);
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			});
-		return response;
+		
+		deleteCommandMessages(msg, this.client);
+		stopTyping(msg);
+
+		// Send the success response
+		return msg.embed(messageOut);
 	}
 }

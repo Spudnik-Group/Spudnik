@@ -3,7 +3,7 @@ import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { Requester } from 'node-duckduckgo';
 import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
 
 /**
  * Post instant answer from DuckDuckGo.
@@ -59,7 +59,6 @@ export default class DdgCommand extends Command {
 		const ddg = new Requester('Spudnik Discord Bot');
 		ddg.no_html = 1;
 		ddg.no_redirect = 1;
-		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
 		const ddgEmbed: MessageEmbed = new MessageEmbed({
 			color: getEmbedColor(msg),
 			description: '',
@@ -69,9 +68,12 @@ export default class DdgCommand extends Command {
 			}
 		});
 
+		startTyping(msg);
+
 		ddg.request(args.query, (err, response, body) => {
 			if (err !== undefined && err !== null) {
 				msg.client.emit('warn', `Error in command ref:ddg: ${err}`);
+				stopTyping(msg);
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			} else if (typeof body !== 'undefined') {
 				const result = JSON.parse(body);
@@ -83,8 +85,12 @@ export default class DdgCommand extends Command {
 			} else {
 				ddgEmbed.description = 'I don\'t have an answer for that query';
 			}
-			return msg.embed(ddgEmbed);
 		});
-		return response;
+		
+		deleteCommandMessages(msg, this.client);
+		stopTyping(msg);
+
+		// Send the success response
+		return msg.embed(ddgEmbed);
 	}
 }

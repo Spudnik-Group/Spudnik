@@ -13,7 +13,7 @@ export function handleGuildMemberRemove(member: GuildMember, client: CommandoCli
 		if (channel && channel.type === 'text') {
 			(channel as TextChannel).send(message);
 		} else {
-			client.emit('error', `There was an error trying to say goodbye a former guild member in ${guild}, the channel may not exist or was set to a non-text channel`);
+			client.emit('warn', `There was an error trying to say goodbye a former guild member in ${guild}, the channel may not exist or was set to a non-text channel`);
 		}
 	}
 }

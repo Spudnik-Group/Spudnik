@@ -3,6 +3,7 @@ import { Guild, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import * as dateFns from 'date-fns';
+import { deleteCommandMessages } from 'src/lib/helpers';
 
 // tslint:disable-next-line:no-var-requires
 const { version, dependencies }: { version: string, dependencies: any } = require('../../../package');
@@ -66,6 +67,9 @@ export default class StatsCommand extends Command {
 			.addField('❯ Source Code', 'https://github.com/Spudnik-Group/Spudnik', true)
 			.addField('❯ Dependencies', this.parseDependencies())
 			.setThumbnail(`${this.client.user.avatarURL()}`);
+		
+		deleteCommandMessages(msg, this.client);
+		
 		return msg.embed(statsEmbed);
 	}
 
