@@ -108,7 +108,7 @@ export default class BanCommand extends Command {
 			**Reason:** ${args.reason}`);
 		
 		// Log the event in the mod log
-		if (msg.guild.settings.get('modlogs', true)) {
+		if (msg.guild.settings.get('modlogEnabled', true)) {
 			modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, banEmbed);
 		}
 		deleteCommandMessages(msg, this.client);

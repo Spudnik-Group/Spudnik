@@ -180,7 +180,7 @@ export default class WelcomeCommand extends Command {
 		}
 		
 		// Log the event in the mod log
-		if (msg.guild.settings.get('modlogs', true)) {
+		if (msg.guild.settings.get('modlogEnabled', true)) {
 			modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, welcomeEmbed);
 		}
 		deleteCommandMessages(msg, this.client);
@@ -197,9 +197,9 @@ export default class WelcomeCommand extends Command {
 		**Server:** ${msg.guild.name} (${msg.guild.id})
 		**Author:** ${msg.author.tag} (${msg.author.id})
 		**Time:** ${dateFns.format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
-		**Input:** \`Welcome ${args.subCommand}\``;
+		**Input:** \`Welcome ${args.subCommand.toLowerCase()}\``;
 		let welcomeUserWarn = '';
-		switch (args.subCommand) {
+		switch (args.subCommand.toLowerCase()) {
 			case 'enable': {
 				welcomeUserWarn = 'Enabling welcome feature failed!';
 				break;

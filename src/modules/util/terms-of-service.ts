@@ -2,7 +2,7 @@ import { stripIndents } from 'common-tags';
 import { Channel, Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, stopTyping, deleteCommandMessages } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, stopTyping, deleteCommandMessages, startTyping } from '../../lib/helpers';
 import * as dateFns from 'date-fns';
 
 interface ITOSMessage {
@@ -104,6 +104,8 @@ export default class TermsOfServiceCommand extends Command {
 		const tosChannel: string = await msg.guild.settings.get('tosChannel', null);
 		const tosMessageCount: number = await msg.guild.settings.get('tosMessageCount') || 0;
 		const tosMessages: ITOSMessage[] = [];
+
+		startTyping(msg);
 
 		for (let i = 1; i < tosMessageCount + 1; i++) {
 			const tosMessage: ITOSMessage = await msg.guild.settings.get(`tosMessage${i}`);
@@ -238,10 +240,9 @@ export default class TermsOfServiceCommand extends Command {
 		}
 		
 		// Log the event in the mod log
-		if (msg.guild.settings.get('modlogs', true)) {
+		if (msg.guild.settings.get('modlogEnabled', true)) {
 			if (args.subCommand.toLowerCase() !== 'status') {
 				modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, tosEmbed);
-		
 			}
 		}
 		deleteCommandMessages(msg, this.client);
@@ -258,10 +259,10 @@ export default class TermsOfServiceCommand extends Command {
 			**Server:** ${msg.guild.name} (${msg.guild.id})
 			**Author:** ${msg.author.tag} (${msg.author.id})
 			**Time:** ${dateFns.format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
-			**Input:** \`TOS ${args.subCommand}\`
+			**Input:** \`TOS ${args.subCommand.toLowerCase()}\`
 		`;
 		let tosUserWarn = '';
-		switch (args.subCommand) {
+		switch (args.subCommand.toLowerCase()) {
 			case 'channel': {
 				tosUserWarn = `Failed setting new tos channel to <#${args.item}>!`;
 				break;

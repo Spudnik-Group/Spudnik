@@ -93,7 +93,7 @@ export default class KickCommand extends Command {
 				`);
 
 				// Log the event in the mod log
-				if (msg.guild.settings.get('modlogs', true)) {
+				if (msg.guild.settings.get('modlogEnabled', true)) {
 					modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, kickEmbed);
 				}
 				deleteCommandMessages(msg, this.client);

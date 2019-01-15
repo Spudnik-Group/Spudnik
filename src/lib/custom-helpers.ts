@@ -42,7 +42,7 @@ export const modLogMessage = (msg: CommandMessage, guild: CommandoGuild, outChan
 		guild.settings.set('hasSentModLogMessage', true);
 	}
 
-	return outChannelID && guild.settings.get('modlogs', false)
+	return outChannelID && guild.settings.get('modlogEnabled', false)
 		? outChannel.send('', { embed: embed })
 		: null;
 };

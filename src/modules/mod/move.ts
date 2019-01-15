@@ -133,7 +133,7 @@ export default class MoveCommand extends Command {
 				originalMessage.delete();
 
 				// Log the event in the mod log
-				if (msg.guild.settings.get('modlogs', true)) {
+				if (msg.guild.settings.get('modlogEnabled', true)) {
 					const moveModMessage: MessageEmbed = new MessageEmbed({
 						author: {
 							icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/rightwards-arrow-with-hook_21aa.png',

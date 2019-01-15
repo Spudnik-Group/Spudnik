@@ -77,7 +77,7 @@ export default class AdblockCommand extends Command {
 
 		startTyping(msg);
 
-		if (args.subCommand === 'enable') {
+		if (args.subCommand.toLowerCase() === 'enable') {
 			if (adblockEnabled) {
 				stopTyping(msg);
 				return sendSimpleEmbeddedMessage(msg, 'Adblock feature already enabled!', 3000);
@@ -85,7 +85,7 @@ export default class AdblockCommand extends Command {
 				msg.guild.settings.set('adblockEnabled', true)
 					.catch((err: Error) => this.catchError(msg, args, err));
 			}
-		} else if (args.subCommand === 'disable') {
+		} else if (args.subCommand.toLowerCase() === 'disable') {
 			if (!adblockEnabled) {
 				stopTyping(msg);
 				return sendSimpleEmbeddedMessage(msg, 'Adblock feature already disabled!', 3000);
@@ -98,11 +98,11 @@ export default class AdblockCommand extends Command {
 		// Set up embed message
 		adblockEmbed.setDescription(stripIndents`
 			**Member:** ${msg.author.tag} (${msg.author.id})
-			**Action:** Adblock ${args.subCommand}
+			**Action:** Adblock ${args.subCommand.toLowerCase()}
 		`);
 
 		// Log the event in the mod log
-		if (msg.guild.settings.get('modlogs', true)) {
+		if (msg.guild.settings.get('modlogEnabled', true)) {
 			modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, adblockEmbed);
 		}
 		deleteCommandMessages(msg, this.client);
@@ -119,11 +119,11 @@ export default class AdblockCommand extends Command {
 		**Server:** ${msg.guild.name} (${msg.guild.id})
 		**Author:** ${msg.author.tag} (${msg.author.id})
 		**Time:** ${dateFns.format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
-		**Input:** \`Adblock ${args.subCommand}\`
+		**Input:** \`Adblock ${args.subCommand.toLowerCase()}\`
 		**Error Message:** ${err}`);
 		// Inform the user the command failed
 		stopTyping(msg);
-		if (args.subCommand === 'enable') {
+		if (args.subCommand.toLowerCase() === 'enable') {
 			return sendSimpleEmbeddedError(msg, 'Enabling adblock feature failed!');
 		} else {
 			return sendSimpleEmbeddedError(msg, 'Disabling adblock feature failed!');

@@ -5,7 +5,7 @@ import Mongoose = require('mongoose');
 import { Schema, Document, Model } from 'mongoose';
 import { startTyping, stopTyping, deleteCommandMessages, sendSimpleEmbeddedError } from '../../lib/helpers';
 import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
-import moment = require('moment');
+import * as dateFns from 'date-fns';
 
 interface IWarningsObject {
 	id: string;
@@ -154,7 +154,7 @@ export default class WarnCommand extends Command {
 				**Reason:** ${args.reason !== '' ? args.reason : 'No reason has been added by the moderator'}`);
 			
 			// Log the event in the mod log
-			if (msg.guild.settings.get('modlogs', true)) {
+			if (msg.guild.settings.get('modlogEnabled', true)) {
 				modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, warnEmbed);
 			}
 			deleteCommandMessages(msg, this.client);
@@ -171,7 +171,7 @@ export default class WarnCommand extends Command {
 		Error occurred in \`warn\` command!
 		**Server:** ${msg.guild.name} (${msg.guild.id})
 		**Author:** ${msg.author.tag} (${msg.author.id})
-		**Time:** ${moment(msg.createdTimestamp).format('MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+		**Time:** ${dateFns.format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
 		**Input:** \`${args.member.user.tag} (${args.member.id})\`|| \`${args.points}\` || \`${args.reason}\`
 		**Error Message:** ${err}`);
 		// Inform the user the command failed

@@ -2,6 +2,7 @@ import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed, Role } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
+import { startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
 
 /**
  * Lists default and self-assignable roles.
@@ -19,7 +20,6 @@ export default class RoleCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			args: [],
 			clientPermissions: ['MANAGE_ROLES'],
 			description: 'Lists default and self-assignable roles.',
 			details: stripIndents`
@@ -43,55 +43,58 @@ export default class RoleCommand extends Command {
 	 * @memberof RoleCommand
 	 */
 	public async run(msg: CommandMessage): Promise<Message | Message[]> {
-		const roleEmbed = new MessageEmbed({
+		const roleEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/110/lock_1f512.png',
 				name: 'Role Manager'
 			},
 			color: getEmbedColor(msg)
 		});
-
-		let guildAssignableRoles: string[] = msg.client.provider.get(msg.guild.id, 'assignableRoles', []);
-		let guildDefaultRoles: string[] = msg.client.provider.get(msg.guild.id, 'defaultRoles', []);
+		let guildAssignableRoles: string[] = await msg.client.provider.get(msg.guild.id, 'assignableRoles', []);
+		let guildDefaultRoles: string[] = await msg.client.provider.get(msg.guild.id, 'defaultRoles', []);
+		
+		startTyping(msg);
 
 		if (Array.isArray(guildAssignableRoles) && guildAssignableRoles.length > 0) {
-			const roles: string[] = msg.guild.roles.filter((role) => guildAssignableRoles.includes(role.id)).reduce((list: string[], role: Role) => {
-				list.push(role.name);
-				return list;
-			}, []).sort();
+			const roles: Role[] = msg.guild.roles.filter((role) => guildAssignableRoles.includes(role.id)).array();
 
 			if (roles.length > 0) {
+				const rolesListOut: string[] = [];
+				roles.forEach((i: Role) => {
+					rolesListOut.push(`* ${i.name} - ${i.members.size} members`);
+				});
 				roleEmbed.fields.push({
 					inline: true,
 					name: 'Assignable Roles',
-					value: roles.sort((a, b) => {
-						return a.localeCompare(b, 'en', { sensitivity: 'base' });
-					}).join('\n')
+					value: rolesListOut.sort().join('/n')
 				});
 			}
 		}
-
 		if (Array.isArray(guildDefaultRoles) && guildDefaultRoles.length > 0) {
-			const roles: string[] = msg.guild.roles.filter((role) => guildDefaultRoles.includes(role.id)).reduce((list: string[], role: Role) => {
-				list.push(role.name);
-				return list;
-			}, []).sort();
+			const roles: Role[] = msg.guild.roles.filter((role) => guildDefaultRoles.includes(role.id)).array();
 
 			if (roles.length > 0) {
+				const rolesListOut: string[] = [];
+				roles.forEach((i: Role) => {
+					rolesListOut.push(`* ${i.name}`);
+				});
 				roleEmbed.fields.push({
 					inline: true,
 					name: 'Default Roles',
-					value: roles.sort((a, b) => {
-						return a.localeCompare(b, 'en', { sensitivity: 'base' });
-					}).join('\n')
+					value: rolesListOut.sort().join('/n')
 				});
 			}
 		}
+		roleEmbed.setFooter('Use the `iam`/`iamnot` commands to manage your roles');
 
 		if (Array.isArray(roleEmbed.fields) && roleEmbed.fields.length === 0) {
-			roleEmbed.description = 'A default role and assignable roles are not set for this guild.';
+			roleEmbed.setDescription('A default role and assignable roles are not set for this guild.');
 		}
 
+		deleteCommandMessages(msg, this.client);
+		stopTyping(msg);
+		
+		// Send the response
 		return msg.embed(roleEmbed);
 	}
 }

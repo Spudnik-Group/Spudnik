@@ -2,7 +2,7 @@ import { stripIndents } from 'common-tags';
 import { Channel, Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, stopTyping, sendSimpleEmbeddedMessage, deleteCommandMessages } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, stopTyping, sendSimpleEmbeddedMessage, deleteCommandMessages, startTyping } from '../../lib/helpers';
 import * as dateFns from 'date-fns';
 
 /**
@@ -95,6 +95,8 @@ export default class StarboardCommand extends Command {
 		const botCanRead: boolean = msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('READ_MESSAGE_HISTORY');
 		const botCanPostLinks: boolean = msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('EMBED_LINKS');
 		const botCanPostAttachments: boolean = msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('ATTACH_FILES');
+
+		startTyping(msg);
 
 		switch (args.subCommand.toLowerCase()) {
 			case 'channel': {
@@ -196,7 +198,7 @@ export default class StarboardCommand extends Command {
 		}
 		
 		// Log the event in the mod log
-		if (msg.guild.settings.get('modlogs', true)) {
+		if (msg.guild.settings.get('modlogEnabled', true)) {
 			if (args.subCommand.toLowerCase() !== 'status') {
 				modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, starboardEmbed);
 			}
@@ -215,9 +217,9 @@ export default class StarboardCommand extends Command {
 		**Server:** ${msg.guild.name} (${msg.guild.id})
 		**Author:** ${msg.author.tag} (${msg.author.id})
 		**Time:** ${dateFns.format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
-		**Input:** \`Starboard ${args.subCommand}\``;
+		**Input:** \`Starboard ${args.subCommand.toLowerCase()}\``;
 		let starboardUserWarn = '';
-		switch (args.subCommand) {
+		switch (args.subCommand.toLowerCase()) {
 			case 'enable': {
 				starboardUserWarn = 'Enabling Star Board feature failed!';
 				break;
