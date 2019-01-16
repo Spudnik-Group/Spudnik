@@ -1,5 +1,5 @@
 import { Message } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedMessage, deleteCommandMessages } from '../../lib/helpers';
 
 /**
@@ -34,11 +34,11 @@ export default class SourceCommand extends Command {
 	/**
 	 * Run the "source" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof SourceCommand
 	 */
-	public async run(msg: CommandMessage): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage): Promise<Message | Message[]> {
 		deleteCommandMessages(msg, this.client);
 		return sendSimpleEmbeddedMessage(msg, '<https://github.com/Spudnik-Group/Spudnik>');
 	}

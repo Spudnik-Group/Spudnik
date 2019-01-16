@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Message } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { shuffle, verify } from '../../lib/helpers';
 //tslint:disable-next-line
 const events = require('../../extras/hunger-games');
@@ -46,11 +46,11 @@ export default class HungerGamesCommand extends Command {
 	/**
 	 * Run the "HungerGames" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof HungerGamesCommand
 	 */
-	public async run(msg: CommandMessage, args: { tributes: string[] }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { tributes: string[] }): Promise<Message | Message[]> {
 		if (args.tributes.length < 2) { return msg.say(`...${args.tributes[0]} wins, as they were the only tribute.`); }
 		if (args.tributes.length > 24) { return msg.reply('Please do not enter more than 24 tributes.'); }
 		if (new Set(args.tributes).size !== args.tributes.length) { return msg.reply('Please do not enter the same tribute twice.'); }

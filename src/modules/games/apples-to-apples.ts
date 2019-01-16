@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Collection, Message } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { awaitPlayers, shuffle } from '../../lib/helpers';
 // tslint:disable-next-line:no-var-requires
 const data = require('../../extras/apples-to-apples.js');
@@ -47,11 +47,11 @@ export default class ApplesToApplesCommand extends Command {
 	/**
 	 * Run the "ApplesToApples" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof ApplesToApplesCommand
 	 */
-	public async run(msg: CommandMessage, args: { maxPts: number }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { maxPts: number }): Promise<Message | Message[]> {
 		if (this.playing.has(msg.channel.id)) { return msg.reply('Only one game may be occurring per channel.'); }
 		this.playing.add(msg.channel.id);
 		try {

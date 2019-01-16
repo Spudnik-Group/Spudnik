@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Message } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 //tslint:disable-next-line
 const words = require('../../extras/hangman');
 
@@ -35,11 +35,11 @@ export default class HangmanCommand extends Command {
 	/**
 	 * Run the "Hangman" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof HangmanCommand
 	 */
-	public async run(msg: CommandMessage, args: { space: string }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { space: string }): Promise<Message | Message[]> {
 		if (this.playing.has(msg.channel.id)) {
 			return msg.reply('Only one game may be occurring per channel.');
 		}

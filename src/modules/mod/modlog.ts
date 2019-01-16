@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed, TextChannel, Channel } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
 import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
 import * as dateFns from 'date-fns';
@@ -64,12 +64,12 @@ export default class ModlogCommand extends Command {
 	/**
 	 * Run the "Modlog" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @param {{ subCommand: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof ModlogCommand
 	 */
-	public async run(msg: CommandMessage, args: { subCommand: string, channel: Channel }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { subCommand: string, channel: Channel }): Promise<Message | Message[]> {
 		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
 		const modlogEnabled = msg.guild.settings.get('modlogEnabled', false);
 		const modlogEmbed: MessageEmbed = new MessageEmbed({
@@ -153,7 +153,7 @@ export default class ModlogCommand extends Command {
 		return msg.embed(modlogEmbed);
 	}
 
-	private catchError(msg: CommandMessage, args: { subCommand: string, channel: Channel }, err: Error) {
+	private catchError(msg: CommandoMessage, args: { subCommand: string, channel: Channel }, err: Error) {
 		// Build warning message
 		let modlogWarn = stripIndents`
 			Error occurred in \`accept\` command!

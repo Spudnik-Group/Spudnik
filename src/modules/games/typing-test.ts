@@ -1,9 +1,9 @@
 import { stripIndents } from 'common-tags';
 import { Message } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { list } from '../../lib/helpers';
 //tslint:disable-next-line
-const sentences = require('../../extras/typing-game');
+const sentences = require('../../extras/typing-test');
 const difficulties = ['easy', 'medium', 'hard', 'extreme', 'impossible'];
 const times: any = {
 	easy: 25000,
@@ -56,11 +56,11 @@ export default class TypingTestCommand extends Command {
 	/**
 	 * Run the "TypingTest" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof TypingTestCommand
 	 */
-	public async run(msg: CommandMessage, args: { difficulty: string }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { difficulty: string }): Promise<Message | Message[]> {
 		const sentence = sentences[Math.floor(Math.random() * sentences.length)];
 		const time = times[args.difficulty];
 		await msg.reply(stripIndents`

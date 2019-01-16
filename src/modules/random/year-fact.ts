@@ -1,5 +1,5 @@
 import { Message, MessageEmbed } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import * as rp from 'request-promise';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
@@ -36,11 +36,11 @@ export default class YearFactCommand extends Command {
 	/**
 	 * Run the "year-fact" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof YearFactCommand
 	 */
-	public async run(msg: CommandMessage): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage): Promise<Message | Message[]> {
 		const responseEmbed: MessageEmbed = new MessageEmbed({
 			color: getEmbedColor(msg),
 			description: '',

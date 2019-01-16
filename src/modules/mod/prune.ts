@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Collection, GuildMember, Message, User, MessageEmbed, TextChannel } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, deleteCommandMessages, startTyping, stopTyping } from '../../lib/helpers';
 import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
 import * as dateFns from 'date-fns';
@@ -91,12 +91,12 @@ export default class PruneCommand extends Command {
 	/**
 	 * Run the "prune" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @param {{ limit: number, filter: string, member: GuildMember }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof PruneCommand
 	 */
-	public async run(msg: CommandMessage, args: { limit: number, filter: string, member: GuildMember }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { limit: number, filter: string, member: GuildMember }): Promise<Message | Message[]> {
 		await deleteCommandMessages(msg, this.client);
 		const { filter, limit } = args;
 		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
@@ -198,7 +198,7 @@ export default class PruneCommand extends Command {
 		return sendSimpleEmbeddedMessage(msg, `Pruned ${limit} messages`, 5000);
 	}
 	
-	private catchError(msg: CommandMessage, args: { limit: number, filter: string, member: GuildMember }, err: Error) {
+	private catchError(msg: CommandoMessage, args: { limit: number, filter: string, member: GuildMember }, err: Error) {
 		// Emit warn event for debugging
 		msg.client.emit('warn', stripIndents`
 		Error occurred in \`prune\` command!

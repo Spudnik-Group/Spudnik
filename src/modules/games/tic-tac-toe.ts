@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Message, User } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { verify } from '../../lib/helpers';
 
 /**
@@ -44,11 +44,11 @@ export default class TicTacToeCommand extends Command {
 	/**
 	 * Run the "TicTacToe" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof TicTacToeCommand
 	 */
-	public async run(msg: CommandMessage, args: { opponent: User }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { opponent: User }): Promise<Message | Message[]> {
 		if (args.opponent.bot) { return msg.reply('Bots may not be played against.'); }
 		if (args.opponent.id === msg.author.id) { return msg.reply('You may not play against yourself.'); }
 		if (this.playing.has(msg.channel.id)) { return msg.reply('Only one game may be occurring per channel.'); }

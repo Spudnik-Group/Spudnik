@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed, Role, TextChannel } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
 import * as dateFns from 'date-fns';
@@ -69,12 +69,12 @@ export default class RoleManagementCommands extends Command {
 	/**
 	 * Run the "role" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @param {{ subCommand: string, role: Role }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof RoleManagementCommands
 	 */
-	public async run(msg: CommandMessage, args: { subCommand: string, role: Role }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { subCommand: string, role: Role }): Promise<Message | Message[]> {
 		const roleEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/110/lock_1f512.png',
@@ -219,7 +219,7 @@ export default class RoleManagementCommands extends Command {
 		return msg.embed(roleEmbed);
 	}
 	
-	private catchError(msg: CommandMessage, args: { subCommand: string, role: Role }, err: Error) {
+	private catchError(msg: CommandoMessage, args: { subCommand: string, role: Role }, err: Error) {
 		// Build warning message
 		let roleWarn = stripIndents`
 		Error occurred in \`role-management\` command!

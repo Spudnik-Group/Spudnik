@@ -1,5 +1,5 @@
 import { Message } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import * as rp from 'request-promise';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedImage, sendSimpleEmbeddedMessage, stopTyping, deleteCommandMessages } from '../../lib/helpers';
 
@@ -35,11 +35,11 @@ export default class HighNoonCommand extends Command {
 	/**
 	 * Run the "highnoon" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof HighNoonCommand
 	 */
-	public async run(msg: CommandMessage): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage): Promise<Message | Message[]> {
 		let embedContent = '';
 		rp({ followAllRedirects: true, uri: 'http://imgs.xkcd.com/comics/now.png', resolveWithFullResponse: true })
 			.then((content) => {

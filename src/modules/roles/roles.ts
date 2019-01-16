@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed, Role } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
 
@@ -38,11 +38,11 @@ export default class RoleCommand extends Command {
 	/**
 	 * Run the "roles" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof RoleCommand
 	 */
-	public async run(msg: CommandMessage): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage): Promise<Message | Message[]> {
 		const roleEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/110/lock_1f512.png',

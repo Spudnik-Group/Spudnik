@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Message } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { list, shuffle } from '../../lib/helpers';
 const types: string[] = ['multiple', 'boolean'];
 const difficulties: string[] = ['easy', 'medium', 'hard'];
@@ -60,11 +60,11 @@ export default class QuizCommand extends Command {
 	/**
 	 * Run the "Quiz" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof QuizCommand
 	 */
-	public async run(msg: CommandMessage, args: { type: string, difficulty: string }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { type: string, difficulty: string }): Promise<Message | Message[]> {
 		try {
 			const { body } = await require('node-superfetch')
 				.get('https://opentdb.com/api.php')

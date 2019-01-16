@@ -1,5 +1,5 @@
 import { Message, MessageEmbed } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 //tslint:disable-next-line
 const questions = require('../../extras/google-feud');
 
@@ -43,11 +43,11 @@ export default class GoogleFeudCommand extends Command {
 	/**
 	 * Run the "GoogleFeud" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof GoogleFeudCommand
 	 */
-	public async run(msg: CommandMessage, args: { question: string }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { question: string }): Promise<Message | Message[]> {
 		if (this.playing.has(msg.channel.id)) { return msg.reply('Only one fight may be occurring per channel.'); }
 		this.playing.add(msg.channel.id);
 		try {

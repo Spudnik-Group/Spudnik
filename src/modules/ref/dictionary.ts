@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, stopTyping, startTyping, deleteCommandMessages } from '../../lib/helpers';
 
@@ -54,12 +54,12 @@ export default class DefineCommand extends Command {
 	/**
 	 * Run the "define" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @param {{ query: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof DefineCommand
 	 */
-	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { query: string }): Promise<Message | Message[]> {
 		const word = args.query;
 		const dictionaryEmbed: MessageEmbed = new MessageEmbed({
 			color: getEmbedColor(msg),

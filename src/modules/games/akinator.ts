@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, verify } from '../../lib/helpers';
 // tslint:disable-next-line
@@ -39,11 +39,11 @@ export default class AkinatorCommand extends Command {
 	/**
 	 * Run the "Akinator" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof AkinatorCommand
 	 */
-	public async run(msg: CommandMessage): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage): Promise<Message | Message[]> {
 		if (this.sessions.has(msg.channel.id)) { return msg.reply('Only one game may be occuring per channel.'); }
 		try {
 			let ans = null;

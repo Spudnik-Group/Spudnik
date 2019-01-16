@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { GuildMember, Message, MessageEmbed, Role, TextChannel } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
 import * as dateFns from 'date-fns';
@@ -65,12 +65,12 @@ export default class BanCommand extends Command {
 	/**
 	 * Run the "ban" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @param {{ member: GuildMember, reason: string, daysOfMessages: number }} args
 	 * @returns {(Promise<Message | Message[] | any>)}
 	 * @memberof BanCommand
 	 */
-	public async run(msg: CommandMessage, args: { member: GuildMember, reason: string, daysOfMessages: number }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { member: GuildMember, reason: string, daysOfMessages: number }): Promise<Message | Message[]> {
 		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
 		const memberToBan: GuildMember = args.member;
 		const banEmbed: MessageEmbed = new MessageEmbed({
@@ -118,7 +118,7 @@ export default class BanCommand extends Command {
 		return msg.embed(banEmbed);
 	}
 
-	private catchError(msg: CommandMessage, args: { member: GuildMember, reason: string, daysOfMessages: number }, err: Error) {
+	private catchError(msg: CommandoMessage, args: { member: GuildMember, reason: string, daysOfMessages: number }, err: Error) {
 		// Emit warn event for debugging
 		msg.client.emit('warn', stripIndents`
 		Error occurred in \`ban\` command!

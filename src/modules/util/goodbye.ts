@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Channel, Message, MessageEmbed, TextChannel } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, startTyping, sendSimpleEmbeddedMessage, stopTyping, deleteCommandMessages } from '../../lib/helpers';
 import * as dateFns from 'date-fns';
@@ -71,12 +71,12 @@ export default class GoodbyeCommand extends Command {
 	/**
 	 * Run the "goodbye" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @param {{ subCommand: string, content: Channel | string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof GoodbyeCommand
 	 */
-	public async run(msg: CommandMessage, args: { subCommand: string, content: Channel | string }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { subCommand: string, content: Channel | string }): Promise<Message | Message[]> {
 		const goodbyeEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png',
@@ -189,7 +189,7 @@ export default class GoodbyeCommand extends Command {
 		return msg.embed(goodbyeEmbed);
 	}
 	
-	private catchError(msg: CommandMessage, args: { subCommand: string, content: Channel | string }, err: Error) {
+	private catchError(msg: CommandoMessage, args: { subCommand: string, content: Channel | string }, err: Error) {
 		// Build warning message
 		let goodbyeWarn = stripIndents`
 		Error occurred in \`goodbye\` command!

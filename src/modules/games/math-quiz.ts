@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Message } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { list } from '../../lib/helpers';
 const difficulties: string[] = ['easy', 'medium', 'hard', 'extreme', 'impossible'];
 const operations = ['+', '-', '*'];
@@ -56,11 +56,11 @@ export default class MathQuizCommand extends Command {
 	/**
 	 * Run the "MathQuiz" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof MathQuizCommand
 	 */
-	public async run(msg: CommandMessage, args: { difficulty: string }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { difficulty: string }): Promise<Message | Message[]> {
 		const value1 = Math.floor(Math.random() * maxValues[args.difficulty]) + 1;
 		const value2 = Math.floor(Math.random() * maxValues[args.difficulty]) + 1;
 		const operation = operations[Math.floor(Math.random() * operations.length)];

@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { GuildMember, Message, MessageEmbed, TextChannel } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import Mongoose = require('mongoose');
 import { Schema, Document, Model } from 'mongoose';
 import { startTyping, stopTyping, deleteCommandMessages, sendSimpleEmbeddedError } from '../../lib/helpers';
@@ -85,12 +85,12 @@ export default class WarnCommand extends Command {
 	/**
 	 * Run the "Warn" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @param {{ member: GuildMember, points: number, reason: string }} args
 	 * @returns {(Promise<Message | Message[] | any>)}
 	 * @memberof WarnCommand
 	 */
-	public async run(msg: CommandMessage, args: { member: GuildMember, points: number, reason: string }): Promise<Message | Message[] | any> {
+	public async run(msg: CommandoMessage, args: { member: GuildMember, points: number, reason: string }): Promise<Message | Message[] | any> {
 		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
 		const warnEmbed: MessageEmbed = new MessageEmbed({
 			author: {
@@ -165,7 +165,7 @@ export default class WarnCommand extends Command {
 		});
 	}
 	
-	private catchError(msg: CommandMessage, args: { member: GuildMember, points: number, reason: string }, err: Error) {
+	private catchError(msg: CommandoMessage, args: { member: GuildMember, points: number, reason: string }, err: Error) {
 		// Emit warn event for debugging
 		msg.client.emit('warn', stripIndents`
 		Error occurred in \`warn\` command!

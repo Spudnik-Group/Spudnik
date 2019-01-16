@@ -1,5 +1,5 @@
 import { Channel, GuildMember, Message, MessageEmbed, TextChannel } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, startTyping, deleteCommandMessages, stopTyping } from '../../lib/helpers';
 import { stripIndents } from 'common-tags';
@@ -64,12 +64,12 @@ export default class MoveCommand extends Command {
 	/**
 	 * Run the "Move" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @param {{ messageId: string, channel: Channel, reason: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof MoveCommand
 	 */
-	public async run(msg: CommandMessage, args: { messageId: string, channel: Channel, reason: string }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { messageId: string, channel: Channel, reason: string }): Promise<Message | Message[]> {
 		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
 		const originalChannel = msg.channel as TextChannel;
 		const originalMessage: Message = await originalChannel.messages.fetch(args.messageId);

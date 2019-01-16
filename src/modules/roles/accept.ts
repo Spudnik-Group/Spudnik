@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Channel, Message, MessageEmbed, Role, TextChannel } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, stopTyping, deleteCommandMessages, startTyping, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 import * as dateFns from 'date-fns';
@@ -56,12 +56,12 @@ export default class AcceptCommand extends Command {
 	/**
 	 * Run the "accept" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @param {{ channel: Channel }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof AcceptCommand
 	 */
-	public async run(msg: CommandMessage, args: { channel: Channel }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { channel: Channel }): Promise<Message | Message[]> {
 		const acceptEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/ballot-box-with-check_2611.png',
@@ -125,7 +125,7 @@ export default class AcceptCommand extends Command {
 		return msg.embed(acceptEmbed);
 	}
 	
-	private catchError(msg: CommandMessage, args: { channel: Channel }, err: Error) {
+	private catchError(msg: CommandoMessage, args: { channel: Channel }, err: Error) {
 		// Build warning message
 		let acceptWarn = stripIndents`
 			Error occurred in \`accept\` command!

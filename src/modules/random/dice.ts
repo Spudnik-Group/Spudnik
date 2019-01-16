@@ -1,5 +1,5 @@
 import { Message, MessageEmbed } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, deleteCommandMessages, stopTyping } from '../../lib/helpers';
 
@@ -44,12 +44,12 @@ export default class RollCommand extends Command {
 	/**
 	 * Run the "roll" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @param {{ rolls: string[] }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof RollCommand
 	 */
-	public async run(msg: CommandMessage, args: { rolls: string[] }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { rolls: string[] }): Promise<Message | Message[]> {
 		const input: string[] = args.rolls;
 		const diceEmbed: MessageEmbed = new MessageEmbed({
 			color: getEmbedColor(msg),

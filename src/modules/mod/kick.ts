@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { GuildMember, Message, MessageEmbed, TextChannel } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, startTyping, deleteCommandMessages, stopTyping } from '../../lib/helpers';
 import * as dateFns from 'date-fns';
@@ -58,12 +58,12 @@ export default class KickCommand extends Command {
 	/**
 	 * Run the "kick" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @param {{ member: GuildMember, reason: string }} args
 	 * @returns {(Promise<Message | Message[] | any>)}
 	 * @memberof KickCommand
 	 */
-	public async run(msg: CommandMessage, args: { member: GuildMember, reason: string }): Promise<Message | Message[] | any> {
+	public async run(msg: CommandoMessage, args: { member: GuildMember, reason: string }): Promise<Message | Message[] | any> {
 		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
 		const memberToKick: GuildMember = args.member;
 		const kickEmbed: MessageEmbed = new MessageEmbed({

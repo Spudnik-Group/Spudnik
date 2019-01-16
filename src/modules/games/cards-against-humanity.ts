@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Collection, Message } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { awaitPlayers, escapeMarkdown, shuffle } from '../../lib/helpers';
 // tslint:disable-next-line
 const { blackCards, whiteCards } = require('../../extras/cards-against-humanity.js');
@@ -55,11 +55,11 @@ export default class CardsAgainstHumanityCommand extends Command {
 	/**
 	 * Run the "CardsAgainstHumanity" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof CardsAgainstHumanityCommand
 	 */
-	public async run(msg: CommandMessage, args: { maxPts: number, noMidJoin: boolean }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { maxPts: number, noMidJoin: boolean }): Promise<Message | Message[]> {
 		if (this.playing.has(msg.channel.id)) { return msg.reply('Only one game may be occurring per channel.'); }
 		this.playing.add(msg.channel.id);
 		let joinLeaveCollector = null;

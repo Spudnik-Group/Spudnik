@@ -1,7 +1,7 @@
 import { Message, MessageEmbed } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { getRandomInt, sendSimpleEmbeddedMessage, startTyping, deleteCommandMessages, stopTyping } from '../../lib/helpers';
-import { getEmbedColor } from 'src/lib/custom-helpers';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
+import { getRandomInt, startTyping, deleteCommandMessages, stopTyping } from '../../lib/helpers';
+import { getEmbedColor } from '../../lib/custom-helpers';
 
 // tslint:disable-next-line:no-var-requires
 const { smiff }: { smiff: string[] } = require('../../extras/data');
@@ -39,11 +39,11 @@ export default class SmiffFactCommand extends Command {
 	/**
 	 * Run the "smiff-fact" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof SmiffFactCommand
 	 */
-	public async run(msg: CommandMessage): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage): Promise<Message | Message[]> {
 		const responseEmbed: MessageEmbed = new MessageEmbed({
 			color: getEmbedColor(msg),
 			description: '',

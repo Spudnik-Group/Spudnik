@@ -1,5 +1,5 @@
 import { Message } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 const choices: string[] = ['rock', 'paper', 'scissors'];
 
 /**
@@ -42,11 +42,11 @@ export default class RockPaperScissorsCommand extends Command {
 	/**
 	 * Run the "RockPaperScissors" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof RockPaperScissorsCommand
 	 */
-	public async run(msg: CommandMessage, args: { choice: string }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { choice: string }): Promise<Message | Message[]> {
 		const response = choices[Math.floor(Math.random() * choices.length)];
 		if (args.choice === 'rock') {
 			if (response === 'rock') { return msg.reply('Rock! Aw... A tie...'); }

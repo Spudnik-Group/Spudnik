@@ -1,4 +1,4 @@
-import { CommandMessage, CommandoGuild } from 'discord.js-commando';
+import { CommandoMessage, CommandoGuild } from 'discord.js-commando';
 import { TextChannel, MessageEmbed } from 'discord.js';
 import { oneLine } from 'common-tags';
 
@@ -6,10 +6,10 @@ import { oneLine } from 'common-tags';
  * Get Embed Color.
  *
  * @export
- * @param {CommandMessage} msg
+ * @param {CommandoMessage} msg
  * @returns number
  */
-export function getEmbedColor(msg: CommandMessage): number {
+export function getEmbedColor(msg: CommandoMessage): number {
 	let embedColor: number = parseInt(msg.client.provider.get(msg.guild.id, 'embedColor', '555555'), 16);
 
 	// This shouldn't happen, but if it does, return the default embed color
@@ -24,14 +24,14 @@ export function getEmbedColor(msg: CommandMessage): number {
  * Log the message to the corresponding guild's mod log channel
  * 
  * @export
- * @param {CommandMessage} msg 
+ * @param {CommandoMessage} msg 
  * @param {CommandoGuild} guild
  * @param {string} outChannelID
  * @param {TextChannel} TextChannel
  * @param {MessageEmbed} embed
  * @returns Promise<Message | Message[]>
  */
-export const modLogMessage = (msg: CommandMessage, guild: CommandoGuild, outChannelID: string, outChannel: TextChannel, embed: MessageEmbed) => {
+export const modLogMessage = (msg: CommandoMessage, guild: CommandoGuild, outChannelID: string, outChannel: TextChannel, embed: MessageEmbed) => {
 	if (!guild.settings.get('hasSentModLogMessage', false)) {
 		msg.reply(oneLine`
 			📃 I can keep a log of moderator actions if you create a channel named \'mod-logs\'

@@ -1,5 +1,5 @@
 import { Message, TextChannel } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, deleteCommandMessages, stopTyping, startTyping } from '../../lib/helpers';
 
@@ -35,11 +35,11 @@ export default class TopicCommand extends Command {
 	/**
 	 * Run the "topic" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof TopicCommand
 	 */
-	public async run(msg: CommandMessage): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage): Promise<Message | Message[]> {
 		const channel = msg.channel as TextChannel;
 		let response = channel.topic;
 

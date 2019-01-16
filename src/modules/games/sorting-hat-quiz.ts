@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Message } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { shuffle } from '../../lib/helpers';
 const choices = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'];
 //tslint:disable-next-line
@@ -38,11 +38,11 @@ export default class SortingHatQuizCommand extends Command {
 	/**
 	 * Run the "SortingHatQuiz" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof SortingHatQuizCommand
 	 */
-	public async run(msg: CommandMessage, args: { space: string }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { space: string }): Promise<Message | Message[]> {
 		if (this.playing.has(msg.channel.id)) { return msg.reply('Only one quiz may be occurring per channel.'); }
 		this.playing.add(msg.channel.id);
 		try {

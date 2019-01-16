@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import * as rp from 'request-promise';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
@@ -56,12 +56,12 @@ export default class XkcdCommand extends Command {
 	/**
 	 * Run the "xkcd" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @param {{ comicNumber: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof XkcdCommand
 	 */
-	public async run(msg: CommandMessage, args: { comicNumber: string }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { comicNumber: string }): Promise<Message | Message[]> {
 		const xkcdEmbed: MessageEmbed = new MessageEmbed({
 			color: getEmbedColor(msg),
 			description: ''

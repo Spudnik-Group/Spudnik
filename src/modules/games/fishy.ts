@@ -1,8 +1,8 @@
 import { Message } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { randomRange } from '../../lib/helpers';
 //tslint:disable-next-line
-const fishes = require('../../extras/fishy');
+const fishes = require('../../extras/fish');
 
 /**
  * Starts a game of Slots.
@@ -34,11 +34,11 @@ export default class SlotsCommand extends Command {
 	/**
 	 * Run the "Slots" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof SlotsCommand
 	 */
-	public async run(msg: CommandMessage): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage): Promise<Message | Message[]> {
 		const fishID = Math.floor(Math.random() * 10) + 1;
 		let rarity;
 		if (fishID < 5) {

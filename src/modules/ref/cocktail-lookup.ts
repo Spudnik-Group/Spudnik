@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import * as rp from 'request-promise';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
@@ -50,12 +50,12 @@ export default class CocktailCommand extends Command {
 	/**
 	 * Run the "cocktail" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @param {{ query: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof CocktailCommand
 	 */
-	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { query: string }): Promise<Message | Message[]> {
 		const cocktailEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/240/twitter/103/cocktail-glass_1f378.png',

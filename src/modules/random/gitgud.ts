@@ -1,7 +1,7 @@
 import { stripIndents } from 'common-tags';
 import { GuildMember, Message } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { deleteCommandMessages } from 'src/lib/helpers';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
+import { deleteCommandMessages } from '../../lib/helpers';
 
 /**
  * Post the "gitgud" image at someone.
@@ -46,12 +46,12 @@ export default class GitGudCommand extends Command {
 	/**
 	 * Run the "gitgud" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @param {{ mention: GuildMember }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof GitGudCommand
 	 */
-	public async run(msg: CommandMessage, args: { mention: GuildMember }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { mention: GuildMember }): Promise<Message | Message[]> {
 		const gitgudImageURL = 'http://i.imgur.com/NqpPXHu.jpg';
 
 		if (args.mention && args.mention !== null) {

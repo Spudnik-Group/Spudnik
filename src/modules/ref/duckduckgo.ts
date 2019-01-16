@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { Requester } from 'node-duckduckgo';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
@@ -50,12 +50,12 @@ export default class DdgCommand extends Command {
 	/**
 	 * Run the "ddg" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @param {{ query: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof DdgCommand
 	 */
-	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { query: string }): Promise<Message | Message[]> {
 		const ddg = new Requester('Spudnik Discord Bot');
 		ddg.no_html = 1;
 		ddg.no_redirect = 1;

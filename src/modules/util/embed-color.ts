@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed, TextChannel } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
 import { modLogMessage } from '../../lib/custom-helpers';
 import * as dateFns from 'date-fns';
@@ -64,12 +64,12 @@ export default class EmbedColorCommand extends Command {
 	/**
 	 * Run the "embedColor" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @param {{ color: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof EmbedColorCommand
 	 */
-	public async run(msg: CommandMessage, args: { color: string }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { color: string }): Promise<Message | Message[]> {
 		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
 		const embedColorEmbed: MessageEmbed = new MessageEmbed({
 			author: {
@@ -113,7 +113,7 @@ export default class EmbedColorCommand extends Command {
 		return msg.embed(embedColorEmbed);
 	}
 
-	private catchError(msg: CommandMessage, args: { color: string }, err: Error) {
+	private catchError(msg: CommandoMessage, args: { color: string }, err: Error) {
 		// Emit warn event for debugging
 		msg.client.emit('warn', stripIndents`
 		Error occurred in \`embedcolor\` command!

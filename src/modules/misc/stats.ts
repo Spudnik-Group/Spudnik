@@ -1,9 +1,9 @@
 import { stripIndents } from 'common-tags';
 import { Guild, Message, MessageEmbed } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import * as dateFns from 'date-fns';
-import { deleteCommandMessages } from 'src/lib/helpers';
+import { deleteCommandMessages } from '../../lib/helpers';
 
 // tslint:disable-next-line:no-var-requires
 const { version, dependencies }: { version: string, dependencies: any } = require('../../../package');
@@ -44,11 +44,11 @@ export default class StatsCommand extends Command {
 	/**
 	 * Run the "stats" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof StatsCommand
 	 */
-	public async run(msg: CommandMessage): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage): Promise<Message | Message[]> {
 		const duration = (s: any) => dateFns.distanceInWords(0, s * 1000, { includeSeconds: true })
 		let statsEmbed: MessageEmbed = new MessageEmbed()
 			.setColor(getEmbedColor(msg))

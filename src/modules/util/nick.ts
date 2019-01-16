@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { GuildMember, Message } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedMessage, deleteCommandMessages } from '../../lib/helpers';
 
 /**
@@ -55,12 +55,12 @@ export default class NickCommand extends Command {
 	/**
 	 * Run the "nick" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @param {{ nickName: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof NickCommand
 	 */
-	public async run(msg: CommandMessage, args: { nickName: string }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { nickName: string }): Promise<Message | Message[]> {
 		deleteCommandMessages(msg, this.client);
 		
 		if (args.nickName === '' || args.nickName === undefined) {

@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Message } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { getRandomInt, sendSimpleEmbeddedError } from '../../lib/helpers';
 
@@ -49,12 +49,12 @@ export default class ChooseCommand extends Command {
 	/**
 	 * Run the "choose" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @param {{ choices: string[] }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof ChooseCommand
 	 */
-	public async run(msg: CommandMessage, args: { choices: string[] }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { choices: string[] }): Promise<Message | Message[]> {
 		const options: string[] = args.choices;
 		if (options.length < 2) {
 			return sendSimpleEmbeddedError(msg, 'I can\'t choose for you if you don\'t give me more options!', 3000);

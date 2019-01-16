@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed, TextChannel } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
 import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
 import * as dateFns from 'date-fns';
@@ -59,12 +59,12 @@ export default class AdblockCommand extends Command {
 	/**
 	 * Run the "adblock" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @param {{ subCommand: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof AdblockCommand
 	 */
-	public async run(msg: CommandMessage, args: { subCommand: string }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { subCommand: string }): Promise<Message | Message[]> {
 		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
 		const adblockEnabled = msg.guild.settings.get('adblockEnabled', false);
 		const adblockEmbed: MessageEmbed = new MessageEmbed({
@@ -112,7 +112,7 @@ export default class AdblockCommand extends Command {
 		return msg.embed(adblockEmbed);
 	}
 
-	private catchError(msg: CommandMessage, args: { subCommand: string }, err: Error) {
+	private catchError(msg: CommandoMessage, args: { subCommand: string }, err: Error) {
 		// Emit warn event for debugging
 		msg.client.emit('warn', stripIndents`
 		Error occurred in \`adblock\` command!

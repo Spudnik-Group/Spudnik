@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Message } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 const slots = ['🍇', '🍊', '🍐', '🍒', '🍋'];
 
 /**
@@ -32,11 +32,11 @@ export default class SlotsCommand extends Command {
 	/**
 	 * Run the "Slots" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof SlotsCommand
 	 */
-	public async run(msg: CommandMessage, args: { space: string }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { space: string }): Promise<Message | Message[]> {
 		const slotOne = slots[Math.floor(Math.random() * slots.length)];
 		const slotTwo = slots[Math.floor(Math.random() * slots.length)];
 		const slotThree = slots[Math.floor(Math.random() * slots.length)];

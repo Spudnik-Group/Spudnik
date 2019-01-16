@@ -1,6 +1,6 @@
 import { oneLine } from 'common-tags';
 import { Message } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 const red = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
 const black = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35];
 const numbers = [0].concat(red, black);
@@ -61,11 +61,11 @@ export default class RouletteCommand extends Command {
 	/**
 	 * Run the "Roulette" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof RouletteCommand
 	 */
-	public async run(msg: CommandMessage, args: { space: string }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { space: string }): Promise<Message | Message[]> {
 		const num: number = Math.floor(Math.random() * 37);
 		const color = num ? red.includes(num) ? 'RED' : 'BLACK' : null;
 		const win = this.verifyWin(args.space, num);

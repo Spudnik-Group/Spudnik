@@ -1,5 +1,5 @@
 import { Message, User } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { delay, randomRange, verify } from '../../lib/helpers';
 const words = ['fire', 'draw', 'shoot', 'bang', 'pull'];
 
@@ -42,11 +42,11 @@ export default class GunFightCommand extends Command {
 	/**
 	 * Run the "GunFight" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof GunFightCommand
 	 */
-	public async run(msg: CommandMessage, args: { opponent: User }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { opponent: User }): Promise<Message | Message[]> {
 		if (args.opponent.bot) { return msg.reply('Bots may not be fought.'); }
 		if (args.opponent.id === msg.author.id) { return msg.reply('You may not fight yourself.'); }
 		if (this.fighting.has(msg.channel.id)) { return msg.reply('Only one fight may be occurring per channel.'); }

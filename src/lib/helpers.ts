@@ -1,5 +1,5 @@
 import { Message } from 'discord.js';
-import { CommandMessage, CommandoClient } from 'discord.js-commando';
+import { CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from './custom-helpers';
 
 const yes = ['yes', 'y', 'ye', 'yeah', 'yup', 'yea'];
@@ -9,12 +9,12 @@ const no = ['no', 'n', 'nah', 'nope'];
  * Post a message.
  *
  * @export
- * @param {CommandMessage} msg
+ * @param {CommandoMessage} msg
  * @param {string} text
  * @param {number} [timeout]
  * @returns Promise<Message | Message[]>
  */
-export function sendSimpleEmbeddedMessage(msg: CommandMessage, text: string, timeout?: number): Promise<Message | Message[]> {
+export function sendSimpleEmbeddedMessage(msg: CommandoMessage, text: string, timeout?: number): Promise<Message | Message[]> {
 	const promise: Promise<Message | Message[]> = msg.embed({
 		author: {
 			icon_url: msg.client.user.displayAvatarURL,
@@ -40,12 +40,12 @@ export function sendSimpleEmbeddedMessage(msg: CommandMessage, text: string, tim
  * Post an error message.
  *
  * @export
- * @param {CommandMessage} msg
+ * @param {CommandoMessage} msg
  * @param {string} text
  * @param {number} [timeout]
  * @returns Promise<Message | Message[]>
  */
-export function sendSimpleEmbeddedError(msg: CommandMessage, text: string, timeout?: number): Promise<Message | Message[]> {
+export function sendSimpleEmbeddedError(msg: CommandoMessage, text: string, timeout?: number): Promise<Message | Message[]> {
 	const promise: Promise<Message | Message[]> = msg.embed({
 		author: {
 			icon_url: msg.client.user.displayAvatarURL,
@@ -71,12 +71,12 @@ export function sendSimpleEmbeddedError(msg: CommandMessage, text: string, timeo
  * Send a success message.
  *
  * @export
- * @param {CommandMessage} msg
+ * @param {CommandoMessage} msg
  * @param {string} text
  * @param {number} [timeout]
  * @returns Promise<Message | Message[]>
  */
-export function sendSimpleEmbeddedSuccess(msg: CommandMessage, text: string, timeout?: number): Promise<Message | Message[]> {
+export function sendSimpleEmbeddedSuccess(msg: CommandoMessage, text: string, timeout?: number): Promise<Message | Message[]> {
 	const promise: Promise<Message | Message[]> = msg.embed({
 		author: {
 			icon_url: msg.client.user.displayAvatarURL,
@@ -102,12 +102,12 @@ export function sendSimpleEmbeddedSuccess(msg: CommandMessage, text: string, tim
  * Post an image.
  *
  * @export
- * @param {CommandMessage} msg
+ * @param {CommandoMessage} msg
  * @param {string} url
  * @param {string} [description]
  * @returns Promise<Message | Message[]>
  */
-export function sendSimpleEmbeddedImage(msg: CommandMessage, url: string, description?: string): Promise<Message | Message[]> {
+export function sendSimpleEmbeddedImage(msg: CommandoMessage, url: string, description?: string): Promise<Message | Message[]> {
 	return msg.embed({
 		author: {
 			icon_url: msg.client.user.displayAvatarURL,
@@ -290,11 +290,11 @@ export function escapeMarkdown(text: string, onlyCodeBlock = false, onlyInlineCo
  * Delete the calling message for commands, if it's deletable by the bot
  * 
  * @export
- * @param {CommandMessage} msg
+ * @param {CommandoMessage} msg
  * @param {CommandoClient} client
  * @returns void
  */
-export const deleteCommandMessages = (msg: CommandMessage, client: CommandoClient) => {
+export const deleteCommandMessages = (msg: CommandoMessage, client: CommandoClient) => {
 	if (msg.deletable && client.provider.get(msg.guild, 'deletecommandmessages', false)) msg.delete();
 };
 
@@ -302,10 +302,10 @@ export const deleteCommandMessages = (msg: CommandMessage, client: CommandoClien
  * Stop the bot's typing status
  * 
  * @export
- * @param {CommandMessage} msg
+ * @param {CommandoMessage} msg
  * @returns void
  */
-export const stopTyping = (msg: CommandMessage) => {
+export const stopTyping = (msg: CommandoMessage) => {
 	msg.channel.stopTyping(true);
 };
 
@@ -313,9 +313,9 @@ export const stopTyping = (msg: CommandMessage) => {
  * Start the bot's typing status
  * 
  * @export
- * @param {CommandMessage} msg
+ * @param {CommandoMessage} msg
  * @returns void
  */
-export const startTyping = (msg: CommandMessage) => {
+export const startTyping = (msg: CommandoMessage) => {
 	msg.channel.startTyping(1);
 };
