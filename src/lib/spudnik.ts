@@ -87,6 +87,7 @@ export class Spudnik {
 	private setupCommands = () => {
 		this.Discord.registry
 			.registerGroups([
+				['games', 'Games'],
 				['misc', 'Misc'],
 				['mod', 'Moderation'],
 				['random', 'Random'],
