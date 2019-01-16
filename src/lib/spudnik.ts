@@ -86,7 +86,9 @@ export class Spudnik {
 	 */
 	private setupCommands = () => {
 		this.Discord.registry
+			.registerDefaultTypes()
 			.registerGroups([
+				['commands', 'Commands'],
 				['games', 'Games'],
 				['misc', 'Misc'],
 				['mod', 'Moderation'],
@@ -96,7 +98,13 @@ export class Spudnik {
 				['translate', 'Translate'],
 				['util', 'Utility']
 			])
-			.registerDefaults()
+			.registerDefaultCommands({
+				commandState: true,
+				eval: true,
+				help: true,
+				ping: false,
+				prefix: true
+			})
 			.registerCommandsIn(path.join(__dirname, '../modules'));
 	}
 

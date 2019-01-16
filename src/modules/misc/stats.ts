@@ -49,11 +49,10 @@ export default class StatsCommand extends Command {
 	 * @memberof StatsCommand
 	 */
 	public async run(msg: CommandoMessage): Promise<Message | Message[]> {
-		const duration = (s: any) => dateFns.distanceInWords(0, s * 1000, { includeSeconds: true })
 		let statsEmbed: MessageEmbed = new MessageEmbed()
 			.setColor(getEmbedColor(msg))
 			.setDescription('**Spudnik Statistics**')
-			.addField('❯ Uptime', duration(this.client.uptime), true)
+			.addField('❯ Uptime', dateFns.distanceInWordsToNow(this.client.readyAt, { includeSeconds: true }), true)
 			.addField('❯ Process Stats', stripIndents`
 						• Memory Usage: ${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB
 						• Node Version: ${process.version}
