@@ -1,7 +1,7 @@
 import { Message } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { stripIndents } from 'common-tags';
-import { startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
+import { startTyping, stopTyping, deleteCommandMessages, delay } from '../../lib/helpers';
 
 /**
  * Returns the bot's ping.
@@ -40,14 +40,13 @@ export default class PongCommand extends Command {
 	 * @memberof PongCommand
 	 */
 	public async run(msg: CommandoMessage): Promise<Message | Message[]> {
-		startTyping(msg);
 		const pingMsg = await msg.reply(stripIndents`
 			В Советской России: понг пингует вас!
 			Пинг сердцебиения составляет ${Math.round(this.client.ws.ping)} мс
 		`);
 
+		await delay(3000);
 		deleteCommandMessages(msg, this.client);
-		stopTyping(msg);
 		
 		return (pingMsg as Message).edit(stripIndents`
 			${msg.channel.type !== 'dm' ? `${msg.author},` : ''}
