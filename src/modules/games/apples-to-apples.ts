@@ -1,8 +1,7 @@
 import { stripIndents } from 'common-tags';
-import { Collection, Message, MessageEmbed, User } from 'discord.js';
+import { Collection, Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor } from '../../lib/custom-helpers';
-import { awaitPlayers, sendSimpleEmbeddedError, shuffle, verify } from '../../lib/helpers';
+import { awaitPlayers, shuffle } from '../../lib/helpers';
 // tslint:disable-next-line:no-var-requires
 const data = require('../../extras/apples-to-apples.js');
 
@@ -35,6 +34,8 @@ export default class ApplesToApplesCommand extends Command {
 				}
 			],
 			description: 'Compete to see who can come up with the best card to match an adjective.',
+			details: 'syntax: \`!apples-to-apples <maxpoints>\`',
+			examples: ['!apples-to-apples 15'],
 			group: 'games',
 			guildOnly: true,
 			memberName: 'apples-to-apples',

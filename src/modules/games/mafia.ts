@@ -25,6 +25,7 @@ export default class MafiaCommand extends Command {
 		super(client, {
 			aliases: ['town-of-salem', 'werewolf'],
 			description: 'Who is the Mafia? Who is the doctor? Who is the detective? Will the Mafia kill them all?',
+			examples: ['!mafia'],
 			group: 'games',
 			guildOnly: true,
 			memberName: 'mafia',

@@ -1,7 +1,6 @@
 import { stripIndents } from 'common-tags';
-import { Collection, Message, MessageEmbed, User } from 'discord.js';
+import { Collection, Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor } from '../../lib/custom-helpers';
 import { awaitPlayers, delay, sendSimpleEmbeddedError, shuffle } from '../../lib/helpers';
 // tslint:disable-next-line:no-var-requires
 const data = require('../../extras/wizard-convention.js');
@@ -26,6 +25,7 @@ export default class WizardConventionCommand extends Command {
 		super(client, {
 			aliases: ['wiz-convention'],
 			description: 'Who is the Dragon? Who is the healer? Who is the mind reader? Will the Dragon eat them all?',
+			examples: ['!wizard-convention'],
 			group: 'games',
 			guildOnly: true,
 			memberName: 'wizard-convention',

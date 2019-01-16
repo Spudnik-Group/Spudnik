@@ -1,8 +1,7 @@
 import { stripIndents } from 'common-tags';
-import { Collection, Message, MessageEmbed, User } from 'discord.js';
+import { Collection, Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor } from '../../lib/custom-helpers';
-import { awaitPlayers, delay, escapeMarkdown, randomRange, sendSimpleEmbeddedError, shuffle, verify } from '../../lib/helpers';
+import { awaitPlayers, escapeMarkdown, shuffle } from '../../lib/helpers';
 // tslint:disable-next-line
 const { blackCards, whiteCards } = require('../../extras/cards-against-humanity.js');
 
@@ -43,6 +42,8 @@ export default class CardsAgainstHumanityCommand extends Command {
 				}
 			],
 			description: 'Compete to see who can come up with the best card to fill in the blank.',
+			details: 'syntax: \`!cards-against-humanity <maxpoints> (midgamejoin)\`',
+			examples: ['!cards-against-humanity 15', '!cards-against-humanity 20 true'],
 			group: 'games',
 			guildOnly: true,
 			memberName: 'cards-against-humanity',

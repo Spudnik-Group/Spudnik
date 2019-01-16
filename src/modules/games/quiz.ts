@@ -44,10 +44,13 @@ export default class QuizCommand extends Command {
 			],
 			description: 'Answer a quiz question.',
 			details: stripIndents`
+				syntax: \`!quiz (quizType) (difficulty)\`
 				**Types**: ${types.join(', ')}
 				**Difficulties**: ${difficulties.join(', ')}
 			`,
+			examples: ['!quiz boolean easy', '!quiz'],
 			group: 'games',
+			guildOnly: true,
 			memberName: 'quiz',
 			name: 'quiz'
 		});

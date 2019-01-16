@@ -1,4 +1,3 @@
-import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 //tslint:disable-next-line
@@ -31,7 +30,10 @@ export default class GoogleFeudCommand extends Command {
 				}
 			],
 			description: 'Attempt to determine the top suggestions for a Google search.',
+			details: 'syntax: \`!google-feud (question)\`',
+			examples: ['!google-feud', '!google-feud what happens if'],
 			group: 'games',
+			guildOnly: true,
 			memberName: 'google-feud',
 			name: 'google-feud'
 		});

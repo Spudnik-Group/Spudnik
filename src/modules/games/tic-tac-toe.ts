@@ -29,6 +29,10 @@ export default class TicTacToeCommand extends Command {
 				}
 			],
 			description: 'Play a game of tic-tac-toe with another user.',
+			details: stripIndents`
+				syntax: \`!tic-tac-toe <@userMention>\`
+			`,
+			examples: ['!tic-tac-toe @someone'],
 			group: 'games',
 			guildOnly: true,
 			memberName: 'tic-tac-toe',

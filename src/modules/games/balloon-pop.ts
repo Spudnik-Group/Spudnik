@@ -1,8 +1,6 @@
-import { stripIndents } from 'common-tags';
-import { Collection, Message, MessageEmbed, User } from 'discord.js';
+import { Message, User } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor } from '../../lib/custom-helpers';
-import { awaitPlayers, delay, randomRange, sendSimpleEmbeddedError, verify } from '../../lib/helpers';
+import { randomRange, verify } from '../../lib/helpers';
 
 /**
  * Starts a game of Balloon Pop.
@@ -31,7 +29,10 @@ export default class BalloonPopCommand extends Command {
 				}
 			],
 			description: 'Don\'t let yourself be the last one to pump the balloon before it pops!',
+			details: 'syntax: \`!balloon-pop (@usermention)\`',
+			examples: ['!balloon-pop', '!balloon-pop @someone'],
 			group: 'games',
+			guildOnly: true,
 			memberName: 'balloon-pop',
 			name: 'balloon-pop'
 		});

@@ -31,7 +31,10 @@ export default class LotteryCommand extends Command {
 				}
 			],
 			description: 'Attempt to win the lottery with 6 numbers.',
+			details: 'syntax: \`!lottery <choices>\`',
+			examples: ['!lottery 12 14 45 66 55 23'],
 			group: 'games',
+			guildOnly: true,
 			memberName: 'lottery',
 			name: 'lottery'
 		});

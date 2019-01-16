@@ -1,11 +1,7 @@
-import chalk from 'chalk';
 import { stripIndents } from 'common-tags';
-import { Message, MessageEmbed, User } from 'discord.js';
+import { Message, User } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { RequestResponse } from 'request';
-import * as rp from 'request-promise';
-import { getEmbedColor } from '../../lib/custom-helpers';
-import { randomRange, sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, verify } from '../../lib/helpers';
+import { randomRange, verify } from '../../lib/helpers';
 
 /**
  * Allows users to battle each other or the bot.
@@ -33,7 +29,10 @@ export default class BattleCommand extends Command {
 				}
 			],
 			description: 'Engage in a turn-based battle against another user or the AI.',
+			details: 'syntax: \`!battle (@usermention)\`',
+			examples: ['!battle', '!battle @dumbperson'],
 			group: 'games',
+			guildOnly: true,
 			memberName: 'battle',
 			name: 'battle'
 		});

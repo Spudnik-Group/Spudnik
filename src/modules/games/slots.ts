@@ -20,7 +20,9 @@ export default class SlotsCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Play a game of slots.',
+			examples: ['!slots'],
 			group: 'games',
+			guildOnly: true,
 			memberName: 'slots',
 			name: 'slots'
 		});

@@ -1,5 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { Message, MessageEmbed, User } from 'discord.js';
+import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, verify } from '../../lib/helpers';
@@ -27,7 +27,9 @@ export default class AkinatorCommand extends Command {
 			aliases: ['the-web-genie', 'web-genie'],
 			clientPermissions: ['EMBED_LINKS'],
 			description: 'Think about a real or fictional character, I will try to guess who it is.',
+			examples: ['!akinator'],
 			group: 'games',
+			guildOnly: true,
 			memberName: 'akinator',
 			name: 'akinator'
 		});
@@ -41,7 +43,7 @@ export default class AkinatorCommand extends Command {
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof AkinatorCommand
 	 */
-	public async run(msg: CommandMessage, args: { opponent: User }): Promise<Message | Message[]> {
+	public async run(msg: CommandMessage): Promise<Message | Message[]> {
 		if (this.sessions.has(msg.channel.id)) { return msg.reply('Only one game may be occuring per channel.'); }
 		try {
 			let ans = null;

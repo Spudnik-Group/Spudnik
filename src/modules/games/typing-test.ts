@@ -40,8 +40,13 @@ export default class TypingTestCommand extends Command {
 				}
 			],
 			description: 'See how fast you can type a sentence in a given time limit.',
-			details: `**Difficulties**: ${difficulties.join(', ')}`,
+			details: stripIndents`
+				syntax: \`!typing-test <difficulty\`
+				**Difficulties**: ${difficulties.join(', ')}
+			`,
+			examples: ['!typing-test easy', '!typing-test hard'],
 			group: 'games',
+			guildOnly: true,
 			memberName: 'typing-test',
 			name: 'typing-test'
 		});

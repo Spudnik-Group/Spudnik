@@ -26,7 +26,9 @@ export default class SortingHatQuizCommand extends Command {
 		super(client, {
 			aliases: ['sorting-hat', 'pottermore', 'hogwarts'],
 			description: 'Take a quiz to determine your Hogwarts house.',
+			examples: ['!sorting-hat-quiz'],
 			group: 'games',
+			guildOnly: true,
 			memberName: 'sorting-hat-quiz',
 			name: 'sorting-hat-quiz'
 		});

@@ -23,7 +23,9 @@ export default class HangmanCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
 			description: 'Prevent a man from being hanged by guessing a word as fast as you can.',
+			examples: ['!hangman'],
 			group: 'games',
+			guildOnly: true,
 			memberName: 'hangman',
 			name: 'hangman'
 		});

@@ -40,8 +40,13 @@ export default class MathQuizCommand extends Command {
 				}
 			],
 			description: 'See how fast you can answer a math problem in a given time limit.',
-			details: `**Difficulties**: ${difficulties.join(', ')}`,
+			details: stripIndents`
+				syntax: \`!math- quiz <difficulty>\`
+				**Difficulties**: ${difficulties.join(', ')}
+			`,
+			examples: ['!math-quiz impossible'],
 			group: 'games',
+			guildOnly: true,
 			memberName: 'math-quiz',
 			name: 'math-quiz'
 		});
