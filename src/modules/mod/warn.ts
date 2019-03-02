@@ -5,7 +5,7 @@ import Mongoose = require('mongoose');
 import { Schema, Document, Model } from 'mongoose';
 import { startTyping, stopTyping, deleteCommandMessages, sendSimpleEmbeddedError } from '../../lib/helpers';
 import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
-import * as dateFns from 'date-fns';
+import * as format from 'date-fns/format';
 
 interface IWarningsObject {
 	id: string;
@@ -171,7 +171,7 @@ export default class WarnCommand extends Command {
 		Error occurred in \`warn\` command!
 		**Server:** ${msg.guild.name} (${msg.guild.id})
 		**Author:** ${msg.author.tag} (${msg.author.id})
-		**Time:** ${dateFns.format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+		**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
 		**Input:** \`${args.member.user.tag} (${args.member.id})\`|| \`${args.points}\` || \`${args.reason}\`
 		**Error Message:** ${err}`);
 		// Inform the user the command failed

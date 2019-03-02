@@ -3,7 +3,7 @@ import { Message, MessageEmbed, Role, TextChannel } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
-import * as dateFns from 'date-fns';
+import * as format from 'date-fns/format';
 
 /**
  * Manage roles including self-assigning, listing, and setting a default role.
@@ -225,7 +225,7 @@ export default class RoleManagementCommands extends Command {
 		Error occurred in \`role-management\` command!
 		**Server:** ${msg.guild.name} (${msg.guild.id})
 		**Author:** ${msg.author.tag} (${msg.author.id})
-		**Time:** ${dateFns.format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+		**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
 		**Input:** \`Role ${args.subCommand.toLowerCase()}\` | role name: ${args.role}`;
 		let roleUserWarn = '';
 		switch (args.subCommand.toLowerCase()) {

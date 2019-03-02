@@ -3,7 +3,7 @@ import { Collection, GuildMember, Message, User, MessageEmbed, TextChannel } fro
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, deleteCommandMessages, startTyping, stopTyping } from '../../lib/helpers';
 import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
-import * as dateFns from 'date-fns';
+import * as format from 'date-fns/format';
 
 /**
  * Deletes previous messages.
@@ -204,7 +204,7 @@ export default class PruneCommand extends Command {
 		Error occurred in \`prune\` command!
 		**Server:** ${msg.guild.name} (${msg.guild.id})
 		**Author:** ${msg.author.tag} (${msg.author.id})
-		**Time:** ${dateFns.format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+		**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
 		**Input:** \`limit: ${args.limit} | filter: ${args.filter} | member: ${args.member}\`
 		**Error Message:** ${err}`);
 		// Inform the user the command failed

@@ -3,7 +3,7 @@ import { Channel, Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, startTyping, stopTyping, sendSimpleEmbeddedMessage, deleteCommandMessages } from '../../lib/helpers';
-import * as dateFns from 'date-fns';
+import * as format from 'date-fns/format';
 
 /**
  * Manage notifications when someone joins the guild.
@@ -196,7 +196,7 @@ export default class WelcomeCommand extends Command {
 		Error occurred in \`welcome\` command!
 		**Server:** ${msg.guild.name} (${msg.guild.id})
 		**Author:** ${msg.author.tag} (${msg.author.id})
-		**Time:** ${dateFns.format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+		**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
 		**Input:** \`Welcome ${args.subCommand.toLowerCase()}\``;
 		let welcomeUserWarn = '';
 		switch (args.subCommand.toLowerCase()) {

@@ -3,7 +3,7 @@ import { GuildMember, Message, MessageEmbed, Role, TextChannel } from 'discord.j
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
-import * as dateFns from 'date-fns';
+import * as format from 'date-fns/format';
 
 /**
  * Ban a member and optionally delete past messages.
@@ -124,7 +124,7 @@ export default class BanCommand extends Command {
 		Error occurred in \`ban\` command!
 		**Server:** ${msg.guild.name} (${msg.guild.id})
 		**Author:** ${msg.author.tag} (${msg.author.id})
-		**Time:** ${dateFns.format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+		**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
 		**Input:** \`${args.member.user.tag} (${args.member.id})\` || \`${args.reason}\`
 		**Error Message:** ${err}`);
 		// Inform the user the command failed

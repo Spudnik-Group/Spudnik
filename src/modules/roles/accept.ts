@@ -3,7 +3,7 @@ import { Channel, Message, MessageEmbed, Role, TextChannel } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, stopTyping, deleteCommandMessages, startTyping, sendSimpleEmbeddedMessage } from '../../lib/helpers';
-import * as dateFns from 'date-fns';
+import * as format from 'date-fns/format';
 
 /**
  * Accept the guild rules, and be auto-assigned the default role.
@@ -131,7 +131,7 @@ export default class AcceptCommand extends Command {
 			Error occurred in \`accept\` command!
 			**Server:** ${msg.guild.name} (${msg.guild.id})
 			**Author:** ${msg.author.tag} (${msg.author.id})
-			**Time:** ${dateFns.format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+			**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
 			**Input:** \`Accept ${'| channel:' + args.channel}\`
 		`;
 		let acceptUserWarn = '';

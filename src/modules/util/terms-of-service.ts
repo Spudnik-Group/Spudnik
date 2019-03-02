@@ -3,7 +3,7 @@ import { Channel, Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, stopTyping, deleteCommandMessages, startTyping } from '../../lib/helpers';
-import * as dateFns from 'date-fns';
+import * as format from 'date-fns/format';
 
 interface ITOSMessage {
 	id: number;
@@ -255,7 +255,7 @@ export default class TermsOfServiceCommand extends Command {
 			Error occurred in \`tos\` command!
 			**Server:** ${msg.guild.name} (${msg.guild.id})
 			**Author:** ${msg.author.tag} (${msg.author.id})
-			**Time:** ${dateFns.format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+			**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
 			**Input:** \`TOS ${args.subCommand.toLowerCase()}\`
 		`;
 		let tosUserWarn = '';

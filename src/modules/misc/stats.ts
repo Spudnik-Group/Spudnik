@@ -2,7 +2,7 @@ import { stripIndents } from 'common-tags';
 import { Guild, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
-import * as dateFns from 'date-fns';
+import * as distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
 import { deleteCommandMessages } from '../../lib/helpers';
 
 // tslint:disable-next-line:no-var-requires
@@ -52,7 +52,7 @@ export default class StatsCommand extends Command {
 		let statsEmbed: MessageEmbed = new MessageEmbed()
 			.setColor(getEmbedColor(msg))
 			.setDescription('**Spudnik Statistics**')
-			.addField('❯ Uptime', dateFns.distanceInWordsToNow(this.client.readyAt, { includeSeconds: true }), true)
+			.addField('❯ Uptime', distanceInWordsToNow(this.client.readyAt, { includeSeconds: true }), true)
 			.addField('❯ Process Stats', stripIndents`
 						• Memory Usage: ${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB
 						• Node Version: ${process.version}
