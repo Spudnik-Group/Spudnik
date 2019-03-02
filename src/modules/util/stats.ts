@@ -30,7 +30,7 @@ export default class StatsCommand extends Command {
 				'!stats',
 				'!statistics'
 			],
-			group: 'misc',
+			group: 'util',
 			guildOnly: true,
 			memberName: 'stats',
 			name: 'stats',

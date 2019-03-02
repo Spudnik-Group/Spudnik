@@ -24,12 +24,12 @@ export default class ServerCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
 			aliases: ['server-stats'],
-			description: 'Returns statistics about the bot.',
+			description: 'Returns statistics about the server.',
 			examples: [
 				'!server',
 				'!server-stats'
 			],
-			group: 'misc',
+			group: 'util',
 			guildOnly: true,
 			memberName: 'server',
 			name: 'server',

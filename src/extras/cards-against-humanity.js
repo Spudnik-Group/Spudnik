@@ -3218,9 +3218,6 @@ module.exports = {
 		"An icy handjob from an Edmonton hooker.",
 		"eat pant.",
 		"<Blank>",
-		"dragonfire535.",
-		"Xiao.",
-		"Xiao's public source code.",
 		"Discord."
 	]
 };
