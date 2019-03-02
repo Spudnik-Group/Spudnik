@@ -1,5 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { Message } from 'discord.js';
+import { Message, GuildMember } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedMessage, deleteCommandMessages } from '../../lib/helpers';
 
@@ -58,10 +58,10 @@ export default class PlayingCommand extends Command {
 	 */
 	public async run(msg: CommandoMessage, args: { game: string }): Promise<Message | Message[]> {
 		const gameSearch = args.game.toLowerCase();
-		const playingMembers = msg.guild.members.filter((member) => !member.user.bot && member.presence.activity && member.presence.activity.name.toLowerCase().indexOf(gameSearch) > -1);
+		const playingMembers = msg.guild.members.filter((member: GuildMember) => !member.user.bot && member.presence.activity && member.presence.activity.name.toLowerCase().indexOf(gameSearch) > -1);
 		
 		deleteCommandMessages(msg, this.client);
 
-		return sendSimpleEmbeddedMessage(msg, playingMembers.map((member) => `<@${member.id}> - ${member.presence.activity.name}`).sort().join('\n'));
+		return sendSimpleEmbeddedMessage(msg, playingMembers.map((member: GuildMember) => `<@${member.id}> - ${member.presence.activity.name}`).sort().join('\n'));
 	}
 }
