@@ -6,18 +6,18 @@ import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
 import * as format from 'date-fns/format';
 
 /**
- * Enable or disable the adblock feature.
+ * Enable or disable the DeleteCommandMessages feature.
  *
  * @export
- * @class AdblockCommand
+ * @class DeleteCommandMessagesCommand
  * @extends {Command}
  */
-export default class AdblockCommand extends Command {
+export default class DeleteCommandMessagesCommand extends Command {
 	/**
-	 * Creates an instance of AdblockCommand.
+	 * Creates an instance of DeleteCommandMessagesCommand.
 	 *
 	 * @param {CommandoClient} client
-	 * @memberof AdblockCommand
+	 * @memberof DeleteCommandMessagesCommand
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
@@ -34,20 +34,20 @@ export default class AdblockCommand extends Command {
 				}
 			],
 			clientPermissions: ['MANAGE_MESSAGES'],
-			description: 'Enable or disable the adblock feature.',
+			description: 'Enable or disable the Delete Command Messages feature.',
 			details: stripIndents`
-				syntax: \`!adblock <enable|disable>\`
+				syntax: \`!deletecommandmessages <enable|disable>\`
 
 				Supplying no subcommand returns an error.
 				MANAGE_MESSAGES permission required.`,
 			examples: [
-				'!adblock enable',
-				'!adblock disable'
+				'!deletecommandmessages enable',
+				'!deletecommandmessages disable'
 			],
-			group: 'mod',
+			group: 'feature',
 			guildOnly: true,
-			memberName: 'adblock',
-			name: 'adblock',
+			memberName: 'deletecommandmessages',
+			name: 'deletecommandmessages',
 			throttling: {
 				duration: 3,
 				usages: 2
@@ -57,19 +57,19 @@ export default class AdblockCommand extends Command {
 	}
 
 	/**
-	 * Run the "adblock" command.
+	 * Run the "DeleteCommandMessages" command.
 	 *
-	 * @param {CommandoMessage} msg
+	 * @param {CommandMessage} msg
 	 * @param {{ subCommand: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
-	 * @memberof AdblockCommand
+	 * @memberof DeleteCommandMessagesCommand
 	 */
 	public async run(msg: CommandoMessage, args: { subCommand: string }): Promise<Message | Message[]> {
 		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
-		const adblockEnabled = msg.guild.settings.get('adblockEnabled', false);
-		const adblockEmbed: MessageEmbed = new MessageEmbed({
+		const deleteCommandMessagesEnabled = msg.guild.settings.get('deletecommandmessages', false);
+		const deleteCommandMessagesEmbed: MessageEmbed = new MessageEmbed({
 			author: {
-				name: '🛑 Adblock'
+				name: '🛑 DeleteCommandMessages'
 			},
 			color: getEmbedColor(msg),
 			description: ''
@@ -78,55 +78,55 @@ export default class AdblockCommand extends Command {
 		startTyping(msg);
 
 		if (args.subCommand.toLowerCase() === 'enable') {
-			if (adblockEnabled) {
+			if (deleteCommandMessagesEnabled) {
 				stopTyping(msg);
-				return sendSimpleEmbeddedMessage(msg, 'Adblock feature already enabled!', 3000);
+				return sendSimpleEmbeddedMessage(msg, 'DeleteCommandMessages feature already enabled!', 3000);
 			} else {
-				msg.guild.settings.set('adblockEnabled', true)
+				msg.guild.settings.set('deletecommandmessages', true)
 					.catch((err: Error) => this.catchError(msg, args, err));
 			}
 		} else if (args.subCommand.toLowerCase() === 'disable') {
-			if (!adblockEnabled) {
+			if (!deleteCommandMessagesEnabled) {
 				stopTyping(msg);
-				return sendSimpleEmbeddedMessage(msg, 'Adblock feature already disabled!', 3000);
+				return sendSimpleEmbeddedMessage(msg, 'DeleteCommandMessages feature already disabled!', 3000);
 			} else {
-				msg.guild.settings.set('adblockEnabled', false)
+				msg.guild.settings.set('deletecommandmessages', false)
 					.catch((err: Error) => this.catchError(msg, args, err));
 			}
 		}
 		
 		// Set up embed message
-		adblockEmbed.setDescription(stripIndents`
+		deleteCommandMessagesEmbed.setDescription(stripIndents`
 			**Member:** ${msg.author.tag} (${msg.author.id})
-			**Action:** Adblock ${args.subCommand.toLowerCase()}
+			**Action:** DeleteCommandMessages ${args.subCommand.toLowerCase()}
 		`);
 
 		// Log the event in the mod log
 		if (msg.guild.settings.get('modlogEnabled', true)) {
-			modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, adblockEmbed);
+			modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, deleteCommandMessagesEmbed);
 		}
 		deleteCommandMessages(msg, this.client);
 		stopTyping(msg);
 
 		// Send the success response
-		return msg.embed(adblockEmbed);
+		return msg.embed(deleteCommandMessagesEmbed);
 	}
 
 	private catchError(msg: CommandoMessage, args: { subCommand: string }, err: Error) {
 		// Emit warn event for debugging
 		msg.client.emit('warn', stripIndents`
-		Error occurred in \`adblock\` command!
+		Error occurred in \`deletecommandmessages\` command!
 		**Server:** ${msg.guild.name} (${msg.guild.id})
 		**Author:** ${msg.author.tag} (${msg.author.id})
 		**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
-		**Input:** \`Adblock ${args.subCommand.toLowerCase()}\`
+		**Input:** \`deletecommandmessages ${args.subCommand.toLowerCase()}\`
 		**Error Message:** ${err}`);
 		// Inform the user the command failed
 		stopTyping(msg);
 		if (args.subCommand.toLowerCase() === 'enable') {
-			return sendSimpleEmbeddedError(msg, 'Enabling adblock feature failed!');
+			return sendSimpleEmbeddedError(msg, 'Enabling DeleteCommandMessages feature failed!');
 		} else {
-			return sendSimpleEmbeddedError(msg, 'Disabling adblock feature failed!');
+			return sendSimpleEmbeddedError(msg, 'Disabling DeleteCommandMessages feature failed!');
 		}
 	}
 }

@@ -58,7 +58,7 @@ export default class RoleManagementCommands extends Command {
 				'!role default @Pleb',
 				'!role default'
 			],
-			group: 'roles',
+			group: 'feature',
 			guildOnly: true,
 			memberName: 'role',
 			name: 'role',

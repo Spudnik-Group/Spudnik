@@ -60,7 +60,7 @@ export default class StarboardCommand extends Command {
 				'!starboard enable',
 				'!starboard disable'
 			],
-			group: 'util',
+			group: 'feature',
 			guildOnly: true,
 			memberName: 'starboard',
 			name: 'starboard',

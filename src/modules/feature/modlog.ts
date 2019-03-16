@@ -49,7 +49,7 @@ export default class ModlogCommand extends Command {
 				'!modlog enable',
 				'!modlog disable'
 			],
-			group: 'mod',
+			group: 'feature',
 			guildOnly: true,
 			memberName: 'modlog',
 			name: 'modlog',

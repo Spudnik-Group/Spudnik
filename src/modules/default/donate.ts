@@ -20,7 +20,7 @@ export default class DonateCommand extends Command {
 		super(client, {
 			description: 'Returns options to donate to help support development and hosting of the bot.',
 			examples: ['!donate'],
-			group: 'misc',
+			group: 'default',
 			guildOnly: true,
 			memberName: 'donate',
 			name: 'donate',

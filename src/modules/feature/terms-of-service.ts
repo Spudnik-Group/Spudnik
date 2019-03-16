@@ -69,7 +69,7 @@ export default class TermsOfServiceCommand extends Command {
 				'!tos list',
 				'!tos status'
 			],
-			group: 'util',
+			group: 'feature',
 			guildOnly: true,
 			memberName: 'tos',
 			name: 'tos',

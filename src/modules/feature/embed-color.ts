@@ -49,7 +49,7 @@ export default class EmbedColorCommand extends Command {
 				'!embedcolor',
 				'!embedcolor 555555'
 			],
-			group: 'util',
+			group: 'feature',
 			guildOnly: true,
 			memberName: 'embedcolor',
 			name: 'embedcolor',

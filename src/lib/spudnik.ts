@@ -89,6 +89,8 @@ export class Spudnik {
 			.registerDefaultTypes()
 			.registerGroups([
 				['commands', 'Commands'],
+				['default', 'Default'],
+				['feature', 'Features'],
 				['games', 'Games'],
 				['misc', 'Misc'],
 				['mod', 'Moderation'],

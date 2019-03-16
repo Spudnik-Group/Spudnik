@@ -2,22 +2,22 @@ import { stripIndents } from 'common-tags';
 import { Channel, Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, startTyping, stopTyping, sendSimpleEmbeddedMessage, deleteCommandMessages } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, startTyping, sendSimpleEmbeddedMessage, stopTyping, deleteCommandMessages } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 
 /**
- * Manage notifications when someone joins the guild.
+ * Manage notifications when someone leaves the guild.
  *
  * @export
- * @class WelcomeCommand
+ * @class GoodbyeCommand
  * @extends {Command}
  */
-export default class WelcomeCommand extends Command {
+export default class GoodbyeCommand extends Command {
 	/**
-	 * Creates an instance of WelcomeCommand.
+	 * Creates an instance of GoodbyeCommand.
 	 *
 	 * @param {CommandoClient} client
-	 * @memberof WelcomeCommand
+	 * @memberof GoodbyeCommand
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
@@ -35,32 +35,31 @@ export default class WelcomeCommand extends Command {
 				{
 					default: '',
 					key: 'content',
-					prompt: '#channelMention or welcome text\n',
+					prompt: '#channelMention or goodbye text\n',
 					type: 'channel|string'
 				}
 			],
-			description: 'Used to configure the message to be sent when a new user join your guild.',
+			description: 'Used to configure the message to be sent when a user leaves your guild.',
 			details: stripIndents`
-				syntax: \`!welcome <message|channel|enable|disable> (text | #channelMention)\`
+				syntax: \`!goodbye <message|channel|enable|disable> (text | #channelMention)\`
 
-				\`message (text to welcome/heckle)\` - Set/return the welcome message. Use { guild } for guild name, and { user } to reference the user joining. Leave blank to show current.
-				\`channel <#channelMention>\` - Set the channel for the welcome message to be displayed.
-				\`enable\` - Enable the welcome message feature.
-				\`disable\` - Disable the welcome message feature.
+				\`message (text to say goodbye/heckle)\` - Set/return the goodbye message. Use { guild } for guild name, and { user } to reference the user joining. Leave blank to show current.
+				\`channel <#channelMention>\` - Set the channel for the goodbye message to be displayed.
+				\`enable\` - Enable the goodbye message feature.
+				\`disable\` - Disable the goodbye message feature.
 
 				MANAGE_GUILD permission required.
 			`,
 			examples: [
-				'!welcome message Please welcome {user} to the guild!',
-				'!welcome message',
-				'!welcome channel #general',
-				'!welcome enable',
-				'!welcome disable'
+				'!goodbye message Everyone mourn the loss of {user}',
+				'!goodbye channel #general',
+				'!goodbye enable',
+				'!goodbye disable'
 			],
-			group: 'util',
+			group: 'feature',
 			guildOnly: true,
-			memberName: 'welcome',
-			name: 'welcome',
+			memberName: 'goodbye',
+			name: 'goodbye',
 			throttling: {
 				duration: 3,
 				usages: 2
@@ -70,42 +69,42 @@ export default class WelcomeCommand extends Command {
 	}
 
 	/**
-	 * Run the "welcome" command.
+	 * Run the "goodbye" command.
 	 *
 	 * @param {CommandoMessage} msg
 	 * @param {{ subCommand: string, content: Channel | string }} args
 	 * @returns {(Promise<Message | Message[]>)}
-	 * @memberof WelcomeCommand
+	 * @memberof GoodbyeCommand
 	 */
 	public async run(msg: CommandoMessage, args: { subCommand: string, content: Channel | string }): Promise<Message | Message[]> {
-		const welcomeEmbed = new MessageEmbed({
+		const goodbyeEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png',
-				name: 'Server Welcome Message'
+				name: 'Server Goodbye Message'
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
 		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
-		const welcomeChannel = msg.guild.settings.get(msg.guild.id, 'welcomeChannel');
-		const welcomeMessage = msg.guild.settings.get('welcomeMessage', '@here, please Welcome {user} to {guild}!');
-		const welcomeEnabled = msg.guild.settings.get('welcomeEnabled', false);
-
+		const goodbyeChannel = msg.guild.settings.get('goodbyeChannel');
+		const goodbyeMessage = msg.guild.settings.get('goodbyeMessage', '{user} has left the server.');
+		const goodbyeEnabled = msg.guild.settings.get('goodbyeEnabled', false);
+		
 		startTyping(msg);
 
 		switch (args.subCommand.toLowerCase()) {
 			case 'channel': {
 				if (args.content instanceof Channel) {
 					const channelID = (args.content as Channel).id;
-					if (welcomeChannel && welcomeChannel === channelID) {
+					if (goodbyeChannel && goodbyeChannel === channelID) {
 						stopTyping(msg);
-						return sendSimpleEmbeddedMessage(msg, `Welcome channel already set to <#${channelID}>!`, 3000);
+						return sendSimpleEmbeddedMessage(msg, `Goodbye channel already set to <#${channelID}>!`, 3000);
 					} else {
-						msg.guild.settings.set('welcomeChannel', channelID)
+						msg.guild.settings.set('goodbyeChannel', channelID)
 							.then(() => {
 								// Set up embed message
-								welcomeEmbed.setDescription(stripIndents`
+								goodbyeEmbed.setDescription(stripIndents`
 									**Member:** ${msg.author.tag} (${msg.author.id})
-									**Action:** Welcome Channel set to <#${channelID}>}
+									**Action:** Goodbye Channel set to <#${channelID}>}
 								`);
 							})
 							.catch((err: Error) => this.catchError(msg, args, err));
@@ -119,61 +118,61 @@ export default class WelcomeCommand extends Command {
 			case 'message': {
 				if (!args.content) {
 					stopTyping(msg);
-					return sendSimpleEmbeddedMessage(msg, 'You must include the new message along with the `message` command. See `help welcome` for details.\nCurrent Welcome Message: ```' + welcomeMessage + '```', 3000);
+					return sendSimpleEmbeddedMessage(msg, 'You must include the new message along with the `message` command. See `help goodbye` for details.\nCurrent Goodbye Message: ```' + goodbyeMessage + '```', 3000);
 				} else {
-					msg.guild.settings.set('welcomeMessage', args.content)
+					msg.guild.settings.set('goodbyeMessage', args.content)
 						.then(() => {
 							// Set up embed message
-							welcomeEmbed.setDescription(stripIndents`
+							goodbyeEmbed.setDescription(stripIndents`
 								**Member:** ${msg.author.tag} (${msg.author.id})
-								**Action:** Welcome message set to:
+								**Action:** Goodbye message set to:
 								\`\`\`${args.content}\`\`\`\n
-								Welcome Message: ${(welcomeEnabled ? '_Enabled_' : '_Disabled_')}
+								Goodbye Message: ${(goodbyeEnabled ? '_Enabled_' : '_Disabled_')}
 							`);
-							if (welcomeEnabled && welcomeChannel instanceof Channel)
-								welcomeEmbed.description += `\nWelcome channel: <#${welcomeChannel}>`;
-							else if (welcomeEnabled && welcomeChannel! instanceof Channel)
-								welcomeEmbed.description += '\nWelcome messages will not display, as a welcome channel is not set. Use `welcome channel [channel ref]`.';
+							if (goodbyeEnabled && goodbyeChannel instanceof Channel)
+								goodbyeEmbed.description += `\nGoodbye channel: <#${goodbyeChannel}>`;
+							else if (goodbyeEnabled && goodbyeChannel! instanceof Channel)
+								goodbyeEmbed.description += '\nGoodbye messages will not display, as a goodbye channel is not set. Use `goodbye channel [channel ref]`.';
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				}
 				break;
 			}
 			case 'enable': {
-				if (!welcomeEnabled) {
-					msg.guild.settings.set('welcomeEnabled', true)
+				if (!goodbyeEnabled) {
+					msg.guild.settings.set('goodbyeEnabled', true)
 						.then(() => {
 							// Set up embed message
-							welcomeEmbed.setDescription(stripIndents`
+							goodbyeEmbed.setDescription(stripIndents`
 								**Member:** ${msg.author.tag} (${msg.author.id})
-								**Action:** Welcome messages set to:
+								**Action:** Goodbye messages set to:
 								_Enabled_\n
-								Welcome Channel: <#${welcomeChannel}>
+								Goodbye Channel: <#${goodbyeChannel}>
 							`);
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				} else {
 					stopTyping(msg);
-					return sendSimpleEmbeddedMessage(msg, 'Welcome message already enabled!', 3000);
+					return sendSimpleEmbeddedMessage(msg, 'Goodbye message already enabled!', 3000);
 				}
 				break;
 			}
 			case 'disable': {
-				if (welcomeEnabled) {
-					msg.guild.settings.set('welcomeEnabled', false)
+				if (goodbyeEnabled) {
+					msg.guild.settings.set('goodbyeEnabled', false)
 						.then(() => {
 							// Set up embed message
-							welcomeEmbed.setDescription(stripIndents`
+							goodbyeEmbed.setDescription(stripIndents`
 								**Member:** ${msg.author.tag} (${msg.author.id})
-								**Action:** Welcome messages set to:
+								**Action:** Goodbye messages set to:
 								_Disabled_\n
-								Welcome Channel: <#${welcomeChannel}>
+								Goodbye Channel: <#${goodbyeChannel}>
 							`);
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				} else {
 					stopTyping(msg);
-					return sendSimpleEmbeddedMessage(msg, 'Welcome message already disabled!', 3000);
+					return sendSimpleEmbeddedMessage(msg, 'Goodbye message already disabled!', 3000);
 				}
 				break;
 			}
@@ -181,53 +180,53 @@ export default class WelcomeCommand extends Command {
 		
 		// Log the event in the mod log
 		if (msg.guild.settings.get('modlogEnabled', true)) {
-			modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, welcomeEmbed);
+			modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, goodbyeEmbed);
 		}
 		deleteCommandMessages(msg, this.client);
 		stopTyping(msg);
 
 		// Send the success response
-		return msg.embed(welcomeEmbed);
+		return msg.embed(goodbyeEmbed);
 	}
 	
 	private catchError(msg: CommandoMessage, args: { subCommand: string, content: Channel | string }, err: Error) {
 		// Build warning message
-		let welcomeWarn = stripIndents`
-		Error occurred in \`welcome\` command!
+		let goodbyeWarn = stripIndents`
+		Error occurred in \`goodbye\` command!
 		**Server:** ${msg.guild.name} (${msg.guild.id})
 		**Author:** ${msg.author.tag} (${msg.author.id})
 		**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
-		**Input:** \`Welcome ${args.subCommand.toLowerCase()}\``;
-		let welcomeUserWarn = '';
+		**Input:** \`Goodbye ${args.subCommand.toLowerCase()}\``;
+		let goodbyeUserWarn = '';
 		switch (args.subCommand.toLowerCase()) {
 			case 'enable': {
-				welcomeUserWarn = 'Enabling welcome feature failed!';
+				goodbyeUserWarn = 'Enabling goodbye feature failed!';
 				break;
 			}
 			case 'disable': {
-				welcomeUserWarn = 'Disabling welcome feature failed!';
+				goodbyeUserWarn = 'Disabling goodbye feature failed!';
 				break;
 			}
 			case 'message': {
-				welcomeWarn += stripIndents`
+				goodbyeWarn += stripIndents`
 					**Message:** ${args.content}`;
-					welcomeUserWarn = 'Failed saving new welcome message!';
-					break;
+				goodbyeUserWarn = 'Failed saving new goodbye message!';
+				break;
 			}
 			case 'channel': {
-				welcomeWarn += stripIndents`
+				goodbyeWarn += stripIndents`
 					**Channel:** ${args.content}`;
-				welcomeUserWarn = 'Failed setting new welcome channel!';
+				goodbyeUserWarn = 'Failed setting new goodbye channel!';
 				break;
 			}
 		}
-		welcomeWarn += stripIndents`
+		goodbyeWarn += stripIndents`
 			**Error Message:** ${err}`;
 		
 		stopTyping(msg);
 		// Emit warn event for debugging
-		msg.client.emit('warn', welcomeWarn);
+		msg.client.emit('warn', goodbyeWarn);
 		// Inform the user the command failed
-		return sendSimpleEmbeddedError(msg, welcomeUserWarn);
+		return sendSimpleEmbeddedError(msg, goodbyeUserWarn);
 	}
 }

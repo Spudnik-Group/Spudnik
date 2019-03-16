@@ -20,7 +20,7 @@ export default class SupportCommand extends Command {
 		super(client, {
 			description: 'Returns a link to my support server!',
 			examples: ['!support'],
-			group: 'misc',
+			group: 'default',
 			guildOnly: true,
 			memberName: 'support',
 			name: 'support',

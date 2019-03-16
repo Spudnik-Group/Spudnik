@@ -20,7 +20,7 @@ export default class SourceCommand extends Command {
 		super(client, {
 			description: 'Returns a link to my source code!',
 			examples: ['!source'],
-			group: 'util',
+			group: 'default',
 			guildOnly: true,
 			memberName: 'source',
 			name: 'source',
