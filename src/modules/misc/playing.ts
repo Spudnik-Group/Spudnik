@@ -1,7 +1,7 @@
 import { stripIndents } from 'common-tags';
-import { Message } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { Message, GuildMember } from 'discord.js';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
+import { sendSimpleEmbeddedMessage, deleteCommandMessages } from '../../lib/helpers';
 
 /**
  * Identify anyone playing games in the guild.
@@ -51,13 +51,17 @@ export default class PlayingCommand extends Command {
 	/**
 	 * Run the "playing" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
+	 * @param {{ game: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof PlayingCommand
 	 */
-	public async run(msg: CommandMessage, args: { game: string }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { game: string }): Promise<Message | Message[]> {
 		const gameSearch = args.game.toLowerCase();
-		const playingMembers = msg.guild.members.filter((member) => !member.user.bot && member.presence.activity && member.presence.activity.name.toLowerCase().indexOf(gameSearch) > -1);
-		return sendSimpleEmbeddedMessage(msg, playingMembers.map((member) => `<@${member.id}> - ${member.presence.activity.name}`).sort().join('\n'));
+		const playingMembers = msg.guild.members.filter((member: GuildMember) => !member.user.bot && member.presence.activity && member.presence.activity.name.toLowerCase().indexOf(gameSearch) > -1);
+		
+		deleteCommandMessages(msg, this.client);
+
+		return sendSimpleEmbeddedMessage(msg, playingMembers.map((member: GuildMember) => `<@${member.id}> - ${member.presence.activity.name}`).sort().join('\n'));
 	}
 }

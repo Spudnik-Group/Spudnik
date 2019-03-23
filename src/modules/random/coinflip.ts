@@ -1,5 +1,5 @@
 import { Message } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getRandomInt, sendSimpleEmbeddedImage } from '../../lib/helpers';
 
 // tslint:disable-next-line:no-var-requires
@@ -37,11 +37,11 @@ export default class CoinFlipCommand extends Command {
 	/**
 	 * Run the "coinflip" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof CoinFlipCommand
 	 */
-	public async run(msg: CommandMessage): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage): Promise<Message | Message[]> {
 		return sendSimpleEmbeddedImage(msg, coinflip[getRandomInt(0, 1)].image);
 	}
 }

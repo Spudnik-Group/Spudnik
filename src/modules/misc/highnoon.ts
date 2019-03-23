@@ -1,7 +1,7 @@
 import { Message } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import * as rp from 'request-promise';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedImage, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedImage, sendSimpleEmbeddedMessage, stopTyping, deleteCommandMessages } from '../../lib/helpers';
 
 /**
  * Show the XKCD "Now" comic.
@@ -35,20 +35,26 @@ export default class HighNoonCommand extends Command {
 	/**
 	 * Run the "highnoon" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof HighNoonCommand
 	 */
-	public async run(msg: CommandMessage): Promise<Message | Message[]> {
-		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
+	public async run(msg: CommandoMessage): Promise<Message | Message[]> {
+		let embedContent = '';
 		rp({ followAllRedirects: true, uri: 'http://imgs.xkcd.com/comics/now.png', resolveWithFullResponse: true })
 			.then((content) => {
-				return sendSimpleEmbeddedImage(msg, content.request.uri.href.toString());
+				embedContent = content.request.uri.href.toString();
 			})
 			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command misc:highnoon: ${err}`);
+				stopTyping(msg);
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			});
-		return response;
+		
+		deleteCommandMessages(msg, this.client);
+		stopTyping(msg);
+		
+		// Send the success response
+		return sendSimpleEmbeddedImage(msg, embedContent);
 	}
 }

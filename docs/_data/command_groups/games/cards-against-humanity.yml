@@ -1,0 +1,3 @@
+usage:
+  - "!cards-against-humanity 15"
+  - "!cards-against-humanity 20 true"

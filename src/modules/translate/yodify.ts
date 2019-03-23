@@ -1,7 +1,7 @@
 import { stripIndents } from 'common-tags';
 import { Message } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, stopTyping, startTyping, deleteCommandMessages } from '../../lib/helpers';
 
 /**
  * Convert a statement to be structured as Yoda speaks.
@@ -45,30 +45,36 @@ export default class YodifyCommand extends Command {
 	/**
 	 * Run the "yodify" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @param {{ query: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof YodifyCommand
 	 */
-	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
-		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
+	public async run(msg: CommandoMessage, args: { query: string }): Promise<Message | Message[]> {
+		let embedMessage = '';
+		startTyping(msg);
+
 		require('soap').createClient('http://www.yodaspeak.co.uk/webservice/yodatalk.php?wsdl', (err: Error, client: any) => {
 			if (err) {
-				if (msg.deletable) msg.delete();
 				msg.client.emit('warn', `Error in command translate:yodify: ${err}`);
+				stopTyping(msg);
 				return sendSimpleEmbeddedError(msg, 'Lost, I am. Not found, the web service is. Hrmm...', 3000);
 			}
 
 			client.yodaTalk({ inputText: args.query }, (err: Error, result: any) => {
 				if (err) {
-					if (msg.deletable) msg.delete();
 					msg.client.emit('warn', `Error in command translate:yodify: ${err}`);
+					stopTyping(msg);
 					return sendSimpleEmbeddedError(msg, 'Confused, I am. Disturbance in the force, there is. Hrmm...', 3000);
 				}
-				if (msg.deletable) msg.delete();
-				return sendSimpleEmbeddedMessage(msg, result.return);
+				embedMessage = result.return;
 			});
 		});
-		return response;
+	
+		deleteCommandMessages(msg, this.client);
+		stopTyping(msg);
+		
+		// Send the success response
+		return sendSimpleEmbeddedMessage(msg, embedMessage);
 	}
 }

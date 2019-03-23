@@ -1,7 +1,7 @@
 import { Message, MessageEmbed } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, deleteCommandMessages, stopTyping } from '../../lib/helpers';
 
 /**
  * Simulate dice rolling.
@@ -44,23 +44,30 @@ export default class RollCommand extends Command {
 	/**
 	 * Run the "roll" command.
 	 *
-	 * @param {CommandMessage} msg
-	 * @param {{ roll: string }} args
+	 * @param {CommandoMessage} msg
+	 * @param {{ rolls: string[] }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof RollCommand
 	 */
-	public async run(msg: CommandMessage, args: { rolls: string[] }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { rolls: string[] }): Promise<Message | Message[]> {
 		const input: string[] = args.rolls;
 		const diceEmbed: MessageEmbed = new MessageEmbed({
 			color: getEmbedColor(msg),
 			description: '',
 			title: ':game_die: Dice Roller'
 		});
+
+		startTyping(msg);
+
 		input.forEach((item) => {
 			const result = require('d20').roll(item);
 			diceEmbed.description += `Roll: ${item} -- Result: ${result}\n`;
 		});
+		
+		deleteCommandMessages(msg, this.client);
+		stopTyping(msg);
 
+		// Send the success response
 		return msg.embed(diceEmbed);
 	}
 }

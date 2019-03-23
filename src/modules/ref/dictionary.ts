@@ -1,8 +1,8 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, stopTyping, startTyping, deleteCommandMessages } from '../../lib/helpers';
 
 // tslint:disable-next-line:no-var-requires
 const mw = require('mw-dict');
@@ -54,13 +54,12 @@ export default class DefineCommand extends Command {
 	/**
 	 * Run the "define" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @param {{ query: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof DefineCommand
 	 */
-	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
-		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
+	public async run(msg: CommandoMessage, args: { query: string }): Promise<Message | Message[]> {
 		const word = args.query;
 		const dictionaryEmbed: MessageEmbed = new MessageEmbed({
 			color: getEmbedColor(msg),
@@ -71,6 +70,8 @@ export default class DefineCommand extends Command {
 			},
 			title: `Definition Result: ${word}`
 		});
+
+		startTyping(msg);
 
 		function renderDefinition(sensesIn: any) {
 			return sensesIn
@@ -105,13 +106,17 @@ export default class DefineCommand extends Command {
 					}
 				];
 				dictionaryEmbed.description = renderDefinition(result[0].definition);
-				return msg.embed(dictionaryEmbed);
 			})
 			.catch((err: any) => {
 				msg.client.emit('warn', `Error in command ref:define: ${err}`);
+				stopTyping(msg);
 				return sendSimpleEmbeddedError(msg, 'Word not found.', 3000);
 			});
+		
+		deleteCommandMessages(msg, this.client);
+		stopTyping(msg);
 
-		return response;
+		// Send the success response
+		return msg.embed(dictionaryEmbed);
 	}
 }

@@ -1,9 +1,9 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import * as rp from 'request-promise';
 import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
 
 /**
  * Post information about a cocktail.
@@ -50,13 +50,12 @@ export default class CocktailCommand extends Command {
 	/**
 	 * Run the "cocktail" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @param {{ query: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof CocktailCommand
 	 */
-	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
-		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
+	public async run(msg: CommandoMessage, args: { query: string }): Promise<Message | Message[]> {
 		const cocktailEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/240/twitter/103/cocktail-glass_1f378.png',
@@ -66,6 +65,8 @@ export default class CocktailCommand extends Command {
 			color: getEmbedColor(msg),
 			description: ''
 		});
+
+		startTyping(msg);
 
 		rp(`http://www.thecocktaildb.com/api/json/v1/1/search.php?s=${encodeURIComponent(args.query)}`)
 			.then((content) => {
@@ -115,20 +116,23 @@ export default class CocktailCommand extends Command {
 						cocktailEmbed.title = `__${result.strDrink}__`;
 						cocktailEmbed.thumbnail = { url: thumbnail };
 						cocktailEmbed.fields = fields;
-						return msg.embed(cocktailEmbed);
 					} else {
-						cocktailEmbed.description = `${response.data.drinks[0].strDrink} is a good drink, but I don't have a good way to describe it.`;
-						return msg.embed(cocktailEmbed);
+						cocktailEmbed.setDescription(`${response.data.drinks[0].strDrink} is a good drink, but I don't have a good way to describe it.`);
 					}
 				} else {
-					cocktailEmbed.description = "Damn, I've never heard of that. Where do I need to go to find it?";
-					return msg.embed(cocktailEmbed);
+					cocktailEmbed.setDescription("Damn, I've never heard of that. Where do I need to go to find it?");
 				}
 			})
 			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command ref:cocktail: ${err}`);
+				stopTyping(msg);
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			});
-		return response;
+		
+		deleteCommandMessages(msg, this.client);
+		stopTyping(msg);
+
+		// Send the success response
+		return msg.embed(cocktailEmbed);
 	}
 }

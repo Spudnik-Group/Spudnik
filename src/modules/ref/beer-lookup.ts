@@ -1,9 +1,9 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import * as rp from 'request-promise';
 import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
 
 const breweryDbApiKey: string = process.env.spud_brewdbapi;
 
@@ -53,13 +53,12 @@ export default class BrewCommand extends Command {
 	/**
 	 * Run the "brew" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @param {{ query: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof BrewCommand
 	 */
-	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
-		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
+	public async run(msg: CommandoMessage, args: { query: string }): Promise<Message | Message[]> {
 		const brewEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/twitter/103/beer-mug_1f37a.png',
@@ -74,38 +73,40 @@ export default class BrewCommand extends Command {
 			}
 		});
 
+		startTyping(msg);
+
 		rp(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(args.query)}&key=${breweryDbApiKey}`)
 			.then((content) => {
 				const response = JSON.parse(content);
-				if (typeof response !== 'undefined') {
+				if (response) {
 					const result = response.data[0];
-					if (typeof result.description !== 'undefined') {
+					if (result.description) {
 						const fields: any = [];
 						let thumbnail = '';
-						if (typeof result.labels !== 'undefined') {
+						if (result.labels) {
 							thumbnail = result.labels.medium;
 						}
 
-						if (typeof result.images !== 'undefined') {
+						if (result.images) {
 							thumbnail = result.images.squareMedium;
 						}
-						if (typeof result.name !== 'undefined') {
+						if (result.name) {
 							brewEmbed.title = result.name;
 						}
-						if (typeof result.style !== 'undefined') {
+						if (result.style) {
 							fields.push({
 								name: `Style: ${result.style.name}`,
 								value: result.style.description
 							});
 						}
-						if (typeof result.abv !== 'undefined') {
+						if (result.abv) {
 							fields.push({
 								inline: true,
 								name: 'ABV (Alcohol By Volume)',
 								value: `${result.abv}%`
 							});
 						}
-						if (typeof result.ibu !== 'undefined') {
+						if (result.ibu) {
 							fields.push({
 								inline: true,
 								name: 'IBU (International Bitterness Units)',
@@ -113,7 +114,7 @@ export default class BrewCommand extends Command {
 							});
 						}
 
-						if (typeof result.website !== 'undefined') {
+						if (result.website) {
 							fields.push({
 								inline: true,
 								name: 'Website',
@@ -121,7 +122,7 @@ export default class BrewCommand extends Command {
 							});
 						}
 
-						if (typeof result.established !== 'undefined') {
+						if (result.established) {
 							fields.push({
 								inline: true,
 								name: 'Year Established',
@@ -137,19 +138,24 @@ export default class BrewCommand extends Command {
 								url: thumbnail
 							};
 						}
-						brewEmbed.description = `\n${result.description}\n\n`;
+						brewEmbed.setDescription(`\n${result.description}\n\n`);
 					} else {
-						brewEmbed.description = `${response.data[0].name} is a good beer, but I don't have a good way to describe it.`;
+						brewEmbed.setDescription(`${response.data[0].name} is a good beer, but I don't have a good way to describe it.`);
 					}
 				} else {
-					brewEmbed.description = "Damn, I've never heard of that. Where do I need to go to find it?";
+					brewEmbed.setDescription("Damn, I've never heard of that. Where do I need to go to find it?");
 				}
-				return msg.embed(brewEmbed);
 			})
 			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command ref:brew: ${err}`);
+				stopTyping(msg);
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			});
-		return response;
+		
+			deleteCommandMessages(msg, this.client);
+			stopTyping(msg);
+	
+			// Send the success response
+			return msg.embed(brewEmbed);
 	}
 }

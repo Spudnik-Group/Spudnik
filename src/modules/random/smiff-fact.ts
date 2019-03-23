@@ -1,6 +1,7 @@
-import { Message } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { getRandomInt, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { Message, MessageEmbed } from 'discord.js';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
+import { getRandomInt, startTyping, deleteCommandMessages, stopTyping } from '../../lib/helpers';
+import { getEmbedColor } from '../../lib/custom-helpers';
 
 // tslint:disable-next-line:no-var-requires
 const { smiff }: { smiff: string[] } = require('../../extras/data');
@@ -38,11 +39,25 @@ export default class SmiffFactCommand extends Command {
 	/**
 	 * Run the "smiff-fact" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof SmiffFactCommand
 	 */
-	public async run(msg: CommandMessage): Promise<Message | Message[]> {
-		return sendSimpleEmbeddedMessage(msg, smiff[getRandomInt(0, smiff.length) - 1]);
+	public async run(msg: CommandoMessage): Promise<Message | Message[]> {
+		const responseEmbed: MessageEmbed = new MessageEmbed({
+			color: getEmbedColor(msg),
+			description: '',
+			title: 'Will Smith Fact'
+		});
+
+		startTyping(msg);
+		
+		responseEmbed.setDescription(smiff[getRandomInt(0, smiff.length) - 1]);
+
+		deleteCommandMessages(msg, this.client);
+		stopTyping(msg);
+
+		// Send the success response
+		return msg.embed(responseEmbed);
 	}
 }

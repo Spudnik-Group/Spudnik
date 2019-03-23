@@ -1,7 +1,7 @@
 import { stripIndents } from 'common-tags';
 import { Message } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
 
 /**
  * Unshorten a url.
@@ -49,25 +49,35 @@ export default class UnshortCommand extends Command {
 	/**
 	 * Run the "unshorten" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @param {{ query: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof UnshortCommand
 	 */
-	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
-		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
+	public async run(msg: CommandoMessage, args: { query: string }): Promise<Message | Message[]> {
+		let embedMessage = '';
+		startTyping(msg);
+
 		require('url-unshort')().expand(args.query)
 			.then((url: string) => {
 				if (url) {
-					if (msg.deletable) msg.delete();
-					return sendSimpleEmbeddedMessage(msg, `Original url is: <${url}>`);
+					deleteCommandMessages(msg, this.client);
+					stopTyping(msg);
+					embedMessage = `Original url is: <${url}>`;
 				}
+				stopTyping(msg);
 				return sendSimpleEmbeddedError(msg, 'This url can\'t be expanded. Make sure the protocol exists (Http/Https) and try again.', 3000);
 			})
 			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command misc:unshort: ${err}`);
+				stopTyping(msg);
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. The url may not be valid. Try again?', 3000);
 			});
-		return response;
+		
+		deleteCommandMessages(msg, this.client);
+		stopTyping(msg);
+		
+		// Send the success response
+		return sendSimpleEmbeddedMessage(msg, embedMessage);
 	}
 }

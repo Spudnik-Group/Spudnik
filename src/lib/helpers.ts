@@ -1,19 +1,20 @@
-import chalk from 'chalk';
 import { Message } from 'discord.js';
-import { CommandMessage } from 'discord.js-commando';
-import * as fs from 'fs';
+import { CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from './custom-helpers';
+
+const yes = ['yes', 'y', 'ye', 'yeah', 'yup', 'yea'];
+const no = ['no', 'n', 'nah', 'nope'];
 
 /**
  * Post a message.
  *
  * @export
- * @param {CommandMessage} msg
+ * @param {CommandoMessage} msg
  * @param {string} text
  * @param {number} [timeout]
- * @returns {(Promise<Message | Message[]>)}
+ * @returns Promise<Message | Message[]>
  */
-export function sendSimpleEmbeddedMessage(msg: CommandMessage, text: string, timeout?: number): Promise<Message | Message[]> {
+export function sendSimpleEmbeddedMessage(msg: CommandoMessage, text: string, timeout?: number): Promise<Message | Message[]> {
 	const promise: Promise<Message | Message[]> = msg.embed({
 		author: {
 			icon_url: msg.client.user.displayAvatarURL,
@@ -39,12 +40,12 @@ export function sendSimpleEmbeddedMessage(msg: CommandMessage, text: string, tim
  * Post an error message.
  *
  * @export
- * @param {CommandMessage} msg
+ * @param {CommandoMessage} msg
  * @param {string} text
  * @param {number} [timeout]
- * @returns {(Promise<Message | Message[]>)}
+ * @returns Promise<Message | Message[]>
  */
-export function sendSimpleEmbeddedError(msg: CommandMessage, text: string, timeout?: number): Promise<Message | Message[]> {
+export function sendSimpleEmbeddedError(msg: CommandoMessage, text: string, timeout?: number): Promise<Message | Message[]> {
 	const promise: Promise<Message | Message[]> = msg.embed({
 		author: {
 			icon_url: msg.client.user.displayAvatarURL,
@@ -70,12 +71,12 @@ export function sendSimpleEmbeddedError(msg: CommandMessage, text: string, timeo
  * Send a success message.
  *
  * @export
- * @param {CommandMessage} msg
+ * @param {CommandoMessage} msg
  * @param {string} text
  * @param {number} [timeout]
- * @returns {(Promise<Message | Message[]>)}
+ * @returns Promise<Message | Message[]>
  */
-export function sendSimpleEmbeddedSuccess(msg: CommandMessage, text: string, timeout?: number): Promise<Message | Message[]> {
+export function sendSimpleEmbeddedSuccess(msg: CommandoMessage, text: string, timeout?: number): Promise<Message | Message[]> {
 	const promise: Promise<Message | Message[]> = msg.embed({
 		author: {
 			icon_url: msg.client.user.displayAvatarURL,
@@ -101,12 +102,12 @@ export function sendSimpleEmbeddedSuccess(msg: CommandMessage, text: string, tim
  * Post an image.
  *
  * @export
- * @param {CommandMessage} msg
+ * @param {CommandoMessage} msg
  * @param {string} url
  * @param {string} [description]
- * @returns {(Promise<Message | Message[]>)}
+ * @returns Promise<Message | Message[]>
  */
-export function sendSimpleEmbeddedImage(msg: CommandMessage, url: string, description?: string): Promise<Message | Message[]> {
+export function sendSimpleEmbeddedImage(msg: CommandoMessage, url: string, description?: string): Promise<Message | Message[]> {
 	return msg.embed({
 		author: {
 			icon_url: msg.client.user.displayAvatarURL,
@@ -124,37 +125,10 @@ export function sendSimpleEmbeddedImage(msg: CommandMessage, url: string, descri
  * @export
  * @param {number} min
  * @param {number} max
- * @returns {number}
+ * @returns number
  */
 export function getRandomInt(min: number, max: number): number {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-/**
- * Get file contents.
- *
- * @export
- * @param {string} filePath
- * @returns {string}
- */
-export function getFileContents(filePath: string): string {
-	try {
-		return fs.readFileSync(filePath, 'utf-8');
-	} catch (err) {
-		console.log(chalk.red(err));
-		return '';
-	}
-}
-
-/**
- * Get json from a file.
- *
- * @export
- * @param {string} filePath
- * @returns {*}
- */
-export function getJsonObject(filePath: string): any {
-	return JSON.parse(getFileContents(filePath));
 }
 
 /**
@@ -162,7 +136,7 @@ export function getJsonObject(filePath: string): any {
  *
  * @export
  * @param {string} usertxt
- * @returns {string}
+ * @returns string
  */
 export function resolveMention(usertxt: string): string {
 	let userid = usertxt;
@@ -173,3 +147,175 @@ export function resolveMention(usertxt: string): string {
 	}
 	return userid;
 }
+
+/**
+ * Return a timeout as a promise.
+ *
+ * @export
+ * @param {number} ms
+ * @returns {Promise}
+ */
+export function delay(ms: number): Promise<any> {
+	return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export function shuffle(array: any[]): any[] {
+	const arr = array.slice(0);
+	for (let i = arr.length - 1; i >= 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		const temp = arr[i];
+		arr[i] = arr[j];
+		arr[j] = temp;
+	}
+	return arr;
+}
+
+export function list(arr: any[], conj = 'and') {
+	const len = arr.length;
+	return `${arr.slice(0, -1).join(', ')}${len > 1 ? `${len > 2 ? ',' : ''} ${conj} ` : ''}${arr.slice(-1)}`;
+}
+
+export function shorten(text: string, maxLen = 2000) {
+	return text.length > maxLen ? `${text.substr(0, maxLen - 3)}...` : text;
+}
+
+export function duration(ms: number) {
+	const sec = Math.floor((ms / 1000) % 60).toString();
+	const min = Math.floor((ms / (1000 * 60)) % 60).toString();
+	const hrs = Math.floor(ms / (1000 * 60 * 60)).toString();
+	return `${hrs.padStart(2, '0')}:${min.padStart(2, '0')}:${sec.padStart(2, '0')}`;
+}
+
+export function randomRange(min: number, max: number) {
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+export function trimArray(arr: any[], maxLen = 10) {
+	if (arr.length > maxLen) {
+		const len = arr.length - maxLen;
+		arr = arr.slice(0, maxLen);
+		arr.push(`${len} more...`);
+	}
+	return arr;
+}
+
+export function base64(text: string, mode = 'encode') {
+	if (mode === 'encode') {
+		return Buffer.from(text).toString('base64');
+	}
+	if (mode === 'decode') {
+		return Buffer.from(text, 'base64').toString('utf8') || null;
+	}
+	throw new TypeError(`${mode} is not a supported base64 mode.`);
+}
+
+export function hash(text: string, algorithm: any) {
+	return require('crypto').createHash(algorithm).update(text).digest('hex');
+}
+
+export function today(timeZone: number) {
+	const now = new Date();
+	if (timeZone) {
+		now.setUTCHours(now.getUTCHours() + timeZone);
+	}
+	now.setHours(0);
+	now.setMinutes(0);
+	now.setSeconds(0);
+	now.setMilliseconds(0);
+	return now;
+}
+
+export function tomorrow(timeZone: number) {
+	const thisDate = today(timeZone);
+	thisDate.setDate(thisDate.getDate() + 1);
+	return thisDate;
+}
+
+export async function awaitPlayers(msg: any, max: number, min: number, { text = 'join game', time = 30000, dmCheck = false } = {}) {
+	const joined: any[] = [];
+	joined.push(msg.author.id);
+	const filter = (res: any) => {
+		if (res.author.bot) { return false; }
+		if (joined.includes(res.author.id)) { return false; }
+		if (res.content.toLowerCase() !== text.toLowerCase()) { return false; }
+		joined.push(res.author.id);
+		res.react('✅').catch((): void => null);
+		return true;
+	};
+	const verify = await msg.channel.awaitMessages(filter, { max: max, time: time });
+	verify.set(msg.id, msg);
+	if (dmCheck) {
+		for (const message of verify.values()) {
+			try {
+				await message.author.send('Hi! Just testing that DMs work, pay this no mind.');
+			} catch (err) {
+				verify.delete(message.id);
+			}
+		}
+	}
+	if (verify.size < min) { return false; }
+	return verify.map((message: any) => message.author);
+}
+
+export async function verify(channel: any, user: any, time = 30000) {
+	const filter = (res: any) => {
+		const value = res.content.toLowerCase();
+		return res.author.id === user.id && (yes.includes(value) || no.includes(value));
+	};
+	const verify = await channel.awaitMessages(filter, {
+		max: 1,
+		time: time
+	});
+	if (!verify.size) { return 0; }
+	const choice = verify.first().content.toLowerCase();
+	if (yes.includes(choice)) { return true; }
+	if (no.includes(choice)) { return false; }
+	return false;
+}
+
+/**
+ * Escapes any Discord-flavour markdown in a string.
+ * @param {string} text Content to escape
+ * @param {boolean} [onlyCodeBlock=false] Whether to only escape codeblocks (takes priority)
+ * @param {boolean} [onlyInlineCode=false] Whether to only escape inline code
+ * @returns {string}
+ */
+export function escapeMarkdown(text: string, onlyCodeBlock = false, onlyInlineCode = false) {
+	if (onlyCodeBlock) { return text.replace(/```/g, '`\u200b``'); }
+	if (onlyInlineCode) { return text.replace(/\\(`|\\)/g, '$1').replace(/(`|\\)/g, '\\$1'); }
+	return text.replace(/\\(\*|_|`|~|\\)/g, '$1').replace(/(\*|_|`|~|\\)/g, '\\$1');
+}
+
+/**
+ * Delete the calling message for commands, if it's deletable by the bot
+ * 
+ * @export
+ * @param {CommandoMessage} msg
+ * @param {CommandoClient} client
+ * @returns void
+ */
+export const deleteCommandMessages = (msg: CommandoMessage, client: CommandoClient) => {
+	if (msg.deletable && client.provider.get(msg.guild, 'deletecommandmessages', false)) msg.delete();
+};
+
+/**
+ * Stop the bot's typing status
+ * 
+ * @export
+ * @param {CommandoMessage} msg
+ * @returns void
+ */
+export const stopTyping = (msg: CommandoMessage) => {
+	msg.channel.stopTyping(true);
+};
+
+/**
+ * Start the bot's typing status
+ * 
+ * @export
+ * @param {CommandoMessage} msg
+ * @returns void
+ */
+export const startTyping = (msg: CommandoMessage) => {
+	msg.channel.startTyping(1);
+};
