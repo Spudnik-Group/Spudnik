@@ -1,16 +1,23 @@
 # Spudnik ![Spudnik!][img-icon]
 Spudnik is a free and open source Discord chat bot focused on guild management and adding interesting and useful functionality to your server. It was built on top of some of the most popular and widely used frameworks for extendibility, and written with organization and stability in mind. It also ships with ZERO weeb commands/references! [Let's get you started. Invite Spudnik to your server now!][url-invite]
 
-[![Uptime][img-uptime-robot]] [![Current Release][img-current-release]][url-current-release] [![discord.js][img-discord-js]][url-discord-js] [![Commando][img-commando]][url-commando] [![License][img-license]][url-license] [![Build Status][img-build-status]][url-build-status] ![Code Style: tslint][img-code-style]
+[![Uptime][img-uptime-robot]][url-homepage] [![Current Release][img-current-release]][url-current-release] [![discord.js][img-discord-js]][url-discord-js] [![Commando][img-commando]][url-commando] [![License][img-license]][url-license] [![Build Status][img-build-status]][url-build-status] ![Code Style: tslint][img-code-style]
 
 [![Discord Bot List][img-discord-bot-list]][url-discord-bot-list]
 
 ## Features include:
+- kick/ban/warn users!
+- move/prune messages!
+- Terms of Service/Rules system
+- Adblock feature
+- Greet/Heckle new and leaving users
+- Modlog of actions
+- Self assignable roles
+- Starboard for saving noteworthy messages
 - beer/brewery/cocktail lookup
 - ellaborate d20 rolling system
 - dictionary, urbandictionary, and wikipedia reference
 - cat, dog, date, Chuck Norris, and Will Smith fact lookups
-- moderation commands
 - xkcd comic lookup
 - and more!
 
@@ -30,6 +37,7 @@ Invite the bot to your server: [here][url-invite].
 
 [img-icon]: ./Spudnik_icon.png?raw=true
 [img-invite]: ./discord-invite-badge.svg?raw=true
+[url-homepage]: https://spudnik.io
 [url-invite]: https://discordapp.com/oauth2/authorize?client_id=398591330806398989&scope=bot&permissions=0
 
 [img-current-release]: https://img.shields.io/github/release/Spudnik-Group/Spudnik.svg?style=flat-square
