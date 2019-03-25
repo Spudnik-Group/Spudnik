@@ -16,7 +16,7 @@ export async function handleReady(version: string, client: CommandoClient, confi
 		{
 			activity: {
 				name: 'spudnik.io',
-				type: 'STREAMING'
+				type: 'PLAYING'
 			}
 		},
 		{
@@ -28,7 +28,7 @@ export async function handleReady(version: string, client: CommandoClient, confi
 		{
 			activity: {
 				name: `Version: v${version} | ${client.commandPrefix}help`,
-				type: 'STREAMING'
+				type: 'PLAYING'
 			}
 		},
 		{
@@ -40,12 +40,18 @@ export async function handleReady(version: string, client: CommandoClient, confi
 		{
 			activity: {
 				name: 'docs.spudnik.io',
-				type: 'STREAMING'
+				type: 'PLAYING'
 			}
 		},
 		{
 			activity: {
-				name: `and Assisting ${users} users on ${guilds} servers`,
+				name: `and Assisting ${users} users.`,
+				type: 'WATCHING'
+			}
+		},
+		{
+			activity: {
+				name: `and Assisting ${guilds} servers.`,
 				type: 'WATCHING'
 			}
 		},
@@ -63,7 +69,7 @@ export async function handleReady(version: string, client: CommandoClient, confi
 	// Update bot status, using array of possible statuses
 	let statusIndex: number = -1;
 	statusIndex = updateStatus(client, statuses, statusIndex);
-	setInterval(() => statusIndex = updateStatus(client, statuses, statusIndex), config.statusUpdateInterval, true);
+	setInterval(() => { statusIndex = updateStatus(client, statuses, statusIndex) }, config.statusUpdateInterval, true);
 	setInterval(() => updateStatusStats(config, client, statuses), config.botListUpdateInterval, true);
 }
 
@@ -82,12 +88,20 @@ const updateStatusStats = (config: Configuration, client: CommandoClient, status
 		return false;
 	});
 
-	statuses.push({
-		activity: {
-			name: `and Assisting ${users} users on ${guilds} servers`,
-			type: 'WATCHING'
+	statuses.push(
+		{
+			activity: {
+				name: `and Assisting ${guilds} servers.`,
+				type: 'WATCHING'
+			}
+		},
+		{
+			activity: {
+				name: `and Assisting ${users} users.`,
+				type: 'WATCHING'
+			}
 		}
-	});
+	);
 
 	return statuses;
 }
