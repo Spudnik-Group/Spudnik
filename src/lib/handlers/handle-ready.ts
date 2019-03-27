@@ -91,42 +91,63 @@ const updateStatus = (client: CommandoClient, statuses: PresenceData[], statusIn
  * Update bot list stats on interval
  */
 const updateBotListStats = (config: Configuration, client: CommandoClient): void => {
-	// discord.bots.gg
+	// DISCORD.BOTS.gg
+	if (process.env.BOTSGG_TOKEN) {
+		rp({
+			body: { guildCount: client.guilds.size },
+			headers: { Authorization: process.env.BOTSGG_TOKEN },
+			method: 'POST',
+			uri: `https://discord.bots.gg/api/v1/bots/${client.user.id}/stats`
+		})
+		.then(() => console.log('- Posted statistics successfully', 'discord.bots.gg'))
+		.catch(() => console.log('Failed to post statistics', 'discord.bots.gg'))
+	}
 
-	// bots.ondiscord.xyz
+	// BOTS.ONDISCORD.xyz
+	if (process.env.BOD_TOKEN) {
+		rp({
+			body: { guildCount: client.guilds.size },
+			headers: { Authorization: process.env.BOD_TOKEN },
+			method: 'POST',
+			uri: `https://bots.ondiscord.xyz/bot-api/bots/${client.user.id}/guilds`
+		})
+		.then(() => console.log('- Posted statistics successfully', 'bots.ondiscord.xyz'))
+		.catch(() => console.log('Failed to post statistics', 'bots.ondiscord.xyz'))
+	}
 
-	// discordbots.org
+	// DISCORDBOTS.org
 	if (process.env.DB_TOKEN) {
 		rp({
-			uri: `https://discordbots.org/api/bots/${client.user.id}/stats`,
-			method: 'POST',
+			body: { server_count: client.guilds.size },
 			headers: { Authorization: process.env.DB_TOKEN },
-			body: { server_count: client.guilds.size }
-		})
-		.then(() => client.log('- Posted statistics successfully', 'discordbots.org'))
-		.catch(() => client.log('Failed to post statistics', 'discordbots.org'))
-	}
-
-	// botsfordiscord.com
-	if (process.env.BOTSFORDISCORD_TOKEN) {
-		rp({
-			uri: `https://botsfordiscord.com/api/bots/${client.user.id}/stats`,
 			method: 'POST',
-			headers: { Authorization: process.env.BOTSFORDISCORD_TOKEN },
-			body: { server_count: client.guilds.size }
+			uri: `https://discordbots.org/api/bots/${client.user.id}/stats`
 		})
-		.then(() => client.log('- Posted statistics successfully', 'botsfordiscord.com'))
-		.catch(() => client.log('Failed to post statistics', 'botsfordiscord.com'))
+		.then(() => console.log('- Posted statistics successfully', 'discordbots.org'))
+		.catch(() => console.log('Failed to post statistics', 'discordbots.org'))
 	}
 
+	// BOTSFORDISCORD.com
+	if (process.env.BFD_TOKEN) {
+		rp({
+			body: { server_count: client.guilds.size },
+			headers: { Authorization: process.env.BOTSFORDISCORD_TOKEN },
+			method: 'POST',
+			uri: `https://botsfordiscord.com/api/bots/${client.user.id}/stats`
+		})
+		.then(() => console.log('- Posted statistics successfully', 'botsfordiscord.com'))
+		.catch(() => console.log('Failed to post statistics', 'botsfordiscord.com'))
+	}
+
+	// DISCORDBOTLIST.com
 	if (process.env.DBL_TOKEN) {
 		rp({
-			uri: `https://discordbotlist.com/api/bots/${client.user.id}/stats`,
-			method: 'POST',
+			body: { guilds: client.guilds.size, users: client.users.size },
 			headers: { Authorization: `Bot ${process.env.DBL_TOKEN}` },
-			body: { guilds: client.guilds.size, users: client.users.size }
+			method: 'POST',
+			uri: `https://discordbotlist.com/api/bots/${client.user.id}/stats`
 		})
-		.then(() => client.log('- Posted statistics successfully', 'discordbotlist.com'))
-		.catch(() => client.log('Failed to post statistics', 'discordbotlist.com'))
+		.then(() => console.log('- Posted statistics successfully', 'discordbotlist.com'))
+		.catch(() => console.log('Failed to post statistics', 'discordbotlist.com'))
 	}
 }
