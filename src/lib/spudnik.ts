@@ -65,8 +65,7 @@ export class Spudnik {
 			invite: 'https://spudnik.io/support',
 			messageCacheLifetime: 30,
 			messageSweepInterval: 60,
-			owner: this.Config.owner,
-			unknownCommandResponse: false
+			owner: this.Config.owner
 		});
 
 		this.setupCommands();
@@ -105,7 +104,8 @@ export class Spudnik {
 				eval: true,
 				help: true,
 				ping: false,
-				prefix: true
+				prefix: true,
+				unknownCommand: false
 			})
 			.registerCommandsIn(path.join(__dirname, '../modules'));
 	}
@@ -177,6 +177,6 @@ export class Spudnik {
 		}).listen(PORT);
 
 		// Print URL for accessing server
-		console.log(`Heartbeat running on port ${PORT}`);
+		console.log(chalk.red(`Heartbeat running on port ${PORT}`));
 	}
 }
