@@ -23,30 +23,32 @@ export async function handleRaw(event: any, client: CommandoClient) {
 		//Bot doesn't have the right permissions in the starboard channel
 		return;
 	}
-	const emojiKey: any = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
-	const reaction: MessageReaction = message.reactions.get(emojiKey);
+
+	const currentEmojiKey: any = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
+	const reaction: any = message.reactions.get(currentEmojiKey);
 	const starboardMessages = await (starboard as TextChannel).messages.fetch({ limit: 100 });
 	const starboardTrigger: string = await client.provider.get(message.guild.id, 'starboardTrigger', '⭐');
 	const existingStar = starboardMessages.find(m => {
 		// Need this filter if there are non-starboard posts in the starboard channel.
 		if (m.embeds[0].footer) {
+			// Find the previously-starred message
 			return m.embeds[0].footer.text.startsWith('⭐') && m.embeds[0].footer.text.endsWith(message.id);
 		}
 	});
 
-	// If all emojis were removed from this message, check if message is in the starboard
-	if (!reaction) {
-		if (existingStar) {
-			// Remove from the starboard
-			existingStar.delete()
+	// Check for starboard reaction
+	if (starboardTrigger === currentEmojiKey) {
+		// If all of the starboard trigger emojis were removed from this message
+		if (!reaction) {
+			// Check if message is in the starboard
+			if (existingStar) {
+				// And remove it
+				existingStar.delete();
+				return;
+			}
 			return;
 		}
-		return;
-	}
-
-	// Check for starboard reaction
-	if (starboardTrigger === (reaction as MessageReaction).emoji.name) {
-		const stars = await message.reactions.find((mReaction: MessageReaction) => mReaction.emoji.name === starboardTrigger).users.fetch();
+		const stars = reaction.count;
 		const starboardEmbed: MessageEmbed = new MessageEmbed()
 			.setAuthor(message.guild.name, message.guild.iconURL())
 			.setThumbnail(message.author.displayAvatarURL())
@@ -54,7 +56,7 @@ export async function handleRaw(event: any, client: CommandoClient) {
 			.addField('Channel', (channel as TextChannel).toString(), true)
 			.setColor(await client.provider.get(message.guild.id, 'embedColor', 5592405))
 			.setTimestamp()
-			.setFooter(`⭐ ${stars.size} | ${message.id} `);
+			.setFooter(`⭐ ${stars} | ${message.id} `);
 
 		// You can't star your own messages
 		if (message.author.id === data.user_id && !client.owners.includes(data.user_id)) {
