@@ -88,25 +88,18 @@ export class Spudnik {
 		this.Discord.registry
 			.registerDefaultTypes()
 			.registerGroups([
-				['commands', 'Commands'],
 				['default', 'Default'],
-				['feature', 'Features'],
-				['games', 'Games'],
+				['feature', 'Feature'],
+				['games', 'Game'],
 				['misc', 'Misc'],
 				['mod', 'Moderation'],
 				['random', 'Random'],
 				['ref', 'Reference'],
-				['roles', 'Roles'],
+				['roles', 'Role'],
 				['translate', 'Translate'],
-				['util', 'Utility']
+				['util', 'Utility'],
+				['util-required', 'Required Utility']
 			])
-			.registerDefaultCommands({
-				commandState: true,
-				eval: true,
-				help: true,
-				ping: false,
-				prefix: true
-			})
 			.registerCommandsIn(path.join(__dirname, '../modules'));
 	}
 
