@@ -35,7 +35,7 @@ export default class PrefixCommand extends Command {
 				If the prefix is "default", the prefix will be reset to the bot's default prefix.
 				If the prefix is "none", the prefix will be removed entirely, only allowing mentions to run commands.
 
-				ADMINISTRATOR permission required.
+				ADMINISTRATOR permission required (to change the prefix).
 			`,
 			examples: ['!prefix', '!prefix -', '!prefix omg!', '!prefix default', '!prefix none'],
 			format: '[prefix/"default"/"none"]',
