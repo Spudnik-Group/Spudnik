@@ -89,7 +89,7 @@ export class Spudnik {
 			.registerGroups([
 				['default', 'Default'],
 				['feature', 'Feature'],
-				['games', 'Game'],
+				['game', 'Game'],
 				['misc', 'Misc'],
 				['mod', 'Moderation'],
 				['random', 'Random'],
