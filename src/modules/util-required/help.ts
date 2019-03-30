@@ -46,6 +46,7 @@ export default class HelpCommand extends Command {
 	 * Run the "Help" command.
 	 *
 	 * @param {CommandoMessage} msg
+	 * @param {{ command: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof HelpCommand
 	 */

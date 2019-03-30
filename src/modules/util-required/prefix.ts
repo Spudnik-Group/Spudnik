@@ -51,6 +51,7 @@ export default class PrefixCommand extends Command {
 	 * Run the "Prefix" command.
 	 *
 	 * @param {CommandoMessage} msg
+	 * @param {{ prefix: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof PrefixCommand
 	 */

@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { oneLine } from 'common-tags';
+import { oneLine, stripIndents } from 'common-tags';
 
 /**
  * Enables a command or command group.
@@ -28,9 +28,12 @@ export default class EnableCommandCommand extends Command {
 				}
 			],
 			description: 'Enables a command or command group.',
-			details: oneLine`
+			details: stripIndents`
+				syntax: \`!enable <command|commandGroup>\`
+
 				The argument must be the name/ID (partial or whole) of a command or command group.
-				Only administrators may use this command.
+				
+				ADMINISTRATOR permission required.
 			`,
 			examples: ['enable util', 'enable Utility', 'enable prefix'],
 			group: 'util-required',
@@ -40,7 +43,7 @@ export default class EnableCommandCommand extends Command {
 		});
 	}
 
-    /**
+	/**
      * Check if the user has the right permissions to run the command.
      * 
      * @param {CommandoMessage} msg
@@ -56,6 +59,7 @@ export default class EnableCommandCommand extends Command {
 	 * Run the "EnableCommand" command.
 	 *
 	 * @param {CommandoMessage} msg
+	 * @param {{ cmdOrGrp: Command }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof EnableCommandCommand
 	 */

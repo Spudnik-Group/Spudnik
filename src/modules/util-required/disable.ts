@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { oneLine } from 'common-tags';
+import { stripIndents } from 'common-tags';
 
 /**
  * Disables a command or command group.
@@ -28,9 +28,12 @@ export default class DisableCommandCommand extends Command {
 				}
 			],
 			description: 'Disables a command or command group.',
-			details: oneLine`
+			details: stripIndents`
+				syntax: \`!disable <command|commandGroup>\`
+				
 				The argument must be the name/ID (partial or whole) of a command or command group.
-				Only administrators may use this command.
+
+				ADMINISTRATOR permission required.
 			`,
 			examples: ['disable util', 'disable Utility', 'disable prefix'],
 			group: 'util-required',
@@ -40,7 +43,7 @@ export default class DisableCommandCommand extends Command {
 		});
 	}
 
-    /**
+	/**
      * Check if the user has the right permissions to run the command.
      * 
      * @param {CommandoMessage} msg
@@ -56,6 +59,7 @@ export default class DisableCommandCommand extends Command {
 	 * Run the "DisableCommand" command.
 	 *
 	 * @param {CommandoMessage} msg
+	 * @param {{ cmdOrGrp: Command }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof DisableCommandCommand
 	 */
