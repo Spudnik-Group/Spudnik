@@ -65,8 +65,7 @@ export class Spudnik {
 			invite: 'https://spudnik.io/support',
 			messageCacheLifetime: 30,
 			messageSweepInterval: 60,
-			owner: this.Config.owner,
-			unknownCommandResponse: false
+			owner: this.Config.owner
 		});
 
 		this.setupCommands();
