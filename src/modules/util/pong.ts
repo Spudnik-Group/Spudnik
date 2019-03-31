@@ -1,7 +1,7 @@
 import { Message } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { stripIndents } from 'common-tags';
-import { startTyping, stopTyping, deleteCommandMessages, delay } from '../../lib/helpers';
+import { deleteCommandMessages, delay } from '../../lib/helpers';
 
 /**
  * Returns the bot's ping.

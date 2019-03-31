@@ -225,6 +225,11 @@ export function today(timeZone: number) {
 	return now;
 }
 
+export function disambiguation(items: any, label: any, property = 'name') {
+	const itemList = items.map((item: any) => `"${(property ? item[property] : item).replace(/ /g, '\xa0')}"`).join(',   ');
+	return `Multiple ${label} found, please be more specific: ${itemList}`;
+}
+
 export function tomorrow(timeZone: number) {
 	const thisDate = today(timeZone);
 	thisDate.setDate(thisDate.getDate() + 1);
