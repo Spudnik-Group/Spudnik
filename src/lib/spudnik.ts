@@ -169,6 +169,6 @@ export class Spudnik {
 		}).listen(PORT);
 
 		// Print URL for accessing server
-		console.log(`Heartbeat running on port ${PORT}`);
+		console.log(chalk.red(`Heartbeat running on port ${PORT}`));
 	}
 }
