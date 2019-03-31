@@ -26,7 +26,7 @@ export default class WizardConventionCommand extends Command {
 			aliases: ['wiz-convention'],
 			description: 'Who is the Dragon? Who is the healer? Who is the mind reader? Will the Dragon eat them all?',
 			examples: ['!wizard-convention'],
-			group: 'games',
+			group: 'game',
 			guildOnly: true,
 			memberName: 'wizard-convention',
 			name: 'wizard-convention'

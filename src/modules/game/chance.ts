@@ -29,7 +29,7 @@ export default class ChanceCommand extends Command {
 			description: 'Attempt to win with a 1 in 1000 (or your choice) chance of winning.',
 			details: 'syntax: \`!chance <chance of winning>\`',
 			examples: ['!chance 100', '!chance'],
-			group: 'games',
+			group: 'game',
 			guildOnly: true,
 			memberName: 'chance',
 			name: 'chance'

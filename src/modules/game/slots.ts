@@ -21,7 +21,7 @@ export default class SlotsCommand extends Command {
 		super(client, {
 			description: 'Play a game of slots.',
 			examples: ['!slots'],
-			group: 'games',
+			group: 'game',
 			guildOnly: true,
 			memberName: 'slots',
 			name: 'slots'

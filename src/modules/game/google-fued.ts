@@ -32,7 +32,7 @@ export default class GoogleFeudCommand extends Command {
 			description: 'Attempt to determine the top suggestions for a Google search.',
 			details: 'syntax: \`!google-feud (question)\`',
 			examples: ['!google-feud', '!google-feud what happens if'],
-			group: 'games',
+			group: 'game',
 			guildOnly: true,
 			memberName: 'google-feud',
 			name: 'google-feud'

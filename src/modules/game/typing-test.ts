@@ -45,7 +45,7 @@ export default class TypingTestCommand extends Command {
 				**Difficulties**: ${difficulties.join(', ')}
 			`,
 			examples: ['!typing-test easy', '!typing-test hard'],
-			group: 'games',
+			group: 'game',
 			guildOnly: true,
 			memberName: 'typing-test',
 			name: 'typing-test'

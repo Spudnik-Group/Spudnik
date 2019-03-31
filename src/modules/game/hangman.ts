@@ -24,7 +24,7 @@ export default class HangmanCommand extends Command {
 		super(client, {
 			description: 'Prevent a man from being hanged by guessing a word as fast as you can.',
 			examples: ['!hangman'],
-			group: 'games',
+			group: 'game',
 			guildOnly: true,
 			memberName: 'hangman',
 			name: 'hangman'

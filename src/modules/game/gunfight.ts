@@ -31,7 +31,7 @@ export default class GunFightCommand extends Command {
 			],
 			description: 'Engage in a western gunfight against another user. High noon.',
 			details: 'syntax: \`!gunfight <@usermention>\`',
-			group: 'games',
+			group: 'game',
 			guildOnly: true,
 			memberName: 'gunfight',
 			name: 'gunfight'

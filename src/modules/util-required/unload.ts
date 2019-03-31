@@ -33,7 +33,7 @@ export default class UnloadCommandCommand extends Command {
 				Only the bot owner(s) may use this command.
 			`,
 			examples: ['unload some-command'],
-			group: 'commands',
+			group: 'util-required',
 			guarded: true,
 			hidden: true,
 			memberName: 'unload',

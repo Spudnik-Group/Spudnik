@@ -28,7 +28,7 @@ export default class AkinatorCommand extends Command {
 			clientPermissions: ['EMBED_LINKS'],
 			description: 'Think about a real or fictional character, I will try to guess who it is.',
 			examples: ['!akinator'],
-			group: 'games',
+			group: 'game',
 			guildOnly: true,
 			memberName: 'akinator',
 			name: 'akinator'

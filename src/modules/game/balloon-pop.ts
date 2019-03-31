@@ -31,7 +31,7 @@ export default class BalloonPopCommand extends Command {
 			description: 'Don\'t let yourself be the last one to pump the balloon before it pops!',
 			details: 'syntax: \`!balloon-pop (@usermention)\`',
 			examples: ['!balloon-pop', '!balloon-pop @someone'],
-			group: 'games',
+			group: 'game',
 			guildOnly: true,
 			memberName: 'balloon-pop',
 			name: 'balloon-pop'

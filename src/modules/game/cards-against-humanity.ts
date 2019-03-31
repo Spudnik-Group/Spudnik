@@ -44,7 +44,7 @@ export default class CardsAgainstHumanityCommand extends Command {
 			description: 'Compete to see who can come up with the best card to fill in the blank.',
 			details: 'syntax: \`!cards-against-humanity <maxpoints> (midgamejoin)\`',
 			examples: ['!cards-against-humanity 15', '!cards-against-humanity 20 true'],
-			group: 'games',
+			group: 'game',
 			guildOnly: true,
 			memberName: 'cards-against-humanity',
 			name: 'cards-against-humanity'

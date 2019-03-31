@@ -36,7 +36,7 @@ export default class ApplesToApplesCommand extends Command {
 			description: 'Compete to see who can come up with the best card to match an adjective.',
 			details: 'syntax: \`!apples-to-apples <maxpoints>\`',
 			examples: ['!apples-to-apples 15'],
-			group: 'games',
+			group: 'game',
 			guildOnly: true,
 			memberName: 'apples-to-apples',
 			name: 'apples-to-apples'

@@ -49,7 +49,7 @@ export default class QuizCommand extends Command {
 				**Difficulties**: ${difficulties.join(', ')}
 			`,
 			examples: ['!quiz boolean easy', '!quiz'],
-			group: 'games',
+			group: 'game',
 			guildOnly: true,
 			memberName: 'quiz',
 			name: 'quiz'

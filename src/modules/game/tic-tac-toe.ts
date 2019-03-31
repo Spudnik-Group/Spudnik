@@ -33,7 +33,7 @@ export default class TicTacToeCommand extends Command {
 				syntax: \`!tic-tac-toe <@userMention>\`
 			`,
 			examples: ['!tic-tac-toe @someone'],
-			group: 'games',
+			group: 'game',
 			guildOnly: true,
 			memberName: 'tic-tac-toe',
 			name: 'tic-tac-toe'

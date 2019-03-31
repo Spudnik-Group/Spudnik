@@ -1,5 +1,5 @@
 import { Message } from 'discord.js';
-import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient, CommandGroup } from 'discord.js-commando';
 import { stripIndents } from 'common-tags';
 
 /**
@@ -35,7 +35,7 @@ export default class ReloadCommandCommand extends Command {
 				Only the bot owner(s) may use this command.
 			`,
 			examples: ['reload some-command'],
-			group: 'commands',
+			group: 'util-required',
 			guarded: true,
 			hidden: true,
 			memberName: 'reload',
@@ -48,20 +48,20 @@ export default class ReloadCommandCommand extends Command {
 	 * Run the "ReloadCommand" command.
 	 *
 	 * @param {CommandoMessage} msg
-	 * @param {{ cmdOrGrp: Command }} args
+	 * @param {{ cmdOrGrp: Command | CommandGroup }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof ReloadCommandCommand
 	 */
-	public async run(msg: CommandoMessage, args: {cmdOrGrp: Command}): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: {cmdOrGrp: Command | CommandGroup}): Promise<Message | Message[]> {
 		const { cmdOrGrp } = args;
-		const isCmd = Boolean(cmdOrGrp.groupID);
+		const isCmd = Boolean((cmdOrGrp as Command).groupID);
 		cmdOrGrp.reload();
 
 		if(this.client.shard) {
 			try {
 				await this.client.shard.broadcastEval(`
 					if(this.shard.id !== ${this.client.shard.id}) {
-						this.registry.${isCmd ? 'commands' : 'groups'}.get('${isCmd ? cmdOrGrp.name : cmdOrGrp.id}').reload();
+						this.registry.${isCmd ? 'commands' : 'groups'}.get('${isCmd ? cmdOrGrp.name : (cmdOrGrp as CommandGroup).id}').reload();
 					}
 				`);
 			} catch(err) {

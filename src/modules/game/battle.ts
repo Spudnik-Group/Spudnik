@@ -31,7 +31,7 @@ export default class BattleCommand extends Command {
 			description: 'Engage in a turn-based battle against another user or the AI.',
 			details: 'syntax: \`!battle (@usermention)\`',
 			examples: ['!battle', '!battle @dumbperson'],
-			group: 'games',
+			group: 'game',
 			guildOnly: true,
 			memberName: 'battle',
 			name: 'battle'

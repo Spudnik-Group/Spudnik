@@ -1,5 +1,5 @@
 import { Message } from 'discord.js';
-import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient, CommandGroup } from 'discord.js-commando';
 import { stripIndents } from 'common-tags';
 
 /**
@@ -59,22 +59,23 @@ export default class DisableCommandCommand extends Command {
 	 * Run the "DisableCommand" command.
 	 *
 	 * @param {CommandoMessage} msg
-	 * @param {{ cmdOrGrp: Command }} args
+	 * @param {{ cmdOrGrp: Command | CommandGroup }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof DisableCommandCommand
 	 */
-	public async run(msg: CommandoMessage, args: {cmdOrGrp: Command}): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: {cmdOrGrp: Command | CommandGroup}): Promise<Message | Message[]> {
+		const group = (args.cmdOrGrp as Command).group;
 		if(!args.cmdOrGrp.isEnabledIn(msg.guild, true)) {
 			return msg.reply(
-				`The \`${args.cmdOrGrp.name}\` ${args.cmdOrGrp.group ? 'command' : 'group'} is already disabled.`
+				`The \`${args.cmdOrGrp.name}\` ${group ? 'command' : 'group'} is already disabled.`
 			);
 		}
 		if(args.cmdOrGrp.guarded) {
 			return msg.reply(
-				`You cannot disable the \`${args.cmdOrGrp.name}\` ${args.cmdOrGrp.group ? 'command' : 'group'}.`
+				`You cannot disable the \`${args.cmdOrGrp.name}\` ${group ? 'command' : 'group'}.`
 			);
 		}
 		args.cmdOrGrp.setEnabledIn(msg.guild, false);
-		return msg.reply(`Disabled the \`${args.cmdOrGrp.name}\` ${args.cmdOrGrp.group ? 'command' : 'group'}.`);
+		return msg.reply(`Disabled the \`${args.cmdOrGrp.name}\` ${group ? 'command' : 'group'}.`);
 	}
 }

@@ -23,7 +23,7 @@ export default class SlotsCommand extends Command {
 			aliases: ['fish', 'fishing'],
 			description: 'Go fishing.',
 			examples: ['!fishy'],
-			group: 'games',
+			group: 'game',
 			guildOnly: true,
 			memberName: 'fishy',
 			name: 'fishy'

@@ -31,7 +31,7 @@ export default class RockPaperScissorsCommand extends Command {
 			description: 'Play Rock-Paper-Scissors.',
 			details: 'syntax: \`!rock-paper-scissors <choice>\`',
 			examples: ['!rock-paper-scissors rock'],
-			group: 'games',
+			group: 'game',
 			guildOnly: true,
 			memberName: 'rock-paper-scissors',
 			name: 'rock-paper-scissors'

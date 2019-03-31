@@ -33,7 +33,7 @@ export default class EmojiEmojiRevolutionCommand extends Command {
 			description: 'Can you type arrow emoji faster than anyone else has ever typed them before?',
 			details: 'syntax: \`!emoji-emoji-revolution <@usermention>\`',
 			examples: ['!emoji-emoji-revolution @slowtyper71'],
-			group: 'games',
+			group: 'game',
 			guildOnly: true,
 			memberName: 'emoji-emoji-revolution',
 			name: 'emoji-emoji-revolution'

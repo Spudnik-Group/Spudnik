@@ -35,7 +35,7 @@ export default class HungerGamesCommand extends Command {
 			],
 			description: 'Simulate a Hunger Games match with up to 24 tributes.',
 			examples: ['!hunger games @weakperson @strongperson'],
-			group: 'games',
+			group: 'game',
 			guildOnly: true,
 			memberName: 'hunger-games',
 			name: 'hunger-games'

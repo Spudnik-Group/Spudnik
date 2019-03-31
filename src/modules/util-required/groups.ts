@@ -21,7 +21,7 @@ export default class ListGroupsCommand extends Command {
 			aliases: ['list-groups', 'show-groups'],
 			description: 'Lists all command groups.',
 			details: 'ADMINISTRATOR permission required.',
-			group: 'commands',
+			group: 'util-required',
 			guarded: true,
 			memberName: 'groups',
 			name: 'groups'

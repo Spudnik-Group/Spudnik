@@ -45,7 +45,7 @@ export default class MathQuizCommand extends Command {
 				**Difficulties**: ${difficulties.join(', ')}
 			`,
 			examples: ['!math-quiz impossible'],
-			group: 'games',
+			group: 'game',
 			guildOnly: true,
 			memberName: 'math-quiz',
 			name: 'math-quiz'

@@ -50,7 +50,7 @@ export default class RouletteCommand extends Command {
 			description: 'Play a game of roulette.',
 			details: 'syntax: \`!roulette <space choice>\`',
 			examples: ['!roulette 1-18', '!roulette 2'],
-			group: 'games',
+			group: 'game',
 			guildOnly: true,
 			memberName: 'roulette',
 			name: 'roulette'
