@@ -285,7 +285,7 @@ export async function verify(channel: any, user: any, time = 30000) {
  * @param {boolean} [onlyInlineCode=false] Whether to only escape inline code
  * @returns {string}
  */
-export function escapeMarkdown(text: string, onlyCodeBlock = false, onlyInlineCode = false) {
+export function escapeMarkdown(text: string, onlyCodeBlock: boolean = false, onlyInlineCode: boolean = false): string {
 	if (onlyCodeBlock) { return text.replace(/```/g, '`\u200b``'); }
 	if (onlyInlineCode) { return text.replace(/\\(`|\\)/g, '$1').replace(/(`|\\)/g, '\\$1'); }
 	return text.replace(/\\(\*|_|`|~|\\)/g, '$1').replace(/(\*|_|`|~|\\)/g, '\\$1');
@@ -300,7 +300,7 @@ export function escapeMarkdown(text: string, onlyCodeBlock = false, onlyInlineCo
  * @returns void
  */
 export const deleteCommandMessages = (msg: CommandoMessage, client: CommandoClient) => {
-	if (msg.deletable && client.provider.get(msg.guild, 'deletecommandmessages', false)) msg.delete();
+	if (msg.deletable && client.provider.get(msg.guild, 'deleteCommandMessages', false)) msg.delete();
 };
 
 /**
