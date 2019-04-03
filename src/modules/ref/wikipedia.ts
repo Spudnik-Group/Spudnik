@@ -3,6 +3,7 @@ import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
+import * as WikiJS from 'wikijs';
 
 /**
  * Post a summary from Wikipedia.
@@ -54,34 +55,51 @@ export default class WikiCommand extends Command {
 	public async run(msg: CommandoMessage, args: { query: string }): Promise<Message | Message[]> {
 		startTyping(msg);
 
-		return require('wikijs').default().search(args.query, 1)
-			.then((data: any) => {
-				require('wikijs').default().page(data.results[0])
-					.then((page: any) => {
-						page.summary().then((summary: any) => {
-							const messageOut: MessageEmbed = new MessageEmbed();
-							messageOut.setColor(getEmbedColor(msg));
-							const sumText = summary.toString().split('\n');
-							const paragraph = sumText.shift();
-							if (paragraph) {
-								messageOut.setDescription(`${paragraph}\n\n${page.raw.fullurl}`);
-								messageOut.setTitle(page.raw.title);
-							} else {
-								messageOut.setDescription('No results. Try again?');
-							};
-			
-							deleteCommandMessages(msg, this.client);
-							stopTyping(msg);
-					
-							// Send the success response
-							return msg.embed(messageOut);
-						});
-					})
-					.catch((err: Error) => {
-						msg.client.emit('warn', `Error in command ref:wiki: ${err}`);
-						stopTyping(msg);
-						return sendSimpleEmbeddedError(msg, 'No results found. Try again?', 3000);
+		return WikiJS.default().search(args.query, 1)
+			.then(async (data: WikiJS.Result) => {
+				try {
+					const page: any = await WikiJS.default().page(data.results[0]);
+					const summary: string = await page.summary();
+
+					const messageOut: MessageEmbed = new MessageEmbed({
+						color: getEmbedColor(msg)	
 					});
+
+					const sumText = summary.split('\n');
+					let paragraph = sumText.shift();
+
+					if (paragraph) {
+						const lenParagraph = paragraph.length;
+						const lenFullUrl = page.raw.fullurl.length;
+
+						// Wikipedia API Limitation:
+						//     IPA phonetics are not returned in the summary but the parenthesis that they are encapsulated in are...
+						paragraph = paragraph.replace(' ()', '').replace('()', '');
+
+						// Discord API Limitation:
+						//     Embed description cannot be over 2048 characters
+						if((lenParagraph + 5 + lenFullUrl) > 2048){
+							paragraph = `${paragraph.substring(0, 2048 - (5 + lenFullUrl))}...`;
+						}
+						
+						messageOut.setDescription(`${paragraph}\n\n${page.raw.fullurl}`);
+						messageOut.setTitle(page.raw.title);
+					}
+					else {
+						messageOut.setDescription('No results. Try again?');
+					}
+
+					deleteCommandMessages(msg, this.client);
+					stopTyping(msg);
+
+					// Send the success response
+					return msg.embed(messageOut);
+				}
+				catch (err) {
+					msg.client.emit('warn', `Error in command ref:wiki: ${err}`);
+					stopTyping(msg);
+					return sendSimpleEmbeddedError(msg, 'No results found. Try again?', 3000);
+				}
 			})
 			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command ref:wiki: ${err}`);
