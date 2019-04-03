@@ -2,7 +2,7 @@ import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
 
 /**
  * Post a summary from Wikipedia.
@@ -52,39 +52,41 @@ export default class WikiCommand extends Command {
 	 * @memberof WikiCommand
 	 */
 	public async run(msg: CommandoMessage, args: { query: string }): Promise<Message | Message[]> {
-		let messageOut: MessageEmbed[];
-
 		startTyping(msg);
 
-		require('wikijs').default().search(args.query, 1)
+		return require('wikijs').default().search(args.query, 1)
 			.then((data: any) => {
-				require('wikijs').default().page(data.results[0]).then((page: any) => {
-					page.summary().then((summary: any) => {
-						const sumText = summary.toString().split('\n');
-						const continuation = () => {
+				require('wikijs').default().page(data.results[0])
+					.then((page: any) => {
+						page.summary().then((summary: any) => {
+							const messageOut: MessageEmbed = new MessageEmbed();
+							messageOut.setColor(getEmbedColor(msg));
+							const sumText = summary.toString().split('\n');
 							const paragraph = sumText.shift();
 							if (paragraph) {
-								messageOut.push(new MessageEmbed({
-									color: getEmbedColor(msg),
-									description: `${paragraph}\n\n${page.raw.fullurl}`,
-									title: page.raw.title
-								}));
-							}
-						};
-						continuation();
+								messageOut.setDescription(`${paragraph}\n\n${page.raw.fullurl}`);
+								messageOut.setTitle(page.raw.title);
+							} else {
+								messageOut.setDescription('No results. Try again?');
+							};
+			
+							deleteCommandMessages(msg, this.client);
+							stopTyping(msg);
+					
+							// Send the success response
+							return msg.embed(messageOut);
+						});
+					})
+					.catch((err: Error) => {
+						msg.client.emit('warn', `Error in command ref:wiki: ${err}`);
+						stopTyping(msg);
+						return sendSimpleEmbeddedError(msg, 'No results found. Try again?', 3000);
 					});
-				});
 			})
 			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command ref:wiki: ${err}`);
 				stopTyping(msg);
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			});
-		
-		deleteCommandMessages(msg, this.client);
-		stopTyping(msg);
-
-		// Send the success response
-		return msg.embed(messageOut);
 	}
 }
