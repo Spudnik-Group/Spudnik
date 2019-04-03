@@ -68,29 +68,30 @@ export default class UrbanCommand extends Command {
 
 		startTyping(msg);
 
-		targetWord.then((json: any) => {
+		return targetWord.then((json: any) => {
 			responseEmbed.setTitle(`Urban Dictionary: ${args.query}`);
-
+			
 			if (json) {
-				responseEmbed.setTitle(`Urban Dictionary: ${json.word}`);
-				responseEmbed.setDescription(`${json.definition}`);
-				if (json.example) {
-					responseEmbed.setFooter(`Example: ${json.example}`);
-				}
+				responseEmbed.setTitle(`Urban Dictionary: ${json.entries[0].word}`);
+				responseEmbed.setDescription(stripIndents`
+					${json.entries[0].definition}\n
+					${json.entries[0].example ? `Example: ${json.entries[0].example}` : ''}
+				`);
+				responseEmbed.setFooter(`Link: ${json.entries[0].permalink}`);
 			} else {
 				responseEmbed.setDescription('No matches found');
 			}
+
+			deleteCommandMessages(msg, this.client);
+			stopTyping(msg);
+	
+			// Send the success response
+			return msg.embed(responseEmbed);
 		})
 		.catch((err: Error) => {
 			msg.client.emit('warn', `Error in command ref:urban: ${err}`);
 			stopTyping(msg);
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
-		});	
-
-		deleteCommandMessages(msg, this.client);
-		stopTyping(msg);
-
-		// Send the success response
-		return msg.embed(responseEmbed);
+		});
 	}
 }

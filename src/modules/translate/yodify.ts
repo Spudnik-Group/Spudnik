@@ -54,7 +54,7 @@ export default class YodifyCommand extends Command {
 		let embedMessage = '';
 		startTyping(msg);
 
-		require('soap').createClient('http://www.yodaspeak.co.uk/webservice/yodatalk.php?wsdl', (err: Error, client: any) => {
+		return require('soap').createClient('http://www.yodaspeak.co.uk/webservice/yodatalk.php?wsdl', (err: Error, client: any) => {
 			if (err) {
 				msg.client.emit('warn', `Error in command translate:yodify: ${err}`);
 				stopTyping(msg);
@@ -68,13 +68,13 @@ export default class YodifyCommand extends Command {
 					return sendSimpleEmbeddedError(msg, 'Confused, I am. Disturbance in the force, there is. Hrmm...', 3000);
 				}
 				embedMessage = result.return;
+			
+				deleteCommandMessages(msg, this.client);
+				stopTyping(msg);
+				
+				// Send the success response
+				return sendSimpleEmbeddedMessage(msg, embedMessage);
 			});
 		});
-	
-		deleteCommandMessages(msg, this.client);
-		stopTyping(msg);
-		
-		// Send the success response
-		return sendSimpleEmbeddedMessage(msg, embedMessage);
 	}
 }

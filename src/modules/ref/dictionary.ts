@@ -85,7 +85,7 @@ export default class DefineCommand extends Command {
 				.join('\n');
 		}
 
-		dict.lookup(word)
+		return dict.lookup(word)
 			.then((result: any) => {
 				dictionaryEmbed.fields = [
 					{
@@ -106,17 +106,17 @@ export default class DefineCommand extends Command {
 					}
 				];
 				dictionaryEmbed.description = renderDefinition(result[0].definition);
+		
+				deleteCommandMessages(msg, this.client);
+				stopTyping(msg);
+		
+				// Send the success response
+				return msg.embed(dictionaryEmbed);
 			})
 			.catch((err: any) => {
 				msg.client.emit('warn', `Error in command ref:define: ${err}`);
 				stopTyping(msg);
 				return sendSimpleEmbeddedError(msg, 'Word not found.', 3000);
 			});
-		
-		deleteCommandMessages(msg, this.client);
-		stopTyping(msg);
-
-		// Send the success response
-		return msg.embed(dictionaryEmbed);
 	}
 }

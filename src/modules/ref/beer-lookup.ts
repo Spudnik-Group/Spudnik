@@ -75,7 +75,7 @@ export default class BrewCommand extends Command {
 
 		startTyping(msg);
 
-		rp(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(args.query)}&key=${breweryDbApiKey}`)
+		return rp(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(args.query)}&key=${breweryDbApiKey}`)
 			.then((content) => {
 				const response = JSON.parse(content);
 				if (response) {
@@ -145,17 +145,17 @@ export default class BrewCommand extends Command {
 				} else {
 					brewEmbed.setDescription("Damn, I've never heard of that. Where do I need to go to find it?");
 				}
+		
+				deleteCommandMessages(msg, this.client);
+				stopTyping(msg);
+		
+				// Send the success response
+				return msg.embed(brewEmbed);
 			})
 			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command ref:brew: ${err}`);
 				stopTyping(msg);
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			});
-		
-			deleteCommandMessages(msg, this.client);
-			stopTyping(msg);
-	
-			// Send the success response
-			return msg.embed(brewEmbed);
 	}
 }

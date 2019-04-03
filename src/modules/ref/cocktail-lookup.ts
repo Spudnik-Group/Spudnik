@@ -68,7 +68,7 @@ export default class CocktailCommand extends Command {
 
 		startTyping(msg);
 
-		rp(`http://www.thecocktaildb.com/api/json/v1/1/search.php?s=${encodeURIComponent(args.query)}`)
+		return rp(`http://www.thecocktaildb.com/api/json/v1/1/search.php?s=${encodeURIComponent(args.query)}`)
 			.then((content) => {
 				const response = JSON.parse(content);
 				if (typeof response !== 'undefined' && response.drinks !== null) {
@@ -122,17 +122,17 @@ export default class CocktailCommand extends Command {
 				} else {
 					cocktailEmbed.setDescription("Damn, I've never heard of that. Where do I need to go to find it?");
 				}
+		
+				deleteCommandMessages(msg, this.client);
+				stopTyping(msg);
+		
+				// Send the success response
+				return msg.embed(cocktailEmbed);
 			})
 			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command ref:cocktail: ${err}`);
 				stopTyping(msg);
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			});
-		
-		deleteCommandMessages(msg, this.client);
-		stopTyping(msg);
-
-		// Send the success response
-		return msg.embed(cocktailEmbed);
 	}
 }
