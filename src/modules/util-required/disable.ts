@@ -39,7 +39,7 @@ export default class DisableCommandCommand extends Command {
 			group: 'util-required',
 			guarded: true,
 			memberName: 'disable',
-			name: 'disable',
+			name: 'disable'
 		});
 	}
 
