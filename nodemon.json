@@ -1,0 +1,8 @@
+{
+    "exec": "npm run test && npm start",
+    "ignore": ["**/*.test.ts", "**/*.spec.ts", ".git", "./node_modules", "./dist", "./docs"],
+    "watch": ["./src/"],
+	"ext": "ts",
+    "inspect": true,
+    "debug": true
+}
