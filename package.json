@@ -22,8 +22,8 @@
 		"lint": "tslint -p ./tslint.json",
 		"test": "npm run lint",
 		"prestart": "tsc",
-		"start": "node dist/launch.js",
-		"start:dev": "npm run test && npm start",
+		"start": "node ./node_modules/nodemon/bin/nodemon.js",
+		"start:prod": "node ./dist/launch.js",
 		"start:docs": "cd ./docs && bundle exec jekyll serve"
 	},
 	"dependencies": {
@@ -54,6 +54,7 @@
 		"@types/mongoose": "^5.3.24",
 		"@types/node": "^10.14.4",
 		"@types/request-promise": "^4.1.42",
+		"nodemon": "^1.18.10",
 		"tslint": "^5.12.1",
 		"typescript": "^3.2.2"
 	}
