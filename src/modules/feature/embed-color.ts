@@ -70,7 +70,7 @@ export default class EmbedColorCommand extends Command {
 	 * @memberof EmbedColorCommand
 	 */
 	public async run(msg: CommandoMessage, args: { color: string }): Promise<Message | Message[]> {
-		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
+		const modlogChannel = msg.guild.settings.get('modlogChannel', null);
 		const embedColorEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/artist-palette_1f3a8.png',

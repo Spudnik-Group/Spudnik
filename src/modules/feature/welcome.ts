@@ -85,7 +85,7 @@ export default class WelcomeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
+		const modlogChannel = msg.guild.settings.get('modlogChannel', null);
 		const welcomeChannel = msg.guild.settings.get(msg.guild.id, 'welcomeChannel');
 		const welcomeMessage = msg.guild.settings.get('welcomeMessage', '@here, please Welcome {user} to {guild}!');
 		const welcomeEnabled = msg.guild.settings.get('welcomeEnabled', false);

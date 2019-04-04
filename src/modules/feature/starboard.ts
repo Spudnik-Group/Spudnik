@@ -88,7 +88,7 @@ export default class StarboardCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
+		const modlogChannel = msg.guild.settings.get('modlogChannel', null);
 		const starboard = msg.guild.settings.get('starboardChannel', null);
 		const starboardTrigger: string = msg.guild.settings.get('starboardTrigger', '⭐');
 		const starboardEnabled: boolean = msg.guild.settings.get('starboardEnabled', false);

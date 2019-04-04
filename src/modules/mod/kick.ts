@@ -64,7 +64,7 @@ export default class KickCommand extends Command {
 	 * @memberof KickCommand
 	 */
 	public async run(msg: CommandoMessage, args: { member: GuildMember, reason: string }): Promise<Message | Message[] | any> {
-		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
+		const modlogChannel = msg.guild.settings.get('modlogChannel', null);
 		const memberToKick: GuildMember = args.member;
 		const kickEmbed: MessageEmbed = new MessageEmbed({
 			author: {

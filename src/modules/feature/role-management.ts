@@ -82,7 +82,7 @@ export default class RoleManagementCommands extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const modlogChannel = await msg.guild.settings.get('modlogchannel', null);
+		const modlogChannel = await msg.guild.settings.get('modlogChannel', null);
 		let guildAssignableRoles: string[] = await msg.guild.settings.get('assignableRoles', []);
 		let guildDefaultRoles: string[] = await msg.guild.settings.get('defaultRoles', []);
 

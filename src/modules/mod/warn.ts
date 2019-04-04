@@ -91,7 +91,7 @@ export default class WarnCommand extends Command {
 	 * @memberof WarnCommand
 	 */
 	public async run(msg: CommandoMessage, args: { member: GuildMember, points: number, reason: string }): Promise<Message | Message[] | any> {
-		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
+		const modlogChannel = msg.guild.settings.get('modlogChannel', null);
 		const warnEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/warning-sign_26a0.png',

@@ -99,7 +99,7 @@ export default class PruneCommand extends Command {
 	public async run(msg: CommandoMessage, args: { limit: number, filter: string, member: GuildMember }): Promise<Message | Message[]> {
 		await deleteCommandMessages(msg, this.client);
 		const { filter, limit } = args;
-		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
+		const modlogChannel = msg.guild.settings.get('modlogChannel', null);
 		let messageFilter: (message: Message) => boolean;
 
 		startTyping(msg);

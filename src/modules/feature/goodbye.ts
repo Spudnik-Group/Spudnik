@@ -84,7 +84,7 @@ export default class GoodbyeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
+		const modlogChannel = msg.guild.settings.get('modlogChannel', null);
 		const goodbyeChannel = msg.guild.settings.get('goodbyeChannel');
 		const goodbyeMessage = msg.guild.settings.get('goodbyeMessage', '{user} has left the server.');
 		const goodbyeEnabled = msg.guild.settings.get('goodbyeEnabled', false);

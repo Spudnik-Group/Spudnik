@@ -300,7 +300,7 @@ export function escapeMarkdown(text: string, onlyCodeBlock: boolean = false, onl
  * @returns void
  */
 export const deleteCommandMessages = (msg: CommandoMessage, client: CommandoClient) => {
-	if (msg.deletable && client.provider.get(msg.guild, 'deleteCommandMessages', false)) msg.delete();
+	if (msg.deletable && msg.guild.settings.get('deleteCommandMessages', false)) msg.delete();
 };
 
 /**

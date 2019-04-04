@@ -70,7 +70,7 @@ export default class MoveCommand extends Command {
 	 * @memberof MoveCommand
 	 */
 	public async run(msg: CommandoMessage, args: { messageId: string, channel: Channel, reason: string }): Promise<Message | Message[]> {
-		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
+		const modlogChannel = msg.guild.settings.get('modlogChannel', null);
 		const originalChannel = msg.channel as TextChannel;
 		const originalMessage: Message = await originalChannel.messages.fetch(args.messageId);
 		const originalMessageAuthor: GuildMember = await originalChannel.guild.members.fetch(originalMessage.author.id);

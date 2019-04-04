@@ -24,10 +24,10 @@ export default class ModlogCommand extends Command {
 			args: [
 				{
 					key: 'subCommand',
-					prompt: 'Would you like to enable or disable the feature?\n',
+					prompt: 'What sub-command would you like to use?\nOptions are:\n* channel\n* enable\n* disable',
 					type: 'string',
 					validate: (subCommand: string) => {
-						const allowedSubCommands = ['enable', 'disable'];
+						const allowedSubCommands = ['enable', 'disable', 'channel'];
 						if (allowedSubCommands.indexOf(subCommand) !== -1) return true;
 						return 'You provided an invalid subcommand.';
 					}
@@ -41,13 +41,14 @@ export default class ModlogCommand extends Command {
 			],
 			description: 'Enable or disable the modlog feature.',
 			details: stripIndents`
-				syntax: \`!modlog <enable|disable>\`
+				syntax: \`!modlog <enable|disable|channel> (#channel)\`
 
 				Supplying no subcommand returns an error.
 				MANAGE_GUILD permission required.`,
 			examples: [
 				'!modlog enable',
-				'!modlog disable'
+				'!modlog disable',
+				'!modlog channel #modlog'
 			],
 			group: 'feature',
 			guildOnly: true,
@@ -70,7 +71,7 @@ export default class ModlogCommand extends Command {
 	 * @memberof ModlogCommand
 	 */
 	public async run(msg: CommandoMessage, args: { subCommand: string, channel: Channel }): Promise<Message | Message[]> {
-		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
+		const modlogChannel = msg.guild.settings.get('modlogChannel', null);
 		const modlogEnabled = msg.guild.settings.get('modlogEnabled', false);
 		const modlogEmbed: MessageEmbed = new MessageEmbed({
 			author: {

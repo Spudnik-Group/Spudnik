@@ -65,8 +65,8 @@ export default class DeleteCommandMessagesCommand extends Command {
 	 * @memberof DeleteCommandMessagesCommand
 	 */
 	public async run(msg: CommandoMessage, args: { subCommand: string }): Promise<Message | Message[]> {
-		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
-		const deleteCommandMessagesEnabled = msg.guild.settings.get('deletecommandmessages', false);
+		const modlogChannel = msg.guild.settings.get('modlogChannel', null);
+		const deleteCommandMessagesEnabled = msg.guild.settings.get('deleteCommandMessage', false);
 		const deleteCommandMessagesEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				name: '🛑 DeleteCommandMessages'
@@ -82,7 +82,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 				stopTyping(msg);
 				return sendSimpleEmbeddedMessage(msg, 'DeleteCommandMessages feature already enabled!', 3000);
 			} else {
-				msg.guild.settings.set('deletecommandmessages', true)
+				msg.guild.settings.set('deleteCommandMessage', true)
 					.catch((err: Error) => this.catchError(msg, args, err));
 			}
 		} else if (args.subCommand.toLowerCase() === 'disable') {
@@ -90,7 +90,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 				stopTyping(msg);
 				return sendSimpleEmbeddedMessage(msg, 'DeleteCommandMessages feature already disabled!', 3000);
 			} else {
-				msg.guild.settings.set('deletecommandmessages', false)
+				msg.guild.settings.set('deleteCommandMessage', false)
 					.catch((err: Error) => this.catchError(msg, args, err));
 			}
 		}

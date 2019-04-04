@@ -71,7 +71,7 @@ export default class BanCommand extends Command {
 	 * @memberof BanCommand
 	 */
 	public async run(msg: CommandoMessage, args: { member: GuildMember, reason: string, daysOfMessages: number }): Promise<Message | Message[]> {
-		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
+		const modlogChannel = msg.guild.settings.get('modlogChannel', null);
 		const memberToBan: GuildMember = args.member;
 		const banEmbed: MessageEmbed = new MessageEmbed({
 			author: {

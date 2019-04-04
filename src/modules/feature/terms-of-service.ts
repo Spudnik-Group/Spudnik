@@ -97,7 +97,7 @@ export default class TermsOfServiceCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
+		const modlogChannel = msg.guild.settings.get('modlogChannel', null);
 		const tosChannel: string = await msg.guild.settings.get('tosChannel', null);
 		const tosMessageCount: number = await msg.guild.settings.get('tosMessageCount') || 0;
 		const tosMessages: ITOSMessage[] = [];

@@ -65,7 +65,7 @@ export default class AdblockCommand extends Command {
 	 * @memberof AdblockCommand
 	 */
 	public async run(msg: CommandoMessage, args: { subCommand: string }): Promise<Message | Message[]> {
-		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
+		const modlogChannel = msg.guild.settings.get('modlogChannel', null);
 		const adblockEnabled = msg.guild.settings.get('adblockEnabled', false);
 		const adblockEmbed: MessageEmbed = new MessageEmbed({
 			author: {
