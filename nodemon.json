@@ -1,5 +1,5 @@
 {
-    "exec": "npm run test && npm start",
+    "exec": "npm run test && node ./dist/launch.js",
     "ignore": ["**/*.test.ts", "**/*.spec.ts", ".git", "./node_modules", "./dist", "./docs"],
     "watch": ["./src/"],
 	"ext": "ts",

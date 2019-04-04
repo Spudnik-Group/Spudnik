@@ -22,7 +22,7 @@
 		"lint": "tslint -p ./tslint.json",
 		"test": "npm run lint",
 		"prestart": "tsc",
-		"start": "NODE_ENV=development node ./node_modules/nodemon/bin/nodemon.js",
+		"start": "node ./node_modules/nodemon/bin/nodemon.js",
 		"start:prod": "node ./dist/launch.js",
 		"start:docs": "cd ./docs && bundle exec jekyll serve"
 	},
