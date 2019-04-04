@@ -1,7 +1,8 @@
 import { stripIndents } from 'common-tags';
-import { Message } from 'discord.js';
+import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, stopTyping, startTyping, deleteCommandMessages } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, stopTyping, startTyping, deleteCommandMessages } from '../../lib/helpers';
+import { getEmbedColor } from '../../lib/custom-helpers';
 
 /**
  * Convert a statement to be structured as Yoda speaks.
@@ -51,7 +52,16 @@ export default class YodifyCommand extends Command {
 	 * @memberof YodifyCommand
 	 */
 	public async run(msg: CommandoMessage, args: { query: string }): Promise<Message | Message[]> {
-		let embedMessage = '';
+		const yodaEmbed: MessageEmbed = new MessageEmbed({
+			author: {
+				iconURL: 'https://avatarfiles.alphacoders.com/112/112847.jpg',
+				name: 'Yoda speak. Hmmmmmm.'
+			},
+			color: getEmbedColor(msg),
+			footer: {
+				text: 'powered by: yodaspeak.co.uk'
+			}
+		});
 		startTyping(msg);
 
 		return require('soap').createClient('http://www.yodaspeak.co.uk/webservice/yodatalk.php?wsdl', (err: Error, client: any) => {
@@ -67,13 +77,13 @@ export default class YodifyCommand extends Command {
 					stopTyping(msg);
 					return sendSimpleEmbeddedError(msg, 'Confused, I am. Disturbance in the force, there is. Hrmm...', 3000);
 				}
-				embedMessage = result.return;
+				yodaEmbed.setDescription(`${result.return}\n`);
 			
 				deleteCommandMessages(msg, this.client);
 				stopTyping(msg);
 				
 				// Send the success response
-				return sendSimpleEmbeddedMessage(msg, embedMessage);
+				return msg.embed(yodaEmbed);
 			});
 		});
 	}
