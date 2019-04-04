@@ -1,7 +1,8 @@
 import { stripIndents } from 'common-tags';
-import { Message } from 'discord.js';
+import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedMessage, deleteCommandMessages } from '../../lib/helpers';
+import { deleteCommandMessages, startTyping, stopTyping } from '../../lib/helpers';
+import { getEmbedColor } from '../../lib/custom-helpers';
 
 /**
  * Convert text to 1337 speak.
@@ -51,7 +52,19 @@ export default class LeetCommand extends Command {
 	 * @memberof LeetCommand
 	 */
 	public async run(msg: CommandoMessage, args: { query: string }): Promise<Message | Message[]> {
+		const leetEmbed: MessageEmbed = new MessageEmbed({
+			author: {
+				iconURL: 'https://avatarfiles.alphacoders.com/149/149303.jpg',
+				name: '1337 5P34KZORZ'
+			},
+			color: getEmbedColor(msg)
+		});
+		startTyping(msg);
+		const leetResponse = require('leet').convert(args.query);
+		leetEmbed.setDescription(leetResponse);
+
 		deleteCommandMessages(msg, this.client);
-		return sendSimpleEmbeddedMessage(msg, require('leet').convert(args.query));
+		stopTyping(msg);
+		return msg.embed(leetEmbed);
 	}
 }
