@@ -69,7 +69,6 @@ export default class AcceptCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const modlogChannel = msg.guild.settings.get('modlogChannel', null);
 
 		startTyping(msg);
 
@@ -88,6 +87,7 @@ export default class AcceptCommand extends Command {
 							**Member:** ${msg.author.tag} (${msg.author.id})
 							**Action:** Accept channel set to <#${args.channel.id}>.
 						`);
+						return this.sendSuccess(msg, acceptEmbed);
 					})
 					.catch((err: Error) => this.catchError(msg, args, err));
 			} else {
@@ -109,20 +109,17 @@ export default class AcceptCommand extends Command {
 						`);
 						// DM the new member
 						member.send(acceptEmbed);
+						const modlogChannel = msg.guild.settings.get('modlogChannel', null);
+						// Log the event in the mod log
+						if (msg.guild.settings.get('modlogEnabled', true)) {
+							modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, acceptEmbed);
+						}
+						deleteCommandMessages(msg, this.client);
+						stopTyping(msg);
 					})
 					.catch((err: Error) => this.catchError(msg, args, err));
 			}
 		}
-		
-		// Log the event in the mod log
-		if (msg.guild.settings.get('modlogEnabled', true)) {
-			modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, acceptEmbed);
-		}
-		deleteCommandMessages(msg, this.client);
-		stopTyping(msg);
-
-		// Send the success response
-		return msg.embed(acceptEmbed);
 	}
 	
 	private catchError(msg: CommandoMessage, args: { channel: Channel }, err: Error) {
@@ -148,5 +145,18 @@ export default class AcceptCommand extends Command {
 		msg.client.emit('warn', acceptWarn);
 		// Inform the user the command failed
 		return sendSimpleEmbeddedError(msg, acceptUserWarn);
+	}
+
+	private sendSuccess(msg: CommandoMessage, embed: MessageEmbed): Promise<Message | Message[]> {
+		const modlogChannel = msg.guild.settings.get('modlogChannel', null);
+		// Log the event in the mod log
+		if (msg.guild.settings.get('modlogEnabled', true)) {
+			modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, embed);
+		}
+		deleteCommandMessages(msg, this.client);
+		stopTyping(msg);
+
+		// Send the success response
+		return msg.embed(embed);
 	}
 }
