@@ -84,7 +84,6 @@ export default class GoodbyeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const modlogChannel = msg.guild.settings.get('modlogChannel', null);
 		const goodbyeChannel = msg.guild.settings.get('goodbyeChannel');
 		const goodbyeMessage = msg.guild.settings.get('goodbyeMessage', '{user} has left the server.');
 		const goodbyeEnabled = msg.guild.settings.get('goodbyeEnabled', false);
@@ -106,6 +105,7 @@ export default class GoodbyeCommand extends Command {
 									**Member:** ${msg.author.tag} (${msg.author.id})
 									**Action:** Goodbye Channel set to <#${channelID}>}
 								`);
+								return this.sendSuccess(msg, goodbyeEmbed);
 							})
 							.catch((err: Error) => this.catchError(msg, args, err));
 					}
@@ -133,6 +133,8 @@ export default class GoodbyeCommand extends Command {
 								goodbyeEmbed.description += `\nGoodbye channel: <#${goodbyeChannel}>`;
 							else if (goodbyeEnabled && goodbyeChannel! instanceof Channel)
 								goodbyeEmbed.description += '\nGoodbye messages will not display, as a goodbye channel is not set. Use `goodbye channel [channel ref]`.';
+							
+							return this.sendSuccess(msg, goodbyeEmbed);
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				}
@@ -149,6 +151,7 @@ export default class GoodbyeCommand extends Command {
 								_Enabled_\n
 								Goodbye Channel: <#${goodbyeChannel}>
 							`);
+							return this.sendSuccess(msg, goodbyeEmbed);
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				} else {
@@ -168,6 +171,7 @@ export default class GoodbyeCommand extends Command {
 								_Disabled_\n
 								Goodbye Channel: <#${goodbyeChannel}>
 							`);
+							return this.sendSuccess(msg, goodbyeEmbed);
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				} else {
@@ -177,16 +181,6 @@ export default class GoodbyeCommand extends Command {
 				break;
 			}
 		}
-		
-		// Log the event in the mod log
-		if (msg.guild.settings.get('modlogEnabled', true)) {
-			modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, goodbyeEmbed);
-		}
-		deleteCommandMessages(msg, this.client);
-		stopTyping(msg);
-
-		// Send the success response
-		return msg.embed(goodbyeEmbed);
 	}
 	
 	private catchError(msg: CommandoMessage, args: { subCommand: string, content: Channel | string }, err: Error) {
@@ -228,5 +222,18 @@ export default class GoodbyeCommand extends Command {
 		msg.client.emit('warn', goodbyeWarn);
 		// Inform the user the command failed
 		return sendSimpleEmbeddedError(msg, goodbyeUserWarn);
+	}
+
+	private sendSuccess(msg: CommandoMessage, embed: MessageEmbed): Promise<Message | Message[]> {
+		const modlogChannel = msg.guild.settings.get('modlogChannel', null);
+		// Log the event in the mod log
+		if (msg.guild.settings.get('modlogEnabled', true)) {
+			modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, embed);
+		}
+		deleteCommandMessages(msg, this.client);
+		stopTyping(msg);
+
+		// Send the success response
+		return msg.embed(embed);
 	}
 }
