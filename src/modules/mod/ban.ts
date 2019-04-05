@@ -87,6 +87,7 @@ export default class BanCommand extends Command {
 
 		// Check if user is able to ban the mentioned user
 		if (!memberToBan.bannable || !(highestRoleOfCallingMember.comparePositionTo(memberToBan.roles.highest) > 0)) {
+			stopTyping(msg);
 			return sendSimpleEmbeddedError(msg, `I can't ban <@${memberToBan.id}>. Do they have the same or a higher role than me or you?`);
 		}
 
