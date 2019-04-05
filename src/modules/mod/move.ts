@@ -1,7 +1,7 @@
 import { Channel, GuildMember, Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, startTyping, deleteCommandMessages, stopTyping } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, deleteCommandMessages } from '../../lib/helpers';
 import { stripIndents } from 'common-tags';
 
 /**
@@ -23,18 +23,18 @@ export default class MoveCommand extends Command {
 			args: [
 				{
 					key: 'messageId',
-					prompt: 'Message ID?',
+					prompt: 'What is the ID of the message to be moved?',
 					type: 'string'
 				},
 				{
 					key: 'channel',
-					prompt: 'Channel reference?',
+					prompt: 'What is the channel that the message should be moved to?',
 					type: 'channel|integer'
 				},
 				{
 					default: '',
 					key: 'reason',
-					prompt: 'Reason?',
+					prompt: 'What is the reason for moving the message?',
 					type: 'string'
 				}
 			],
@@ -75,8 +75,6 @@ export default class MoveCommand extends Command {
 		const originalMessage: Message = await originalChannel.messages.fetch(args.messageId);
 		const originalMessageAuthor: GuildMember = await originalChannel.guild.members.fetch(originalMessage.author.id);
 
-		startTyping(msg);
-
 		if (originalMessage) {
 			const destinationChannel = args.channel;
 
@@ -88,23 +86,20 @@ export default class MoveCommand extends Command {
 						name: `${originalMessageAuthor.displayName}`
 					},
 					color: getEmbedColor(msg),
-					description: `${originalMessage.content}\n`,
-					footer: {
-						text: `Originally posted at ${originalMessage.createdAt}`
-					}
-				});
+					description: `${originalMessage.content}\n\n`
+				}).setTimestamp(originalMessage.createdTimestamp);
 				// Set up embed fields
 				const fields: any = [];
 				fields.push({
 					inline: true,
-					name: 'Original post by:',
-					value: `<@${originalMessageAuthor.id}> in <#${originalChannel.id}>`
+					name: 'Originally posted in:',
+					value: `<#${originalChannel.id}>\n`
 				});
 				if (args.reason) {
 					fields.push({
 						inline: true,
 						name: 'Moved for:',
-						value: `${args.reason}`
+						value: `${args.reason}\n`
 					});
 				}
 				if (fields !== []) {
@@ -151,15 +146,10 @@ export default class MoveCommand extends Command {
 					modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, moveModMessage);
 				}
 				deleteCommandMessages(msg, this.client);
-				stopTyping(msg);
-
 			} else {
-				stopTyping(msg);
 				return sendSimpleEmbeddedError(msg, 'Cannot move a text message to a non-text channel.');
 			}
-
 		} else {
-			stopTyping(msg);
 			return sendSimpleEmbeddedError(msg, `Could not find the message with supplied id (${args.messageId}) in this channel.`);
 		}
 	}
