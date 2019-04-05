@@ -58,12 +58,18 @@ export default class UnshortCommand extends Command {
 		let embedMessage = '';
 		startTyping(msg);
 
-		require('url-unshort')().expand(args.query)
+		return require('url-unshort')().expand(args.query)
 			.then((url: string) => {
 				if (url) {
 					deleteCommandMessages(msg, this.client);
 					stopTyping(msg);
 					embedMessage = `Original url is: <${url}>`;
+		
+					deleteCommandMessages(msg, this.client);
+					stopTyping(msg);
+					
+					// Send the success response
+					return sendSimpleEmbeddedMessage(msg, embedMessage);
 				}
 				stopTyping(msg);
 				return sendSimpleEmbeddedError(msg, 'This url can\'t be expanded. Make sure the protocol exists (Http/Https) and try again.', 3000);
@@ -73,11 +79,5 @@ export default class UnshortCommand extends Command {
 				stopTyping(msg);
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. The url may not be valid. Try again?', 3000);
 			});
-		
-		deleteCommandMessages(msg, this.client);
-		stopTyping(msg);
-		
-		// Send the success response
-		return sendSimpleEmbeddedMessage(msg, embedMessage);
 	}
 }

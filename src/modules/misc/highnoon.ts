@@ -1,7 +1,7 @@
 import { Message } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import * as rp from 'request-promise';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedImage, sendSimpleEmbeddedMessage, stopTyping, deleteCommandMessages } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedImage, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
 
 /**
  * Show the XKCD "Now" comic.
@@ -40,21 +40,19 @@ export default class HighNoonCommand extends Command {
 	 * @memberof HighNoonCommand
 	 */
 	public async run(msg: CommandoMessage): Promise<Message | Message[]> {
-		let embedContent = '';
-		rp({ followAllRedirects: true, uri: 'http://imgs.xkcd.com/comics/now.png', resolveWithFullResponse: true })
+		startTyping(msg);
+		return rp({ followAllRedirects: true, uri: 'http://imgs.xkcd.com/comics/now.png', resolveWithFullResponse: true })
 			.then((content) => {
-				embedContent = content.request.uri.href.toString();
+				deleteCommandMessages(msg, this.client);
+				stopTyping(msg);
+				
+				// Send the success response
+				return sendSimpleEmbeddedImage(msg, content.request.uri.href.toString());
 			})
 			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command misc:highnoon: ${err}`);
 				stopTyping(msg);
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			});
-		
-		deleteCommandMessages(msg, this.client);
-		stopTyping(msg);
-		
-		// Send the success response
-		return sendSimpleEmbeddedImage(msg, embedContent);
 	}
 }

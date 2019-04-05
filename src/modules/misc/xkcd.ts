@@ -74,23 +74,23 @@ export default class XkcdCommand extends Command {
 
 		startTyping(msg);
 
-		rp(url)
+		return rp(url)
 			.then((content) => {
 				const comic = JSON.parse(content);
 				xkcdEmbed.setFooter(comic.alt);
 				xkcdEmbed.setImage(comic.img);
 				xkcdEmbed.setTitle(`XKCD ${comic.num} ${comic.title}`);
+		
+				deleteCommandMessages(msg, this.client);
+				stopTyping(msg);
+		
+				// Send the success response
+				return msg.embed(xkcdEmbed);
 			})
 			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command misc:xkcd: ${err}`);
 				stopTyping(msg);
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			});
-		
-		deleteCommandMessages(msg, this.client);
-		stopTyping(msg);
-
-		// Send the success response
-		return msg.embed(xkcdEmbed);
 	}
 }
