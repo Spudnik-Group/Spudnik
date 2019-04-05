@@ -75,9 +75,10 @@ export default class UrbanCommand extends Command {
 				responseEmbed.setTitle(`Urban Dictionary: ${json.entries[0].word}`);
 				responseEmbed.setDescription(stripIndents`
 					${json.entries[0].definition}\n
-					${json.entries[0].example ? `Example: ${json.entries[0].example}` : ''}
+					${json.entries[0].example ? `Example: ${json.entries[0].example}` : ''}\n
+					\n
+					${json.entries[0].permalink}
 				`);
-				responseEmbed.setFooter(`Link: ${json.entries[0].permalink}`);
 			} else {
 				responseEmbed.setDescription('No matches found');
 			}
