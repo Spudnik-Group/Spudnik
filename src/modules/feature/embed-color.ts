@@ -70,7 +70,6 @@ export default class EmbedColorCommand extends Command {
 	 * @memberof EmbedColorCommand
 	 */
 	public async run(msg: CommandoMessage, args: { color: string }): Promise<Message | Message[]> {
-		const modlogChannel = msg.guild.settings.get('modlogChannel', null);
 		const embedColorEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/artist-palette_1f3a8.png',
@@ -82,35 +81,28 @@ export default class EmbedColorCommand extends Command {
 		startTyping(msg);
 
 		if (!args.color) {
-			msg.guild.settings.remove('embedColor')
+			return msg.guild.settings.remove('embedColor')
 				.then(() => {
 					// Set up embed message
 					embedColorEmbed.setDescription(stripIndents`
 						**Member:** ${msg.author.tag} (${msg.author.id})
 						**Action:** Embed Color Reset
 					`);
+					return this.sendSuccess(msg, embedColorEmbed);
 				})
 				.catch((err: Error) => this.catchError(msg, args, err));
 		} else {
-			msg.guild.settings.set('embedColor', args.color)
+			return msg.guild.settings.set('embedColor', args.color)
 				.then(() => {
 					// Set up embed message
 					embedColorEmbed.setDescription(stripIndents`
 						**Member:** ${msg.author.tag} (${msg.author.id})
 						**Action:** Embed Color set to ${args.color}
 					`);
+					return this.sendSuccess(msg, embedColorEmbed);
 				})
 				.catch((err: Error) => this.catchError(msg, args, err));
 		}
-		// Log the event in the mod log
-		if (msg.guild.settings.get('modlogEnabled', true)) {
-			modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, embedColorEmbed);
-		}
-		deleteCommandMessages(msg, this.client);
-		stopTyping(msg);
-
-		// Send the success response
-		return msg.embed(embedColorEmbed);
 	}
 
 	private catchError(msg: CommandoMessage, args: { color: string }, err: Error) {
@@ -129,5 +121,18 @@ export default class EmbedColorCommand extends Command {
 		} else {
 			return sendSimpleEmbeddedError(msg, `There was an error setting the embed color to ${args.color}`)
 		}
+	}
+
+	private sendSuccess(msg: CommandoMessage, embed: MessageEmbed): Promise<Message | Message[]> {
+		const modlogChannel = msg.guild.settings.get('modlogChannel', null);
+		// Log the event in the mod log
+		if (msg.guild.settings.get('modlogEnabled', true)) {
+			modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, embed);
+		}
+		deleteCommandMessages(msg, this.client);
+		stopTyping(msg);
+
+		// Send the success response
+		return msg.embed(embed);
 	}
 }
