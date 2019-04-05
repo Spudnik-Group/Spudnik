@@ -49,21 +49,21 @@ export default class DogFactCommand extends Command {
 
 		startTyping(msg);
 
-		rp('https://dog-api.kinduff.com/api/facts')
+		return rp('https://dog-api.kinduff.com/api/facts')
 			.then((content) => {
 				const data = JSON.parse(content);
 				responseEmbed.setDescription(data.facts[0]);
+		
+				deleteCommandMessages(msg, this.client);
+				stopTyping(msg);
+
+				// Send the success response
+				return msg.embed(responseEmbed);
 			})
 			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command random:dog-fact: ${err}`);
 				stopTyping(msg);
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			});
-		
-		deleteCommandMessages(msg, this.client);
-		stopTyping(msg);
-
-		// Send the success response
-		return msg.embed(responseEmbed);
 	}
 }

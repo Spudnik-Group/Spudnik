@@ -50,21 +50,21 @@ export default class ChuckFactCommand extends Command {
 
 		startTyping(msg);
 
-		rp('http://api.icndb.com/jokes/random')
+		return rp('http://api.icndb.com/jokes/random')
 			.then((content) => {
 				const data = JSON.parse(content);
 				responseEmbed.setDescription(data.value.joke);
+		
+				deleteCommandMessages(msg, this.client);
+				stopTyping(msg);
+		
+				// Send the success response
+				return msg.embed(responseEmbed);
 			})
 			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command random:chuck-fact: ${err}`);
 				stopTyping(msg);
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			});
-		
-		deleteCommandMessages(msg, this.client);
-		stopTyping(msg);
-
-		// Send the success response
-		return msg.embed(responseEmbed);
 	}
 }

@@ -49,21 +49,21 @@ export default class CatFactCommand extends Command {
 
 		startTyping(msg);
 
-		rp('https://catfact.ninja/fact')
+		return rp('https://catfact.ninja/fact')
 			.then((content) => {
 				const data = JSON.parse(content);
 				responseEmbed.setDescription(data.fact);
+
+				deleteCommandMessages(msg, this.client);
+				stopTyping(msg);
+
+				// Send the success response
+				return msg.embed(responseEmbed);
 			})
 			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command random:cat-fact: ${err}`);
 				stopTyping(msg);
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			});
-		
-		deleteCommandMessages(msg, this.client);
-		stopTyping(msg);
-
-		// Send the success response
-		return msg.embed(responseEmbed);
 	}
 }
