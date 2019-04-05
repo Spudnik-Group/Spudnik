@@ -78,7 +78,7 @@ export default class BrewCommand extends Command {
 		return rp(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(args.query)}&key=${breweryDbApiKey}`)
 			.then((content) => {
 				const response = JSON.parse(content);
-				if (response) {
+				if (response.data) {
 					const result = response.data[0];
 					if (result.description) {
 						const fields: any = [];
@@ -140,7 +140,7 @@ export default class BrewCommand extends Command {
 						}
 						brewEmbed.setDescription(`\n${result.description}\n\n`);
 					} else {
-						brewEmbed.setDescription(`${response.data[0].name} is a good beer, but I don't have a good way to describe it.`);
+						brewEmbed.setDescription(`${response.data[0].name} is a good beer/brewery, but I don't have a good way to describe it.`);
 					}
 				} else {
 					brewEmbed.setDescription("Damn, I've never heard of that. Where do I need to go to find it?");
