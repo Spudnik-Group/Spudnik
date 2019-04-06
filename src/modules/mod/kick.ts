@@ -1,5 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { GuildMember, Message, MessageEmbed, TextChannel } from 'discord.js';
+import { GuildMember, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, startTyping, deleteCommandMessages, stopTyping } from '../../lib/helpers';
@@ -63,8 +63,7 @@ export default class KickCommand extends Command {
 	 * @returns {(Promise<Message | Message[] | any>)}
 	 * @memberof KickCommand
 	 */
-	public async run(msg: CommandoMessage, args: { member: GuildMember, reason: string }): Promise<Message | Message[] | any> {
-		const modlogChannel = msg.guild.settings.get('modlogChannel', null);
+	public async run (msg: CommandoMessage, args: { member: GuildMember, reason: string }): Promise<Message | Message[] | any> {
 		const memberToKick: GuildMember = args.member;
 		const kickEmbed: MessageEmbed = new MessageEmbed({
 			author: {
@@ -80,6 +79,7 @@ export default class KickCommand extends Command {
 		// Check if user is able to kick the mentioned user
 		if (!memberToKick.kickable || !(msg.member.roles.highest.comparePositionTo(memberToKick.roles.highest) > 0)) {
 			stopTyping(msg);
+			
 			return sendSimpleEmbeddedError(msg, `I can't kick ${memberToKick}. Do they have the same or a higher role than me or you?`);
 		}
 
@@ -95,8 +95,9 @@ export default class KickCommand extends Command {
 
 				// Log the event in the mod log
 				if (msg.guild.settings.get('modlogEnabled', true)) {
-					modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, kickEmbed);
+					modLogMessage(msg, kickEmbed);
 				}
+
 				deleteCommandMessages(msg, this.client);
 				stopTyping(msg);
 
@@ -112,8 +113,10 @@ export default class KickCommand extends Command {
 				**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
 				**Input:** \`${args.member.user.tag} (${args.member.id})\` || \`${args.reason}\`
 				**Error Message:** ${err}`);
+
 				// Inform the user the command failed
 				stopTyping(msg);
+
 				return sendSimpleEmbeddedError(msg, `Kicking ${args.member} for ${args.reason} failed!`);
 			});
 	}

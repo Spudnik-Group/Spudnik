@@ -59,12 +59,16 @@ export default class LeetCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		});
+
 		startTyping(msg);
+
 		const leetResponse = require('leet').convert(args.query);
+
 		leetEmbed.setDescription(leetResponse);
 
 		deleteCommandMessages(msg, this.client);
 		stopTyping(msg);
+		
 		return msg.embed(leetEmbed);
 	}
 }

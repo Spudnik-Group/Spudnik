@@ -45,6 +45,7 @@ export default class SayCommand extends Command {
 	 */
 	public async run(msg: CommandoMessage, args: { text: string }): Promise<Message | Message[]> {
 		deleteCommandMessages(msg, this.client);
+		
 		return msg.say(args.text);
 	}
 }

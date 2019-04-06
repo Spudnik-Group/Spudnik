@@ -47,6 +47,7 @@ export default class PongCommand extends Command {
 		`);
 
 		await delay(3000);
+		
 		stopTyping(msg);
 		deleteCommandMessages(msg, this.client);
 		

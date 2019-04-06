@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { getRandomInt, sendSimpleEmbeddedError, sendSimpleEmbeddedImage } from '../../lib/helpers';
+import { getRandomInt, sendSimpleEmbeddedImage } from '../../lib/helpers';
 
 // tslint:disable-next-line:no-var-requires
 const { bacon }: { bacon: string[] } = require('../../extras/data');

@@ -70,7 +70,6 @@ export default class MoveCommand extends Command {
 	 * @memberof MoveCommand
 	 */
 	public async run(msg: CommandoMessage, args: { messageId: string, channel: Channel, reason: string }): Promise<Message | Message[]> {
-		const modlogChannel = msg.guild.settings.get('modlogChannel', null);
 		const originalChannel = msg.channel as TextChannel;
 		const originalMessage: Message = await originalChannel.messages.fetch(args.messageId);
 		const originalMessageAuthor: GuildMember = await originalChannel.guild.members.fetch(originalMessage.author.id);
@@ -88,13 +87,16 @@ export default class MoveCommand extends Command {
 					color: getEmbedColor(msg),
 					description: `${originalMessage.content}\n\n`
 				}).setTimestamp(originalMessage.createdTimestamp);
+
 				// Set up embed fields
 				const fields: any = [];
+
 				fields.push({
 					inline: true,
 					name: 'Originally posted in:',
 					value: `<#${originalChannel.id}>\n`
 				});
+
 				if (args.reason) {
 					fields.push({
 						inline: true,
@@ -102,12 +104,13 @@ export default class MoveCommand extends Command {
 						value: `${args.reason}\n`
 					});
 				}
+
 				if (fields !== []) {
 					moveMessage.fields = fields;
 				}
 
 				// Add attachments, if any
-				if(originalMessage.attachments.some(attachment => { return attachment.url !== '' })){
+				if (originalMessage.attachments.some(attachment => attachment.url !== '')) {
 					moveMessage.image = { url: originalMessage.attachments.first().url }
 				}
 
@@ -143,7 +146,8 @@ export default class MoveCommand extends Command {
 							**Reason:** ${args.reason}
 						`
 					}).setTimestamp();
-					modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, moveModMessage);
+
+					modLogMessage(msg, moveModMessage);
 				}
 				deleteCommandMessages(msg, this.client);
 			} else {

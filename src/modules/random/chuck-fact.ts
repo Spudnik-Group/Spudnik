@@ -2,7 +2,7 @@ import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import * as rp from 'request-promise';
 import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, stopTyping, startTyping, deleteCommandMessages } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, stopTyping, startTyping, deleteCommandMessages } from '../../lib/helpers';
 
 /**
  * Post a random chuck norris fact.
@@ -64,6 +64,7 @@ export default class ChuckFactCommand extends Command {
 			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command random:chuck-fact: ${err}`);
 				stopTyping(msg);
+				
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			});
 	}

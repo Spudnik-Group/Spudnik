@@ -1,7 +1,7 @@
 import { Message, TextChannel } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, deleteCommandMessages, stopTyping, startTyping } from '../../lib/helpers';
+import { deleteCommandMessages, stopTyping, startTyping } from '../../lib/helpers';
 
 /**
  * Posts the topic of a channel.

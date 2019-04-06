@@ -56,6 +56,7 @@ export default class BalloonPopCommand extends Command {
 				const verification = await verify(msg.channel, args.opponent);
 				if (!verification) {
 					this.playing.delete(msg.channel.id);
+					
 					return msg.say('Looks like they declined...');
 				}
 			}
@@ -93,6 +94,7 @@ export default class BalloonPopCommand extends Command {
 				}
 			}
 			this.playing.delete(msg.channel.id);
+			
 			return msg.say(`And the winner is... ${winner}! Great job!`);
 		} catch (err) {
 			this.playing.delete(msg.channel.id);

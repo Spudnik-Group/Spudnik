@@ -78,14 +78,13 @@ export default class WikiCommand extends Command {
 
 						// Discord API Limitation:
 						//     Embed description cannot be over 2048 characters
-						if((lenParagraph + 5 + lenFullUrl) > 2048){
+						if((lenParagraph + 5 + lenFullUrl) > 2048) {
 							paragraph = `${paragraph.substring(0, 2048 - (5 + lenFullUrl))}...`;
 						}
 						
 						messageOut.setDescription(`${paragraph}\n\n${page.raw.fullurl}`);
 						messageOut.setTitle(page.raw.title);
-					}
-					else {
+					} else {
 						messageOut.setDescription('No results. Try again?');
 					}
 
@@ -94,16 +93,21 @@ export default class WikiCommand extends Command {
 
 					// Send the success response
 					return msg.embed(messageOut);
-				}
-				catch (err) {
+				} catch (err) {
 					msg.client.emit('warn', `Error in command ref:wiki: ${err}`);
+
+					deleteCommandMessages(msg, this.client);
 					stopTyping(msg);
+
 					return sendSimpleEmbeddedError(msg, 'No results found. Try again?', 3000);
 				}
 			})
 			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command ref:wiki: ${err}`);
+
+				deleteCommandMessages(msg, this.client);
 				stopTyping(msg);
+
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			});
 	}

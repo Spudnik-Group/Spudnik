@@ -1,5 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { GuildMember, Message, MessageEmbed, TextChannel } from 'discord.js';
+import { GuildMember, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import Mongoose = require('mongoose');
 import { Schema, Document, Model } from 'mongoose';
@@ -91,7 +91,6 @@ export default class WarnCommand extends Command {
 	 * @memberof WarnCommand
 	 */
 	public async run(msg: CommandoMessage, args: { member: GuildMember, points: number, reason: string }): Promise<Message | Message[] | any> {
-		const modlogChannel = msg.guild.settings.get('modlogChannel', null);
 		const warnEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/warning-sign_26a0.png',
@@ -155,7 +154,7 @@ export default class WarnCommand extends Command {
 			
 			// Log the event in the mod log
 			if (msg.guild.settings.get('modlogEnabled', true)) {
-				modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, warnEmbed);
+				modLogMessage(msg, warnEmbed);
 			}
 			deleteCommandMessages(msg, this.client);
 			stopTyping(msg);
@@ -174,8 +173,10 @@ export default class WarnCommand extends Command {
 		**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
 		**Input:** \`${args.member.user.tag} (${args.member.id})\`|| \`${args.points}\` || \`${args.reason}\`
 		**Error Message:** ${err}`);
+
 		// Inform the user the command failed
 		stopTyping(msg);
+		
 		return sendSimpleEmbeddedError(msg, `Warning ${args.member} failed!`);
 	}
 }

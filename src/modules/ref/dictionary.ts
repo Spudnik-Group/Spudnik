@@ -2,7 +2,7 @@ import { stripIndents, oneLine } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, stopTyping, startTyping, deleteCommandMessages } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, stopTyping, startTyping, deleteCommandMessages } from '../../lib/helpers';
 
 // tslint:disable-next-line:no-var-requires
 const mw = require('mw-dict');
@@ -81,25 +81,29 @@ export default class DefineCommand extends Command {
 						name: 'Functional Label:',
 						value: result[0].functional_label
 					});
-				};
+				}
+
 				if (result[0].pronunciation[0]) {
 					dictionaryEmbed.fields.push({
 						name: 'Pronunciation:',
 						value: result[0].pronunciation[0]
 					});
-				};
+				}
+
 				if (result[0].etymology) {
 					dictionaryEmbed.fields.push({
 						name: 'Etymology:',
 						value: result[0].etymology
 					});
-				};
+				}
+
 				if (result[0].popularity) {
 					dictionaryEmbed.fields.push({
 						name: 'Popularity:',
 						value: result[0].popularity
 					});
-				};
+				}
+
 				dictionaryEmbed.description = this.renderDefinition(result[0].definition);
 		
 				deleteCommandMessages(msg, this.client);
@@ -110,7 +114,9 @@ export default class DefineCommand extends Command {
 			})
 			.catch((err: any) => {
 				msg.client.emit('warn', `Error in command ref:define: ${err}`);
+
 				stopTyping(msg);
+
 				return sendSimpleEmbeddedError(msg, 'Word not found.', 3000);
 			});
 	}

@@ -27,6 +27,7 @@ export default class LoadCommandCommand extends Command {
 						const split = val.split(':');
 						const cmdPath = this.client.registry.resolveCommandPath(split[0], split[1]);
 						delete require.cache[cmdPath];
+						
 						return require(cmdPath);
 					},
 					prompt: 'Which command would you like to load?',
@@ -39,6 +40,7 @@ export default class LoadCommandCommand extends Command {
 						}
 						const cmdPath = this.client.registry.resolveCommandPath(split[0], split[1]);
 						fs.access(cmdPath, fs.constants.R_OK, err => err ? resolve(false) : resolve(true));
+						
 						return null;
 					})
 				}
@@ -84,11 +86,13 @@ export default class LoadCommandCommand extends Command {
 				this.client.emit('warn', 'Error when broadcasting command load to other shards');
 				this.client.emit('error', err);
 				await msg.reply(`Loaded \`${command.name}\` command, but failed to load on other shards.`);
+				
 				return null;
 			}
 		}
 
 		await msg.reply(`Loaded \`${command.name}\` command${this.client.shard ? ' on all shards' : ''}.`);
+
 		return null;
 	}
 }

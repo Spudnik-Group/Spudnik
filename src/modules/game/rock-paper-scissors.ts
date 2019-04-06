@@ -48,21 +48,25 @@ export default class RockPaperScissorsCommand extends Command {
 	 */
 	public async run(msg: CommandoMessage, args: { choice: string }): Promise<Message | Message[]> {
 		const response = choices[Math.floor(Math.random() * choices.length)];
+		
 		if (args.choice === 'rock') {
 			if (response === 'rock') { return msg.reply('Rock! Aw... A tie...'); }
 			if (response === 'paper') { return msg.reply('Paper! Yes! I win!'); }
 			if (response === 'scissors') { return msg.reply('Scissors! Aw... I lose...'); }
 		}
+		
 		if (args.choice === 'paper') {
 			if (response === 'rock') { return msg.reply('Rock! Aw... I lose...'); }
 			if (response === 'paper') { return msg.reply('Paper! Aw... A tie...'); }
 			if (response === 'scissors') { return msg.reply('Scissors! Yes! I win!'); }
 		}
+		
 		if (args.choice === 'scissors') {
 			if (response === 'rock') { return msg.reply('Rock! Yes! I win!'); }
 			if (response === 'paper') { return msg.reply('Paper! Aw... I lose...'); }
 			if (response === 'scissors') { return msg.reply('Scissors! Aw... A tie...'); }
 		}
+		
 		return msg.reply('I win by default, you little cheater.');
 	}
 }

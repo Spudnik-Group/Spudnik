@@ -92,6 +92,7 @@ export default class QuizCommand extends Command {
 			if (!msgs.size) { return msg.reply(`Sorry, time is up! It was ${correct}.`); }
 			const win = shuffled[choices.indexOf(msgs.first().content.toUpperCase())] === correct;
 			if (!win) { return msg.reply(`Nope, sorry, it's ${correct}.`); }
+			
 			return msg.reply('Nice job! 10/10! You deserve some cake!');
 		} catch (err) {
 			return msg.reply(`Oh no, an error occurred: \`${err.message}\`. Try again later!`);

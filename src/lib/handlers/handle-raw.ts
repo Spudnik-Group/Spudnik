@@ -1,9 +1,9 @@
-import { MessageReaction, Channel, GuildChannel, TextChannel, Message, MessageEmbed } from 'discord.js';
+import { Channel, GuildChannel, TextChannel, Message, MessageEmbed } from 'discord.js';
 import { CommandoClient } from 'discord.js-commando';
 
 const starboardGuildBlacklist: string[] = process.env.STARBOARD_GUILD_BLACKLIST ? process.env.STARBOARD_GUILD_BLACKLIST.split(',') : [];
 
-export async function handleRaw(event: any, client: CommandoClient) {
+export const handleRaw = async(event: any, client: CommandoClient) => {
 	if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(event.t)) { return; } //Ignore non-emoji related actions
 	const { d: data } = event;
 	const channel: Channel = await client.channels.get(data.channel_id);
@@ -44,8 +44,10 @@ export async function handleRaw(event: any, client: CommandoClient) {
 			if (existingStar) {
 				// And remove it
 				existingStar.delete();
+				
 				return;
 			}
+			
 			return;
 		}
 		const stars = reaction.count;
@@ -93,6 +95,7 @@ export async function handleRaw(event: any, client: CommandoClient) {
 			existingStar.edit({ embed: starboardEmbed })
 				.catch((err) => {
 					client.emit('warn', `Failed to edit starboard embed. Message ID: ${message.id}\nError: ${err}`);
+					
 					return;
 				});
 		} else {
@@ -100,6 +103,7 @@ export async function handleRaw(event: any, client: CommandoClient) {
 			(starboard as TextChannel).send({ embed: starboardEmbed })
 				.catch((err) => {
 					client.emit('warn', `Failed to send new starboard embed. Message ID: ${message.id}\nError: ${err}`);
+					
 					return;
 				});
 		}

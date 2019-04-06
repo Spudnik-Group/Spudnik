@@ -22,6 +22,7 @@ const settingsSchema: Schema = new Schema({
  * @extends {SettingProvider}
  */
 export class MongoSettingsProvider extends SettingProvider {
+//tslint:disable-next-line
 	private db: Connection;
 	private settings: Map<string, any>;
 	private listeners: Map<string, any>;
@@ -60,13 +61,16 @@ export class MongoSettingsProvider extends SettingProvider {
 				settings = JSON.parse(row.settings);
 			} catch (err) {
 				client.emit('warn', `MongoProvider couldn't parse the settings stored for guild ${row.guild}.`);
+				
 				continue;
 			}
 
 			const guild: string = row.guild !== '0' ? row.guild : 'global';
 
 			this.settings.set(guild, settings);
+
 			if (guild !== 'global' && !client.guilds.has(row.guild)) { continue; }
+
 			this.setupGuild(guild, settings);
 		}
 
@@ -76,13 +80,17 @@ export class MongoSettingsProvider extends SettingProvider {
 			.set('groupStatusChange', (guild: string, group: CommandGroup, enabled: boolean) => this.set(guild, `grp-${group.id}`, enabled))
 			.set('guildCreate', (guild: Guild) => {
 				const settings: any = this.settings.get(guild.id);
+
 				if (!settings) { return; }
+
 				this.setupGuild(guild.id, settings);
 			})
 			.set('commandRegister', (command: Command) => {
 				for (const [guild, settings] of this.settings) {
 					if (guild !== 'global' && !client.guilds.has(guild)) { continue; }
+
 					const workingGuild: Guild | undefined = client.guilds.get(guild);
+
 					if (workingGuild !== undefined) {
 						this.setupGuildCommand(workingGuild, command, settings);
 					}
@@ -92,11 +100,13 @@ export class MongoSettingsProvider extends SettingProvider {
 				for (const [guild, settings] of this.settings) {
 					if (guild !== 'global' && !client.guilds.has(guild)) { continue; }
 					const workingGuild: Guild | undefined = client.guilds.get(guild);
+
 					if (workingGuild !== undefined) {
 						this.setupGuildGroup(workingGuild, group, settings);
 					}
 				}
 			});
+
 		for (const [event, listener] of this.listeners) { client.on(event, listener); }
 	}
 
@@ -111,14 +121,18 @@ export class MongoSettingsProvider extends SettingProvider {
 	 */
 	public async set(guild: string, key: string, val: any): Promise<void> {
 		guild = (this.constructor as any).getGuildID(guild);
+
 		let settings: any = this.settings.get(guild);
+
 		if (!settings) {
-			settings = {};
+			settings = {}
 			this.settings.set(guild, settings);
 		}
 
 		settings[key] = val;
+
 		await this.model.findOneAndUpdate({ guild: guild !== 'global' ? guild : '0' }, { guild: guild !== 'global' ? guild : '0', settings: JSON.stringify(settings) }, { upsert: true });
+
 		if (guild === 'global') { this.updateOtherShards(key, val); }
 	}
 
@@ -130,6 +144,7 @@ export class MongoSettingsProvider extends SettingProvider {
 	 */
 	public async destroy(): Promise<void> {
 		for (const [event, listener] of this.listeners) { this.client.removeListener(event, listener); }
+
 		this.listeners.clear();
 	}
 
@@ -144,6 +159,7 @@ export class MongoSettingsProvider extends SettingProvider {
 	 */
 	public get(guild: string, key: string, defVal: any): any {
 		const settings: any = this.settings.get((this.constructor as any).getGuildID(guild));
+
 		return settings ? typeof settings[key] !== 'undefined' ? settings[key] : defVal : defVal;
 	}
 
@@ -157,20 +173,25 @@ export class MongoSettingsProvider extends SettingProvider {
 	 */
 	public async remove(guild: string, key: string): Promise<string> {
 		guild = (this.constructor as any).getGuildID(guild);
+
 		const settings: any = this.settings.get(guild);
+
 		if (!settings || typeof settings[key] === 'undefined') { return ''; }
 
 		const val: any = settings[key];
 		settings[key] = undefined;
+
 		this.model.findOneAndUpdate({ guild: guild !== 'global' ? guild : '0' }, { guild: guild !== 'global' ? guild : '0', settings: JSON.stringify(settings) }, { upsert: true })
 			.then(() => {
 				if (guild === 'global') { this.updateOtherShards(key, undefined); }
+				
 				return new Promise<string>((resolve: (value: string) => void, reject: (value: string) => void) => {
 					resolve(val);
 				});
 			}).catch((err: Error) => {
 				console.error(err);
 			});
+
 		return '';
 	}
 
@@ -183,8 +204,11 @@ export class MongoSettingsProvider extends SettingProvider {
 	 */
 	public async clear(guild: string): Promise<void> {
 		guild = (this.constructor as any).getGuildID(guild);
+
 		if (!this.settings.has(guild)) { return; }
+
 		this.settings.delete(guild);
+
 		await this.model.findOneAndRemove({ guild: guild !== 'global' ? guild : '0' });
 	}
 
@@ -199,6 +223,7 @@ export class MongoSettingsProvider extends SettingProvider {
 		if (typeof guild !== 'string') {
 			throw new TypeError('The guild must be a guild ID or "global".');
 		}
+
 		const guildObj: Guild | undefined = this.client.guilds.get(guild) || undefined;
 
 		if (typeof settings.prefix !== 'undefined') {
@@ -226,8 +251,9 @@ export class MongoSettingsProvider extends SettingProvider {
 	 */
 	public setupGuildCommand(guild: Guild, command: Command, settings: any): void {
 		if (typeof settings[`cmd-${command.name}`] === 'undefined') { return; }
+
 		if (guild) {
-			if (!(guild as any)._commandsEnabled) { (guild as any)._commandsEnabled = {}; }
+			if (!(guild as any)._commandsEnabled) { (guild as any)._commandsEnabled = {} }
 			(guild as any)._commandsEnabled[command.name] = settings[`cmd-${command.name}`];
 		} else {
 			(command as any)._globalEnabled = settings[`cmd-${command.name}`];
@@ -245,8 +271,9 @@ export class MongoSettingsProvider extends SettingProvider {
 	 */
 	public setupGuildGroup(guild: Guild, group: CommandGroup, settings: any): void {
 		if (typeof settings[`grp-${group.id}`] === 'undefined') { return; }
+
 		if (guild) {
-			if (!(guild as any)._groupsEnabled) { (guild as any)._groupsEnabled = {}; }
+			if (!(guild as any)._groupsEnabled) { (guild as any)._groupsEnabled = {} }
 			(guild as any)._groupsEnabled[group.id] = settings[`grp-${group.id}`];
 		} else {
 			(group as any)._globalEnabled = settings[`grp-${group.id}`];
@@ -263,8 +290,10 @@ export class MongoSettingsProvider extends SettingProvider {
 	 */
 	public updateOtherShards(key: string, val: any): void {
 		if (!this.client.shard) { return; }
+
 		key = JSON.stringify(key);
 		val = typeof val !== 'undefined' ? JSON.stringify(val) : 'undefined';
+
 		this.client.shard.broadcastEval(`
 			if(this.shard.id !== ${this.client.shard.id} && this.provider && this.provider.settings) {
 				this.provider.settings.global[${key}] = ${val};

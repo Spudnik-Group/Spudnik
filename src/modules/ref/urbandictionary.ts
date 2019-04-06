@@ -91,7 +91,9 @@ export default class UrbanCommand extends Command {
 		})
 		.catch((err: Error) => {
 			msg.client.emit('warn', `Error in command ref:urban: ${err}`);
+			
 			stopTyping(msg);
+
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 		});
 	}

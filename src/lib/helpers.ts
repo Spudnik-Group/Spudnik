@@ -14,7 +14,7 @@ const no = ['no', 'n', 'nah', 'nope'];
  * @param {number} [timeout]
  * @returns Promise<Message | Message[]>
  */
-export function sendSimpleEmbeddedMessage(msg: CommandoMessage, text: string, timeout?: number): Promise<Message | Message[]> {
+export const sendSimpleEmbeddedMessage = (msg: CommandoMessage, text: string, timeout?: number) => {
 	const promise: Promise<Message | Message[]> = msg.embed({
 		author: {
 			icon_url: msg.client.user.displayAvatarURL,
@@ -33,6 +33,7 @@ export function sendSimpleEmbeddedMessage(msg: CommandoMessage, text: string, ti
 			}
 		});
 	}
+	
 	return promise;
 }
 
@@ -45,7 +46,7 @@ export function sendSimpleEmbeddedMessage(msg: CommandoMessage, text: string, ti
  * @param {number} [timeout]
  * @returns Promise<Message | Message[]>
  */
-export function sendSimpleEmbeddedError(msg: CommandoMessage, text: string, timeout?: number): Promise<Message | Message[]> {
+export const sendSimpleEmbeddedError = (msg: CommandoMessage, text: string, timeout?: number) => {
 	const promise: Promise<Message | Message[]> = msg.embed({
 		author: {
 			icon_url: msg.client.user.displayAvatarURL,
@@ -64,6 +65,7 @@ export function sendSimpleEmbeddedError(msg: CommandoMessage, text: string, time
 			}
 		});
 	}
+
 	return promise;
 }
 
@@ -76,7 +78,7 @@ export function sendSimpleEmbeddedError(msg: CommandoMessage, text: string, time
  * @param {number} [timeout]
  * @returns Promise<Message | Message[]>
  */
-export function sendSimpleEmbeddedSuccess(msg: CommandoMessage, text: string, timeout?: number): Promise<Message | Message[]> {
+export const sendSimpleEmbeddedSuccess = (msg: CommandoMessage, text: string, timeout?: number) => {
 	const promise: Promise<Message | Message[]> = msg.embed({
 		author: {
 			icon_url: msg.client.user.displayAvatarURL,
@@ -95,6 +97,7 @@ export function sendSimpleEmbeddedSuccess(msg: CommandoMessage, text: string, ti
 			}
 		});
 	}
+
 	return promise;
 }
 
@@ -107,7 +110,7 @@ export function sendSimpleEmbeddedSuccess(msg: CommandoMessage, text: string, ti
  * @param {string} [description]
  * @returns Promise<Message | Message[]>
  */
-export function sendSimpleEmbeddedImage(msg: CommandoMessage, url: string, description?: string): Promise<Message | Message[]> {
+export const sendSimpleEmbeddedImage = (msg: CommandoMessage, url: string, description?: string) => {
 	return msg.embed({
 		author: {
 			icon_url: msg.client.user.displayAvatarURL,
@@ -127,7 +130,7 @@ export function sendSimpleEmbeddedImage(msg: CommandoMessage, url: string, descr
  * @param {number} max
  * @returns number
  */
-export function getRandomInt(min: number, max: number): number {
+export const getRandomInt = (min: number, max: number) => {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
@@ -138,13 +141,15 @@ export function getRandomInt(min: number, max: number): number {
  * @param {string} usertxt
  * @returns string
  */
-export function resolveMention(usertxt: string): string {
+export const resolveMention = (usertxt: string) => {
 	let userid = usertxt;
+
 	if (usertxt.startsWith('<@!')) {
 		userid = usertxt.substr(3, usertxt.length - 4);
 	} else if (usertxt.startsWith('<@')) {
 		userid = usertxt.substr(2, usertxt.length - 3);
 	}
+
 	return userid;
 }
 
@@ -155,100 +160,121 @@ export function resolveMention(usertxt: string): string {
  * @param {number} ms
  * @returns {Promise}
  */
-export function delay(ms: number): Promise<any> {
+export const delay = (ms: number) => {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export function shuffle(array: any[]): any[] {
+export const shuffle = (array: any[]) => {
 	const arr = array.slice(0);
+
 	for (let i = arr.length - 1; i >= 0; i--) {
 		const j = Math.floor(Math.random() * (i + 1));
 		const temp = arr[i];
 		arr[i] = arr[j];
 		arr[j] = temp;
 	}
+
 	return arr;
 }
 
-export function list(arr: any[], conj = 'and') {
+export const list = (arr: any[], conj = 'and') => {
 	const len = arr.length;
+
 	return `${arr.slice(0, -1).join(', ')}${len > 1 ? `${len > 2 ? ',' : ''} ${conj} ` : ''}${arr.slice(-1)}`;
 }
 
-export function shorten(text: string, maxLen = 2000) {
+export const shorten = (text: string, maxLen = 2000) => {
 	return text.length > maxLen ? `${text.substr(0, maxLen - 3)}...` : text;
 }
 
-export function duration(ms: number) {
+export const duration = (ms: number) => {
 	const sec = Math.floor((ms / 1000) % 60).toString();
 	const min = Math.floor((ms / (1000 * 60)) % 60).toString();
 	const hrs = Math.floor(ms / (1000 * 60 * 60)).toString();
+
 	return `${hrs.padStart(2, '0')}:${min.padStart(2, '0')}:${sec.padStart(2, '0')}`;
 }
 
-export function randomRange(min: number, max: number) {
+export const randomRange = (min: number, max: number) => {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-export function trimArray(arr: any[], maxLen = 10) {
+export const trimArray = (arr: any[], maxLen = 10) => {
 	if (arr.length > maxLen) {
 		const len = arr.length - maxLen;
 		arr = arr.slice(0, maxLen);
 		arr.push(`${len} more...`);
 	}
+
 	return arr;
 }
 
-export function base64(text: string, mode = 'encode') {
+export const base64 = (text: string, mode = 'encode') => {
 	if (mode === 'encode') {
 		return Buffer.from(text).toString('base64');
 	}
+
 	if (mode === 'decode') {
 		return Buffer.from(text, 'base64').toString('utf8') || null;
 	}
+
 	throw new TypeError(`${mode} is not a supported base64 mode.`);
 }
 
-export function hash(text: string, algorithm: any) {
+export const hash = (text: string, algorithm: any) => {
 	return require('crypto').createHash(algorithm).update(text).digest('hex');
 }
 
-export function today(timeZone: number) {
+export const today = (timeZone: number) => {
 	const now = new Date();
+
 	if (timeZone) {
 		now.setUTCHours(now.getUTCHours() + timeZone);
 	}
+
 	now.setHours(0);
 	now.setMinutes(0);
 	now.setSeconds(0);
 	now.setMilliseconds(0);
+
 	return now;
 }
 
-export function disambiguation(items: any, label: any, property = 'name') {
+export const disambiguation = (items: any, label: any, property = 'name') => {
 	const itemList = items.map((item: any) => `"${(property ? item[property] : item).replace(/ /g, '\xa0')}"`).join(',   ');
+
 	return `Multiple ${label} found, please be more specific: ${itemList}`;
 }
 
-export function tomorrow(timeZone: number) {
+export const tomorrow = (timeZone: number) => {
 	const thisDate = today(timeZone);
 	thisDate.setDate(thisDate.getDate() + 1);
+
 	return thisDate;
 }
 
-export async function awaitPlayers(msg: any, max: number, min: number, { text = 'join game', time = 30000, dmCheck = false } = {}) {
+export const awaitPlayers = async(msg: any, max: number, min: number, { text = 'join game', time = 30000, dmCheck = false } = {}) => {
 	const joined: any[] = [];
+
 	joined.push(msg.author.id);
+
 	const filter = (res: any) => {
 		if (res.author.bot) { return false; }
+		
 		if (joined.includes(res.author.id)) { return false; }
+		
 		if (res.content.toLowerCase() !== text.toLowerCase()) { return false; }
+		
 		joined.push(res.author.id);
 		res.react('✅').catch((): void => null);
+		
 		return true;
-	};
+	}
+
 	const verify = await msg.channel.awaitMessages(filter, { max: max, time: time });
+
 	verify.set(msg.id, msg);
+	
 	if (dmCheck) {
 		for (const message of verify.values()) {
 			try {
@@ -258,23 +284,31 @@ export async function awaitPlayers(msg: any, max: number, min: number, { text = 
 			}
 		}
 	}
+
 	if (verify.size < min) { return false; }
+
 	return verify.map((message: any) => message.author);
 }
 
-export async function verify(channel: any, user: any, time = 30000) {
+export const verify = async(channel: any, user: any, time = 30000) => {
 	const filter = (res: any) => {
 		const value = res.content.toLowerCase();
+		
 		return res.author.id === user.id && (yes.includes(value) || no.includes(value));
-	};
+	}
+
 	const verify = await channel.awaitMessages(filter, {
 		max: 1,
 		time: time
 	});
+
 	if (!verify.size) { return 0; }
+
 	const choice = verify.first().content.toLowerCase();
+
 	if (yes.includes(choice)) { return true; }
 	if (no.includes(choice)) { return false; }
+
 	return false;
 }
 
@@ -285,9 +319,10 @@ export async function verify(channel: any, user: any, time = 30000) {
  * @param {boolean} [onlyInlineCode=false] Whether to only escape inline code
  * @returns {string}
  */
-export function escapeMarkdown(text: string, onlyCodeBlock: boolean = false, onlyInlineCode: boolean = false): string {
+export const escapeMarkdown = (text: string, onlyCodeBlock: boolean = false, onlyInlineCode: boolean = false) => {
 	if (onlyCodeBlock) { return text.replace(/```/g, '`\u200b``'); }
 	if (onlyInlineCode) { return text.replace(/\\(`|\\)/g, '$1').replace(/(`|\\)/g, '\\$1'); }
+
 	return text.replace(/\\(\*|_|`|~|\\)/g, '$1').replace(/(\*|_|`|~|\\)/g, '\\$1');
 }
 
@@ -301,7 +336,7 @@ export function escapeMarkdown(text: string, onlyCodeBlock: boolean = false, onl
  */
 export const deleteCommandMessages = (msg: CommandoMessage, client: CommandoClient) => {
 	if (msg.deletable && msg.guild.settings.get('deleteCommandMessages', false)) msg.delete();
-};
+}
 
 /**
  * Stop the bot's typing status
@@ -312,7 +347,7 @@ export const deleteCommandMessages = (msg: CommandoMessage, client: CommandoClie
  */
 export const stopTyping = (msg: CommandoMessage) => {
 	msg.channel.stopTyping(true);
-};
+}
 
 /**
  * Start the bot's typing status
@@ -323,4 +358,4 @@ export const stopTyping = (msg: CommandoMessage) => {
  */
 export const startTyping = (msg: CommandoMessage) => {
 	msg.channel.startTyping(1);
-};
+}

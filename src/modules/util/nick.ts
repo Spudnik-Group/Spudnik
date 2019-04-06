@@ -65,9 +65,11 @@ export default class NickCommand extends Command {
 		
 		if (args.nickName === '' || args.nickName === undefined) {
 			(msg.guild.me as GuildMember).setNickname('Spudnik', `${msg.author.username} used Spudnik to reset it.`);
+
 			return sendSimpleEmbeddedMessage(msg, 'Bot nickname cleared.');
 		} else {
 			(msg.guild.me as GuildMember).setNickname(args.nickName, `${msg.author.username} used Spudnik to set it.`);
+			
 			return sendSimpleEmbeddedMessage(msg, 'Bot nickname set.');
 		}
 	}

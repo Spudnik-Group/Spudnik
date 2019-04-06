@@ -62,12 +62,14 @@ export default class YodafyCommand extends Command {
 				text: 'powered by: yodaspeak.co.uk'
 			}
 		});
+
 		startTyping(msg);
 
 		return require('soap').createClient('http://www.yodaspeak.co.uk/webservice/yodatalk.php?wsdl', (err: Error, client: any) => {
 			if (err) {
 				msg.client.emit('warn', `Error in command translate:yodafy: ${err}`);
 				stopTyping(msg);
+				
 				return sendSimpleEmbeddedError(msg, 'Lost, I am. Not found, the web service is. Hrmm...', 3000);
 			}
 
@@ -75,8 +77,10 @@ export default class YodafyCommand extends Command {
 				if (err) {
 					msg.client.emit('warn', `Error in command translate:yodafy: ${err}`);
 					stopTyping(msg);
+					
 					return sendSimpleEmbeddedError(msg, 'Confused, I am. Disturbance in the force, there is. Hrmm...', 3000);
 				}
+				
 				yodaEmbed.setDescription(`${result.return}\n`);
 			
 				deleteCommandMessages(msg, this.client);

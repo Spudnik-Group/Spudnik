@@ -37,6 +37,7 @@ export default class ListGroupsCommand extends Command {
      */
 	public hasPermission(msg: CommandoMessage): boolean {
 		if(!msg.guild) return this.client.isOwner(msg.author);
+		
 		return msg.member.hasPermission('ADMINISTRATOR') || this.client.isOwner(msg.author);
 	}
 

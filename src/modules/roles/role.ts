@@ -1,5 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { Message, MessageEmbed, Role, TextChannel } from 'discord.js';
+import { Message, MessageEmbed, Role } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
@@ -29,6 +29,7 @@ export default class RoleCommand extends Command {
 					validate: (subCommand: string) => {
 						const allowedSubcommands = ['add', 'remove', 'list', 'default'];
 						if (allowedSubcommands.indexOf(subCommand) !== -1) return true;
+						
 						return 'You provided an invalid sub-command.\nOptions are:\n* add\n* remove\n* list\n* default';
 					}
 				},
@@ -82,7 +83,7 @@ export default class RoleCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const modlogChannel = await msg.guild.settings.get('modlogChannel', null);
+
 		let guildAssignableRoles: string[] = await msg.guild.settings.get('assignableRoles', []);
 		let guildDefaultRoles: string[] = await msg.guild.settings.get('defaultRoles', []);
 
@@ -92,6 +93,7 @@ export default class RoleCommand extends Command {
 			case 'add': {
 				if (!args.role) {
 					stopTyping(msg);
+
 					return sendSimpleEmbeddedError(msg, 'No role specified!', 3000);
 				}
 
@@ -109,6 +111,7 @@ export default class RoleCommand extends Command {
 						.catch((err: Error) => this.catchError(msg, args, err));
 				} else {
 					stopTyping(msg);
+
 					return sendSimpleEmbeddedError(msg, `${args.role.name} is already in the list of assignable roles for this guild.`, 3000);
 				}
 				break;
@@ -116,6 +119,7 @@ export default class RoleCommand extends Command {
 			case 'remove': {
 				if (!args.role) {
 					stopTyping(msg);
+					
 					return sendSimpleEmbeddedError(msg, 'No role specified!', 3000);
 				}
 
@@ -133,6 +137,7 @@ export default class RoleCommand extends Command {
 						.catch((err: Error) => this.catchError(msg, args, err));
 				} else {
 					stopTyping(msg);
+
 					return sendSimpleEmbeddedError(msg, `Could not find role with name ${args.role.name} in the list of assignable roles for this guild.`, 3000);
 				}
 				break;
@@ -163,6 +168,7 @@ export default class RoleCommand extends Command {
 						})
 						.catch((err: Error) => {
 							msg.client.emit('warn', `Error in command roles:role-add: ${err}`);
+
 							return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
 						});
 				}
@@ -174,9 +180,11 @@ export default class RoleCommand extends Command {
 		
 					if (roles.length > 0) {
 						const rolesListOut: string[] = [];
+
 						roles.forEach((i: Role) => {
 							rolesListOut.push(`* ${i.name}`);
 						});
+
 						roleEmbed.fields.push({
 							inline: true,
 							name: 'Assignable Roles',
@@ -189,9 +197,11 @@ export default class RoleCommand extends Command {
 		
 					if (roles.length > 0) {
 						const rolesListOut: string[] = [];
+
 						roles.forEach((i: Role) => {
 							rolesListOut.push(`* ${i.name}`);
 						});
+
 						roleEmbed.fields.push({
 							inline: true,
 							name: 'Default Roles',
@@ -209,9 +219,10 @@ export default class RoleCommand extends Command {
 		// Log the event in the mod log
 		if (msg.guild.settings.get('modlogEnabled', true)) {
 			if (args.subCommand.toLowerCase() !== 'list') {
-				modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, roleEmbed);
+				modLogMessage(msg, roleEmbed);
 			}
 		}
+
 		deleteCommandMessages(msg, this.client);
 		stopTyping(msg);
 
@@ -222,32 +233,35 @@ export default class RoleCommand extends Command {
 	private catchError(msg: CommandoMessage, args: { subCommand: string, role: Role }, err: Error) {
 		// Build warning message
 		let roleWarn = stripIndents`
-		Error occurred in \`role-management\` command!
-		**Server:** ${msg.guild.name} (${msg.guild.id})
-		**Author:** ${msg.author.tag} (${msg.author.id})
-		**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
-		**Input:** \`Role ${args.subCommand.toLowerCase()}\` | role name: ${args.role}`;
+			Error occurred in \`role-management\` command!
+			**Server:** ${msg.guild.name} (${msg.guild.id})
+			**Author:** ${msg.author.tag} (${msg.author.id})
+			**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+			**Input:** \`Role ${args.subCommand.toLowerCase()}\` | role name: ${args.role}`;
 		let roleUserWarn = '';
+
 		switch (args.subCommand.toLowerCase()) {
 			case 'default': {
-				roleUserWarn = 'Setting/Clearing default role failed!';
+				roleUserWarn = 'Setting/Clearing default role failed!\n';
 				break;
 			}
 			case 'add': {
-				roleUserWarn = 'Adding new role failed!';
+				roleUserWarn = 'Adding new role failed!\n';
 				break;
 			}
 			case 'remove': {
-				roleUserWarn = 'Removing role message!';
+				roleUserWarn = 'Removing role message!\n';
 				break;
 			}
 		}
-		roleWarn += stripIndents`
-			**Error Message:** ${err}`;
+		
+		roleWarn += `**Error Message:** ${err}`;
 		
 		stopTyping(msg);
+		
 		// Emit warn event for debugging
 		msg.client.emit('warn', roleWarn);
+
 		// Inform the user the command failed
 		return sendSimpleEmbeddedError(msg, roleUserWarn);
 	}

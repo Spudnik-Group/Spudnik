@@ -65,16 +65,19 @@ export default class HelpCommand extends Command {
 
 					**Format:** ${msg.anyUsage(`${commands[0].name}${commands[0].format ? ` ${commands[0].format}` : ''}`)}
 				`;
+
 				if(commands[0].aliases.length > 0) help += `\n**Aliases:** ${commands[0].aliases.join(', ')}`;
 				help += `\n${oneLine`
 					**Group:** ${commands[0].group.name}
 					(\`${commands[0].groupID}:${commands[0].memberName}\`)
 				`}`;
+
 				if(commands[0].details) help += `\n**Details:** ${commands[0].details}`;
 				if(commands[0].examples) help += `\n**Examples:**\n${commands[0].examples.join('\n')}`;
 
 				try {
 					await msg.direct(help);
+
 					if(msg.channel.type !== 'dm') return msg.reply('Sent you a DM with information.');
 				} catch(err) {
 					return msg.reply('Unable to send you the help DM. You probably have DMs disabled.');
@@ -114,6 +117,7 @@ export default class HelpCommand extends Command {
 						`).join('\n\n')
 					}
 				`, { split: true });
+				
 				if(msg.channel.type !== 'dm') return msg.reply('Sent you a DM with information.');
 			} catch(err) {
 				return msg.reply('Unable to send you the help DM. You probably have DMs disabled.');

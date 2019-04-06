@@ -1,5 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { Channel, Message, MessageEmbed, Role, TextChannel } from 'discord.js';
+import { Channel, Message, MessageEmbed, Role } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, stopTyping, deleteCommandMessages, startTyping, sendSimpleEmbeddedMessage } from '../../lib/helpers';
@@ -74,11 +74,14 @@ export default class AcceptCommand extends Command {
 
 		if (args.channel instanceof Channel) {
 			const channelID = (args.channel as Channel).id;
-			const tosChannel = msg.guild.settings.get('tosChannel', null);;
+			const tosChannel = msg.guild.settings.get('tosChannel', null);
+
 			if (tosChannel && tosChannel === channelID) {
 				stopTyping(msg);
+
 				return sendSimpleEmbeddedMessage(msg, `Accept channel already set to <#${channelID}>!`, 3000);
 			}
+
 			if (msg.member.hasPermission('MANAGE_ROLES')) {
 				msg.guild.settings.set('tosChannel', args.channel.id)
 					.then(() => {
@@ -87,11 +90,13 @@ export default class AcceptCommand extends Command {
 							**Member:** ${msg.author.tag} (${msg.author.id})
 							**Action:** Accept channel set to <#${args.channel.id}>.
 						`);
+
 						return this.sendSuccess(msg, acceptEmbed);
 					})
 					.catch((err: Error) => this.catchError(msg, args, err));
 			} else {
 				stopTyping(msg);
+
 				return sendSimpleEmbeddedError(msg, 'You do not have permission to run this command.', 3000);
 			}
 		} else if (args.channel === '') {
@@ -107,13 +112,15 @@ export default class AcceptCommand extends Command {
 							**Member:** ${msg.author.tag} (${msg.author.id})
 							**Action:** The default role of ${role.name} for the guild ${msg.guild.name} has been applied.
 						`);
+
 						// DM the new member
 						member.send(acceptEmbed);
-						const modlogChannel = msg.guild.settings.get('modlogChannel', null);
+
 						// Log the event in the mod log
 						if (msg.guild.settings.get('modlogEnabled', true)) {
-							modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, acceptEmbed);
+							modLogMessage(msg, acceptEmbed);
 						}
+
 						deleteCommandMessages(msg, this.client);
 						stopTyping(msg);
 					})
@@ -141,18 +148,20 @@ export default class AcceptCommand extends Command {
 			**Error Message:** ${err}`;
 		
 		stopTyping(msg);
+
 		// Emit warn event for debugging
 		msg.client.emit('warn', acceptWarn);
+
 		// Inform the user the command failed
 		return sendSimpleEmbeddedError(msg, acceptUserWarn);
 	}
 
 	private sendSuccess(msg: CommandoMessage, embed: MessageEmbed): Promise<Message | Message[]> {
-		const modlogChannel = msg.guild.settings.get('modlogChannel', null);
 		// Log the event in the mod log
 		if (msg.guild.settings.get('modlogEnabled', true)) {
-			modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, embed);
+			modLogMessage(msg, embed);
 		}
+
 		deleteCommandMessages(msg, this.client);
 		stopTyping(msg);
 

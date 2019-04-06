@@ -41,6 +41,7 @@ export default class HighNoonCommand extends Command {
 	 */
 	public async run(msg: CommandoMessage): Promise<Message | Message[]> {
 		startTyping(msg);
+		
 		return rp({ followAllRedirects: true, uri: 'http://imgs.xkcd.com/comics/now.png', resolveWithFullResponse: true })
 			.then((content) => {
 				deleteCommandMessages(msg, this.client);
@@ -52,6 +53,7 @@ export default class HighNoonCommand extends Command {
 			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command misc:highnoon: ${err}`);
 				stopTyping(msg);
+				
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			});
 	}

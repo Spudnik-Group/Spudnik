@@ -1,5 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { Channel, Message, MessageEmbed, TextChannel } from 'discord.js';
+import { Channel, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, stopTyping, deleteCommandMessages, startTyping } from '../../lib/helpers';
@@ -35,6 +35,7 @@ export default class TermsOfServiceCommand extends Command {
 					validate: (subCommand: string) => {
 						const allowedSubcommands = ['channel', 'title', 'body', 'list', 'status'];
 						if (allowedSubcommands.indexOf(subCommand) !== -1) return true
+						
 						return 'You provided an invalid subcommand.';
 					}
 				},
@@ -97,7 +98,6 @@ export default class TermsOfServiceCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const modlogChannel = msg.guild.settings.get('modlogChannel', null);
 		const tosChannel: string = await msg.guild.settings.get('tosChannel', null);
 		const tosMessageCount: number = await msg.guild.settings.get('tosMessageCount') || 0;
 		const tosMessages: ITOSMessage[] = [];
@@ -122,6 +122,7 @@ export default class TermsOfServiceCommand extends Command {
 					const channelID = (args.item as Channel).id;
 					if (tosChannel && tosChannel === channelID) {
 						stopTyping(msg);
+
 						return sendSimpleEmbeddedMessage(msg, `Terms of Service channel already set to <#${channelID}>!`, 3000);
 					} else {
 						msg.guild.settings.set('tosChannel', channelID)
@@ -131,11 +132,13 @@ export default class TermsOfServiceCommand extends Command {
 									**Member:** ${msg.author.tag} (${msg.author.id})
 									**Action:** Terms of Service Channel set to <#${channelID}>}
 								`);
+								this.sendSuccess(msg, tosEmbed);
 							})
 							.catch((err: Error) => this.catchError(msg, args, err));
 					}
 				} else {
 					stopTyping(msg);
+
 					return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
 				}
 				break;
@@ -153,6 +156,7 @@ export default class TermsOfServiceCommand extends Command {
 						stopTyping(msg);
 					} else {
 						stopTyping(msg);
+
 						return sendSimpleEmbeddedError(msg, 'There are no terms of service messages set.', 3000);
 					}
 				}
@@ -166,6 +170,7 @@ export default class TermsOfServiceCommand extends Command {
 						tosEmbedUpsertMessage = 'added';
 					} else if (args.item > tosMessageCount + 2) {
 						stopTyping(msg);
+
 						return sendSimpleEmbeddedError(msg, 'You must supply either an already existing message number or one greater than the current count.', 3000);
 					}
 
@@ -174,7 +179,7 @@ export default class TermsOfServiceCommand extends Command {
 							body: '',
 							id: item - 1,
 							title: ''
-						};
+						}
 						tosMessages.push(message);
 					}
 				}
@@ -188,6 +193,7 @@ export default class TermsOfServiceCommand extends Command {
 
 						await msg.guild.settings.set('tosMessageCount', tosMessages.length)
 							.catch((err: Error) => this.catchError(msg, args, err));
+						this.sendSuccess(msg, tosEmbed);
 					})
 					.catch((err: Error) => this.catchError(msg, args, err));
 				break;
@@ -200,6 +206,7 @@ export default class TermsOfServiceCommand extends Command {
 						tosEmbedUpsertMessage = 'added';
 					} else if (args.item > tosMessageCount + 2) {
 						stopTyping(msg);
+
 						return sendSimpleEmbeddedError(msg, 'You must supply either an already existing message number or one greater than the current count.', 3000);
 					}
 					if (!message) {
@@ -207,7 +214,7 @@ export default class TermsOfServiceCommand extends Command {
 							body: '',
 							id: item - 1,
 							title: ''
-						};
+						}
 						tosMessages.push(message);
 					}
 				}
@@ -221,6 +228,7 @@ export default class TermsOfServiceCommand extends Command {
 						
 						await msg.guild.settings.set('tosMessageCount', tosMessages.length)
 							.catch((err: Error) => this.catchError(msg, args, err));
+						this.sendSuccess(msg, tosEmbed);
 					})
 					.catch((err: Error) => this.catchError(msg, args, err));
 				break;
@@ -232,21 +240,14 @@ export default class TermsOfServiceCommand extends Command {
 				});
 				tosEmbed.description = `Channel: <#${tosChannel}>\nMessage List:\n`;
 				tosEmbed.description += tosList;
-				break;
-			}
-		}
-		
-		// Log the event in the mod log
-		if (msg.guild.settings.get('modlogEnabled', true)) {
-			if (args.subCommand.toLowerCase() !== 'status') {
-				modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, tosEmbed);
-			}
-		}
-		deleteCommandMessages(msg, this.client);
-		stopTyping(msg);
 
-		// Send the success response
-		return msg.embed(tosEmbed);
+				deleteCommandMessages(msg, this.client);
+				stopTyping(msg);
+
+				// Send the success response
+				return msg.embed(tosEmbed);
+			}
+		}
 	}
 	
 	private catchError(msg: CommandoMessage, args: { subCommand: string, item: Channel | number, text: string }, err: Error) {
@@ -259,6 +260,7 @@ export default class TermsOfServiceCommand extends Command {
 			**Input:** \`TOS ${args.subCommand.toLowerCase()}\`
 		`;
 		let tosUserWarn = '';
+
 		switch (args.subCommand.toLowerCase()) {
 			case 'channel': {
 				tosUserWarn = `Failed setting new tos channel to <#${args.item}>!`;
@@ -277,9 +279,24 @@ export default class TermsOfServiceCommand extends Command {
 			**Error Message:** ${err}`;
 		
 		stopTyping(msg);
+
 		// Emit warn event for debugging
 		msg.client.emit('warn', tosWarn);
+
 		// Inform the user the command failed
 		return sendSimpleEmbeddedError(msg, tosUserWarn);
+	}
+
+	private sendSuccess(msg: CommandoMessage, embed: MessageEmbed): Promise<Message | Message[]> {
+		// Log the event in the mod log
+		if (msg.guild.settings.get('modlogEnabled', true)) {
+			modLogMessage(msg, embed);
+		}
+
+		deleteCommandMessages(msg, this.client);
+		stopTyping(msg);
+
+		// Send the success response
+		return msg.embed(embed);
 	}
 }

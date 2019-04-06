@@ -11,7 +11,7 @@ const times: any = {
 	hard: 15000,
 	impossible: 5000,
 	medium: 20000
-};
+}
 
 /**
  * Starts a game of Typing Test.
@@ -73,6 +73,7 @@ export default class TypingTestCommand extends Command {
 			time: time
 		});
 		if (!msgs.size || msgs.first().content !== sentence) { return msg.reply('Sorry! You lose!'); }
+		
 		return msg.reply(`Nice job! 10/10! You deserve some cake! (Took ${(Date.now() - now) / 1000} seconds)`);
 	}
 }

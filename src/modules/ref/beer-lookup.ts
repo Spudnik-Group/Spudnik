@@ -78,11 +78,14 @@ export default class BrewCommand extends Command {
 		return rp(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(args.query)}&key=${breweryDbApiKey}`)
 			.then((content) => {
 				const response = JSON.parse(content);
+
 				if (response.data) {
 					const result = response.data[0];
+
 					if (result.description) {
 						const fields: any = [];
 						let thumbnail = '';
+
 						if (result.labels) {
 							thumbnail = result.labels.medium;
 						}
@@ -90,15 +93,18 @@ export default class BrewCommand extends Command {
 						if (result.images) {
 							thumbnail = result.images.squareMedium;
 						}
+
 						if (result.name) {
 							brewEmbed.title = result.name;
 						}
+
 						if (result.style) {
 							fields.push({
 								name: `Style: ${result.style.name}`,
 								value: result.style.description
 							});
 						}
+
 						if (result.abv) {
 							fields.push({
 								inline: true,
@@ -106,6 +112,7 @@ export default class BrewCommand extends Command {
 								value: `${result.abv}%`
 							});
 						}
+
 						if (result.ibu) {
 							fields.push({
 								inline: true,
@@ -133,11 +140,13 @@ export default class BrewCommand extends Command {
 						if (fields !== []) {
 							brewEmbed.fields = fields;
 						}
+
 						if (thumbnail !== '') {
 							brewEmbed.thumbnail = {
 								url: thumbnail
-							};
+							}
 						}
+
 						brewEmbed.setDescription(`\n${result.description}\n\n`);
 					} else {
 						brewEmbed.setDescription(`${response.data[0].name} is a good beer/brewery, but I don't have a good way to describe it.`);
@@ -154,7 +163,9 @@ export default class BrewCommand extends Command {
 			})
 			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command ref:brew: ${err}`);
+
 				stopTyping(msg);
+
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			});
 	}

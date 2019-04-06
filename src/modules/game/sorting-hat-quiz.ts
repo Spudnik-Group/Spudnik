@@ -51,12 +51,15 @@ export default class SortingHatQuizCommand extends Command {
 				h: 0,
 				r: 0,
 				s: 0
-			};
+			}
+
 			const blacklist: any[] = [];
 			const questionNums = ['2', '3', '4', '5', '6', '7'];
 			let turn = 1;
+
 			while (turn < 9) {
 				let question;
+
 				if (turn === 1) {
 					question = questions.first[Math.floor(Math.random() * questions.first.length)];
 				} else if (turn === 8) {
@@ -68,30 +71,40 @@ export default class SortingHatQuizCommand extends Command {
 					blacklist.push(value);
 					question = group[Math.floor(Math.random() * group.length)];
 				}
+
 				const answers = shuffle(question.answers);
+
 				await msg.say(stripIndents`
 					**${turn}**. ${question.text}
 					${answers.map((answer, i) => `- **${choices[i]}**. ${answer.text}`).join('\n')}
 				`);
-				const filter = (res: any) =>
-					res.author.id === msg.author.id && choices.slice(0, answers.length).includes(res.content.toUpperCase());
+
+				const filter = (res: any) => res.author.id === msg.author.id && choices.slice(0, answers.length).includes(res.content.toUpperCase());
 				const choice: any = await msg.channel.awaitMessages(filter, {
 					max: 1,
 					time: 120000
 				});
+
 				if (!choice.size) { return msg.say('Oh no, you ran out of time! Too bad.'); }
+
 				const answer = answers[choices.indexOf(choice.first().content.toUpperCase())];
+
 				for (const [house, amount] of Object.entries(answer.points)) { points[house] += amount; }
+
 				++turn;
 			}
+
 			const house = Object.keys(points).sort((a, b) => points[b] - points[a])[0];
+
 			this.playing.delete(msg.channel.id);
+
 			return msg.say(stripIndents`
 				You are a member of... **${houses[house]}**!
 				_${descriptions[house]}_
 			`);
 		} catch (err) {
 			this.playing.delete(msg.channel.id);
+			
 			throw err;
 		}
 	}

@@ -50,6 +50,7 @@ export default class LmgtfyCommand extends Command {
 	 */
 	public async run(msg: CommandoMessage, args: { query: string }): Promise<Message | Message[]> {
 		deleteCommandMessages(msg, this.client);
+		
 		return sendSimpleEmbeddedMessage(msg, `<http://lmgtfy.com/?q=${encodeURI(args.query)}>`);
 	}
 }

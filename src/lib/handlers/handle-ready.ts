@@ -4,7 +4,7 @@ import { CommandoClient } from 'discord.js-commando';
 import { Configuration } from 'src/lib/spudnik';
 import * as rp from 'request-promise';
 
-export async function handleReady(version: string, client: CommandoClient, config: Configuration) {
+export const handleReady = async(version: string, client: CommandoClient, config: Configuration) => {
 	const statuses: PresenceData[] = [
 		{
 			activity: {

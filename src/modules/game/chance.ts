@@ -47,6 +47,7 @@ export default class ChanceCommand extends Command {
 	public async run(msg: CommandoMessage, args: { chance: string }): Promise<Message | Message[]> {
 		const loss = Math.floor(Math.random() * +args.chance);
 		if (!loss) { return msg.reply('Nice job! 10/10! You deserve some cake!'); }
+		
 		return msg.reply('Nope, sorry, you lost.');
 	}
 }

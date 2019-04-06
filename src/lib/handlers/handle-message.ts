@@ -1,7 +1,7 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { CommandoClient } from 'discord.js-commando';
 
-export function handleMessage(message: Message, client: CommandoClient) {
+export const handleMessage = (message: Message, client: CommandoClient) => {
 	if (message.guild) {
 		if (client.provider.get(message.guild.id, 'adblockEnabled', false)) {
 			if (message.content.search(/(discord\.gg\/.+|discordapp\.com\/invite\/.+)/i) !== -1) {

@@ -60,7 +60,8 @@ export default class StatsCommand extends Command {
 			.addField('❯ General Stats', stripIndents`
 						• Guilds: ${this.client.guilds.size}
 						• Channels: ${this.client.channels.size}
-						• Users: ${this.client.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b)}
+						• Users: ${this.client.guilds.map((guild: Guild) => guild.memberCount)
+							.reduce((a: number, b: number): number => a + b)}
 						• Commands: ${this.client.registry.commands.size}`, true)
 			.addField('❯ Home Server', 'https://spudnik.io/support', true)
 			.addField('❯ Source Code', 'https://github.com/Spudnik-Group/Spudnik', true)
@@ -73,12 +74,16 @@ export default class StatsCommand extends Command {
 	}
 
 	private parseDependencies() {
-		return Object.entries(dependencies).map((dep: any) => {
-			if (dep[1].startsWith('github:')) {
-				const repo = dep[1].replace('github:', '').split('/');
-				return `[${dep[0]}](https://github.com/${repo[0]}/${repo[1].replace(/#.+/, '')})`;
-			}
-			return `[${dep[0]}](https://npmjs.com/${dep[0]})`;
-		}).join(', ');
+		return Object.entries(dependencies)
+			.map((dep: any) => {
+				if (dep[1].startsWith('github:')) {
+					const repo = dep[1].replace('github:', '').split('/');
+
+					return `[${dep[0]}](https://github.com/${repo[0]}/${repo[1].replace(/#.+/, '')})`;
+				}
+				
+				return `[${dep[0]}](https://npmjs.com/${dep[0]})`;
+			})
+			.join(', ');
 	}
 }

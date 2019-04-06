@@ -1,5 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { Message, MessageEmbed, TextChannel } from 'discord.js';
+import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
 import { modLogMessage } from '../../lib/custom-helpers';
@@ -33,6 +33,7 @@ export default class EmbedColorCommand extends Command {
 						} else if (color === '') {
 							return true;
 						}
+						
 						return 'You provided an invalid color hex number. Please try again.';
 					}
 				}
@@ -88,6 +89,7 @@ export default class EmbedColorCommand extends Command {
 						**Member:** ${msg.author.tag} (${msg.author.id})
 						**Action:** Embed Color Reset
 					`);
+
 					return this.sendSuccess(msg, embedColorEmbed);
 				})
 				.catch((err: Error) => this.catchError(msg, args, err));
@@ -99,6 +101,7 @@ export default class EmbedColorCommand extends Command {
 						**Member:** ${msg.author.tag} (${msg.author.id})
 						**Action:** Embed Color set to ${args.color}
 					`);
+
 					return this.sendSuccess(msg, embedColorEmbed);
 				})
 				.catch((err: Error) => this.catchError(msg, args, err));
@@ -108,14 +111,17 @@ export default class EmbedColorCommand extends Command {
 	private catchError(msg: CommandoMessage, args: { color: string }, err: Error) {
 		// Emit warn event for debugging
 		msg.client.emit('warn', stripIndents`
-		Error occurred in \`embedcolor\` command!
-		**Server:** ${msg.guild.name} (${msg.guild.id})
-		**Author:** ${msg.author.tag} (${msg.author.id})
-		**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
-		**Input:** \`${args.color}\`
-		**Error Message:** ${err}`);
+			Error occurred in \`embedcolor\` command!
+			**Server:** ${msg.guild.name} (${msg.guild.id})
+			**Author:** ${msg.author.tag} (${msg.author.id})
+			**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+			**Input:** \`${args.color}\`
+			**Error Message:** ${err}
+		`);
+
 		// Inform the user the command failed
 		stopTyping(msg);
+
 		if (!args.color) {
 			return sendSimpleEmbeddedError(msg, 'There was an error resetting the embed color.');
 		} else {
@@ -124,11 +130,11 @@ export default class EmbedColorCommand extends Command {
 	}
 
 	private sendSuccess(msg: CommandoMessage, embed: MessageEmbed): Promise<Message | Message[]> {
-		const modlogChannel = msg.guild.settings.get('modlogChannel', null);
 		// Log the event in the mod log
 		if (msg.guild.settings.get('modlogEnabled', true)) {
-			modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, embed);
+			modLogMessage(msg, embed);
 		}
+
 		deleteCommandMessages(msg, this.client);
 		stopTyping(msg);
 

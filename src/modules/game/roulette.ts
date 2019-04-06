@@ -40,6 +40,7 @@ export default class RouletteCommand extends Command {
 						if (columns.includes(space.toLowerCase())) { return true; }
 						if (parity.includes(space.toLowerCase())) { return true; }
 						if (colors.includes(space.toLowerCase())) { return true; }
+						
 						return oneLine`
 							Invalid space, please enter either a specific number from 0-36, a range of dozens (e.g. 1-12), a range of
 							halves (e.g. 1-18), a column (e.g. 1st), a color (e.g. black), or a parity (e.g. even).
@@ -69,12 +70,14 @@ export default class RouletteCommand extends Command {
 		const num: number = Math.floor(Math.random() * 37);
 		const color = num ? red.includes(num) ? 'RED' : 'BLACK' : null;
 		const win = this.verifyWin(args.space, num);
+		
 		return msg.reply(`The result is **${num}${color ? ` ${color}` : ''}**. ${win ? 'You win!' : 'You lose...'}`);
 	}
 
 	private verifyWin(choice: string, result: any) {
 		if (dozens.includes(choice) || halves.includes(choice)) {
 			const range = choice.split('-');
+			
 			return result >= range[0] && range[1] >= result;
 		}
 		if (colors.includes(choice)) {
@@ -86,6 +89,7 @@ export default class RouletteCommand extends Command {
 		const num = Number.parseInt(choice, 10);
 		if (numbers.includes(num)) { return result === num; }
 		if (!result) { return false; }
+		
 		return false;
 	}
 }

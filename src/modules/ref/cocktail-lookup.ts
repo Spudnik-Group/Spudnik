@@ -3,7 +3,7 @@ import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import * as rp from 'request-promise';
 import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
 
 /**
  * Post information about a cocktail.
@@ -71,6 +71,7 @@ export default class CocktailCommand extends Command {
 		return rp(`http://www.thecocktaildb.com/api/json/v1/1/search.php?s=${encodeURIComponent(args.query)}`)
 			.then((content) => {
 				const response = JSON.parse(content);
+				
 				if (typeof response !== 'undefined' && response.drinks !== null) {
 					const result = response.drinks[0];
 					const ingredients = this.findSimilarProps(result, 'strIngredient');
@@ -79,11 +80,13 @@ export default class CocktailCommand extends Command {
 					if (result.strInstructions) {
 						const fields = [];
 						let thumbnail = '';
+
 						if (result.strDrinkThumb) {
 							thumbnail = result.strDrinkThumb;
 						} else {
 							thumbnail = 'https://emojipedia-us.s3.amazonaws.com/thumbs/240/twitter/103/tropical-drink_1f379.png';
 						}
+
 						if (result.strGlass) {
 							fields.push({
 								inline: true,
@@ -91,6 +94,7 @@ export default class CocktailCommand extends Command {
 								value: result.strGlass
 							});
 						}
+
 						if (ingredients) {
 							let ingredientsList = '';
 							ingredients.forEach((value: any, index: number) => {
@@ -108,6 +112,7 @@ export default class CocktailCommand extends Command {
 								value: ingredientsList
 							});
 						}
+
 						fields.push({
 							name: 'Instructions:',
 							value: result.strInstructions
@@ -131,14 +136,16 @@ export default class CocktailCommand extends Command {
 			})
 			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command ref:cocktail: ${err}`);
+
 				stopTyping(msg);
+
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			});
 	}
 
 	private findSimilarProps(obj: any, propName: string): any {
 		return Object.keys(obj).filter(k => {
-			return k.indexOf(propName) == 0;
+			return k.indexOf(propName) === 0;
 		}).map(key => {
 			return obj[key]
 		});

@@ -41,6 +41,7 @@ export default class SupportCommand extends Command {
 	 */
 	public async run(msg: CommandoMessage): Promise<Message | Message[]> {
 		deleteCommandMessages(msg, this.client);
+		
 		return sendSimpleEmbeddedMessage(msg, '<https://spudnik.io/support>');
 	}
 }

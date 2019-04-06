@@ -63,6 +63,7 @@ export default class YearFactCommand extends Command {
 			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command random:year-fact: ${err}`);
 				stopTyping(msg);
+				
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			});
 	}

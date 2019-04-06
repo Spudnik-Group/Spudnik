@@ -50,46 +50,66 @@ export default class EmojiEmojiRevolutionCommand extends Command {
 	 */
 	public async run(msg: CommandoMessage, args: { opponent: User }): Promise<Message | Message[]> {
 		if (args.opponent.bot) { return msg.reply('Bots may not be played against.'); }
+		
 		if (args.opponent.id === msg.author.id) { return msg.reply('You may not play against yourself.'); }
+
 		if (this.playing.has(msg.channel.id)) { return msg.reply('Only one fight may be occurring per channel.'); }
+
 		this.playing.add(msg.channel.id);
+
 		try {
 			await msg.say(`${args.opponent}, do you accept this challenge?`);
+
 			const verification = await verify(msg.channel, args.opponent);
+
 			if (!verification) {
 				this.playing.delete(msg.channel.id);
+
 				return msg.say('Looks like they declined...');
 			}
+
 			let turn = 0;
 			let aPts = 0;
 			let oPts = 0;
+
 			while (turn < 10) {
 				++turn;
 				const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+
 				await msg.say(emoji);
+
 				const filter = (res: any) => [msg.author.id, args.opponent.id].includes(res.author.id) && res.content === emoji;
 				const win: any = await msg.channel.awaitMessages(filter, {
 					max: 1,
 					time: 30000
 				});
+
 				if (!win.size) {
 					await msg.say('Hmm... No one even tried that round.');
 					continue;
 				}
+
 				const winner = win.first().author;
+
 				if (winner.id === msg.author.id) { ++aPts; } else { ++oPts; }
+
 				await msg.say(stripIndents`
 					${winner} won this round!
 					**${msg.author.username}**: ${aPts}
 					**${args.opponent.username}**: ${oPts}
 				`);
 			}
+
 			this.playing.delete(msg.channel.id);
+
 			if (aPts === oPts) { return msg.say('It\'s a tie!'); }
+
 			const userWin = aPts > oPts;
+			
 			return msg.say(`You win ${userWin ? msg.author : args.opponent} with ${userWin ? aPts : oPts} points!`);
 		} catch (err) {
 			this.playing.delete(msg.channel.id);
+
 			throw err;
 		}
 	}

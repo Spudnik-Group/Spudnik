@@ -41,6 +41,7 @@ export default class SlotsCommand extends Command {
 	public async run(msg: CommandoMessage): Promise<Message | Message[]> {
 		const fishID = Math.floor(Math.random() * 10) + 1;
 		let rarity;
+		
 		if (fishID < 5) {
 			rarity = 'junk';
 		} else if (fishID < 8) {
@@ -50,8 +51,10 @@ export default class SlotsCommand extends Command {
 		} else {
 			rarity = 'rare';
 		}
+
 		const fish = fishes[rarity];
 		const worth = randomRange(fish.min, fish.max);
+		
 		return msg.reply(`You caught a ${fish.symbol}. I bet it'd sell for around $${worth}.`);
 	}
 }

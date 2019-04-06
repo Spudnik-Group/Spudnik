@@ -46,6 +46,7 @@ export default class SlotsCommand extends Command {
 				Wow! You won! Great job... er... luck!
 			`);
 		}
+		
 		return msg.reply(stripIndents`
 			${slotOne}|${slotTwo}|${slotThree}
 			Aww... You lost... Guess it's just bad luck, huh?

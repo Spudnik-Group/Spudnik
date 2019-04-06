@@ -62,11 +62,13 @@ export default class UnloadCommandCommand extends Command {
 				this.client.emit('warn', 'Error when broadcasting command unload to other shards');
 				this.client.emit('error', err);
 				await msg.reply(`Unloaded \`${args.command.name}\` command, but failed to unload on other shards.`);
+				
 				return null;
 			}
 		}
 
 		await msg.reply(`Unloaded \`${args.command.name}\` command${this.client.shard ? ' on all shards' : ''}.`);
+		
 		return null;
 	}
 }

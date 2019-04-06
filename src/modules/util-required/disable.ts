@@ -52,6 +52,7 @@ export default class DisableCommandCommand extends Command {
      */
 	public hasPermission(msg: CommandoMessage): boolean {
 		if(!msg.guild) return this.client.isOwner(msg.author);
+
 		return msg.member.hasPermission('ADMINISTRATOR') || this.client.isOwner(msg.author);
 	}
 
@@ -70,12 +71,15 @@ export default class DisableCommandCommand extends Command {
 				`The \`${args.cmdOrGrp.name}\` ${group ? 'command' : 'group'} is already disabled.`
 			);
 		}
+
 		if(args.cmdOrGrp.guarded) {
 			return msg.reply(
 				`You cannot disable the \`${args.cmdOrGrp.name}\` ${group ? 'command' : 'group'}.`
 			);
 		}
+
 		args.cmdOrGrp.setEnabledIn(msg.guild, false);
+		
 		return msg.reply(`Disabled the \`${args.cmdOrGrp.name}\` ${group ? 'command' : 'group'}.`);
 	}
 }

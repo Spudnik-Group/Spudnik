@@ -43,7 +43,9 @@ export default class HangmanCommand extends Command {
 		if (this.playing.has(msg.channel.id)) {
 			return msg.reply('Only one game may be occurring per channel.');
 		}
+		
 		this.playing.add(msg.channel.id);
+
 		try {
 			const word = words[Math.floor(Math.random() * words.length)].toLowerCase();
 			let points = 0;
@@ -52,6 +54,7 @@ export default class HangmanCommand extends Command {
 			const confirmation: string[] = [];
 			const incorrect: string[] = [];
 			const display = new Array(word.length).fill('_');
+			
 			while (word.length !== confirmation.length && points < 6) {
 				await msg.say(stripIndents`
 					${displayText === null ? 'Here we go!' : displayText ? 'Good job!' : 'Nope!'}
@@ -68,20 +71,28 @@ export default class HangmanCommand extends Command {
 				`);
 				const filter = (res: any) => {
 					const choice = res.content.toLowerCase();
+					
 					return res.author.id === msg.author.id && !confirmation.includes(choice) && !incorrect.includes(choice);
-				};
+				}
+
 				const guess: any = await msg.channel.awaitMessages(filter, {
 					max: 1,
 					time: 30000
 				});
+
 				if (!guess.size) {
 					await msg.say('Sorry, time is up!');
+					
 					break;
 				}
+
 				const choice = guess.first().content.toLowerCase();
+
 				if (choice === 'end') { break; }
+
 				if (choice.length > 1 && choice === word) {
 					guessed = true;
+					
 					break;
 				} else if (word.includes(choice)) {
 					displayText = true;
@@ -98,9 +109,11 @@ export default class HangmanCommand extends Command {
 			}
 			this.playing.delete(msg.channel.id);
 			if (word.length === confirmation.length || guessed) { return msg.say(`You won, it was ${word}!`); }
+
 			return msg.say(`Too bad... It was ${word}...`);
 		} catch (err) {
 			this.playing.delete(msg.channel.id);
+			
 			return msg.reply(`Oh no, an error occurred: \`${err.message}\`. Try again later!`);
 		}
 	}

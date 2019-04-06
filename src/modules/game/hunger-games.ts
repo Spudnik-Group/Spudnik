@@ -52,25 +52,35 @@ export default class HungerGamesCommand extends Command {
 	 */
 	public async run(msg: CommandoMessage, args: { tributes: string[] }): Promise<Message | Message[]> {
 		if (args.tributes.length < 2) { return msg.say(`...${args.tributes[0]} wins, as they were the only tribute.`); }
+		
 		if (args.tributes.length > 24) { return msg.reply('Please do not enter more than 24 tributes.'); }
+
 		if (new Set(args.tributes).size !== args.tributes.length) { return msg.reply('Please do not enter the same tribute twice.'); }
+
 		if (this.playing.has(msg.channel.id)) { return msg.reply('Only one game may be occurring per channel.'); }
+
 		this.playing.add(msg.channel.id);
+
 		try {
 			let sun = true;
 			let turn = 0;
 			let bloodbath = true;
 			const remaining = new Set(shuffle(args.tributes));
+			
 			while (remaining.size > 1) {
 				if (!bloodbath && sun) { ++turn; }
+				
 				const sunEvents = bloodbath ? events.bloodbath : sun ? events.day : events.night;
 				const results: any[] = [];
 				const deaths: any[] = [];
+				
 				this.makeEvents(remaining, sunEvents, deaths, results);
+				
 				let text = stripIndents`
 					__**${bloodbath ? 'Bloodbath' : sun ? `Day ${turn}` : `Night ${turn}`}**__:
 					${results.join('\n')}
 				`;
+				
 				if (deaths.length) {
 					text += '\n\n';
 					text += stripIndents`
@@ -78,21 +88,31 @@ export default class HungerGamesCommand extends Command {
 						${deaths.join('\n')}
 					`;
 				}
+				
 				text += '\n\n_Proceed?_';
+				
 				await msg.say(text);
+				
 				const verification = await verify(msg.channel, msg.author, 120000);
+				
 				if (!verification) {
 					this.playing.delete(msg.channel.id);
+					
 					return msg.say('See you next time!');
 				}
+				
 				if (!bloodbath) { sun = !sun; }
+				
 				if (bloodbath) { bloodbath = false; }
 			}
+			
 			this.playing.delete(msg.channel.id);
 			const remainingArr = Array.from(remaining);
+			
 			return msg.say(`And the winner is... ${remainingArr[0]}!`);
 		} catch (err) {
 			this.playing.delete(msg.channel.id);
+			
 			throw err;
 		}
 	}

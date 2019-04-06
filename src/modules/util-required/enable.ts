@@ -52,6 +52,7 @@ export default class EnableCommandCommand extends Command {
      */
 	public hasPermission(msg: CommandoMessage): boolean {
 		if(!msg.guild) return this.client.isOwner(msg.author);
+
 		return msg.member.hasPermission('ADMINISTRATOR') || this.client.isOwner(msg.author);
 	}
 
@@ -74,7 +75,9 @@ export default class EnableCommandCommand extends Command {
 				}.`
 			);
 		}
+
 		args.cmdOrGrp.setEnabledIn(msg.guild, true);
+		
 		return msg.reply(
 			`Enabled the \`${args.cmdOrGrp.name}\` ${group ? 'command' : 'group'}${
 				group && !group.isEnabledIn(msg.guild) ?
