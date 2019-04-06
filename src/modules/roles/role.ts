@@ -9,15 +9,15 @@ import * as format from 'date-fns/format';
  * Manage roles including self-assigning, listing, and setting a default role.
  *
  * @export
- * @class RoleManagementCommands
+ * @class RoleCommand
  * @extends {Command}
  */
-export default class RoleManagementCommands extends Command {
+export default class RoleCommand extends Command {
 	/**
-	 * Creates an instance of RoleManagementCommands.
+	 * Creates an instance of RoleCommand.
 	 *
 	 * @param {CommandoClient} client
-	 * @memberof RoleManagementCommands
+	 * @memberof RoleCommand
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {

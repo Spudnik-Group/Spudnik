@@ -59,6 +59,7 @@ export default class PlayingCommand extends Command {
 	public async run(msg: CommandoMessage, args: { game: string }): Promise<Message | Message[]> {
 		const gameSearch = args.game.toLowerCase();
 		const gamePlayers: { [id: string] : Array<GuildMember> } = {};
+		
 		msg.guild.members.forEach((member: GuildMember) => {
 			if (member.user.bot || !member.presence.activity) {
 				return;
@@ -84,6 +85,7 @@ export default class PlayingCommand extends Command {
 				}).map(member => `<@${member.id}> - ${member.presence.activity.name}`)
 				.join('\n');
 			}).join('\n');
+		
 		deleteCommandMessages(msg, this.client);
 		return sendSimpleEmbeddedMessage(msg, sortedMessage);
 	}

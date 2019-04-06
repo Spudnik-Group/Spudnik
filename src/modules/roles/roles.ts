@@ -50,6 +50,7 @@ export default class RoleCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		});
+		
 		let guildAssignableRoles: string[] = await msg.client.provider.get(msg.guild.id, 'assignableRoles', []);
 		let guildDefaultRoles: string[] = await msg.client.provider.get(msg.guild.id, 'defaultRoles', []);
 		
@@ -60,9 +61,11 @@ export default class RoleCommand extends Command {
 
 			if (roles.length > 0) {
 				const rolesListOut: string[] = [];
+
 				roles.forEach((i: Role) => {
 					rolesListOut.push(`* ${i.name} - ${i.members.size} members`);
 				});
+
 				roleEmbed.fields.push({
 					inline: true,
 					name: 'Assignable Roles',
@@ -70,14 +73,17 @@ export default class RoleCommand extends Command {
 				});
 			}
 		}
+
 		if (Array.isArray(guildDefaultRoles) && guildDefaultRoles.length > 0) {
 			const roles: Role[] = msg.guild.roles.filter((role) => guildDefaultRoles.includes(role.id)).array();
 
 			if (roles.length > 0) {
 				const rolesListOut: string[] = [];
+
 				roles.forEach((i: Role) => {
 					rolesListOut.push(`* ${i.name}`);
 				});
+
 				roleEmbed.fields.push({
 					inline: true,
 					name: 'Default Roles',
@@ -85,6 +91,7 @@ export default class RoleCommand extends Command {
 				});
 			}
 		}
+
 		roleEmbed.setFooter('Use the `iam`/`iamnot` commands to manage your roles');
 
 		if (Array.isArray(roleEmbed.fields) && roleEmbed.fields.length === 0) {

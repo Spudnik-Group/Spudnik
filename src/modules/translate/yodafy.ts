@@ -8,15 +8,15 @@ import { getEmbedColor } from '../../lib/custom-helpers';
  * Convert a statement to be structured as Yoda speaks.
  *
  * @export
- * @class YodifyCommand
+ * @class YodafyCommand
  * @extends {Command}
  */
-export default class YodifyCommand extends Command {
+export default class YodafyCommand extends Command {
 	/**
-	 * Creates an instance of YodifyCommand.
+	 * Creates an instance of YodafyCommand.
 	 *
 	 * @param {CommandoClient} client
-	 * @memberof YodifyCommand
+	 * @memberof YodafyCommand
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
@@ -29,13 +29,13 @@ export default class YodifyCommand extends Command {
 			],
 			description: 'Translates text to Yoda speak.',
 			details: stripIndents`
-				syntax: \`!yodify <text>\`
+				syntax: \`!yodafy <text>\`
 			`,
-			examples: ['!yodify Give me better input than this'],
+			examples: ['!yodafy Give me better input than this'],
 			group: 'translate',
 			guildOnly: true,
-			memberName: 'yodify',
-			name: 'yodify',
+			memberName: 'yodafy',
+			name: 'yodafy',
 			throttling: {
 				duration: 3,
 				usages: 2
@@ -44,12 +44,12 @@ export default class YodifyCommand extends Command {
 	}
 
 	/**
-	 * Run the "yodify" command.
+	 * Run the "yodafy" command.
 	 *
 	 * @param {CommandoMessage} msg
 	 * @param {{ query: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
-	 * @memberof YodifyCommand
+	 * @memberof YodafyCommand
 	 */
 	public async run(msg: CommandoMessage, args: { query: string }): Promise<Message | Message[]> {
 		const yodaEmbed: MessageEmbed = new MessageEmbed({
@@ -66,14 +66,14 @@ export default class YodifyCommand extends Command {
 
 		return require('soap').createClient('http://www.yodaspeak.co.uk/webservice/yodatalk.php?wsdl', (err: Error, client: any) => {
 			if (err) {
-				msg.client.emit('warn', `Error in command translate:yodify: ${err}`);
+				msg.client.emit('warn', `Error in command translate:yodafy: ${err}`);
 				stopTyping(msg);
 				return sendSimpleEmbeddedError(msg, 'Lost, I am. Not found, the web service is. Hrmm...', 3000);
 			}
 
 			client.yodaTalk({ inputText: args.query }, (err: Error, result: any) => {
 				if (err) {
-					msg.client.emit('warn', `Error in command translate:yodify: ${err}`);
+					msg.client.emit('warn', `Error in command translate:yodafy: ${err}`);
 					stopTyping(msg);
 					return sendSimpleEmbeddedError(msg, 'Confused, I am. Disturbance in the force, there is. Hrmm...', 3000);
 				}

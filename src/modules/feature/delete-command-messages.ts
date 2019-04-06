@@ -21,6 +21,9 @@ export default class DeleteCommandMessagesCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
+			aliases: [
+				'deletecommandmessages'
+			],
 			args: [
 				{
 					key: 'subCommand',
@@ -36,18 +39,18 @@ export default class DeleteCommandMessagesCommand extends Command {
 			clientPermissions: ['MANAGE_MESSAGES'],
 			description: 'Enable or disable the Delete Command Messages feature.',
 			details: stripIndents`
-				syntax: \`!deletecommandmessages <enable|disable>\`
+				syntax: \`!delete-command-messages <enable|disable>\`
 
 				Supplying no subcommand returns an error.
 				MANAGE_MESSAGES permission required.`,
 			examples: [
-				'!deletecommandmessages enable',
-				'!deletecommandmessages disable'
+				'!delete-command-messages enable',
+				'!delete-command-messages disable'
 			],
 			group: 'feature',
 			guildOnly: true,
-			memberName: 'deletecommandmessages',
-			name: 'deletecommandmessages',
+			memberName: 'delete-command-messages',
+			name: 'delete-command-messages',
 			throttling: {
 				duration: 3,
 				usages: 2
@@ -115,11 +118,11 @@ export default class DeleteCommandMessagesCommand extends Command {
 	private catchError(msg: CommandoMessage, args: { subCommand: string }, err: Error) {
 		// Emit warn event for debugging
 		msg.client.emit('warn', stripIndents`
-		Error occurred in \`deletecommandmessages\` command!
+		Error occurred in \`delete-command-messages\` command!
 		**Server:** ${msg.guild.name} (${msg.guild.id})
 		**Author:** ${msg.author.tag} (${msg.author.id})
 		**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
-		**Input:** \`deletecommandmessages ${args.subCommand.toLowerCase()}\`
+		**Input:** \`delete-command-messages ${args.subCommand.toLowerCase()}\`
 		**Error Message:** ${err}`);
 		// Inform the user the command failed
 		stopTyping(msg);
