@@ -90,6 +90,7 @@ export class Spudnik {
 				['default', 'Default'],
 				['feature', 'Feature'],
 				['game', 'Game'],
+				['gaming', 'Gaming'],
 				['misc', 'Misc'],
 				['mod', 'Moderation'],
 				['random', 'Random'],
