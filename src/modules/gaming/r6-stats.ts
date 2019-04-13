@@ -9,22 +9,22 @@ const scoutID: string = process.env.spud_scoutid;
 const scoutSecret: string = process.env.spud_scoutsecret;
 
 /**
- * Returns Fortnite stats for a user on a specific platform.
+ * Returns Rainbow 6: Siege stats for a user on a specific platform.
  *
  * @export
- * @class FortniteStatsCommand
+ * @class R6StatsCommand
  * @extends {Command}
  */
-export default class FortniteStatsCommand extends Command {
+export default class R6StatsCommand extends Command {
 	/**
-	 * Creates an instance of FortniteStatsCommand.
+	 * Creates an instance of R6StatsCommand.
 	 *
 	 * @param {CommandoClient} client
-	 * @memberof FortniteStatsCommand
+	 * @memberof R6StatsCommand
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			aliases: ['fortnite'],
+			aliases: ['r6', 'rainbow6-stats'],
 			args: [
 				{
 					key: 'platform',
@@ -46,20 +46,20 @@ export default class FortniteStatsCommand extends Command {
 					type: 'string'
 				}
 			],
-			description: 'Returns Fortnite stats for a user on a specific platform. Uses the TrackerNetwork API.',
+			description: 'Returns Rainbow 6: Siege stats for a user on a specific platform. Uses the TrackerNetwork API.',
 			details: stripIndents`
-				syntax: \`!fortnite-stats <platform> <username>\`
+				syntax: \`!r6-stats <platform> <username>\`
 				
 				Platform must be one of: xbl, pc, psn
 			`,
 			examples: [
-				'!fortnite-stats xbl naterchrdsn',
-				'!fortnite-stats pc nebula-grey'
+				'!r6-stats xbl naterchrdsn',
+				'!r6-stats pc nebula-grey'
 			],
 			group: 'gaming',
 			guildOnly: true,
-			memberName: 'fortnite-stats',
-			name: 'fortnite-stats',
+			memberName: 'r6-stats',
+			name: 'r6-stats',
 			throttling: {
 				duration: 3,
 				usages: 2
@@ -68,19 +68,19 @@ export default class FortniteStatsCommand extends Command {
 	}
 
 	/**
-	 * Run the "fornite-stats" command.
+	 * Run the "r6-stats" command.
 	 *
 	 * @param {CommandoMessage} msg
 	 * @param {{ platform: string, username: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
-	 * @memberof FortniteStatsCommand
+	 * @memberof R6StatsCommand
 	 */
 	public async run(msg: CommandoMessage, args: { platform: string, username: string }): Promise<Message | Message[]> {
-		const platform = args.platform === 'pc' ? 'epic' : args.platform;
-		const fortniteEmbed: MessageEmbed = new MessageEmbed({
+		const platform = args.platform === 'pc' ? 'uplay' : args.platform;
+		const r6Embed: MessageEmbed = new MessageEmbed({
 			author: {
-				icon_url: 'https://i.imgur.com/HJo2RkT.png',
-				name: 'Fortnite Stats',
+				icon_url: 'https://i.imgur.com/BsQ6ebY.jpg',
+				name: 'R6 Stats',
 				url: 'https://scoutsdk.com/'
 			},
 			color: getEmbedColor(msg),
@@ -96,26 +96,26 @@ export default class FortniteStatsCommand extends Command {
 		});
 
 		startTyping(msg);
-		const search = await Scout.players.search(args.username, platform, null, games.fortnite.id, true, true);
+		const search = await Scout.players.search(args.username, platform, null, games.r6siege.id, true, true);
 		if (search.results.length) {
 			const matches = search.results.filter((result: any) => result.player);
 			if (matches.length) {
 				// TODO: change this to allow selection of a result
 				const firstMatch = matches[0];
-				const playerStats = await Scout.players.get(games.fortnite.id, firstMatch.player.playerId, '*');
-				fortniteEmbed.setDescription(stripIndents`
+				const playerStats = await Scout.players.get(games.r6siege.id, firstMatch.player.playerId, '*');
+				r6Embed.setDescription(stripIndents`
 					**${firstMatch.persona.handle}**
 
 					${playerStats.metadata[1].name}: ${playerStats.metadata[1].displayValue}
 				`);
 				playerStats.stats.forEach((statObj: any) => {
 					if (!statObj.displayValue) return;
-					fortniteEmbed.addField(statObj.metadata.name, statObj.displayValue, true);
+					r6Embed.addField(statObj.metadata.name, statObj.displayValue, true);
 				});
 				deleteCommandMessages(msg, this.client);
 				stopTyping(msg);
 
-				return msg.embed(fortniteEmbed);
+				return msg.embed(r6Embed);
 			} else {
 				stopTyping(msg);
 	

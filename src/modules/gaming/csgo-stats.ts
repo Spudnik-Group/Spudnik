@@ -9,57 +9,36 @@ const scoutID: string = process.env.spud_scoutid;
 const scoutSecret: string = process.env.spud_scoutsecret;
 
 /**
- * Returns Fortnite stats for a user on a specific platform.
+ * Returns CSGO stats for a user on a specific platform.
  *
  * @export
- * @class FortniteStatsCommand
+ * @class CSGOStatsCommand
  * @extends {Command}
  */
-export default class FortniteStatsCommand extends Command {
+export default class CSGOStatsCommand extends Command {
 	/**
-	 * Creates an instance of FortniteStatsCommand.
+	 * Creates an instance of CSGOStatsCommand.
 	 *
 	 * @param {CommandoClient} client
-	 * @memberof FortniteStatsCommand
+	 * @memberof CSGOStatsCommand
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			aliases: ['fortnite'],
+			aliases: ['csgo'],
 			args: [
-				{
-					key: 'platform',
-					parse: (platform: string) => {
-						return platform.toLowerCase();
-					},
-					prompt: 'What platform should I look on?\nOptions are:\n* xbl\n* pc\n* psn',
-					type: 'string',
-					validate: (platform: string) => {
-						const allowedSubCommands = ['xbl', 'pc', 'psn'];
-						if (allowedSubCommands.indexOf(platform.toLowerCase()) !== -1) return true;
-
-						return 'You provided an invalid platform.';
-					}
-				},
 				{
 					key: 'username',
 					prompt: 'What is the profile name I\'m looking up?',
 					type: 'string'
 				}
 			],
-			description: 'Returns Fortnite stats for a user on a specific platform. Uses the TrackerNetwork API.',
-			details: stripIndents`
-				syntax: \`!fortnite-stats <platform> <username>\`
-				
-				Platform must be one of: xbl, pc, psn
-			`,
-			examples: [
-				'!fortnite-stats xbl naterchrdsn',
-				'!fortnite-stats pc nebula-grey'
-			],
+			description: 'Returns CS:GO stats for a user. Uses the TrackerNetwork API.',
+			details: 'syntax: \`!csgo-stats <username>\`',
+			examples: ['!csgo-stats phreakslayer'],
 			group: 'gaming',
 			guildOnly: true,
-			memberName: 'fortnite-stats',
-			name: 'fortnite-stats',
+			memberName: 'csgo-stats',
+			name: 'csgo-stats',
 			throttling: {
 				duration: 3,
 				usages: 2
@@ -68,19 +47,18 @@ export default class FortniteStatsCommand extends Command {
 	}
 
 	/**
-	 * Run the "fornite-stats" command.
+	 * Run the "csgo-stats" command.
 	 *
 	 * @param {CommandoMessage} msg
-	 * @param {{ platform: string, username: string }} args
+	 * @param {{ username: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
-	 * @memberof FortniteStatsCommand
+	 * @memberof CSGOStatsCommand
 	 */
-	public async run(msg: CommandoMessage, args: { platform: string, username: string }): Promise<Message | Message[]> {
-		const platform = args.platform === 'pc' ? 'epic' : args.platform;
-		const fortniteEmbed: MessageEmbed = new MessageEmbed({
+	public async run(msg: CommandoMessage, args: { username: string }): Promise<Message | Message[]> {
+		const csgoEmbed: MessageEmbed = new MessageEmbed({
 			author: {
-				icon_url: 'https://i.imgur.com/HJo2RkT.png',
-				name: 'Fortnite Stats',
+				icon_url: 'https://i.imgur.com/UBjioW8.png',
+				name: 'CS:GO Stats',
 				url: 'https://scoutsdk.com/'
 			},
 			color: getEmbedColor(msg),
@@ -96,26 +74,26 @@ export default class FortniteStatsCommand extends Command {
 		});
 
 		startTyping(msg);
-		const search = await Scout.players.search(args.username, platform, null, games.fortnite.id, true, true);
+		const search = await Scout.players.search(args.username, 'steam', null, games.csgo.id, true, true);
 		if (search.results.length) {
 			const matches = search.results.filter((result: any) => result.player);
 			if (matches.length) {
 				// TODO: change this to allow selection of a result
 				const firstMatch = matches[0];
-				const playerStats = await Scout.players.get(games.fortnite.id, firstMatch.player.playerId, '*');
-				fortniteEmbed.setDescription(stripIndents`
+				const playerStats = await Scout.players.get(games.csgo.id, firstMatch.player.playerId, '*');
+				csgoEmbed.setDescription(stripIndents`
 					**${firstMatch.persona.handle}**
 
 					${playerStats.metadata[1].name}: ${playerStats.metadata[1].displayValue}
 				`);
 				playerStats.stats.forEach((statObj: any) => {
 					if (!statObj.displayValue) return;
-					fortniteEmbed.addField(statObj.metadata.name, statObj.displayValue, true);
+					csgoEmbed.addField(statObj.metadata.name, statObj.displayValue, true);
 				});
 				deleteCommandMessages(msg, this.client);
 				stopTyping(msg);
 
-				return msg.embed(fortniteEmbed);
+				return msg.embed(csgoEmbed);
 			} else {
 				stopTyping(msg);
 	
