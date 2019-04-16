@@ -11,7 +11,7 @@ class OverwatchStatsArguments {
 }
 
 /**
- * Post information about a player's overwatch stats.
+ * Returns Overwatch stats for a user on a specific platform and region.
  *
  * @export
  * @class OverwatchStatsCommand
@@ -30,42 +30,38 @@ export default class OverwatchStatsCommand extends Command {
 				{
 					key: 'platform',
 					parse: (platform: string): string => platform.toLowerCase(),
-					prompt: 'Choose a platform: pc | xbl | psn',
+					prompt: 'What platform should I look on?\nOptions are:\n* xbl\n* pc\n* psn',
 					type: 'string',
-					validate: (platform: string): boolean | string => {
-						const options: Array<string> = ['pc', 'xbl', 'psn'];
-						if (options.indexOf(platform) === -1) {
-							return `Platform must be one of the following: ${options.join(', ')}.`
-						}
-						
-						return true;
+					validate: (platform: string) => {
+						const allowedSubCommands = ['xbl', 'pc', 'psn'];
+						if (allowedSubCommands.indexOf(platform.toLowerCase()) !== -1) return true;
+
+						return 'You provided an invalid platform.';
 					}
 				},
 				{
 					key: 'battletag',
 					parse: (battletag: string): string => battletag.replace('#', '-'),
-					prompt: 'Enter the battletag (case-sensitive)?',
+					prompt: 'What is the battletag I\'m looking up? (case-sensitive)',
 					type: 'string'
 				},
 				{
 					default: 'us',
 					key: 'region',
 					parse: (region: string): string => region.toLowerCase(),
-					prompt: 'Choose a region: us | eu | kr | cn | global',
+					prompt: 'What region should I look in?\nOptions are:\n* us\n* eu\n* kr\n* cn\n* global',
 					type: 'string',
 					validate: (region: string) => {
 						const options: Array<string> = ['us', 'eu', 'kr', 'cn', 'global'];
-						if (options.indexOf(region) === -1) {
-							return `Region must be one of the following: ${options.join(', ')}.`
-						}
+						if (options.indexOf(region) !== -1) return true;
 						
-						return true;
+						return 'You provided an invalid region.';
 					}
 				}
 			],
-			description: 'Returns overwatch stats about a player.',
+			description: 'Returns Overwatch stats for a user on a specific platform and region. ',
 			details: stripIndents`
-				syntax: \`!overwatch-stats <platform: pc|xb1|psn> <battletag> <region: eu|us>\`
+				syntax: \`!overwatch-stats <platform: pc|xbl|psn> <battletag> <region: eu|us|kr|cn|global>\`
 			`,
 			examples: [
 				'!overwatch-stats pc Mythos-11321',
@@ -93,12 +89,13 @@ export default class OverwatchStatsCommand extends Command {
 	public async run(msg: CommandoMessage, args: OverwatchStatsArguments): Promise<Message | Message[]> {
 		startTyping(msg);
 
-		// Make the api call.
-		getProfile(args.platform, args.region, args.battletag.replace('#', '-'), (error: Error, profile: Profile) => {
-			stopTyping(msg);
-
+		return getProfile(args.platform, args.region, args.battletag.replace('#', '-'), (error: Error, profile: Profile) => {
 			if (error) {
-				return sendSimpleEmbeddedError(msg, `The api returned the following error: ${error.message}.`, 3000);
+				msg.client.emit('warn', `Error in command gaming:overwatch-stats: ${error}`);
+
+				stopTyping(msg);
+
+				return sendSimpleEmbeddedError(msg, 'Error with the API call. Please try again later.', 3000);
 			} else if (profile) {
 				const overwatchEmbed: MessageEmbed = new MessageEmbed({
 					author: {
@@ -167,14 +164,15 @@ export default class OverwatchStatsCommand extends Command {
 						}
 					);
 				}
+				stopTyping(msg);
 				deleteCommandMessages(msg, this.client);
 
 				return msg.embed(overwatchEmbed);
 			} else {
-				return sendSimpleEmbeddedError(msg, 'Something is weird. No profile or errors were found.', 3000);
+				stopTyping(msg);
+
+				return sendSimpleEmbeddedError(msg, 'Unable to find anyone with that player name, check the spelling and try again.', 3000);
 			}
 		});
-
-		return sendSimpleEmbeddedMessage(msg, 'Searching for overwatch stats.');
 	}
 }
