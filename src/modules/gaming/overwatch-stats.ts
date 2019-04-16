@@ -1,7 +1,7 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { startTyping, stopTyping, deleteCommandMessages, sendSimpleEmbeddedError } from '../../lib/helpers';
+import { startTyping, stopTyping, deleteCommandMessages, sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 import { getProfile, Profile, PLATFORM, REGION } from 'overwatch-api';
 
 class OverwatchStatsArguments { 
@@ -94,7 +94,7 @@ export default class OverwatchStatsCommand extends Command {
 		startTyping(msg);
 
 		// Make the api call.
-		await getProfile(args.platform, args.region, args.battletag.replace('#', '-'), (error: Error, profile: Profile) => {
+		getProfile(args.platform, args.region, args.battletag.replace('#', '-'), (error: Error, profile: Profile) => {
 			stopTyping(msg);
 
 			if (error) {
@@ -173,6 +173,8 @@ export default class OverwatchStatsCommand extends Command {
 			} else {
 				return sendSimpleEmbeddedError(msg, 'Something is weird. No profile or errors were found.', 3000);
 			}
-		})
+		});
+
+		return sendSimpleEmbeddedMessage(msg, 'Searching for overwatch stats.');
 	}
 }
