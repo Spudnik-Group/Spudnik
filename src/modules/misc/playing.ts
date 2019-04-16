@@ -82,11 +82,13 @@ export default class PlayingCommand extends Command {
 					gamePlayers[game].sort((a, b) => {
 						const aName = a.displayName.toLowerCase();
 						const bName = b.displayName.toLowerCase();
+
 						return aName < bName ? -1 : aName > bName ? 1 : 0;
 					}).map(member => `<@${ member.id }>`)
 					.join('\n');
 			}).join('\n\n');
 		deleteCommandMessages(msg, this.client);
+		
 		return sendSimpleEmbeddedMessage(
 			msg, 
 			sortedMessage || (gameSearch ? `Looks like nobody is playing anything like \`${gameSearch}\`.` : 'Nobody is playing anything right now.')

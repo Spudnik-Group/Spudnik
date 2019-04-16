@@ -44,6 +44,8 @@ export default class GoCommand extends Command {
 			description: 'Displays a link to launch a steam game.',
 			details: stripIndents`
 				syntax: \`!go gameName\`
+
+				Only a few games have been added at this time, submit a ticket on our GitHub to request specific ones.
 			`,
 			examples: [
 				'!go csgo',
