@@ -96,6 +96,7 @@ export class Spudnik {
 				['random', 'Random'],
 				['ref', 'Reference'],
 				['roles', 'Role'],
+				['stats', 'Stats'],
 				['translate', 'Translate'],
 				['util', 'Utility'],
 				['util-required', 'Required Utility']
