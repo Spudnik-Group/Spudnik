@@ -35,7 +35,6 @@
 			"allow-empty-functions"
 		],
 		"no-shadowed-variable": false,
-		"no-unused-variable": true,
 		"no-var-keyword": true,
 		"object-literal-shorthand": [
 			true,

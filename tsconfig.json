@@ -12,6 +12,7 @@
 		"removeComments": true,
 		"strict": false,
 		"noImplicitAny": true,
+		"noUnusedLocals": true,
 		"moduleResolution": "node",
 		"baseUrl": ".",
 		"experimentalDecorators": true

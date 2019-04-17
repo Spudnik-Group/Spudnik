@@ -18,5 +18,5 @@ console.log(chalk.green(`LD - Node version: ${process.version}`));
 console.log(chalk.green(`LDA - Discord.js version: ${Discord.version}`));
 
 process.chdir(__dirname);
-//tslint:disable-next-line
+// @ts-ignore
 const bot: Spudnik = new Spudnik(Config);

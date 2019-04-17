@@ -22,7 +22,7 @@ const settingsSchema: Schema = new Schema({
  * @extends {SettingProvider}
  */
 export class MongoSettingsProvider extends SettingProvider {
-//tslint:disable-next-line
+	// @ts-ignore
 	private db: Connection;
 	private settings: Map<string, any>;
 	private listeners: Map<string, any>;
