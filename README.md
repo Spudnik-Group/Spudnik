@@ -1,26 +1,28 @@
 # Spudnik ![Spudnik!][img-icon]
-Spudnik is a free and open source Discord chat bot focused on guild management and adding interesting and useful functionality to your server. It was built on top of some of the most popular and widely used frameworks for extendibility, and written with organization and stability in mind. It also ships with ZERO weeb commands/references! [Let's get you started. Invite Spudnik to your server now!][url-invite]
+Spudnik is a free and open source Discord chat bot focused on guild management and adding interesting and useful functionality to your server. It was built on top of some of the most popular and widely used frameworks for extendibility, and written with organization and stability in mind. It also ships with ZERO weeb commands/references!
+
+[Let's get you started. Invite Spudnik to your server now!][url-invite]
 
 [![Uptime][img-uptime-robot]][url-homepage] [![Current Release][img-current-release]][url-current-release] [![discord.js][img-discord-js]][url-discord-js] [![Commando][img-commando]][url-commando] [![License][img-license]][url-license] [![Build Status][img-build-status]][url-build-status] ![Code Style: tslint][img-code-style]
 
 [![Discord Bot List][img-discord-bot-list]][url-discord-bot-list]
 
 ## Features include:
-- kick/ban/warn users!
+- No weeb commands! Yay!
+- Moderation (kick/ban/warn/adblock/modlog, etc)
+- Changeable prefix, disable/enable commands and command groups per server
 - 23 text-based games
-- move/prune messages!
+- Move/prune messages
 - Terms of Service/Rules system
-- Adblock feature
-- stat lookup commands for 8 games!
+- Stat lookup commands for 8 games!
 - Greet/Heckle new and leaving users
-- Modlog of actions
 - Self assignable roles
 - Starboard for saving noteworthy messages
-- beer/brewery/cocktail lookup
-- ellaborate d20 rolling system
-- dictionary, urbandictionary, and wikipedia reference
-- cat, dog, date, Chuck Norris, and Will Smith fact lookups
-- xkcd comic lookup
+- Beer/brewery/cocktail lookup
+- Ellaborate d20 rolling system
+- Dictionary, urbandictionary, and wikipedia reference
+- Fact commands (cat, dog, date, Chuck Norris, Will Smith, etc)
+- Xkcd comic lookup
 - and much more!
 
 For a full list of features and associated commands please look at our [documentation][url-docs-commands].
