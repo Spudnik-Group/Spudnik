@@ -50,7 +50,7 @@ export default class CODWWIIStatsCommand extends Command {
 			details: stripIndents`
 				syntax: \`!codwwii-stats <platform> <username>\`
 				
-				Platform must be one of: xbl, pc, psn
+				Platform must be one of: pc, psn, xbl
 			`,
 			examples: [
 				'!codwwii-stats xbl naterchrdsn',

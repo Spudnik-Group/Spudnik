@@ -50,7 +50,7 @@ export default class R6StatsCommand extends Command {
 			details: stripIndents`
 				syntax: \`!r6-stats <platform> <username>\`
 				
-				Platform must be one of: xbl, pc, psn
+				Platform must be one of: pc, psn, xbl
 			`,
 			examples: [
 				'!r6-stats xbl naterchrdsn',
