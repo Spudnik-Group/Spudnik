@@ -116,6 +116,7 @@ export class Spudnik {
 		this.Discord.registry
 			.registerDefaultTypes()
 			.registerGroups([
+				['convert', 'Convert'],
 				['default', 'Default'],
 				['feature', 'Feature'],
 				['game', 'Game'],
