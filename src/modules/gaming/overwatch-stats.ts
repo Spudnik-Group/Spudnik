@@ -90,48 +90,45 @@ export default class OverwatchStatsCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof OverwatchStatsCommand
 	 */
+	
 	constructor(client: CommandoClient) {
 		super(client, {
 			args: [
 				{
 					key: 'platform',
 					parse: (platform: string): string => platform.toLowerCase(),
-					prompt: 'Choose a platform: pc | xbl | psn',
+					prompt: 'What platform should I look on?\nOptions are:\n* xbl\n* pc\n* psn',
 					type: 'string',
-					validate: (platform: string): boolean | string => {
-						const options: Array<string> = ['pc', 'xbl', 'psn'];
-						if (options.indexOf(platform) === -1) {
-							return `Platform must be one of the following: ${options.join(', ')}.`
-						}
-						
-						return true;
+					validate: (platform: string) => {
+						const allowedSubCommands = ['xbl', 'pc', 'psn'];
+						if (allowedSubCommands.indexOf(platform.toLowerCase()) !== -1) return true;
+
+						return 'You provided an invalid platform.';
 					}
 				},
 				{
 					key: 'battletag',
 					parse: (battletag: string): string => battletag.replace('#', '-'),
-					prompt: 'Enter the battletag (case-sensitive)?',
+					prompt: 'What is the battletag I\'m looking up? (case-sensitive)',
 					type: 'string'
 				},
 				{
 					default: 'us',
 					key: 'region',
 					parse: (region: string): string => region.toLowerCase(),
-					prompt: 'Choose a region: us | eu | kr | cn | global',
+					prompt: 'What region should I look in?\nOptions are:\n* us\n* eu\n* kr\n* cn\n* global',
 					type: 'string',
 					validate: (region: string) => {
 						const options: Array<string> = ['us', 'eu', 'kr', 'cn', 'global'];
-						if (options.indexOf(region) === -1) {
-							return `Region must be one of the following: ${options.join(', ')}.`
-						}
+						if (options.indexOf(region) !== -1) return true;
 						
-						return true;
+						return 'You provided an invalid region.';
 					}
 				}
 			],
-			description: 'Returns overwatch stats about a player.',
+			description: 'Returns Overwatch stats for a user on a specific platform and region. ',
 			details: stripIndents`
-				syntax: \`!overwatch-stats <platform: pc|xb1|psn> <battletag> <region: eu|us>\`
+				syntax: \`!overwatch-stats <platform: pc|xbl|psn> <battletag> <region: eu|us|kr|cn|global>\`
 			`,
 			examples: [
 				'!overwatch-stats pc Mythos-11321',
