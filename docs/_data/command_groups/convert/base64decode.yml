@@ -1,2 +1,2 @@
 usage:
- - '!base64decode something'
+ - '!base64decode c29tZXRoaW5n'

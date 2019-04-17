@@ -32,7 +32,7 @@ export default class Base64DecodeCommand extends Command {
 			],
 			description: 'Base64 decodes a string',
 			examples: [
-				'!base64decode something'
+				'!base64decode c29tZXRoaW5n'
 			],
 			group: 'convert',
 			guildOnly: true,
