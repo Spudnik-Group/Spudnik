@@ -42,7 +42,7 @@ export default class AcceptCommand extends Command {
 				'!accept',
 				'!accept #channelMention'
 			],
-			group: 'feature',
+			group: 'roles',
 			guildOnly: true,
 			memberName: 'accept',
 			name: 'accept',
