@@ -19,7 +19,11 @@ const { version }: { version: string } = require('../../package');
 const PORT = process.env.PORT || 1337;
 
 export interface Configuration {
+	'bfdApiKey': string,
+	'bodApiKey': string,
 	'botListUpdateInterval': number;
+	'botsggApiKey': string,
+	'dbApiKey': string,
 	'dblApiKey': string;
 	'debug': boolean;
 	'mongoDB': string;

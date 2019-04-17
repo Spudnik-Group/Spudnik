@@ -1,13 +1,14 @@
 import { Channel, GuildChannel, TextChannel, Message, MessageEmbed } from 'discord.js';
 import { CommandoClient } from 'discord.js-commando';
 
-const starboardGuildBlacklist: string[] = process.env.STARBOARD_GUILD_BLACKLIST ? process.env.STARBOARD_GUILD_BLACKLIST.split(',') : [];
+const botlistGuilds: string[] = process.env.spud_botlist_guilds ? process.env.spud_botlist_guilds.split(',') : [];
 
 export const handleRaw = async(event: any, client: CommandoClient) => {
 	if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(event.t)) { return; } //Ignore non-emoji related actions
 	const { d: data } = event;
 	const channel: Channel = await client.channels.get(data.channel_id);
-	if (starboardGuildBlacklist.includes((channel as TextChannel).guild.id)) { return; } //Guild is on Blacklist, ignore.
+	if (!(channel as TextChannel).guild) { return; } //Reaction not in a guild
+	if (botlistGuilds.includes((channel as TextChannel).guild.id)) { return; } //Guild is on Blacklist, ignore.
 	if ((channel as TextChannel).nsfw) { return; } //Ignore NSFW channels
 	if (!(channel as TextChannel).permissionsFor(client.user.id).has('READ_MESSAGE_HISTORY')) { return; } //Bot doesn't have the right permissions to retrieve the message
 	const message: Message = await (channel as TextChannel).messages.fetch(data.message_id);

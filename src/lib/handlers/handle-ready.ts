@@ -92,10 +92,10 @@ const updateStatus = (client: CommandoClient, statuses: PresenceData[], statusIn
  */
 const updateBotListStats = (config: Configuration, client: CommandoClient): void => {
 	// DISCORD.BOTS.gg
-	if (process.env.BOTSGG_TOKEN) {
+	if (config.botsggApiKey) {
 		rp({
 			body: { guildCount: client.guilds.size },
-			headers: { Authorization: process.env.BOTSGG_TOKEN },
+			headers: { Authorization: config.botsggApiKey },
 			method: 'POST',
 			uri: `https://discord.bots.gg/api/v1/bots/${client.user.id}/stats`
 		})
@@ -104,10 +104,10 @@ const updateBotListStats = (config: Configuration, client: CommandoClient): void
 	}
 
 	// BOTS.ONDISCORD.xyz
-	if (process.env.BOD_TOKEN) {
+	if (config.bodApiKey) {
 		rp({
 			body: { guildCount: client.guilds.size },
-			headers: { Authorization: process.env.BOD_TOKEN },
+			headers: { Authorization: config.bodApiKey },
 			method: 'POST',
 			uri: `https://bots.ondiscord.xyz/bot-api/bots/${client.user.id}/guilds`
 		})
@@ -116,10 +116,10 @@ const updateBotListStats = (config: Configuration, client: CommandoClient): void
 	}
 
 	// DISCORDBOTS.org
-	if (process.env.DB_TOKEN) {
+	if (config.dbApiKey) {
 		rp({
 			body: { server_count: client.guilds.size },
-			headers: { Authorization: process.env.DB_TOKEN },
+			headers: { Authorization: config.dbApiKey },
 			method: 'POST',
 			uri: `https://discordbots.org/api/bots/${client.user.id}/stats`
 		})
@@ -128,10 +128,10 @@ const updateBotListStats = (config: Configuration, client: CommandoClient): void
 	}
 
 	// BOTSFORDISCORD.com
-	if (process.env.BFD_TOKEN) {
+	if (config.bfdApiKey) {
 		rp({
 			body: { server_count: client.guilds.size },
-			headers: { Authorization: process.env.BOTSFORDISCORD_TOKEN },
+			headers: { Authorization: config.bfdApiKey },
 			method: 'POST',
 			uri: `https://botsfordiscord.com/api/bots/${client.user.id}/stats`
 		})
@@ -140,10 +140,10 @@ const updateBotListStats = (config: Configuration, client: CommandoClient): void
 	}
 
 	// DISCORDBOTLIST.com
-	if (process.env.DBL_TOKEN) {
+	if (config.dblApiKey) {
 		rp({
 			body: { guilds: client.guilds.size, users: client.users.size },
-			headers: { Authorization: `Bot ${process.env.DBL_TOKEN}` },
+			headers: { Authorization: `Bot ${config.dblApiKey}` },
 			method: 'POST',
 			uri: `https://discordbotlist.com/api/bots/${client.user.id}/stats`
 		})

@@ -1,8 +1,11 @@
 import { GuildMember, TextChannel } from 'discord.js';
 import { CommandoClient } from 'discord.js-commando';
 
+const botlistGuilds: string[] = process.env.spud_botlist_guilds ? process.env.spud_botlist_guilds.split(',') : [];
+
 export const handleGuildMemberRemove = (member: GuildMember, client: CommandoClient) => {
 	const guild = member.guild;
+	if (botlistGuilds.includes(guild.id)) { return; } //Guild is on Blacklist, ignore.
 	const goodbyeEnabled = client.provider.get(guild, 'goodbyeEnabled', false);
 	const goodbyeChannel = client.provider.get(guild, 'goodbyeChannel');
 
