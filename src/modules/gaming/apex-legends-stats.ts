@@ -122,7 +122,7 @@ export default class ApexLegendsStatsCommand extends Command {
 			author: {
 				icon_url: 'https://i.imgur.com/lgC4xLZ.png',
 				name: 'Apex Legends Stats',
-				url: `https://apex.tracker.gg/profile/${args.platform}/${args.username}`
+				url: `https://apex.tracker.gg/profile/${args.platform}/${encodeURI(args.username)}`
 			},
 			color: getEmbedColor(msg),
 			description: '',
