@@ -4,12 +4,6 @@ import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { startTyping, stopTyping, deleteCommandMessages, sendSimpleEmbeddedError } from '../../lib/helpers';
 import * as rp from 'request-promise';
 
-class OverwatchStatsArguments { 
-	battletag: string; 
-	platform: string;
-	region: string;
-}
-
 interface Sportsmanship {
 	value: number;
 	rate: number;
@@ -153,7 +147,7 @@ export default class OverwatchStatsCommand extends Command {
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof OverwatchStatsCommand
 	 */
-	public async run(msg: CommandoMessage, args: OverwatchStatsArguments): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { platform: string, battletag: string, region: string }): Promise<Message | Message[]> {
 		startTyping(msg);
 
 		return rp(`https://overwatchy.com/profile/${args.platform}/${args.region}/${encodeURI(args.battletag)}`)
