@@ -19,7 +19,12 @@ interface ApexLegendsResponse {
 
 interface ApexLegendsResponseData {
 	children: Array<ApexLegendsResponseCharacterData>;
+	metadata: ApexLegendsResponseMetadata;
 	stats: Array<ApexLegendsResponseStat>;
+}
+
+interface ApexLegendsResponseMetadata {
+	platformUserHandle: string;
 }
 
 interface ApexLegendsResponseCharacterData {
@@ -121,11 +126,7 @@ export default class ApexLegendsStatsCommand extends Command {
 			},
 			color: getEmbedColor(msg),
 			description: '',
-			fields: [{
-				inline: true,
-				name: 'User',
-				value: args.username
-			}],
+			fields: [],
 			footer: {
 				text: 'powered by apex.tracker.gg'
 			},
@@ -144,6 +145,12 @@ export default class ApexLegendsStatsCommand extends Command {
 			if (response.data.children && response.data.children.length) {
 				apexEmbed.thumbnail.url = response.data.children[0].metadata.icon || ''
 			}
+
+			apexEmbed.fields.push({
+				inline: true,
+				name: 'User',
+				value: response.data.metadata.platformUserHandle
+			});
 
 			response.data.stats.forEach((stat) => {
 				apexEmbed.fields.push({
