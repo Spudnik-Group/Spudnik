@@ -27,12 +27,11 @@ Spudnik is a free and open source Discord chat bot focused on guild management a
 
 For a full list of features and associated commands please look at our [documentation][url-docs-commands].
 
-## Most requested features:
-[![Feature Requests][img-feathub]][url-feathub]
+[Feature Requests][url-feathub]
 
-We are constantly improving and developing this bot, as you can see from our [Project Board][url-github-project-board]. Please feel free to make suggestions or help out!
+[Project Board][url-github-project-board]
 
-Invite the bot to your server: [here][url-invite].
+[Server Invite][url-invite].
 
 [url-github]: https://github.com/Spudnik-Group/Spudnik
 [url-docs]: https://docs.spudnik.io/
@@ -62,7 +61,6 @@ Invite the bot to your server: [here][url-invite].
 [img-discord-bot-list]: https://discordbots.org/api/widget/398591330806398989.svg
 [url-discord-bot-list]: https://discordbots.org/bot/398591330806398989
 
-[img-feathub]: https://feathub.com/Spudnik-Group/Spudnik?format=svg
 [url-feathub]: https://feathub.com/Spudnik-Group/Spudnik
 
 [img-discord-js]: https://img.shields.io/badge/library-discord.js-blue.svg?style=flat-square
