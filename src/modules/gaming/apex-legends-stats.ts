@@ -86,7 +86,7 @@ export default class ApexLegendsStatsCommand extends Command {
 			details: stripIndents`
 				syntax: \`!apex-legends-stats <platform> <username>\`
 				
-				Platform must be one of: xbl, pc, psn
+				Platform must be one of: ${Object.keys(platforms).join(', ')}
 			`,
 			examples: [
 				'!apex-legends-stats xbl naterchrdsn',
