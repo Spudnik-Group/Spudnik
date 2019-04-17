@@ -8,7 +8,7 @@ const filterLevels = ['Off', 'No Role', 'Everyone'];
 const verificationLevels = ['None', 'Low', 'Medium', '(╯°□°）╯︵ ┻━┻', '┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻'];
 
 /**
- * Post statistics about the bot.
+ * Returns statistics about the server.
  *
  * @export
  * @class ServerCommand

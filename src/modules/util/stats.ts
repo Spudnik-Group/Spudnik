@@ -9,7 +9,7 @@ import { deleteCommandMessages } from '../../lib/helpers';
 const { version, dependencies }: { version: string, dependencies: any } = require('../../../package');
 
 /**
- * Post statistics about the bot.
+ * Returns statistics about the bot.
  *
  * @export
  * @class StatsCommand

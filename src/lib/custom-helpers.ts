@@ -24,10 +24,7 @@ export const getEmbedColor = (msg: CommandoMessage): number => {
  * Log the message to the corresponding guild's mod log channel
  * 
  * @export
- * @param {CommandoMessage} msg 
- * @param {CommandoGuild} guild
- * @param {string} outChannelID
- * @param {TextChannel} TextChannel
+ * @param {CommandoMessage} msg
  * @param {MessageEmbed} embed
  * @returns Promise<Message | Message[]>
  */
