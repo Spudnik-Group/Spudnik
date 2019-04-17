@@ -1,4 +1,4 @@
-import { Message } from 'discord.js';
+import { Message, MessageEmbed } from 'discord.js';
 import { CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from './custom-helpers';
 
@@ -22,6 +22,70 @@ export const sendSimpleEmbeddedMessage = (msg: CommandoMessage, text: string, ti
 		},
 		color: getEmbedColor(msg),
 		description: `${text}`
+	});
+
+	if (timeout) {
+		promise.then((reply: Message | Message[]) => {
+			if (reply instanceof Message) {
+				reply.delete({ timeout: timeout }).catch(() => undefined);
+			} else if (reply instanceof Array) {
+				msg.channel.bulkDelete(reply);
+			}
+		});
+	}
+	
+	return promise;
+}
+
+/**
+ * Post a message.
+ *
+ * @export
+ * @param {CommandoMessage} msg
+ * @param {string} text
+ * @param {MessageEmbed['author']} author
+ * @param {number} [timeout]
+ * @returns Promise<Message | Message[]>
+ */
+export const sendSimpleEmbeddedMessageWithAuthor = (msg: CommandoMessage, text: string, author: MessageEmbed['author'], timeout?: number) => {
+	const promise: Promise<Message | Message[]> = msg.embed({
+		author: author,
+		color: getEmbedColor(msg),
+		description: `${text}`
+	});
+
+	if (timeout) {
+		promise.then((reply: Message | Message[]) => {
+			if (reply instanceof Message) {
+				reply.delete({ timeout: timeout }).catch(() => undefined);
+			} else if (reply instanceof Array) {
+				msg.channel.bulkDelete(reply);
+			}
+		});
+	}
+	
+	return promise;
+}
+
+/**
+ * Post a message.
+ *
+ * @export
+ * @param {CommandoMessage} msg
+ * @param {string} text
+ * @param {string} title
+ * @param {number} [timeout]
+ * @returns Promise<Message | Message[]>
+ */
+export const sendSimpleEmbeddedMessageWithTitle = (msg: CommandoMessage, text: string, title: string, timeout?: number) => {
+	const promise: Promise<Message | Message[]> = msg.embed({
+		author: {
+			icon_url: msg.client.user.displayAvatarURL,
+			name: `${msg.client.user.username}`
+		},
+		color: getEmbedColor(msg),
+		description: `${text}`,
+		title: `${title}`
 	});
 
 	if (timeout) {

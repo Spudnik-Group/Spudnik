@@ -1,0 +1,3 @@
+usage:
+ - '!bin2dec 100'
+ - '!bin2dec 0101'
