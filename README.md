@@ -31,7 +31,7 @@ For a full list of features and associated commands please look at our [document
 
 [Project Board][url-github-project-board]
 
-[Server Invite][url-invite].
+[Server Invite][url-invite]
 
 [url-github]: https://github.com/Spudnik-Group/Spudnik
 [url-docs]: https://docs.spudnik.io/
