@@ -143,7 +143,7 @@ export default class OverwatchStatsCommand extends Command {
 	 * Run the "overwatch-stats" command.
 	 *
 	 * @param {CommandoMessage} msg
-	 * @param {OverwatchStatsArguments} args
+	 * @param {{ platform: string, battletag: string, region: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof OverwatchStatsCommand
 	 */
