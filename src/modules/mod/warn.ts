@@ -49,8 +49,7 @@ export default class WarnCommand extends Command {
 				},
 				{
 					key: 'points',
-					prompt:
-						'How many warning points should I give this member?',
+					prompt: 'How many warning points should I give this member?',
 					type: 'integer'
 				},
 				{
@@ -127,6 +126,24 @@ export default class WarnCommand extends Command {
 						if (err) this.catchError(msg, args, err);
 					});
 				}
+
+				// Set up embed message
+				warnEmbed.setDescription(stripIndents`
+					**Member:** ${args.member.user.tag} (${args.member.id})
+					**Action:** Warn
+					**Previous Warning Points:** ${previousPoints}
+					**Current Warning Points:** ${args.points + previousPoints}
+					**Reason:** ${args.reason !== '' ? args.reason : 'No reason has been added by the moderator'}`);
+				
+				// Log the event in the mod log
+				if (msg.guild.settings.get('modlogEnabled', true)) {
+					modLogMessage(msg, warnEmbed);
+				}
+				deleteCommandMessages(msg, this.client);
+				stopTyping(msg);
+	
+				// Send the success response
+				return msg.embed(warnEmbed);
 			} else {
 				// No document for current guild
 				let newWarning = new warningModel({
@@ -142,25 +159,24 @@ export default class WarnCommand extends Command {
 				newWarning.save((err: any, item: IWarningsModel) => {
 					if (err) this.catchError(msg, args, err);
 				});
-			}
 
-			// Set up embed message
-			warnEmbed.setDescription(stripIndents`
-				**Member:** ${args.member.user.tag} (${args.member.id})
-				**Action:** Warn
-				**Previous Warning Points:** ${previousPoints}
-				**Current Warning Points:** ${args.points + previousPoints}
-				**Reason:** ${args.reason !== '' ? args.reason : 'No reason has been added by the moderator'}`);
-			
-			// Log the event in the mod log
-			if (msg.guild.settings.get('modlogEnabled', true)) {
-				modLogMessage(msg, warnEmbed);
+				// Set up embed message
+				warnEmbed.setDescription(stripIndents`
+					**Member:** ${args.member.user.tag} (${args.member.id})
+					**Action:** Warn
+					**Current Warning Points:** ${args.points + previousPoints}
+					**Reason:** ${args.reason !== '' ? args.reason : 'No reason has been added by the moderator'}`);
+				
+				// Log the event in the mod log
+				if (msg.guild.settings.get('modlogEnabled', true)) {
+					modLogMessage(msg, warnEmbed);
+				}
+				deleteCommandMessages(msg, this.client);
+				stopTyping(msg);
+	
+				// Send the success response
+				return msg.embed(warnEmbed);
 			}
-			deleteCommandMessages(msg, this.client);
-			stopTyping(msg);
-
-			// Send the success response
-			return msg.embed(warnEmbed);
 		});
 	}
 	

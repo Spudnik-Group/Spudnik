@@ -31,9 +31,11 @@ export const handleRaw = async(event: any, client: CommandoClient) => {
 	const starboardTrigger: string = await client.provider.get(message.guild.id, 'starboardTrigger', '⭐');
 	const existingStar = starboardMessages.find(m => {
 		// Need this filter if there are non-starboard posts in the starboard channel.
-		if (m.embeds[0].footer) {
-			// Find the previously-starred message
-			return m.embeds[0].footer.text.startsWith('⭐') && m.embeds[0].footer.text.endsWith(message.id);
+		if (m.embeds.length > 0) {
+			if (m.embeds[0].footer) {
+				// Find the previously-starred message
+				return m.embeds[0].footer.text.startsWith('⭐') && m.embeds[0].footer.text.endsWith(message.id);
+			}
 		}
 	});
 
@@ -57,6 +59,7 @@ export const handleRaw = async(event: any, client: CommandoClient) => {
 			.setThumbnail(message.author.displayAvatarURL())
 			.addField('Author', message.author.toString(), true)
 			.addField('Channel', (channel as TextChannel).toString(), true)
+			.addField('Jump', `[Link](${message.url})`, true)
 			.setColor(await client.provider.get(message.guild.id, 'embedColor', 5592405))
 			.setTimestamp()
 			.setFooter(`⭐ ${stars} | ${message.id} `);
