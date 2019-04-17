@@ -1,17 +1,83 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { startTyping, stopTyping, deleteCommandMessages, sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
-import { getProfile, Profile, PLATFORM, REGION } from 'overwatch-api';
+import { startTyping, stopTyping, deleteCommandMessages, sendSimpleEmbeddedError } from '../../lib/helpers';
+import * as rp from 'request-promise';
 
 class OverwatchStatsArguments { 
 	battletag: string; 
-	platform: PLATFORM;
-	region: REGION;
+	platform: string;
+	region: string;
 }
 
+interface Sportsmanship {
+	value: number;
+	rate: number;
+}
+
+interface Shotcaller {
+	value: number;
+	rate: number;
+}
+
+interface Teammate {
+	value: number;
+	rate: number;
+}
+
+interface Endorsement {
+	sportsmanship: Sportsmanship;
+	shotcaller: Shotcaller;
+	teammate: Teammate;
+	level: number;
+	frame: string;
+	icon: string;
+}
+
+interface Quickplay {
+	won: number;
+}
+
+interface Competitive {
+	won: number;
+	lost: number;
+	draw: number;
+	played: number;
+	win_rate: number;
+}
+
+interface Games {
+	quickplay: Quickplay;
+	competitive: Competitive;
+}
+
+interface Playtime {
+	quickplay: string;
+	competitive: string;
+}
+
+interface CompetitiveRank {
+	rank: number;
+	rank_img: string;
+}
+
+interface OverwatchProfile {
+	username: string;
+	level: number;
+	portrait: string;
+	endorsement: Endorsement;
+	private: boolean;
+	games: Games;
+	playtime: Playtime;
+	competitive: CompetitiveRank;
+	levelFrame: string;
+	star: string;
+	message: string;
+}
+
+
 /**
- * Returns Overwatch stats for a user on a specific platform and region.
+ * Post information about a player's overwatch stats.
  *
  * @export
  * @class OverwatchStatsCommand
@@ -30,38 +96,42 @@ export default class OverwatchStatsCommand extends Command {
 				{
 					key: 'platform',
 					parse: (platform: string): string => platform.toLowerCase(),
-					prompt: 'What platform should I look on?\nOptions are:\n* xbl\n* pc\n* psn',
+					prompt: 'Choose a platform: pc | xbl | psn',
 					type: 'string',
-					validate: (platform: string) => {
-						const allowedSubCommands = ['xbl', 'pc', 'psn'];
-						if (allowedSubCommands.indexOf(platform.toLowerCase()) !== -1) return true;
-
-						return 'You provided an invalid platform.';
+					validate: (platform: string): boolean | string => {
+						const options: Array<string> = ['pc', 'xbl', 'psn'];
+						if (options.indexOf(platform) === -1) {
+							return `Platform must be one of the following: ${options.join(', ')}.`
+						}
+						
+						return true;
 					}
 				},
 				{
 					key: 'battletag',
 					parse: (battletag: string): string => battletag.replace('#', '-'),
-					prompt: 'What is the battletag I\'m looking up? (case-sensitive)',
+					prompt: 'Enter the battletag (case-sensitive)?',
 					type: 'string'
 				},
 				{
 					default: 'us',
 					key: 'region',
 					parse: (region: string): string => region.toLowerCase(),
-					prompt: 'What region should I look in?\nOptions are:\n* us\n* eu\n* kr\n* cn\n* global',
+					prompt: 'Choose a region: us | eu | kr | cn | global',
 					type: 'string',
 					validate: (region: string) => {
 						const options: Array<string> = ['us', 'eu', 'kr', 'cn', 'global'];
-						if (options.indexOf(region) !== -1) return true;
+						if (options.indexOf(region) === -1) {
+							return `Region must be one of the following: ${options.join(', ')}.`
+						}
 						
-						return 'You provided an invalid region.';
+						return true;
 					}
 				}
 			],
-			description: 'Returns Overwatch stats for a user on a specific platform and region. ',
+			description: 'Returns overwatch stats about a player.',
 			details: stripIndents`
-				syntax: \`!overwatch-stats <platform: pc|xbl|psn> <battletag> <region: eu|us|kr|cn|global>\`
+				syntax: \`!overwatch-stats <platform: pc|xb1|psn> <battletag> <region: eu|us>\`
 			`,
 			examples: [
 				'!overwatch-stats pc Mythos-11321',
@@ -89,19 +159,21 @@ export default class OverwatchStatsCommand extends Command {
 	public async run(msg: CommandoMessage, args: OverwatchStatsArguments): Promise<Message | Message[]> {
 		startTyping(msg);
 
-		return getProfile(args.platform, args.region, args.battletag.replace('#', '-'), (error: Error, profile: Profile) => {
-			if (error) {
-				msg.client.emit('warn', `Error in command gaming:overwatch-stats: ${error}`);
+		return rp(`https://overwatchy.com/profile/${args.platform}/${args.region}/${encodeURI(args.battletag)}`)
+			.then((content: string) => {
+				const profile: OverwatchProfile = JSON.parse(content);
 
-				stopTyping(msg);
+				if (profile.message) {
+					stopTyping(msg);
 
-				return sendSimpleEmbeddedError(msg, 'Error with the API call. Please try again later.', 3000);
-			} else if (profile) {
+					return sendSimpleEmbeddedError(msg, profile.message, 3000);
+				}
+
 				const overwatchEmbed: MessageEmbed = new MessageEmbed({
 					author: {
 						icon_url: profile.competitive ? profile.competitive.rank_img : null,
-						name: args.battletag.replace('-', '#'),
-						url: `https://playoverwatch.com/career/${args.platform}/${args.battletag}`
+						name: `${args.battletag.replace('-', '#')}'s Overwatch Stats`,
+						url: `https://playoverwatch.com/career/${args.platform}/${encodeURI(args.battletag)}`
 					},
 					fields: [
 						{
@@ -150,29 +222,29 @@ export default class OverwatchStatsCommand extends Command {
 						{
 							inline: true,
 							name: 'Sportsmanship',
-							value: `${profile.endorsement.sportsmanship.rate}%`
+							value: profile.endorsement.sportsmanship.rate !== null ? `${profile.endorsement.sportsmanship.rate}%` : 'N/A'
 						},
 						{
 							inline: true,
 							name: 'Shotcaller',
-							value: `${profile.endorsement.shotcaller.rate}%`
+							value: profile.endorsement.shotcaller.rate !== null ? `${profile.endorsement.shotcaller.rate}%` : 'N/A'
 						},
 						{
 							inline: true,
 							name: 'Good Teammate',
-							value: `${profile.endorsement.teammate.rate}%`
+							value: profile.endorsement.teammate.rate !== null ? `${profile.endorsement.teammate.rate}%` : 'N/A'
 						}
 					);
 				}
-				stopTyping(msg);
 				deleteCommandMessages(msg, this.client);
+				stopTyping(msg);
 
 				return msg.embed(overwatchEmbed);
-			} else {
+			}).catch(error => {
+				msg.client.emit('warn', `Error in command gaming:overwatch-stats: ${error}`);
 				stopTyping(msg);
-
-				return sendSimpleEmbeddedError(msg, 'Unable to find anyone with that player name, check the spelling and try again.', 3000);
-			}
-		});
+	
+				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+			});
 	}
 }
