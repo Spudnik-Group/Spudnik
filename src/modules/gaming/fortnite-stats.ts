@@ -50,7 +50,7 @@ export default class FortniteStatsCommand extends Command {
 			details: stripIndents`
 				syntax: \`!fortnite-stats <platform> <username>\`
 				
-				Platform must be one of: xbl, pc, psn
+				Platform must be one of: pc, psn, xbl
 			`,
 			examples: [
 				'!fortnite-stats xbl naterchrdsn',

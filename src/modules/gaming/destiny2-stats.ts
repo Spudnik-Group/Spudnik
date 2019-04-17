@@ -50,7 +50,7 @@ export default class Destiny2Command extends Command {
 			details: stripIndents`
 				syntax: \`!destiny2-stats <platform> <username>\`
 				
-				Platform must be one of: xbl, pc, psn
+				Platform must be one of: pc, psn, xbl
 			`,
 			examples: [
 				'!destiny2-stats xbl naterchrdsn',

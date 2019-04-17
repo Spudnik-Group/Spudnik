@@ -50,7 +50,7 @@ export default class CODBO4StatsCommand extends Command {
 			details: stripIndents`
 				syntax: \`!codbo4-stats <platform> <username>\`
 				
-				Platform must be one of: xbl, pc, psn
+				Platform must be one of: pc, psn, xbl
 			`,
 			examples: [
 				'!codbo4-stats xbl naterchrdsn',
