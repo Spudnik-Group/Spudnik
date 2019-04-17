@@ -7,9 +7,11 @@ Spudnik is a free and open source Discord chat bot focused on guild management a
 
 ## Features include:
 - kick/ban/warn users!
+- 23 text-based games
 - move/prune messages!
 - Terms of Service/Rules system
 - Adblock feature
+- stat lookup commands for 8 games!
 - Greet/Heckle new and leaving users
 - Modlog of actions
 - Self assignable roles
@@ -19,7 +21,7 @@ Spudnik is a free and open source Discord chat bot focused on guild management a
 - dictionary, urbandictionary, and wikipedia reference
 - cat, dog, date, Chuck Norris, and Will Smith fact lookups
 - xkcd comic lookup
-- and more!
+- and much more!
 
 For a full list of features and associated commands please look at our [documentation][url-docs-commands].
 
