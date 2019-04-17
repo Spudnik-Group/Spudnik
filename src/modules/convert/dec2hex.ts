@@ -4,7 +4,7 @@ import { sendSimpleEmbeddedMessageWithAuthor } from '../../lib/helpers';
 import { Convert } from '../../lib/convert';
 
 /**
- * Convert Decimal to Hexadecimal
+ * Converts Decimal to Hexadecimal
  *
  * @export
  * @class Dec2HexCommand

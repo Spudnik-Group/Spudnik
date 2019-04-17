@@ -4,7 +4,7 @@ import { sendSimpleEmbeddedMessageWithAuthor } from '../../lib/helpers';
 import { Convert } from '../../lib/convert';
 
 /**
- * Convert Decimal to Binary
+ * Converts Decimal to Binary
  *
  * @export
  * @class Dec2BinCommand

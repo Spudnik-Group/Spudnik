@@ -1,0 +1,3 @@
+usage:
+ - '!hex2bin 0xFF'
+ - '!hex2bin ff'

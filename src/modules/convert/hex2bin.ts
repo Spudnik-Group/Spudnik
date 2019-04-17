@@ -4,7 +4,7 @@ import { sendSimpleEmbeddedMessageWithAuthor } from '../../lib/helpers';
 import { Convert } from '../../lib/convert';
 
 /**
- * Convert Hexadecimal to Binary
+ * Converts Hexadecimal to Binary
  *
  * @export
  * @class Hex2BinCommand

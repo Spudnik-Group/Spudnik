@@ -4,7 +4,7 @@ import { Convert } from '../../lib/convert';
 import { getEmbedColor } from '../../lib/custom-helpers';
 
 /**
- * Base64 Decode string
+ * Base64 decodes a string
  *
  * @export
  * @class Base64DecodeCommand
