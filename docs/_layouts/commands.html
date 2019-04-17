@@ -13,7 +13,12 @@
 			{% capture thecycle %}{% cycle 'odd', 'even' %}{% endcapture %}
 			<hr class="mb-5">
 			<section class="wow fadeIn">
-				<h3><a href="#{{ group_hash[0] }}"></a>{{ group_hash[0] | capitalize }}</h3>
+				<h3>
+					<a href="#{{ group_hash[0] }}"></a>
+					{% assign group_title = group_hash[0] | split: '_' %}
+					{% capture group_title %}{% for word in group_title %}{{ word | capitalize }} {% endfor %}{% endcapture %}
+					{{ group_title }}
+				</h3>
 				<table class="table table-bordered {% if thecycle == 'odd' %}table-dark{% endif %}">
 					<thead>
 						<tr>
