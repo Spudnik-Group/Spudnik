@@ -71,7 +71,7 @@ interface OverwatchProfile {
 
 
 /**
- * Post information about a player's overwatch stats.
+ * Returns Overwatch stats for a user on a specific platform and region.
  *
  * @export
  * @class OverwatchStatsCommand
