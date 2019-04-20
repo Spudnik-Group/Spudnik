@@ -13,9 +13,7 @@ import {
 	handleCommandError, handleDebug
 } from './handlers';
 
-// tslint:disable:no-var-requires
 const { version }: { version: string } = require('../../package');
-// tslint:enable:no-var-requires
 const PORT = process.env.PORT || 1337;
 
 export interface Configuration {
@@ -38,9 +36,19 @@ export interface Configuration {
  *
  * @export
  * @class Spudnik
+ * @property {Configuration} Spudnik.Config
+ * @property {CommandoClient} Spudnik.Discord
  */
 export class Spudnik {
+	/**
+	 * @name Spudnik#Config
+	 * @type Configuration
+	 */
 	public Config: Configuration;
+	/**
+	 * @name Spudnik#Discord
+	 * @type CommandoClient
+	 */
 	public Discord: CommandoClient;
 	private Rollbar: any;
 

@@ -23,6 +23,11 @@
 			"tabs"
 		],
 		"label-position": true,
+		"jsdoc-require": [
+			true,
+			"no-private",
+			"no-private-properties"
+		],
 		"max-classes-per-file": false,
 		"max-line-length": false,
 		"newline-before-return": true,
@@ -87,5 +92,5 @@
 			"allow-leading-underscore"
 		]
 	},
-	"rulesDirectory": []
+	"rulesDirectory": ["./node_modules/tslint-jsdoc-rules/lib"]
 }
