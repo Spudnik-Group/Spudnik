@@ -1,12 +1,12 @@
-import { Message, MessageEmbed } from 'discord.js';
-import { CommandoMessage, CommandoClient } from 'discord.js-commando';
+import { Message, MessageEmbed, Channel, TextChannel, User } from 'discord.js';
+import { CommandoMessage } from 'discord.js-commando';
 import { getEmbedColor } from './custom-helpers';
 
 const yes = ['yes', 'y', 'ye', 'yeah', 'yup', 'yea'];
 const no = ['no', 'n', 'nah', 'nope'];
 
 /**
- * Post a message.
+ * Post a simple embedded message.
  *
  * @export
  * @param {CommandoMessage} msg
@@ -14,7 +14,7 @@ const no = ['no', 'n', 'nah', 'nope'];
  * @param {number} [timeout]
  * @returns Promise<Message | Message[]>
  */
-export const sendSimpleEmbeddedMessage = (msg: CommandoMessage, text: string, timeout?: number) => {
+export const sendSimpleEmbeddedMessage = (msg: CommandoMessage, text: string, timeout?: number): Promise<Message | Message[]> => {
 	const promise: Promise<Message | Message[]> = msg.embed({
 		author: {
 			icon_url: msg.client.user.displayAvatarURL,
@@ -38,7 +38,7 @@ export const sendSimpleEmbeddedMessage = (msg: CommandoMessage, text: string, ti
 }
 
 /**
- * Post a message.
+ * Post a simple embedded message, with supplied author details.
  *
  * @export
  * @param {CommandoMessage} msg
@@ -47,7 +47,7 @@ export const sendSimpleEmbeddedMessage = (msg: CommandoMessage, text: string, ti
  * @param {number} [timeout]
  * @returns Promise<Message | Message[]>
  */
-export const sendSimpleEmbeddedMessageWithAuthor = (msg: CommandoMessage, text: string, author: MessageEmbed['author'], timeout?: number) => {
+export const sendSimpleEmbeddedMessageWithAuthor = (msg: CommandoMessage, text: string, author: MessageEmbed['author'], timeout?: number): Promise<Message | Message[]> => {
 	const promise: Promise<Message | Message[]> = msg.embed({
 		author: author,
 		color: getEmbedColor(msg),
@@ -68,7 +68,7 @@ export const sendSimpleEmbeddedMessageWithAuthor = (msg: CommandoMessage, text: 
 }
 
 /**
- * Post a message.
+ * Post a simple embedded message, with supplied title.
  *
  * @export
  * @param {CommandoMessage} msg
@@ -77,7 +77,7 @@ export const sendSimpleEmbeddedMessageWithAuthor = (msg: CommandoMessage, text: 
  * @param {number} [timeout]
  * @returns Promise<Message | Message[]>
  */
-export const sendSimpleEmbeddedMessageWithTitle = (msg: CommandoMessage, text: string, title: string, timeout?: number) => {
+export const sendSimpleEmbeddedMessageWithTitle = (msg: CommandoMessage, text: string, title: string, timeout?: number): Promise<Message | Message[]> => {
 	const promise: Promise<Message | Message[]> = msg.embed({
 		author: {
 			icon_url: msg.client.user.displayAvatarURL,
@@ -102,7 +102,7 @@ export const sendSimpleEmbeddedMessageWithTitle = (msg: CommandoMessage, text: s
 }
 
 /**
- * Post an error message.
+ * Post a simple embedded error message.
  *
  * @export
  * @param {CommandoMessage} msg
@@ -110,7 +110,7 @@ export const sendSimpleEmbeddedMessageWithTitle = (msg: CommandoMessage, text: s
  * @param {number} [timeout]
  * @returns Promise<Message | Message[]>
  */
-export const sendSimpleEmbeddedError = (msg: CommandoMessage, text: string, timeout?: number) => {
+export const sendSimpleEmbeddedError = (msg: CommandoMessage, text: string, timeout?: number): Promise<Message | Message[]> => {
 	const promise: Promise<Message | Message[]> = msg.embed({
 		author: {
 			icon_url: msg.client.user.displayAvatarURL,
@@ -134,7 +134,7 @@ export const sendSimpleEmbeddedError = (msg: CommandoMessage, text: string, time
 }
 
 /**
- * Send a success message.
+ * Send a simple embedded success message.
  *
  * @export
  * @param {CommandoMessage} msg
@@ -142,7 +142,7 @@ export const sendSimpleEmbeddedError = (msg: CommandoMessage, text: string, time
  * @param {number} [timeout]
  * @returns Promise<Message | Message[]>
  */
-export const sendSimpleEmbeddedSuccess = (msg: CommandoMessage, text: string, timeout?: number) => {
+export const sendSimpleEmbeddedSuccess = (msg: CommandoMessage, text: string, timeout?: number): Promise<Message | Message[]> => {
 	const promise: Promise<Message | Message[]> = msg.embed({
 		author: {
 			icon_url: msg.client.user.displayAvatarURL,
@@ -166,7 +166,7 @@ export const sendSimpleEmbeddedSuccess = (msg: CommandoMessage, text: string, ti
 }
 
 /**
- * Post an image.
+ * Post a simple embedded image.
  *
  * @export
  * @param {CommandoMessage} msg
@@ -174,7 +174,7 @@ export const sendSimpleEmbeddedSuccess = (msg: CommandoMessage, text: string, ti
  * @param {string} [description]
  * @returns Promise<Message | Message[]>
  */
-export const sendSimpleEmbeddedImage = (msg: CommandoMessage, url: string, description?: string) => {
+export const sendSimpleEmbeddedImage = (msg: CommandoMessage, url: string, description?: string): Promise<Message | Message[]> => {
 	return msg.embed({
 		author: {
 			icon_url: msg.client.user.displayAvatarURL,
@@ -187,25 +187,25 @@ export const sendSimpleEmbeddedImage = (msg: CommandoMessage, url: string, descr
 }
 
 /**
- * Get a random integer.
+ * Generate a random integer, from supplied min and max values.
  *
  * @export
  * @param {number} min
  * @param {number} max
  * @returns number
  */
-export const getRandomInt = (min: number, max: number) => {
+export const getRandomInt = (min: number, max: number): number => {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 /**
- * Find the user id being mentioned.
+ * Returns a mention of the supplied user text.
  *
  * @export
  * @param {string} usertxt
  * @returns string
  */
-export const resolveMention = (usertxt: string) => {
+export const resolveMention = (usertxt: string): string => {
 	let userid = usertxt;
 
 	if (usertxt.startsWith('<@!')) {
@@ -218,17 +218,23 @@ export const resolveMention = (usertxt: string) => {
 }
 
 /**
- * Return a timeout as a promise.
+ * Returns a timeout as a promise.
  *
  * @export
  * @param {number} ms
- * @returns {Promise}
+ * @returns Promise<any>
  */
-export const delay = (ms: number) => {
+export const delay = (ms: number): Promise<any> => {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
-
-export const shuffle = (array: any[]) => {
+/**
+ * Returns a shuffled version of the supplied array.
+ * 
+ * @export
+ * @param  {any[]} array
+ * @returns any[]
+ */
+export const shuffle = (array: any[]): any[] => {
 	const arr = array.slice(0);
 
 	for (let i = arr.length - 1; i >= 0; i--) {
@@ -240,18 +246,36 @@ export const shuffle = (array: any[]) => {
 
 	return arr;
 }
-
-export const list = (arr: any[], conj = 'and') => {
+/**
+ * Returns a string of values from a supplied array.
+ * 
+ * @param  {any[]} arr
+ * @param  {} conj='and'
+ * @returns string
+ */
+export const list = (arr: any[], conj = 'and'): string => {
 	const len = arr.length;
 
 	return `${arr.slice(0, -1).join(', ')}${len > 1 ? `${len > 2 ? ',' : ''} ${conj} ` : ''}${arr.slice(-1)}`;
 }
-
-export const shorten = (text: string, maxLen = 2000) => {
+/**
+ * Returns a shortened version of the supplied string, appended with an ellipses.
+ * 
+ * @param  {string} text
+ * @param  {} maxLen=2000
+ * @returns string
+ */
+export const shorten = (text: string, maxLen = 2000): string => {
 	return text.length > maxLen ? `${text.substr(0, maxLen - 3)}...` : text;
 }
 
-export const duration = (ms: number) => {
+/**
+ * Returns a formatted duration from a supplied number.
+ * 
+ * @param  {number} ms
+ * @returns string
+ */
+export const duration = (ms: number): string => {
 	const sec = Math.floor((ms / 1000) % 60).toString();
 	const min = Math.floor((ms / (1000 * 60)) % 60).toString();
 	const hrs = Math.floor(ms / (1000 * 60 * 60)).toString();
@@ -259,11 +283,14 @@ export const duration = (ms: number) => {
 	return `${hrs.padStart(2, '0')}:${min.padStart(2, '0')}:${sec.padStart(2, '0')}`;
 }
 
-export const randomRange = (min: number, max: number) => {
-	return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-export const trimArray = (arr: any[], maxLen = 10) => {
+/**
+ * Returns a trimmed array.
+ * 
+ * @param  {any[]} arr
+ * @param  {} maxLen=10
+ * @returns any
+ */
+export const trimArray = (arr: any[], maxLen = 10): any[] => {
 	if (arr.length > maxLen) {
 		const len = arr.length - maxLen;
 		arr = arr.slice(0, maxLen);
@@ -273,23 +300,24 @@ export const trimArray = (arr: any[], maxLen = 10) => {
 	return arr;
 }
 
-export const base64 = (text: string, mode = 'encode') => {
-	if (mode === 'encode') {
-		return Buffer.from(text).toString('base64');
-	}
-
-	if (mode === 'decode') {
-		return Buffer.from(text, 'base64').toString('utf8') || null;
-	}
-
-	throw new TypeError(`${mode} is not a supported base64 mode.`);
-}
-
-export const hash = (text: string, algorithm: any) => {
+/**
+ * Returns a cryptographic hash of the supplied text.
+ * 
+ * @param {string} text 
+ * @param {any} algorithm
+ * @returns string
+ */
+export const hash = (text: string, algorithm: any): string => {
 	return require('crypto').createHash(algorithm).update(text).digest('hex');
 }
 
-export const today = (timeZone: number) => {
+/**
+ * Returns the beginning of the current day.
+ * 
+ * @param {number} timeZone
+ * @returns Date
+ */
+export const today = (timeZone: number): Date => {
 	const now = new Date();
 
 	if (timeZone) {
@@ -304,20 +332,40 @@ export const today = (timeZone: number) => {
 	return now;
 }
 
-export const disambiguation = (items: any, label: any, property = 'name') => {
+/**
+ * @param  {any} items
+ * @param  {any} label
+ * @param  {} property='name'
+ * @returns string
+ */
+export const disambiguation = (items: any, label: any, property = 'name'): string => {
 	const itemList = items.map((item: any) => `"${(property ? item[property] : item).replace(/ /g, '\xa0')}"`).join(',   ');
 
 	return `Multiple ${label} found, please be more specific: ${itemList}`;
 }
 
-export const tomorrow = (timeZone: number) => {
+/**
+ * Returns the beginning of the next day.
+ * 
+ * @param  {number} timeZone
+ * @returns Date
+ */
+export const tomorrow = (timeZone: number): Date => {
 	const thisDate = today(timeZone);
 	thisDate.setDate(thisDate.getDate() + 1);
 
 	return thisDate;
 }
-
-export const awaitPlayers = async(msg: any, max: number, min: number, { text = 'join game', time = 30000, dmCheck = false } = {}) => {
+/**
+ * Waits for players for the current instance of a text-based game.
+ * 
+ * @param  {any} msg
+ * @param  {number} max
+ * @param  {number} min
+ * @param  {} {text='joingame', time=30000, dmCheck=false}
+ * @returns Promise
+ */
+export const awaitPlayers = async(msg: any, max: number, min: number, { text = 'join game', time = 30000, dmCheck = false } = {}): Promise<any> => {
 	const joined: any[] = [];
 
 	joined.push(msg.author.id);
@@ -353,15 +401,23 @@ export const awaitPlayers = async(msg: any, max: number, min: number, { text = '
 
 	return verify.map((message: any) => message.author);
 }
-
-export const verify = async(channel: any, user: any, time = 30000) => {
+/**
+ * Verify's a potential player entering an instance of a text-based game.
+ * 
+ * @export
+ * @param {Channel} channel
+ * @param {User} user
+ * @param {number} [time=30000]
+ * @returns Promise
+ */
+export const verify = async(channel: Channel, user: User, time: number = 30000): Promise<boolean | 0> => {
 	const filter = (res: any) => {
 		const value = res.content.toLowerCase();
 		
 		return res.author.id === user.id && (yes.includes(value) || no.includes(value));
 	}
 
-	const verify = await channel.awaitMessages(filter, {
+	const verify = await (channel as TextChannel).awaitMessages(filter, {
 		max: 1,
 		time: time
 	});
@@ -378,28 +434,18 @@ export const verify = async(channel: any, user: any, time = 30000) => {
 
 /**
  * Escapes any Discord-flavour markdown in a string.
+ * 
+ * @export
  * @param {string} text Content to escape
  * @param {boolean} [onlyCodeBlock=false] Whether to only escape codeblocks (takes priority)
  * @param {boolean} [onlyInlineCode=false] Whether to only escape inline code
- * @returns {string}
+ * @returns string
  */
-export const escapeMarkdown = (text: string, onlyCodeBlock: boolean = false, onlyInlineCode: boolean = false) => {
+export const escapeMarkdown = (text: string, onlyCodeBlock: boolean = false, onlyInlineCode: boolean = false): string => {
 	if (onlyCodeBlock) { return text.replace(/```/g, '`\u200b``'); }
 	if (onlyInlineCode) { return text.replace(/\\(`|\\)/g, '$1').replace(/(`|\\)/g, '\\$1'); }
 
 	return text.replace(/\\(\*|_|`|~|\\)/g, '$1').replace(/(\*|_|`|~|\\)/g, '\\$1');
-}
-
-/**
- * Delete the calling message for commands, if it's deletable by the bot
- * 
- * @export
- * @param {CommandoMessage} msg
- * @param {CommandoClient} client
- * @returns void
- */
-export const deleteCommandMessages = (msg: CommandoMessage, client: CommandoClient) => {
-	if (msg.deletable && msg.guild.settings.get('deleteCommandMessages', false)) msg.delete();
 }
 
 /**
@@ -409,7 +455,7 @@ export const deleteCommandMessages = (msg: CommandoMessage, client: CommandoClie
  * @param {CommandoMessage} msg
  * @returns void
  */
-export const stopTyping = (msg: CommandoMessage) => {
+export const stopTyping = (msg: CommandoMessage): void => {
 	msg.channel.stopTyping(true);
 }
 
@@ -420,6 +466,6 @@ export const stopTyping = (msg: CommandoMessage) => {
  * @param {CommandoMessage} msg
  * @returns void
  */
-export const startTyping = (msg: CommandoMessage) => {
+export const startTyping = (msg: CommandoMessage): void => {
 	msg.channel.startTyping(1);
 }

@@ -1,8 +1,8 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { startTyping, sendSimpleEmbeddedError, deleteCommandMessages, stopTyping } from '../../lib/helpers';
-import { getEmbedColor } from '../../lib/custom-helpers';
+import { startTyping, sendSimpleEmbeddedError, stopTyping } from '../../lib/helpers';
+import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
 const Scout = require('@scoutsdk/server-sdk');
 const games = require('../../extras/scout-games');
 const scoutID: string = process.env.spud_scoutid;
@@ -112,7 +112,7 @@ export default class Destiny2Command extends Command {
 					if (!statObj.displayValue) return;
 					destiny2Embed.addField(statObj.metadata.name, statObj.displayValue, true);
 				});
-				deleteCommandMessages(msg, this.client);
+				deleteCommandMessages(msg);
 				stopTyping(msg);
 
 				return msg.embed(destiny2Embed);

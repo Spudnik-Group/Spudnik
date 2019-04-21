@@ -2,8 +2,8 @@ import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import * as rp from 'request-promise';
-import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
+import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, startTyping, stopTyping } from '../../lib/helpers';
 
 /**
  * Post information about a cocktail.
@@ -128,7 +128,7 @@ export default class CocktailCommand extends Command {
 					cocktailEmbed.setDescription("Damn, I've never heard of that. Where do I need to go to find it?");
 				}
 		
-				deleteCommandMessages(msg, this.client);
+				deleteCommandMessages(msg);
 				stopTyping(msg);
 		
 				// Send the success response

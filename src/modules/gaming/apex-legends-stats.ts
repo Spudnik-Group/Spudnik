@@ -1,8 +1,8 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { startTyping, sendSimpleEmbeddedError, deleteCommandMessages, stopTyping } from '../../lib/helpers';
-import { getEmbedColor } from '../../lib/custom-helpers';
+import { startTyping, sendSimpleEmbeddedError, stopTyping } from '../../lib/helpers';
+import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
 import * as rp from 'request-promise';
 
 const apiKey = process.env.spud_apexapikey;
@@ -113,7 +113,7 @@ export default class ApexLegendsStatsCommand extends Command {
 	 */
 	public async run(msg: CommandoMessage, args: { platform: string, username: string }): Promise<Message | Message[]> {
 		if (!apiKey) {
-			deleteCommandMessages(msg, this.client);
+			deleteCommandMessages(msg);
 			
 			return sendSimpleEmbeddedError(msg, 'The apex-legends-stats command is not configured yet.');
 		}
@@ -160,7 +160,7 @@ export default class ApexLegendsStatsCommand extends Command {
 				});
 			});
 			
-			deleteCommandMessages(msg, this.client);
+			deleteCommandMessages(msg);
 			stopTyping(msg);
 			
 			return msg.embed(apexEmbed);

@@ -1,8 +1,8 @@
 import { stripIndents } from 'common-tags';
 import { Collection, GuildMember, Message, User, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, deleteCommandMessages, startTyping, stopTyping } from '../../lib/helpers';
-import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, stopTyping } from '../../lib/helpers';
+import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
 import * as format from 'date-fns/format';
 
 /**
@@ -99,7 +99,7 @@ export default class PruneCommand extends Command {
 	 * @memberof PruneCommand
 	 */
 	public async run(msg: CommandoMessage, args: { limit: number, filter: string, member: GuildMember }): Promise<Message | Message[]> {
-		await deleteCommandMessages(msg, this.client);
+		await deleteCommandMessages(msg);
 		const { filter, limit } = args;
 		let messageFilter: (message: Message) => boolean;
 

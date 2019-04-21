@@ -1,8 +1,8 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedError, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
-import { modLogMessage } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, startTyping, stopTyping } from '../../lib/helpers';
+import { modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
 import * as format from 'date-fns/format';
 
 /**
@@ -135,7 +135,7 @@ export default class EmbedColorCommand extends Command {
 			modLogMessage(msg, embed);
 		}
 
-		deleteCommandMessages(msg, this.client);
+		deleteCommandMessages(msg);
 		stopTyping(msg);
 
 		// Send the success response

@@ -1,8 +1,8 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { deleteCommandMessages, startTyping, stopTyping } from '../../lib/helpers';
-import { getEmbedColor } from '../../lib/custom-helpers';
+import { startTyping, stopTyping } from '../../lib/helpers';
+import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
 
 /**
  * Convert text to 1337 speak.
@@ -66,7 +66,7 @@ export default class LeetCommand extends Command {
 
 		leetEmbed.setDescription(leetResponse);
 
-		deleteCommandMessages(msg, this.client);
+		deleteCommandMessages(msg);
 		stopTyping(msg);
 		
 		return msg.embed(leetEmbed);

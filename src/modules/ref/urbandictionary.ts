@@ -1,8 +1,8 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
+import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, startTyping, stopTyping } from '../../lib/helpers';
 
 /**
  * Post an Urban Dictionary definition.
@@ -83,7 +83,7 @@ export default class UrbanCommand extends Command {
 				responseEmbed.setDescription('No matches found');
 			}
 
-			deleteCommandMessages(msg, this.client);
+			deleteCommandMessages(msg);
 			stopTyping(msg);
 	
 			// Send the success response

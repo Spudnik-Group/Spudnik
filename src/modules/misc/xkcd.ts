@@ -2,8 +2,8 @@ import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import * as rp from 'request-promise';
-import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
+import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, startTyping, stopTyping } from '../../lib/helpers';
 
 /**
  * Post an XKCD comic.
@@ -85,7 +85,7 @@ export default class XkcdCommand extends Command {
 				xkcdEmbed.setImage(comic.img);
 				xkcdEmbed.setTitle(`XKCD ${comic.num} ${comic.title}`);
 		
-				deleteCommandMessages(msg, this.client);
+				deleteCommandMessages(msg);
 				stopTyping(msg);
 		
 				// Send the success response

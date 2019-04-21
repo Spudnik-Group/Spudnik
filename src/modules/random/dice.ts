@@ -1,7 +1,7 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor } from '../../lib/custom-helpers';
-import { startTyping, deleteCommandMessages, stopTyping } from '../../lib/helpers';
+import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
+import { startTyping, stopTyping } from '../../lib/helpers';
 
 /**
  * Simulate dice rolling.
@@ -64,7 +64,7 @@ export default class RollCommand extends Command {
 			diceEmbed.description += `Roll: ${item} -- Result: ${result}\n`;
 		});
 
-		deleteCommandMessages(msg, this.client);
+		deleteCommandMessages(msg);
 		stopTyping(msg);
 
 		// Send the success response

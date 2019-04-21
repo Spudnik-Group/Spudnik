@@ -1,8 +1,8 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
+import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, startTyping, stopTyping } from '../../lib/helpers';
 import * as WikiJS from 'wikijs';
 
 /**
@@ -88,7 +88,7 @@ export default class WikiCommand extends Command {
 						messageOut.setDescription('No results. Try again?');
 					}
 
-					deleteCommandMessages(msg, this.client);
+					deleteCommandMessages(msg);
 					stopTyping(msg);
 
 					// Send the success response
@@ -96,7 +96,7 @@ export default class WikiCommand extends Command {
 				} catch (err) {
 					msg.client.emit('warn', `Error in command ref:wiki: ${err}`);
 
-					deleteCommandMessages(msg, this.client);
+					deleteCommandMessages(msg);
 					stopTyping(msg);
 
 					return sendSimpleEmbeddedError(msg, 'No results found. Try again?', 3000);
@@ -105,7 +105,7 @@ export default class WikiCommand extends Command {
 			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command ref:wiki: ${err}`);
 
-				deleteCommandMessages(msg, this.client);
+				deleteCommandMessages(msg);
 				stopTyping(msg);
 
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);

@@ -1,7 +1,8 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedError, stopTyping, startTyping, deleteCommandMessages } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, stopTyping, startTyping } from '../../lib/helpers';
+import { deleteCommandMessages } from '../../lib/custom-helpers';
 import { getEmbedColor } from '../../lib/custom-helpers';
 
 /**
@@ -83,7 +84,7 @@ export default class YodafyCommand extends Command {
 				
 				yodaEmbed.setDescription(`${result.return}\n`);
 			
-				deleteCommandMessages(msg, this.client);
+				deleteCommandMessages(msg);
 				stopTyping(msg);
 				
 				// Send the success response

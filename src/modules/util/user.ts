@@ -2,7 +2,8 @@ import { Message, MessageEmbed, User } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import * as format from 'date-fns/format';
-import { deleteCommandMessages, trimArray } from '../../lib/helpers';
+import { trimArray } from '../../lib/helpers';
+import { deleteCommandMessages } from '../../lib/custom-helpers';
 import { stripIndents } from 'common-tags';
 
 const activities = {
@@ -90,7 +91,7 @@ export default class UserCommand extends Command {
 			.addField('❯ Hoist Role', member.roles.hoist ? member.roles.hoist.name : 'None', true)
 			.addField(`❯ Roles (${roles.length})`, roles.length ? trimArray(roles, 10).join(', ') : 'None');
 		
-		deleteCommandMessages(msg, this.client);
+		deleteCommandMessages(msg);
 
 		return msg.embed(userEmbed);
 	}

@@ -1,7 +1,7 @@
 import { Channel, GuildMember, Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, deleteCommandMessages } from '../../lib/helpers';
+import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError } from '../../lib/helpers';
 import { stripIndents } from 'common-tags';
 
 /**
@@ -149,7 +149,7 @@ export default class MoveCommand extends Command {
 
 					modLogMessage(msg, moveModMessage);
 				}
-				deleteCommandMessages(msg, this.client);
+				deleteCommandMessages(msg);
 			} else {
 				return sendSimpleEmbeddedError(msg, 'Cannot move a text message to a non-text channel.');
 			}

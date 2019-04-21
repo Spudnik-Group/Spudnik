@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { randomRange } from '../../lib/helpers';
+import { getRandomInt } from '../../lib/helpers';
 //tslint:disable-next-line
 const fishes = require('../../extras/fish');
 
@@ -53,7 +53,7 @@ export default class SlotsCommand extends Command {
 		}
 
 		const fish = fishes[rarity];
-		const worth = randomRange(fish.min, fish.max);
+		const worth = getRandomInt(fish.min, fish.max);
 		
 		return msg.reply(`You caught a ${fish.symbol}. I bet it'd sell for around $${worth}.`);
 	}

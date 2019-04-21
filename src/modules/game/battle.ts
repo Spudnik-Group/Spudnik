@@ -1,7 +1,7 @@
 import { stripIndents } from 'common-tags';
 import { Message, User } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { randomRange, verify } from '../../lib/helpers';
+import { getRandomInt, verify } from '../../lib/helpers';
 
 /**
  * Allows users to battle each other or the bot.
@@ -137,7 +137,7 @@ export default class BattleCommand extends Command {
 				} else if (choice === 'special') {
 					const miss = Math.floor(Math.random() * 4);
 					if (!miss) {
-						const damage = randomRange(100, guard ? 150 : 300);
+						const damage = getRandomInt(100, guard ? 150 : 300);
 						await msg.say(`${user} deals **${damage}** damage!`);
 						dealDamage(damage);
 					} else {

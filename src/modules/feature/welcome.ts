@@ -1,8 +1,8 @@
 import { stripIndents } from 'common-tags';
 import { Channel, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, startTyping, stopTyping, sendSimpleEmbeddedMessage, deleteCommandMessages } from '../../lib/helpers';
+import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, startTyping, stopTyping, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 
 /**
@@ -240,7 +240,7 @@ export default class WelcomeCommand extends Command {
 		if (msg.guild.settings.get('modlogEnabled', true)) {
 			modLogMessage(msg, embed);
 		}
-		deleteCommandMessages(msg, this.client);
+		deleteCommandMessages(msg);
 		stopTyping(msg);
 
 		// Send the success response

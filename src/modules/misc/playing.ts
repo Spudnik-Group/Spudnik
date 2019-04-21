@@ -1,7 +1,8 @@
 import { stripIndents } from 'common-tags';
 import { Message, GuildMember } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedMessage, deleteCommandMessages } from '../../lib/helpers';
+import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { deleteCommandMessages } from '../../lib/custom-helpers';
 
 /**
  * Identify anyone playing games in the guild.
@@ -87,7 +88,7 @@ export default class PlayingCommand extends Command {
 					}).map(member => `<@${ member.id }>`)
 					.join('\n');
 			}).join('\n\n');
-		deleteCommandMessages(msg, this.client);
+		deleteCommandMessages(msg);
 		
 		return sendSimpleEmbeddedMessage(
 			msg, 

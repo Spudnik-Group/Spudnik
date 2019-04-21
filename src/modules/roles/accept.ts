@@ -1,8 +1,8 @@
 import { stripIndents } from 'common-tags';
 import { Channel, Message, MessageEmbed, Role } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, stopTyping, deleteCommandMessages, startTyping, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, stopTyping, startTyping, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 
 /**
@@ -121,7 +121,7 @@ export default class AcceptCommand extends Command {
 							modLogMessage(msg, acceptEmbed);
 						}
 
-						deleteCommandMessages(msg, this.client);
+						deleteCommandMessages(msg);
 						stopTyping(msg);
 					})
 					.catch((err: Error) => this.catchError(msg, args, err));
@@ -162,7 +162,7 @@ export default class AcceptCommand extends Command {
 			modLogMessage(msg, embed);
 		}
 
-		deleteCommandMessages(msg, this.client);
+		deleteCommandMessages(msg);
 		stopTyping(msg);
 
 		// Send the success response

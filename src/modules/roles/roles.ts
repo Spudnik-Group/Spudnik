@@ -1,8 +1,8 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed, Role } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor } from '../../lib/custom-helpers';
-import { startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
+import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
+import { startTyping, stopTyping } from '../../lib/helpers';
 
 /**
  * Lists default and self-assignable roles.
@@ -98,7 +98,7 @@ export default class RoleCommand extends Command {
 			roleEmbed.setDescription('A default role and assignable roles are not set for this guild.');
 		}
 
-		deleteCommandMessages(msg, this.client);
+		deleteCommandMessages(msg);
 		stopTyping(msg);
 		
 		// Send the response

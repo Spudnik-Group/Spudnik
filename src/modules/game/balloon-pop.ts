@@ -1,6 +1,6 @@
 import { Message, User } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { randomRange, verify } from '../../lib/helpers';
+import { getRandomInt, verify } from '../../lib/helpers';
 
 /**
  * Starts a game of Balloon Pop.
@@ -76,7 +76,7 @@ export default class BalloonPopCommand extends Command {
 				}
 				if (pump) {
 					await msg.say(`${user} pumps the balloon!`);
-					remains -= randomRange(25, 75);
+					remains -= getRandomInt(25, 75);
 					const popped = Math.floor(Math.random() * remains);
 					if (popped <= 0) {
 						await msg.say('The balloon pops!');

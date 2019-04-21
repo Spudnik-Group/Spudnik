@@ -1,7 +1,8 @@
 import { stripIndents } from 'common-tags';
 import { GuildMember, Message } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedMessage, deleteCommandMessages } from '../../lib/helpers';
+import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { deleteCommandMessages } from '../../lib/custom-helpers';
 
 /**
  * Change the bot's nickname on your server, or reset it.
@@ -61,7 +62,7 @@ export default class NickCommand extends Command {
 	 * @memberof NickCommand
 	 */
 	public async run(msg: CommandoMessage, args: { nickName: string }): Promise<Message | Message[]> {
-		deleteCommandMessages(msg, this.client);
+		deleteCommandMessages(msg);
 		
 		if (args.nickName === '' || args.nickName === undefined) {
 			(msg.guild.me as GuildMember).setNickname('Spudnik', `${msg.author.username} used Spudnik to reset it.`);

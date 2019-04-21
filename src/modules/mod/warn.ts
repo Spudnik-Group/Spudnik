@@ -3,8 +3,8 @@ import { GuildMember, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import Mongoose = require('mongoose');
 import { Schema, Document, Model } from 'mongoose';
-import { startTyping, stopTyping, deleteCommandMessages, sendSimpleEmbeddedError } from '../../lib/helpers';
-import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
+import { startTyping, stopTyping, sendSimpleEmbeddedError } from '../../lib/helpers';
+import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
 import * as format from 'date-fns/format';
 
 interface IWarningsObject {
@@ -139,7 +139,7 @@ export default class WarnCommand extends Command {
 				if (msg.guild.settings.get('modlogEnabled', true)) {
 					modLogMessage(msg, warnEmbed);
 				}
-				deleteCommandMessages(msg, this.client);
+				deleteCommandMessages(msg);
 				stopTyping(msg);
 	
 				// Send the success response
@@ -171,7 +171,7 @@ export default class WarnCommand extends Command {
 				if (msg.guild.settings.get('modlogEnabled', true)) {
 					modLogMessage(msg, warnEmbed);
 				}
-				deleteCommandMessages(msg, this.client);
+				deleteCommandMessages(msg);
 				stopTyping(msg);
 	
 				// Send the success response

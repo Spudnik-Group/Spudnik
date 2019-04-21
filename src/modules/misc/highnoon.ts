@@ -1,7 +1,8 @@
 import { Message } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import * as rp from 'request-promise';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedImage, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedImage, startTyping, stopTyping } from '../../lib/helpers';
+import { deleteCommandMessages } from '../../lib/custom-helpers';
 
 /**
  * Show the XKCD "Now" comic.
@@ -44,7 +45,7 @@ export default class HighNoonCommand extends Command {
 		
 		return rp({ followAllRedirects: true, uri: 'http://imgs.xkcd.com/comics/now.png', resolveWithFullResponse: true })
 			.then((content) => {
-				deleteCommandMessages(msg, this.client);
+				deleteCommandMessages(msg);
 				stopTyping(msg);
 				
 				// Send the success response

@@ -1,8 +1,8 @@
 import { stripIndents } from 'common-tags';
 import { Channel, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, stopTyping, sendSimpleEmbeddedMessage, deleteCommandMessages, startTyping } from '../../lib/helpers';
+import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, stopTyping, sendSimpleEmbeddedMessage, startTyping } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 
 /**
@@ -204,7 +204,7 @@ export default class StarboardCommand extends Command {
 										* EMBED_LINKS: ${botCanPostLinks}
 										* ATTACH_FILES: ${botCanPostAttachments}
 										Trigger set to: ${starboardTrigger}`);
-				deleteCommandMessages(msg, this.client);
+				deleteCommandMessages(msg);
 				stopTyping(msg);
 
 				// Send the success response
@@ -262,7 +262,7 @@ export default class StarboardCommand extends Command {
 		if (msg.guild.settings.get('modlogEnabled', true)) {
 			modLogMessage(msg, embed);
 		}
-		deleteCommandMessages(msg, this.client);
+		deleteCommandMessages(msg);
 		stopTyping(msg);
 
 		// Send the success response

@@ -1,7 +1,8 @@
 import { Message } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { stripIndents } from 'common-tags';
-import { deleteCommandMessages, delay, startTyping, stopTyping } from '../../lib/helpers';
+import { delay, startTyping, stopTyping } from '../../lib/helpers';
+import { deleteCommandMessages } from '../../lib/custom-helpers';
 
 /**
  * Returns the bot's ping.
@@ -49,7 +50,7 @@ export default class PongCommand extends Command {
 		await delay(3000);
 		
 		stopTyping(msg);
-		deleteCommandMessages(msg, this.client);
+		deleteCommandMessages(msg);
 		
 		return (pingMsg as Message).edit(stripIndents`
 			${msg.channel.type !== 'dm' ? `${msg.author},` : ''}

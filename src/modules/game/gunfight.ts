@@ -1,6 +1,6 @@
 import { Message, User } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { delay, randomRange, verify } from '../../lib/helpers';
+import { delay, getRandomInt, verify } from '../../lib/helpers';
 const words = ['fire', 'draw', 'shoot', 'bang', 'pull'];
 
 /**
@@ -65,7 +65,7 @@ export default class GunFightCommand extends Command {
 			}
 
 			await msg.say('Get Ready...');
-			await delay(randomRange(1000, 30000));
+			await delay(getRandomInt(1000, 30000));
 
 			const word = words[Math.floor(Math.random() * words.length)];
 

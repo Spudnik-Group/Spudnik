@@ -3,9 +3,8 @@ import { Guild, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import * as distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
-import { deleteCommandMessages } from '../../lib/helpers';
+import { deleteCommandMessages } from '../../lib/custom-helpers';
 
-// tslint:disable-next-line:no-var-requires
 const { version, dependencies }: { version: string, dependencies: any } = require('../../../package');
 
 /**
@@ -68,7 +67,7 @@ export default class StatsCommand extends Command {
 			.addField('❯ Dependencies', this.parseDependencies())
 			.setThumbnail(`${this.client.user.avatarURL()}`);
 		
-		deleteCommandMessages(msg, this.client);
+		deleteCommandMessages(msg);
 		
 		return msg.embed(statsEmbed);
 	}

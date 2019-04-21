@@ -1,10 +1,9 @@
 import { stripIndents, oneLine } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, stopTyping, startTyping, deleteCommandMessages } from '../../lib/helpers';
+import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, stopTyping, startTyping } from '../../lib/helpers';
 
-// tslint:disable-next-line:no-var-requires
 const mw = require('mw-dict');
 const dictionaryApiKey: string = process.env.spud_dictionaryapi;
 const dict = new mw.CollegiateDictionary(dictionaryApiKey);
@@ -106,7 +105,7 @@ export default class DefineCommand extends Command {
 
 				dictionaryEmbed.description = this.renderDefinition(result[0].definition);
 		
-				deleteCommandMessages(msg, this.client);
+				deleteCommandMessages(msg);
 				stopTyping(msg);
 		
 				// Send the success response

@@ -36,10 +36,11 @@ export interface Configuration {
  *
  * @export
  * @class Spudnik
- * @property {Configuration} Spudnik.Config
- * @property {CommandoClient} Spudnik.Discord
+ * @property {Configuration} Config
+ * @property {CommandoClient} Discord
  */
 export class Spudnik {
+	private Rollbar: any;
 	/**
 	 * @name Spudnik#Config
 	 * @type Configuration
@@ -50,7 +51,6 @@ export class Spudnik {
 	 * @type CommandoClient
 	 */
 	public Discord: CommandoClient;
-	private Rollbar: any;
 
 	/**
 	 * Creates an instance of Spudnik.
@@ -114,12 +114,6 @@ export class Spudnik {
 		console.log(chalk.blue('---Spudnik MECO---'));
 	}
 
-	/**
-	 * Sets up commands for the bot.
-	 *
-	 * @private
-	 * @memberof Spudnik
-	 */
 	private setupCommands = () => {
 		this.Discord.registry
 			.registerDefaultTypes()
@@ -141,12 +135,6 @@ export class Spudnik {
 			.registerCommandsIn(path.join(__dirname, '../modules'));
 	}
 
-	/**
-	 * Sets up the database.
-	 *
-	 * @private
-	 * @memberof Spudnik
-	 */
 	private setupDatabase = () => {
 		Mongoose.Promise = require('bluebird').Promise;
 
@@ -159,12 +147,6 @@ export class Spudnik {
 		});
 	}
 
-	/**
-	 * Sets up the bot events watchers.
-	 *
-	 * @private
-	 * @memberof Spudnik
-	 */
 	private setupEvents = () => {
 		this.Discord
 			.once('ready', async() => handleReady(version, this.Discord, this.Config))
@@ -179,12 +161,6 @@ export class Spudnik {
 			.on('commandError', (cmd, err) => handleCommandError(cmd, err));
 	}
 
-	/**
-	 * Log the bot into discord.
-	 *
-	 * @private
-	 * @memberof Spudnik
-	 */
 	private login = () => {
 		if (this.Config.token) {
 			console.log(chalk.magenta('Logging in to Discord...'));
@@ -195,12 +171,6 @@ export class Spudnik {
 		}
 	}
 
-	/**
-	 * Starts heartbeat service.
-	 *
-	 * @private
-	 * @memberof Spudnik
-	 */
 	private startHeart = () => {
 		http.createServer((request, response) => {
 			response.writeHead(200, { 'Content-Type': 'text/plain' });

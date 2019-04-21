@@ -1,7 +1,8 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { startTyping, stopTyping, deleteCommandMessages, sendSimpleEmbeddedError } from '../../lib/helpers';
+import { startTyping, stopTyping, sendSimpleEmbeddedError } from '../../lib/helpers';
+import { deleteCommandMessages } from '../../lib/custom-helpers';
 import * as rp from 'request-promise';
 
 interface Sportsmanship {
@@ -227,7 +228,7 @@ export default class OverwatchStatsCommand extends Command {
 						}
 					);
 				}
-				deleteCommandMessages(msg, this.client);
+				deleteCommandMessages(msg);
 				stopTyping(msg);
 
 				return msg.embed(overwatchEmbed);

@@ -1,5 +1,5 @@
 import { CommandoMessage } from 'discord.js-commando';
-import { TextChannel, MessageEmbed } from 'discord.js';
+import { TextChannel, MessageEmbed, Message } from 'discord.js';
 import { oneLine } from 'common-tags';
 
 /**
@@ -28,7 +28,7 @@ export const getEmbedColor = (msg: CommandoMessage): number => {
  * @param {MessageEmbed} embed
  * @returns Promise<Message | Message[]>
  */
-export const modLogMessage = (msg: CommandoMessage, embed: MessageEmbed) => {
+export const modLogMessage = (msg: CommandoMessage, embed: MessageEmbed): Promise<Message | Message[]> => {
 	const guild = msg.guild;
 	const outChannelID = msg.guild.settings.get('modlogChannel', null);
 	const outChannel = (msg.guild.channels.get(outChannelID) as TextChannel);
@@ -44,4 +44,16 @@ export const modLogMessage = (msg: CommandoMessage, embed: MessageEmbed) => {
 	return outChannelID && guild.settings.get('modlogEnabled', false)
 		? outChannel.send('', { embed: embed })
 		: null;
+}
+
+/**
+ * Delete the calling message for commands, if it's deletable by the bot
+ * 
+ * @export
+ * @param {CommandoMessage} msg
+ * @param {CommandoClient} client
+ * @returns void
+ */
+export const deleteCommandMessages = (msg: CommandoMessage): void => {
+	if (msg.deletable && msg.guild.settings.get('deleteCommandMessages', false)) msg.delete();
 }

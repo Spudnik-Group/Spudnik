@@ -1,8 +1,8 @@
 import { stripIndents } from 'common-tags';
 import { GuildMember, Message, MessageEmbed, Role } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
+import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, startTyping, stopTyping } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 
 /**
@@ -86,7 +86,7 @@ export default class BanCommand extends Command {
 
 		// Check if user is able to ban the mentioned user
 		if (!memberToBan.bannable || !(highestRoleOfCallingMember.comparePositionTo(memberToBan.roles.highest) > 0)) {
-			deleteCommandMessages(msg, this.client);
+			deleteCommandMessages(msg);
 			stopTyping(msg);
 
 			return sendSimpleEmbeddedError(msg, `I can't ban <@${memberToBan.id}>. Do they have the same or a higher role than me or you?`);
@@ -114,7 +114,7 @@ export default class BanCommand extends Command {
 			modLogMessage(msg, banEmbed);
 		}
 
-		deleteCommandMessages(msg, this.client);
+		deleteCommandMessages(msg);
 		stopTyping(msg);
 
 		// Send the success response

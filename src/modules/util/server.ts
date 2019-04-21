@@ -2,7 +2,7 @@ import { Message, MessageEmbed, Channel } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import * as format from 'date-fns/format';
-import { deleteCommandMessages } from '../../lib/helpers';
+import { deleteCommandMessages } from '../../lib/custom-helpers';
 
 const filterLevels = ['Off', 'No Role', 'Everyone'];
 const verificationLevels = ['None', 'Low', 'Medium', '(╯°□°）╯︵ ┻━┻', '┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻'];
@@ -63,7 +63,7 @@ export default class ServerCommand extends Command {
 			.addField('❯ Roles', msg.guild.roles.size, true)
 			.addField('❯ Channels', msg.guild.channels.filter((channel: Channel) => channel.type !== 'category').size, true);
 		
-		deleteCommandMessages(msg, this.client);
+		deleteCommandMessages(msg);
 		
 		return msg.embed(serverEmbed);
 	}

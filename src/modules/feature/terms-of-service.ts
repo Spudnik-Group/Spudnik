@@ -1,8 +1,8 @@
 import { stripIndents } from 'common-tags';
 import { Channel, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, stopTyping, deleteCommandMessages, startTyping } from '../../lib/helpers';
+import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, stopTyping, startTyping } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 
 interface ITOSMessage {
@@ -241,7 +241,7 @@ export default class TermsOfServiceCommand extends Command {
 				tosEmbed.description = `Channel: <#${tosChannel}>\nMessage List:\n`;
 				tosEmbed.description += tosList;
 
-				deleteCommandMessages(msg, this.client);
+				deleteCommandMessages(msg);
 				stopTyping(msg);
 
 				// Send the success response
@@ -293,7 +293,7 @@ export default class TermsOfServiceCommand extends Command {
 			modLogMessage(msg, embed);
 		}
 
-		deleteCommandMessages(msg, this.client);
+		deleteCommandMessages(msg);
 		stopTyping(msg);
 
 		// Send the success response
