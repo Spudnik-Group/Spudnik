@@ -5,7 +5,7 @@
 	<div class="container">
 		<h2>Command List</h2>
 		<p>
-			The default prefix is <code>!</code>, but you can also @mention the bot and use commands that way as well (ex: <code>@spudnik ping</code>).<br />
+			The default prefix is <code>!</code>, but you can also @mention the bot and use commands that way as well (ex: <code>@spudnik help</code>).<br />
 			You can customize the default command prefix, too, just take a look at our <a href="/getting-started">Getting Started Guide</a>
 		</p>
 		{% assign groups = site.data.command_groups | sort %}
@@ -13,7 +13,12 @@
 			{% capture thecycle %}{% cycle 'odd', 'even' %}{% endcapture %}
 			<hr class="mb-5">
 			<section class="wow fadeIn">
-				<h3><a href="#{{ group_hash[0] }}"></a>{{ group_hash[0] | capitalize }}</h3>
+				<h3>
+					<a href="#{{ group_hash[0] }}"></a>
+					{% assign group_title = group_hash[0] | split: '_' %}
+					{% capture group_title %}{% for word in group_title %}{{ word | capitalize }} {% endfor %}{% endcapture %}
+					{{ group_title }}
+				</h3>
 				<table class="table table-bordered {% if thecycle == 'odd' %}table-dark{% endif %}">
 					<thead>
 						<tr>

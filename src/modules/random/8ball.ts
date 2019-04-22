@@ -1,5 +1,5 @@
 import { Message, MessageEmbed } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import { getRandomInt, sendSimpleEmbeddedError } from '../../lib/helpers';
 
@@ -46,15 +46,16 @@ export default class EightBallCommand extends Command {
 	/**
 	 * Run the "8ball" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @param {{ query: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof EightBallCommand
 	 */
-	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { query: string }): Promise<Message | Message[]> {
 		let response = 'Error getting answer. Try again later?';
 		if (eightBall && eightBall.length > 0) {
 			response = eightBall[getRandomInt(0, eightBall.length) - 1];
+			
 			return msg.embed(new MessageEmbed({
 				color: getEmbedColor(msg),
 				description: `:8ball: **${response}**`,

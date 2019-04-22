@@ -1,10 +1,9 @@
-import { stripIndents } from 'common-tags';
+import { stripIndents, oneLine } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
+import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, stopTyping, startTyping } from '../../lib/helpers';
 
-// tslint:disable-next-line:no-var-requires
 const mw = require('mw-dict');
 const dictionaryApiKey: string = process.env.spud_dictionaryapi;
 const dict = new mw.CollegiateDictionary(dictionaryApiKey);
@@ -54,13 +53,12 @@ export default class DefineCommand extends Command {
 	/**
 	 * Run the "define" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @param {{ query: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof DefineCommand
 	 */
-	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
-		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
+	public async run(msg: CommandoMessage, args: { query: string }): Promise<Message | Message[]> {
 		const word = args.query;
 		const dictionaryEmbed: MessageEmbed = new MessageEmbed({
 			color: getEmbedColor(msg),
@@ -72,46 +70,65 @@ export default class DefineCommand extends Command {
 			title: `Definition Result: ${word}`
 		});
 
-		function renderDefinition(sensesIn: any) {
-			return sensesIn
-				.map((def: any) => stripIndents`
-					${def.number ? '*' + def.number + '.*' : ''}
-					${def.meanings && def.meanings.length ? def.meanings.join(' ') : ''}
-					${def.synonyms && def.synonyms.length ? def.synonyms.map((s: any) => '_' + s + '_').join(', ') : ''}
-					${def.illustrations && def.illustrations.length ? def.illustrations.map((i: any) => '* ' + i).join('\n') : ''}
-					${def.senses && def.senses.length ? renderDefinition(def.senses) : ''}
-				`)
-				.join('\n');
-		}
+		startTyping(msg);
 
-		dict.lookup(word)
+		return dict.lookup(word)
 			.then((result: any) => {
-				dictionaryEmbed.fields = [
-					{
+				dictionaryEmbed.fields = [];
+				if (result[0].functional_label) {
+					dictionaryEmbed.fields.push({
 						name: 'Functional Label:',
 						value: result[0].functional_label
-					},
-					{
+					});
+				}
+
+				if (result[0].pronunciation[0]) {
+					dictionaryEmbed.fields.push({
 						name: 'Pronunciation:',
 						value: result[0].pronunciation[0]
-					},
-					{
+					});
+				}
+
+				if (result[0].etymology) {
+					dictionaryEmbed.fields.push({
 						name: 'Etymology:',
 						value: result[0].etymology
-					},
-					{
+					});
+				}
+
+				if (result[0].popularity) {
+					dictionaryEmbed.fields.push({
 						name: 'Popularity:',
 						value: result[0].popularity
-					}
-				];
-				dictionaryEmbed.description = renderDefinition(result[0].definition);
+					});
+				}
+
+				dictionaryEmbed.description = this.renderDefinition(result[0].definition);
+		
+				deleteCommandMessages(msg);
+				stopTyping(msg);
+		
+				// Send the success response
 				return msg.embed(dictionaryEmbed);
 			})
 			.catch((err: any) => {
 				msg.client.emit('warn', `Error in command ref:define: ${err}`);
+
+				stopTyping(msg);
+
 				return sendSimpleEmbeddedError(msg, 'Word not found.', 3000);
 			});
+	}
 
-		return response;
+	private renderDefinition(sensesIn: any) {
+		return sensesIn
+			.map((def: any) => oneLine`
+				${def.number ? '*' + def.number + '.*' : ''}
+				${def.meanings && def.meanings.length ? def.meanings.join(' ') : ''}
+				${def.synonyms && def.synonyms.length ? def.synonyms.map((s: any) => '_' + s + '_').join(', ') : ''}
+				${def.illustrations && def.illustrations.length ? def.illustrations.map((i: any) => '* ' + i).join('\n') : ''}
+				${def.senses && def.senses.length ? this.renderDefinition(def.senses) : ''}
+			`)
+			.join('\n');
 	}
 }

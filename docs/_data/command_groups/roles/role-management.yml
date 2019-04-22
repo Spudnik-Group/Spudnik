@@ -3,3 +3,4 @@ usage:
 - "!role remove @Fortnite"
 - "!role list"
 - "!role default @Pleb"
+- "!role default"

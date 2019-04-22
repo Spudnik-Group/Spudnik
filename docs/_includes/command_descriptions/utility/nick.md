@@ -3,4 +3,4 @@ syntax: `!nick (new nickname)`<br />
 <br />
 Supplying no nickname resets the nickname to default.<br />
 <br />
-Manage Nicknames permission required.
+MANAGE_NICKNAMES permission required.
