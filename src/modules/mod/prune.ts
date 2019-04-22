@@ -1,7 +1,9 @@
 import { stripIndents } from 'common-tags';
-import { Collection, GuildMember, Message, User } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { Collection, GuildMember, Message, User, MessageEmbed } from 'discord.js';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, stopTyping } from '../../lib/helpers';
+import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
+import * as format from 'date-fns/format';
 
 /**
  * Deletes previous messages.
@@ -32,6 +34,7 @@ export default class PruneCommand extends Command {
 					type: 'integer',
 					validate: (limit: number) => {
 						if (!isNaN(Number(limit)) && limit > 0) { return true; }
+						
 						return 'Invalid number of messages to delete.';
 					}
 				},
@@ -40,7 +43,14 @@ export default class PruneCommand extends Command {
 					key: 'filter',
 					parse: (str: string) => str.toLowerCase(),
 					prompt: 'What filter would you like to apply?\n',
-					type: 'string'
+					type: 'string',
+					validate: (filter: string) => {
+						const allowedFilters = ['invites', 'user', 'bots', 'uploads', 'links'];
+						if (filter === '') return true;
+						if (allowedFilters.indexOf(filter) !== -1) return true;
+						
+						return 'You provided an invalid filter.';
+					}
 				},
 				{
 					default: '',
@@ -61,8 +71,8 @@ export default class PruneCommand extends Command {
 				\`uploads\`: Messages containing an attachment
 				\`links\`: Messages containing a link\n
 
-				Manage Message permission required.
-				`,
+				MANAGE_MESSAGES permission required.
+			`,
 			examples: [
 				'!prune 50',
 				'!prune 15 links',
@@ -75,69 +85,91 @@ export default class PruneCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			}
+			},
+			userPermissions: ['MANAGE_MESSAGES']
 		});
-	}
-
-	/**
-	 * Determine if a member has permission to run the "prune" command.
-	 *
-	 * @param {CommandMessage} msg
-	 * @returns {boolean}
-	 * @memberof PruneCommand
-	 */
-	public hasPermission(msg: CommandMessage): boolean {
-		return msg.member.hasPermission('MANAGE_MESSAGES');
 	}
 
 	/**
 	 * Run the "prune" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @param {{ limit: number, filter: string, member: GuildMember }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof PruneCommand
 	 */
-	public async run(msg: CommandMessage, args: { limit: number, filter: string, member: GuildMember }): Promise<Message | Message[]> {
-		await msg.delete();
+	public async run(msg: CommandoMessage, args: { limit: number, filter: string, member: GuildMember }): Promise<Message | Message[]> {
+		await deleteCommandMessages(msg);
 		const { filter, limit } = args;
 		let messageFilter: (message: Message) => boolean;
 
+		startTyping(msg);
+
 		if (filter) {
-			if (filter === 'invite') {
-				messageFilter = (message: Message) => message.content.search(/(discord\.gg\/.+|discordapp\.com\/invite\/.+)/i) !== -1;
-			} else if (filter === 'user') {
-				if (args.member) {
-					const { member } = args;
-					const user: User = member.user;
-					messageFilter = (message: Message) => message.author.id === user.id;
-				} else {
-					return sendSimpleEmbeddedError(msg, `${msg.author}, you have to mention someone.`);
+			switch (filter) {
+				case 'invite': {
+					messageFilter = (message: Message) => message.content.search(/(discord\.gg\/.+|discordapp\.com\/invite\/.+)/i) !== -1;
+					break;
 				}
-			} else if (filter === 'bots') {
-				messageFilter = (message: Message) => message.author.bot;
-			} else if (filter === 'you') {
-				messageFilter = (message: Message) => message.author.id === this.client.user.id;
-			} else if (filter === 'upload') {
-				messageFilter = (message: Message) => message.attachments.size !== 0;
-			} else if (filter === 'links') {
-				messageFilter = (message: Message) => message.content.search(/https?:\/\/[^ \/\.]+\.[^ \/\.]+/) !== -1;
-			} else {
-				return sendSimpleEmbeddedError(msg,
-					stripIndents`${msg.author}, that is not a valid filter.\n
-						\`help prune\` for all available filters.`
-				);
+				case 'user': {
+					if (args.member) {
+						const { member } = args;
+						const user: User = member.user;
+						messageFilter = (message: Message) => message.author.id === user.id;
+					} else {
+						stopTyping(msg);
+						
+						return sendSimpleEmbeddedError(msg, `${msg.author}, you have to mention someone.`);
+					}
+					break;
+				}
+				case 'bots': {
+					messageFilter = (message: Message) => message.author.bot;
+					break;
+				}
+				case 'you': {
+					messageFilter = (message: Message) => message.author.id === this.client.user.id;
+					break;
+				}
+				case 'upload': {
+					messageFilter = (message: Message) => message.attachments.size !== 0;
+					break;
+				}
+				case 'links': {
+					messageFilter = (message: Message) => message.content.search(/https?:\/\/[^ \/\.]+\.[^ \/\.]+/) !== -1;
+					break;
+				}
 			}
 
 			const messages: Collection<string, Message> = await msg.channel.messages.fetch({ limit: limit });
 			const messagesToDelete: Collection<string, Message> = messages.filter(messageFilter);
 
-			await sendSimpleEmbeddedMessage(msg, `Pruning ${limit} messages.`).then((response: Message | Message[]) => {
-				msg.channel.bulkDelete(messagesToDelete.array().reverse())
-					.then(() => { if (response instanceof Message) { response.delete(); } })
-					.catch((err: Error) => null);
-			});
+			await sendSimpleEmbeddedMessage(msg, `Pruning ${limit} messages.`)
+				.then((response: Message | Message[]) => {
+					msg.channel.bulkDelete(messagesToDelete.array().reverse())
+						.then(() => { if (response instanceof Message) { response.delete(); } })
+						.catch((err: Error) => this.catchError(msg, args, err));
+				});
 
+			// Log the event in the mod log
+			const modlogEmbed: MessageEmbed = new MessageEmbed({
+				author: {
+					iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/black-scissors_2702.png',
+					name: 'Prune'
+				},
+				color: getEmbedColor(msg),
+				description: stripIndents`
+					**Moderator:** ${msg.author.tag} (${msg.author.id})
+					**Action:** Prune
+					**Details:** Deleted ${args.limit} messages from <#${msg.channel.id}>
+					**Filter:** ${args.filter}
+				`
+			}).setTimestamp();
+			modLogMessage(msg, modlogEmbed);
+
+			// Send the success response
+			stopTyping(msg);
+			
 			return sendSimpleEmbeddedMessage(msg, `Pruned ${limit} messages`, 5000);
 		}
 
@@ -146,9 +178,43 @@ export default class PruneCommand extends Command {
 			.then((response: Message | Message[]) => {
 				msg.channel.bulkDelete(messages.array().reverse())
 					.then(() => { if (response instanceof Message) { response.delete(); } })
-					.catch((err: Error) => null);
+					.catch((err: Error) => this.catchError(msg, args, err));
 			});
 
+		// Log the event in the mod log
+		const modlogEmbed: MessageEmbed = new MessageEmbed({
+			author: {
+				iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/black-scissors_2702.png',
+				name: 'Prune'
+			},
+			color: getEmbedColor(msg),
+			description: stripIndents`
+				**Moderator:** ${msg.author.tag} (${msg.author.id})
+				**Action:** Prune
+				**Details:** Deleted ${args.limit} messages from <#${msg.channel.id}>
+			`
+		}).setTimestamp();
+		modLogMessage(msg, modlogEmbed);
+
+		// Send the success response
+		stopTyping(msg);
+		
 		return sendSimpleEmbeddedMessage(msg, `Pruned ${limit} messages`, 5000);
+	}
+	
+	private catchError(msg: CommandoMessage, args: { limit: number, filter: string, member: GuildMember }, err: Error) {
+		// Emit warn event for debugging
+		msg.client.emit('warn', stripIndents`
+		Error occurred in \`prune\` command!
+		**Server:** ${msg.guild.name} (${msg.guild.id})
+		**Author:** ${msg.author.tag} (${msg.author.id})
+		**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+		**Input:** \`limit: ${args.limit} | filter: ${args.filter} | member: ${args.member}\`
+		**Error Message:** ${err}`);
+
+		// Inform the user the command failed
+		stopTyping(msg);
+		
+		return sendSimpleEmbeddedError(msg, `Pruning ${args.limit} failed!`);
 	}
 }

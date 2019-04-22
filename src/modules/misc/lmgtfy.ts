@@ -1,6 +1,7 @@
 import { Message } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { deleteCommandMessages } from '../../lib/custom-helpers';
 
 /**
  * Generates a "Let Me Google That For You" link.
@@ -43,12 +44,14 @@ export default class LmgtfyCommand extends Command {
 	/**
 	 * Run the "lmgtfy" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @param {{ query: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof LmgtfyCommand
 	 */
-	public async run(msg: CommandMessage, args: { query: string }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { query: string }): Promise<Message | Message[]> {
+		deleteCommandMessages(msg);
+		
 		return sendSimpleEmbeddedMessage(msg, `<http://lmgtfy.com/?q=${encodeURI(args.query)}>`);
 	}
 }

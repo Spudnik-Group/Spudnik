@@ -1,8 +1,9 @@
 import { stripIndents } from 'common-tags';
 import { GuildMember, Message, MessageEmbed } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
+import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, startTyping, stopTyping } from '../../lib/helpers';
+import * as format from 'date-fns/format';
 
 /**
  * Kick a member from the guild.
@@ -37,7 +38,7 @@ export default class KickCommand extends Command {
 			details: stripIndents`
 				syntax: \`!kick <@userMention> <reason>\`
 
-				Kick Members permission required.
+				KICK_MEMBERS permission required.
 			`,
 			examples: [
 				'!kick @user being a pleb'
@@ -49,30 +50,20 @@ export default class KickCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			}
+			},
+			userPermissions: ['KICK_MEMBERS']
 		});
-	}
-
-	/**
-	 * Determine if a member has permission to run the "kick" command.
-	 *
-	 * @param {CommandMessage} msg
-	 * @returns {boolean}
-	 * @memberof KickCommand
-	 */
-	public hasPermission(msg: CommandMessage): boolean {
-		return msg.member.hasPermission(['KICK_MEMBERS']);
 	}
 
 	/**
 	 * Run the "kick" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @param {{ member: GuildMember, reason: string }} args
 	 * @returns {(Promise<Message | Message[] | any>)}
 	 * @memberof KickCommand
 	 */
-	public async run(msg: CommandMessage, args: { member: GuildMember, reason: string }): Promise<Message | Message[] | any> {
+	public async run (msg: CommandoMessage, args: { member: GuildMember, reason: string }): Promise<Message | Message[] | any> {
 		const memberToKick: GuildMember = args.member;
 		const kickEmbed: MessageEmbed = new MessageEmbed({
 			author: {
@@ -81,28 +72,52 @@ export default class KickCommand extends Command {
 			},
 			color: getEmbedColor(msg),
 			description: ''
-		});
+		}).setTimestamp();
 
+		startTyping(msg);
+		
+		// Check if user is able to kick the mentioned user
 		if (!memberToKick.kickable || !(msg.member.roles.highest.comparePositionTo(memberToKick.roles.highest) > 0)) {
+			stopTyping(msg);
+			
 			return sendSimpleEmbeddedError(msg, `I can't kick ${memberToKick}. Do they have the same or a higher role than me or you?`);
 		}
 
-		memberToKick.kick(args.reason)
+		memberToKick.kick(`Kicked by: ${msg.author} for: ${args.reason}`)
 			.then(() => {
-				kickEmbed.description = `Kicking ${memberToKick} from ${msg.guild} for ${args.reason}!`;
+				// Set up embed message
+				kickEmbed.setDescription(stripIndents`
+					**Moderator:** ${msg.author.tag} (${msg.author.id})
+					**Member:** ${memberToKick.user.tag} (${memberToKick.id})
+					**Action:** Kick
+					**Reason:** ${args.reason}
+				`);
 
+				// Log the event in the mod log
+				if (msg.guild.settings.get('modlogEnabled', true)) {
+					modLogMessage(msg, kickEmbed);
+				}
+
+				deleteCommandMessages(msg);
+				stopTyping(msg);
+
+				// Send the success response
 				return msg.embed(kickEmbed);
 			})
 			.catch((err: Error) => {
-				msg.client.emit('error',
-					stripIndents`Error with command 'ban'\n
-						Banning ${memberToKick} from ${msg.guild} failed!\n
-						Error: ${err}`
-				);
+				// Emit warn event for debugging
+				msg.client.emit('warn', stripIndents`
+				Error occurred in \`kick\` command!
+				**Server:** ${msg.guild.name} (${msg.guild.id})
+				**Author:** ${msg.author.tag} (${msg.author.id})
+				**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+				**Input:** \`${args.member.user.tag} (${args.member.id})\` || \`${args.reason}\`
+				**Error Message:** ${err}`);
 
-				return sendSimpleEmbeddedMessage(msg, `Kicking ${memberToKick} failed!`);
+				// Inform the user the command failed
+				stopTyping(msg);
+
+				return sendSimpleEmbeddedError(msg, `Kicking ${args.member} for ${args.reason} failed!`);
 			});
-
-		return sendSimpleEmbeddedMessage(msg, 'Loading...');
 	}
 }

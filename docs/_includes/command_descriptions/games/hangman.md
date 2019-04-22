@@ -1,0 +1,1 @@
+Prevent a man from being hanged by guessing a word as fast as you can.

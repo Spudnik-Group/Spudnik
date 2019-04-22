@@ -4,4 +4,4 @@ syntax: `!accept (#channelMention)`<br />
 No Arguement: Accept the guild rules, and be auto-assigned the default role.<br />
 With #channelMention: Sets the channel to listen for the accept command.<br />
 <br />
-Manage Roles permission required (for setting TOS channel).
+MANAGE_ROLES permission required (for setting TOS channel).

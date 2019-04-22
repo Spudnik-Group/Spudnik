@@ -1,8 +1,8 @@
 import { Message, MessageEmbed } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import * as rp from 'request-promise';
-import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, stopTyping, startTyping } from '../../lib/helpers';
 
 /**
  * Post a random math fact.
@@ -36,25 +36,35 @@ export default class MathFactCommand extends Command {
 	/**
 	 * Run the "math-fact" command.
 	 *
-	 * @param {CommandMessage} msg
+	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof MathFactCommand
 	 */
-	public async run(msg: CommandMessage): Promise<Message | Message[]> {
-		const response = await sendSimpleEmbeddedMessage(msg, 'Loading...');
-		rp('http://numbersapi.com/random/math?json')
+	public async run(msg: CommandoMessage): Promise<Message | Message[]> {
+		const responseEmbed: MessageEmbed = new MessageEmbed({
+			color: getEmbedColor(msg),
+			description: '',
+			title: 'Math Fact'
+		});
+
+		startTyping(msg);
+
+		return rp('http://numbersapi.com/random/math?json')
 			.then((content) => {
 				const data = JSON.parse(content);
-				return msg.embed(new MessageEmbed({
-					color: getEmbedColor(msg),
-					description: data.text,
-					title: 'Math Fact'
-				}));
+				responseEmbed.setDescription(data.text);
+		
+				deleteCommandMessages(msg);
+				stopTyping(msg);
+
+				// Send the success response
+				return msg.embed(responseEmbed);
 			})
 			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command random:math-fact: ${err}`);
+				stopTyping(msg);
+				
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			});
-		return response;
 	}
 }
