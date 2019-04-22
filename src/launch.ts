@@ -2,11 +2,11 @@ import chalk from 'chalk';
 import * as Discord from 'discord.js';
 import { Spudnik } from './lib/spudnik';
 const Config = {
-	'bfdApiKey': process.env.spud_dblapi || '',
-	'bodApiKey': process.env.spud_dblapi || '',
+	'bfdApiKey': process.env.spud_bfdapi || '',
+	'bodApiKey': process.env.spud_bodapi || '',
 	'botListUpdateInterval': +process.env.spud_botlist_update_interval || 1800000,
-	'botsggApiKey': process.env.spud_dblapi || '',
-	'dbApiKey': process.env.spud_dblapi || '',
+	'botsggApiKey': process.env.spud_botsggapi || '',
+	'dbApiKey': process.env.spud_dbapi || '',
 	'dblApiKey': process.env.spud_dblapi || '',
 	'debug': !!process.env.spud_debug || false,
 	'mongoDB': process.env.spud_mongo,
