@@ -5,7 +5,7 @@ Spudnik is a free and open source Discord chat bot focused on guild management a
 
 [![Uptime][img-uptime-robot]][url-homepage] [![Current Release][img-current-release]][url-current-release] [![discord.js][img-discord-js]][url-discord-js] [![Commando][img-commando]][url-commando] [![License][img-license]][url-license] [![Build Status][img-build-status]][url-build-status] ![Code Style: tslint][img-code-style]
 
-[![Discord Bot List][img-discord-bot-list]][url-discord-bot-list]
+[![Discord Bot List][img-discord-bot-list]][url-discord-bot-list] [![Bots On Discord][img-botsondiscord]][url-botsondiscord]
 
 ## Features include:
 - No weeb commands! Yay!
@@ -60,6 +60,8 @@ For a full list of features and associated commands please look at our [document
 
 [img-discord-bot-list]: https://discordbots.org/api/widget/398591330806398989.svg
 [url-discord-bot-list]: https://discordbots.org/bot/398591330806398989
+[img-botsondiscord]: https://bots.ondiscord.xyz/bots/398591330806398989/embed?theme=dark
+[url-botsondiscord]: https://bots.ondiscord.xyz/bots/398591330806398989
 
 [url-feathub]: https://feathub.com/Spudnik-Group/Spudnik
 

@@ -69,7 +69,7 @@ export const handleReady = async(version: string, client: CommandoClient, config
 	let statusIndex: number = -1;
 	statusIndex = updateStatus(client, statuses, statusIndex);
 	setInterval(() => { statusIndex = updateStatus(client, statuses, statusIndex) }, config.statusUpdateInterval, true);
-	setInterval(() => updateBotListStats(config, client), config.botListUpdateInterval, true);
+	setInterval(() => { updateBotListStats(config, client) }, config.botListUpdateInterval, true);
 }
 
 /**
@@ -91,10 +91,13 @@ const updateStatus = (client: CommandoClient, statuses: PresenceData[], statusIn
  * Update bot list stats on interval
  */
 const updateBotListStats = (config: Configuration, client: CommandoClient): void => {
+	const guildCount = client.guilds.size;
+
+	console.log(`- Bot is serving on ${guildCount} servers.`);
 	// DISCORD.BOTS.gg
 	if (config.botsggApiKey) {
 		rp({
-			body: { guildCount: client.guilds.size },
+			body: { guildCount: guildCount },
 			headers: { Authorization: config.botsggApiKey },
 			method: 'POST',
 			uri: `https://discord.bots.gg/api/v1/bots/${client.user.id}/stats`
@@ -106,7 +109,7 @@ const updateBotListStats = (config: Configuration, client: CommandoClient): void
 	// BOTS.ONDISCORD.xyz
 	if (config.bodApiKey) {
 		rp({
-			body: { guildCount: client.guilds.size },
+			body: { guildCount: guildCount },
 			headers: { Authorization: config.bodApiKey },
 			method: 'POST',
 			uri: `https://bots.ondiscord.xyz/bot-api/bots/${client.user.id}/guilds`
@@ -118,7 +121,7 @@ const updateBotListStats = (config: Configuration, client: CommandoClient): void
 	// DISCORDBOTS.org
 	if (config.dbApiKey) {
 		rp({
-			body: { server_count: client.guilds.size },
+			body: { server_count: guildCount },
 			headers: { Authorization: config.dbApiKey },
 			method: 'POST',
 			uri: `https://discordbots.org/api/bots/${client.user.id}/stats`
@@ -130,7 +133,7 @@ const updateBotListStats = (config: Configuration, client: CommandoClient): void
 	// BOTSFORDISCORD.com
 	if (config.bfdApiKey) {
 		rp({
-			body: { server_count: client.guilds.size },
+			body: { server_count: guildCount },
 			headers: { Authorization: config.bfdApiKey },
 			method: 'POST',
 			uri: `https://botsfordiscord.com/api/bots/${client.user.id}/stats`
@@ -142,7 +145,7 @@ const updateBotListStats = (config: Configuration, client: CommandoClient): void
 	// DISCORDBOTLIST.com
 	if (config.dblApiKey) {
 		rp({
-			body: { guilds: client.guilds.size, users: client.users.size },
+			body: { guilds: guildCount, users: client.users.size },
 			headers: { Authorization: `Bot ${config.dblApiKey}` },
 			method: 'POST',
 			uri: `https://discordbotlist.com/api/bots/${client.user.id}/stats`
