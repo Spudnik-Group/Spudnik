@@ -36,7 +36,7 @@ export const modLogMessage = (msg: CommandoMessage, embed: MessageEmbed): Promis
 	if (!guild.settings.get('hasSentModLogMessage', false)) {
 		msg.reply(oneLine`
 			📃 I can keep a log of moderator actions if you create a channel named \'mod-logs\'
-			(or some other name configured by the ${guild.commandPrefix}setmodlogs command) and give me access to it.
+			(or some other name configured by the ${guild.commandPrefix}modlog command) and give me access to it.
 			This message will only show up this one time and never again after this so if you desire to set up mod logs make sure to do so now.`);
 		guild.settings.set('hasSentModLogMessage', true);
 	}
