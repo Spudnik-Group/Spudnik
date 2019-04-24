@@ -217,10 +217,8 @@ export default class RoleCommand extends Command {
 		}
 
 		// Log the event in the mod log
-		if (msg.guild.settings.get('modlogEnabled', true)) {
-			if (args.subCommand.toLowerCase() !== 'list') {
-				modLogMessage(msg, roleEmbed);
-			}
+		if (args.subCommand.toLowerCase() !== 'list') {
+			modLogMessage(msg, roleEmbed);
 		}
 
 		deleteCommandMessages(msg);

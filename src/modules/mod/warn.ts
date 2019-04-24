@@ -136,9 +136,7 @@ export default class WarnCommand extends Command {
 					**Reason:** ${args.reason !== '' ? args.reason : 'No reason has been added by the moderator'}`);
 				
 				// Log the event in the mod log
-				if (msg.guild.settings.get('modlogEnabled', true)) {
-					modLogMessage(msg, warnEmbed);
-				}
+				modLogMessage(msg, warnEmbed);
 				deleteCommandMessages(msg);
 				stopTyping(msg);
 	
@@ -168,9 +166,7 @@ export default class WarnCommand extends Command {
 					**Reason:** ${args.reason !== '' ? args.reason : 'No reason has been added by the moderator'}`);
 				
 				// Log the event in the mod log
-				if (msg.guild.settings.get('modlogEnabled', true)) {
-					modLogMessage(msg, warnEmbed);
-				}
+				modLogMessage(msg, warnEmbed);
 				deleteCommandMessages(msg);
 				stopTyping(msg);
 	
