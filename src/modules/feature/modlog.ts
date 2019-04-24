@@ -138,7 +138,7 @@ export default class ModlogCommand extends Command {
 								// Set up embed message
 								modlogEmbed.setDescription(stripIndents`
 									**Member:** ${msg.author.tag} (${msg.author.id})
-									**Action:** Modlog Channel set to <#${channelID}>}
+									**Action:** Modlog Channel set to <#${channelID}>
 								`);
 								this.sendSuccess(msg, modlogEmbed);
 							})
