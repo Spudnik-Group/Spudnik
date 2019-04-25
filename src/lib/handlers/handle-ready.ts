@@ -96,11 +96,9 @@ const updateBotListStats = (config: Configuration, client: CommandoClient): void
 	console.log(`- Bot is serving on ${guildCount} servers.`);
 	// DISCORD.BOTS.gg
 	if (config.botsggApiKey) {
-		rp({
+		rp.post(`https://discord.bots.gg/api/v1/bots/${client.user.id}/stats`, {
 			body: { guildCount: guildCount },
-			headers: { Authorization: config.botsggApiKey },
-			method: 'POST',
-			uri: `https://discord.bots.gg/api/v1/bots/${client.user.id}/stats`
+			headers: { Authorization: config.botsggApiKey }
 		})
 		.then(() => console.log('- Posted statistics successfully', 'discord.bots.gg'))
 		.catch(() => console.log('Failed to post statistics', 'discord.bots.gg'))
@@ -108,11 +106,9 @@ const updateBotListStats = (config: Configuration, client: CommandoClient): void
 
 	// BOTS.ONDISCORD.xyz
 	if (config.bodApiKey) {
-		rp({
+		rp.post(`https://bots.ondiscord.xyz/bot-api/bots/${client.user.id}/guilds`, {
 			body: { guildCount: guildCount },
-			headers: { Authorization: config.bodApiKey },
-			method: 'POST',
-			uri: `https://bots.ondiscord.xyz/bot-api/bots/${client.user.id}/guilds`
+			headers: { Authorization: config.bodApiKey }
 		})
 		.then(() => console.log('- Posted statistics successfully', 'bots.ondiscord.xyz'))
 		.catch(() => console.log('Failed to post statistics', 'bots.ondiscord.xyz'))
@@ -120,11 +116,9 @@ const updateBotListStats = (config: Configuration, client: CommandoClient): void
 
 	// DISCORDBOTS.org
 	if (config.dbApiKey) {
-		rp({
+		rp.post(`https://discordbots.org/api/bots/${client.user.id}/stats`, {
 			body: { server_count: guildCount },
-			headers: { Authorization: config.dbApiKey },
-			method: 'POST',
-			uri: `https://discordbots.org/api/bots/${client.user.id}/stats`
+			headers: { Authorization: config.dbApiKey }
 		})
 		.then(() => console.log('- Posted statistics successfully', 'discordbots.org'))
 		.catch(() => console.log('Failed to post statistics', 'discordbots.org'))
@@ -132,11 +126,9 @@ const updateBotListStats = (config: Configuration, client: CommandoClient): void
 
 	// BOTSFORDISCORD.com
 	if (config.bfdApiKey) {
-		rp({
+		rp.post(`https://botsfordiscord.com/api/bots/${client.user.id}/stats`, {
 			body: { server_count: guildCount },
-			headers: { Authorization: config.bfdApiKey },
-			method: 'POST',
-			uri: `https://botsfordiscord.com/api/bots/${client.user.id}/stats`
+			headers: { Authorization: config.bfdApiKey }
 		})
 		.then(() => console.log('- Posted statistics successfully', 'botsfordiscord.com'))
 		.catch(() => console.log('Failed to post statistics', 'botsfordiscord.com'))
@@ -144,11 +136,9 @@ const updateBotListStats = (config: Configuration, client: CommandoClient): void
 
 	// DISCORDBOTLIST.com
 	if (config.dblApiKey) {
-		rp({
+		rp(`https://discordbotlist.com/api/bots/${client.user.id}/stats`, {
 			body: { guilds: guildCount, users: client.users.size },
-			headers: { Authorization: `Bot ${config.dblApiKey}` },
-			method: 'POST',
-			uri: `https://discordbotlist.com/api/bots/${client.user.id}/stats`
+			headers: { Authorization: `Bot ${config.dblApiKey}` }
 		})
 		.then(() => console.log('- Posted statistics successfully', 'discordbotlist.com'))
 		.catch(() => console.log('Failed to post statistics', 'discordbotlist.com'))
