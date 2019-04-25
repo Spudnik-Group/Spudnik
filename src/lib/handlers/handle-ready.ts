@@ -68,8 +68,8 @@ export const handleReady = async(version: string, client: CommandoClient, config
 	// Update bot status, using array of possible statuses
 	let statusIndex: number = -1;
 	statusIndex = updateStatus(client, statuses, statusIndex);
-	setInterval(() => { statusIndex = updateStatus(client, statuses, statusIndex) }, config.statusUpdateInterval, true);
-	setInterval(() => { updateBotListStats(config, client) }, config.botListUpdateInterval, true);
+	client.setInterval(() => { statusIndex = updateStatus(client, statuses, statusIndex) }, config.statusUpdateInterval);
+	client.setInterval(() => updateBotListStats(config, client), config.botListUpdateInterval);
 }
 
 /**
