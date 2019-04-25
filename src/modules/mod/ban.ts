@@ -110,9 +110,7 @@ export default class BanCommand extends Command {
 			**Reason:** ${args.reason}`);
 		
 		// Log the event in the mod log
-		if (msg.guild.settings.get('modlogEnabled', true)) {
-			modLogMessage(msg, banEmbed);
-		}
+		modLogMessage(msg, banEmbed);
 
 		deleteCommandMessages(msg);
 		stopTyping(msg);

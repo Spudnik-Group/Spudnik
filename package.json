@@ -40,6 +40,7 @@
 		"mw-dict": "^3.0.0",
 		"node-superfetch": "^0.1.9",
 		"remove-markdown": "0.2.2",
+		"request": "^2.88.0",
 		"request-promise": "^4.2.4",
 		"rollbar": "^2.5.1",
 		"soap": "^0.25.0",

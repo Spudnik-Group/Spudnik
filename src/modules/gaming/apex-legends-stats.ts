@@ -63,7 +63,7 @@ export default class ApexLegendsStatsCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			aliases: ['apex'],
+			aliases: ['apex', 'apex-stats'],
 			args: [
 				{
 					key: 'platform',

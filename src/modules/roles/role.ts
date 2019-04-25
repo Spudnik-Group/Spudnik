@@ -107,6 +107,7 @@ export default class RoleCommand extends Command {
 								**Member:** ${msg.author.tag} (${msg.author.id})
 								**Action:** Added role '${args.role.name}' to the list of assignable roles.
 							`);
+							this.sendSuccess(msg, roleEmbed);
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				} else {
@@ -133,6 +134,7 @@ export default class RoleCommand extends Command {
 								**Member:** ${msg.author.tag} (${msg.author.id})
 								**Action:** Removed role '${args.role.name}' from the list of assignable roles.
 							`);
+							this.sendSuccess(msg, roleEmbed);
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				} else {
@@ -151,11 +153,10 @@ export default class RoleCommand extends Command {
 								**Member:** ${msg.author.tag} (${msg.author.id})
 								**Action:** Removed default role(s).
 							`);
+							this.sendSuccess(msg, roleEmbed);
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
-				}
-
-				if (!guildDefaultRoles.includes(args.role.id)) {
+				} else if (!guildDefaultRoles.includes(args.role.id)) {
 					guildDefaultRoles.push(args.role.id);
 
 					msg.guild.settings.set('defaultRoles', guildDefaultRoles)
@@ -165,6 +166,7 @@ export default class RoleCommand extends Command {
 								**Member:** ${msg.author.tag} (${msg.author.id})
 								**Action:** Added role '${args.role.name}' to the list of default roles.
 							`);
+							this.sendSuccess(msg, roleEmbed);
 						})
 						.catch((err: Error) => {
 							msg.client.emit('warn', `Error in command roles:role-add: ${err}`);
@@ -212,22 +214,14 @@ export default class RoleCommand extends Command {
 				if (Array.isArray(roleEmbed.fields) && roleEmbed.fields.length === 0) {
 					roleEmbed.setDescription('A default role and assignable roles are not set for this guild.');
 				}
-				break;
+
+				deleteCommandMessages(msg);
+				stopTyping(msg);
+		
+				// Send the success response
+				return msg.embed(roleEmbed);
 			}
 		}
-
-		// Log the event in the mod log
-		if (msg.guild.settings.get('modlogEnabled', true)) {
-			if (args.subCommand.toLowerCase() !== 'list') {
-				modLogMessage(msg, roleEmbed);
-			}
-		}
-
-		deleteCommandMessages(msg);
-		stopTyping(msg);
-
-		// Send the success response
-		return msg.embed(roleEmbed);
 	}
 	
 	private catchError(msg: CommandoMessage, args: { subCommand: string, role: Role }, err: Error) {
@@ -264,5 +258,15 @@ export default class RoleCommand extends Command {
 
 		// Inform the user the command failed
 		return sendSimpleEmbeddedError(msg, roleUserWarn);
+	}
+
+	private sendSuccess(msg: CommandoMessage, embed: MessageEmbed): Promise<Message | Message[]> {
+		// Log the event in the mod log
+		modLogMessage(msg, embed);
+		deleteCommandMessages(msg);
+		stopTyping(msg);
+
+		// Send the success response
+		return msg.embed(embed);
 	}
 }
