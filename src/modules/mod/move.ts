@@ -131,24 +131,22 @@ export default class MoveCommand extends Command {
 				originalMessage.delete();
 
 				// Log the event in the mod log
-				if (msg.guild.settings.get('modlogEnabled', true)) {
-					const moveModMessage: MessageEmbed = new MessageEmbed({
-						author: {
-							icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/rightwards-arrow-with-hook_21aa.png',
-							name: 'Move it!'
-						},
-						color: getEmbedColor(msg),
-						description: stripIndents`
-							**Moderator:** ${msg.author.tag} (${msg.author.id})
-							**Member:** ${originalMessageAuthor.user.tag} (${originalMessageAuthor.id})
-							**Action:** Move
-							**Channels:** From- <#${originalChannel.id}> ==> To- <#${destinationChannel.id}
-							**Reason:** ${args.reason}
-						`
-					}).setTimestamp();
+				const moveModMessage: MessageEmbed = new MessageEmbed({
+					author: {
+						icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/rightwards-arrow-with-hook_21aa.png',
+						name: 'Move it!'
+					},
+					color: getEmbedColor(msg),
+					description: stripIndents`
+						**Moderator:** ${msg.author.tag} (${msg.author.id})
+						**Member:** ${originalMessageAuthor.user.tag} (${originalMessageAuthor.id})
+						**Action:** Move
+						**Channels:** From- <#${originalChannel.id}> ==> To- <#${destinationChannel.id}
+						**Reason:** ${args.reason}
+					`
+				}).setTimestamp();
 
-					modLogMessage(msg, moveModMessage);
-				}
+				modLogMessage(msg, moveModMessage);
 				deleteCommandMessages(msg);
 			} else {
 				return sendSimpleEmbeddedError(msg, 'Cannot move a text message to a non-text channel.');

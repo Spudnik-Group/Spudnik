@@ -138,7 +138,7 @@ export default class ModlogCommand extends Command {
 								// Set up embed message
 								modlogEmbed.setDescription(stripIndents`
 									**Member:** ${msg.author.tag} (${msg.author.id})
-									**Action:** Modlog Channel set to <#${channelID}>}
+									**Action:** Modlog Channel set to <#${channelID}>
 								`);
 								this.sendSuccess(msg, modlogEmbed);
 							})
@@ -194,9 +194,7 @@ export default class ModlogCommand extends Command {
 
 	private sendSuccess(msg: CommandoMessage, embed: MessageEmbed): Promise<Message | Message[]> {
 		// Log the event in the mod log
-		if (msg.guild.settings.get('modlogEnabled', true)) {
-			modLogMessage(msg, embed);
-		}
+		modLogMessage(msg, embed);
 		
 		deleteCommandMessages(msg);
 		stopTyping(msg);

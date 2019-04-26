@@ -94,9 +94,7 @@ export default class KickCommand extends Command {
 				`);
 
 				// Log the event in the mod log
-				if (msg.guild.settings.get('modlogEnabled', true)) {
-					modLogMessage(msg, kickEmbed);
-				}
+				modLogMessage(msg, kickEmbed);
 
 				deleteCommandMessages(msg);
 				stopTyping(msg);

@@ -69,7 +69,8 @@ export default class RoleCommand extends Command {
 				roleEmbed.fields.push({
 					inline: true,
 					name: 'Assignable Roles',
-					value: rolesListOut.sort().join('/n')
+					value: `${rolesListOut.sort().join(`
+					`)}`
 				});
 			}
 		}
@@ -87,7 +88,8 @@ export default class RoleCommand extends Command {
 				roleEmbed.fields.push({
 					inline: true,
 					name: 'Default Roles',
-					value: rolesListOut.sort().join('/n')
+					value: `${rolesListOut.sort().join(`
+					`)}`
 				});
 			}
 		}

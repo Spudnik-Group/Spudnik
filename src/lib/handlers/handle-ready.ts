@@ -68,8 +68,8 @@ export const handleReady = async(version: string, client: CommandoClient, config
 	// Update bot status, using array of possible statuses
 	let statusIndex: number = -1;
 	statusIndex = updateStatus(client, statuses, statusIndex);
-	setInterval(() => { statusIndex = updateStatus(client, statuses, statusIndex) }, config.statusUpdateInterval, true);
-	setInterval(() => updateBotListStats(config, client), config.botListUpdateInterval, true);
+	client.setInterval(() => { statusIndex = updateStatus(client, statuses, statusIndex) }, config.statusUpdateInterval);
+	client.setInterval(() => updateBotListStats(config, client), config.botListUpdateInterval);
 }
 
 /**
@@ -91,63 +91,55 @@ const updateStatus = (client: CommandoClient, statuses: PresenceData[], statusIn
  * Update bot list stats on interval
  */
 const updateBotListStats = (config: Configuration, client: CommandoClient): void => {
+
+	console.log(`- Bot is serving on ${client.guilds.size} servers.`);
 	// DISCORD.BOTS.gg
 	if (config.botsggApiKey) {
-		rp({
-			body: { guildCount: client.guilds.size },
-			headers: { Authorization: config.botsggApiKey },
-			method: 'POST',
-			uri: `https://discord.bots.gg/api/v1/bots/${client.user.id}/stats`
+		rp.post(`https://discord.bots.gg/api/v1/bots/${client.user.id}/stats`, {
+			body: JSON.stringify({ guildCount: client.guilds.size }),
+			headers: { Authorization: config.botsggApiKey }
 		})
-		.then(() => console.log('- Posted statistics successfully', 'discord.bots.gg'))
-		.catch(() => console.log('Failed to post statistics', 'discord.bots.gg'))
+		.then(() => console.log('- Posted statistics successfully: discord.bots.gg'))
+		.catch(() => console.log('Failed to post statistics: discord.bots.gg'))
 	}
 
 	// BOTS.ONDISCORD.xyz
 	if (config.bodApiKey) {
-		rp({
-			body: { guildCount: client.guilds.size },
-			headers: { Authorization: config.bodApiKey },
-			method: 'POST',
-			uri: `https://bots.ondiscord.xyz/bot-api/bots/${client.user.id}/guilds`
+		rp.post(`https://bots.ondiscord.xyz/bot-api/bots/${client.user.id}/guilds`, {
+			body: JSON.stringify({ guildCount: client.guilds.size }),
+			headers: { Authorization: config.bodApiKey }
 		})
-		.then(() => console.log('- Posted statistics successfully', 'bots.ondiscord.xyz'))
-		.catch(() => console.log('Failed to post statistics', 'bots.ondiscord.xyz'))
+		.then(() => console.log('- Posted statistics successfully: bots.ondiscord.xyz'))
+		.catch(() => console.log('Failed to post statistics: bots.ondiscord.xyz'))
 	}
 
 	// DISCORDBOTS.org
 	if (config.dbApiKey) {
-		rp({
-			body: { server_count: client.guilds.size },
-			headers: { Authorization: config.dbApiKey },
-			method: 'POST',
-			uri: `https://discordbots.org/api/bots/${client.user.id}/stats`
+		rp.post(`https://discordbots.org/api/bots/${client.user.id}/stats`, {
+			body: JSON.stringify({ server_count: client.guilds.size }),
+			headers: { Authorization: config.dbApiKey }
 		})
-		.then(() => console.log('- Posted statistics successfully', 'discordbots.org'))
-		.catch(() => console.log('Failed to post statistics', 'discordbots.org'))
+		.then(() => console.log('- Posted statistics successfully: discordbots.org'))
+		.catch(() => console.log('Failed to post statistics: discordbots.org'))
 	}
 
 	// BOTSFORDISCORD.com
 	if (config.bfdApiKey) {
-		rp({
-			body: { server_count: client.guilds.size },
-			headers: { Authorization: config.bfdApiKey },
-			method: 'POST',
-			uri: `https://botsfordiscord.com/api/bots/${client.user.id}/stats`
+		rp.post(`https://botsfordiscord.com/api/bots/${client.user.id}/stats`, {
+			body: JSON.stringify({ server_count: client.guilds.size }),
+			headers: { Authorization: config.bfdApiKey }
 		})
-		.then(() => console.log('- Posted statistics successfully', 'botsfordiscord.com'))
-		.catch(() => console.log('Failed to post statistics', 'botsfordiscord.com'))
+		.then(() => console.log('- Posted statistics successfully: botsfordiscord.com'))
+		.catch(() => console.log('Failed to post statistics: botsfordiscord.com'))
 	}
 
 	// DISCORDBOTLIST.com
 	if (config.dblApiKey) {
-		rp({
-			body: { guilds: client.guilds.size, users: client.users.size },
-			headers: { Authorization: `Bot ${config.dblApiKey}` },
-			method: 'POST',
-			uri: `https://discordbotlist.com/api/bots/${client.user.id}/stats`
+		rp(`https://discordbotlist.com/api/bots/${client.user.id}/stats`, {
+			body: JSON.stringify({ guilds: client.guilds.size, users: client.users.size }),
+			headers: { Authorization: `Bot ${config.dblApiKey}` }
 		})
-		.then(() => console.log('- Posted statistics successfully', 'discordbotlist.com'))
-		.catch(() => console.log('Failed to post statistics', 'discordbotlist.com'))
+		.then(() => console.log('- Posted statistics successfully: discordbotlist.com'))
+		.catch(() => console.log('Failed to post statistics: discordbotlist.com'))
 	}
 }
