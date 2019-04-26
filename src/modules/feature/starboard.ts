@@ -37,7 +37,7 @@ export default class StarboardCommand extends Command {
 				{
 					default: '',
 					key: 'content',
-					prompt: 'channelMention or trigger emoji',
+					prompt: '#channelMention or trigger emoji',
 					type: 'channel|string'
 				}
 			],
@@ -46,18 +46,17 @@ export default class StarboardCommand extends Command {
 			details: stripIndents`
 				syntax: \`!starboard <status|channel|trigger|enable|disable> (new starboard emoji | #channelMention)\`
 
-				\`status\` - returns the starboard configuration details.
-				\`channel <#channelMention>\` - sets Star Board channel to the channel supplied.
-				\`trigger <emoji>\` - sets emoji to save to star board. If blank, shows current trigger emoji.
-				\`enable\` - enables the Star Board feature.
-				\`disable\` - disables the Star Board feature.
+				\`status\` - returns the star board configuration details.
+				\`channel <#channelMention>\` - sets star board channel to the channel supplied.
+				\`trigger <emoji>\` - sets emoji to save to star board.
+				\`enable\` - enable the star board feature.
+				\`disable\` - disable the star board feature.
 
 				MANAGE_GUILD permission required.
 			`,
 			examples: [
 				'!starboard status',
 				'!starboard channel #starboard',
-				'!starboard trigger',
 				'!starboard trigger :stuck_out_tongue:',
 				'!starboard enable',
 				'!starboard disable'
@@ -90,12 +89,10 @@ export default class StarboardCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const starboard = msg.guild.settings.get('starboardChannel', null);
-		const starboardTrigger: string = msg.guild.settings.get('starboardTrigger', '⭐');
-		const starboardEnabled: boolean = msg.guild.settings.get('starboardEnabled', false);
-		const botCanRead: boolean = msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('READ_MESSAGE_HISTORY');
-		const botCanPostLinks: boolean = msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('EMBED_LINKS');
-		const botCanPostAttachments: boolean = msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('ATTACH_FILES');
+		const starboard = await msg.guild.settings.get('starboardChannel', null);
+		const starboardTrigger: string = await msg.guild.settings.get('starboardTrigger', '⭐');
+		const starboardEnabled: boolean = await msg.guild.settings.get('starboardEnabled', false);
+		
 
 		startTyping(msg);
 
@@ -103,6 +100,7 @@ export default class StarboardCommand extends Command {
 			case 'channel': {
 				if (args.content instanceof Channel) {
 					const channelID = (args.content as Channel).id;
+
 					if (starboard && starboard === channelID) {
 						stopTyping(msg);
 
@@ -113,7 +111,7 @@ export default class StarboardCommand extends Command {
 								// Set up embed message
 								starboardEmbed.setDescription(stripIndents`
 									**Member:** ${msg.author.tag} (${msg.author.id})
-									**Action:** Star Board Channel set to <#${channelID}>}
+									**Action:** Star Board Channel set to <#${channelID}>
 								`);
 								this.sendSuccess(msg, starboardEmbed);
 							})
@@ -124,7 +122,6 @@ export default class StarboardCommand extends Command {
 					
 					return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
 				}
-				break;
 			}
 			case 'trigger': {
 				const emojiRegex = /(?:[\u2700-\u27bf]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff]|[\u0023-\u0039]\ufe0f?\u20e3|\u3299|\u3297|\u303d|\u3030|\u24c2|\ud83c[\udd70-\udd71]|\ud83c[\udd7e-\udd7f]|\ud83c\udd8e|\ud83c[\udd91-\udd9a]|\ud83c[\udde6-\uddff]|[\ud83c[\ude01-\ude02]|\ud83c\ude1a|\ud83c\ude2f|[\ud83c[\ude32-\ude3a]|[\ud83c[\ude50-\ude51]|\u203c|\u2049|[\u25aa-\u25ab]|\u25b6|\u25c0|[\u25fb-\u25fe]|\u00a9|\u00ae|\u2122|\u2139|\ud83c\udc04|[\u2600-\u26FF]|\u2b05|\u2b06|\u2b07|\u2b1b|\u2b1c|\u2b50|\u2b55|\u231a|\u231b|\u2328|\u23cf|[\u23e9-\u23f3]|[\u23f8-\u23fa]|\ud83c\udccf|\u2934|\u2935|[\u2190-\u21ff])/g;
@@ -138,41 +135,36 @@ export default class StarboardCommand extends Command {
 							// Set up embed message
 							starboardEmbed.setDescription(stripIndents`
 								**Member:** ${msg.author.tag} (${msg.author.id})
-								**Action:** Star Board trigger set to: ${args.content}\n
-								Star Board: ${(starboardEnabled ? '_Enabled_' : '_Disabled_')}
+								**Action:** Star Board trigger set to: ${args.content}
 							`);
 							this.sendSuccess(msg, starboardEmbed);
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				}
-				break;
 			}
 			case 'enable': {
 				if (starboard) {
-					if (!starboardEnabled) {
+					if (starboardEnabled) {
+						stopTyping(msg);
+
+						return sendSimpleEmbeddedMessage(msg, 'Star Board already enabled!', 3000);
+					} else {
 						msg.guild.settings.set('starboardEnabled', true)
 							.then(() => {
 								// Set up embed message
 								starboardEmbed.setDescription(stripIndents`
 									**Member:** ${msg.author.tag} (${msg.author.id})
-									**Action:** Star Board set to:
-									_Enabled_\n
-									Star Board Channel: <#${starboard}>
+									**Action:** Star Board set to: _Enabled_
 								`);
 								this.sendSuccess(msg, starboardEmbed);
 							})
 							.catch((err: Error) => this.catchError(msg, args, err));
-					} else {
-						stopTyping(msg);
-
-						return sendSimpleEmbeddedMessage(msg, 'Star Board already enabled!', 3000);
 					}
 				} else {
 					stopTyping(msg);
 
 					return sendSimpleEmbeddedError(msg, 'Please set the channel for the Star Board before enabling the feature. See `!help starboard` for info.', 3000);
 				}
-				break;
 			}
 			case 'disable': {
 				if (starboardEnabled) {
@@ -181,9 +173,7 @@ export default class StarboardCommand extends Command {
 							// Set up embed message
 							starboardEmbed.setDescription(stripIndents`
 								**Member:** ${msg.author.tag} (${msg.author.id})
-								**Action:** Star Board set to:
-								_Disabled_\n
-								Star Board Channel: <#${starboard}>
+								**Action:** Star Board set to: _Disabled_
 							`);
 							this.sendSuccess(msg, starboardEmbed);
 						})
@@ -196,8 +186,11 @@ export default class StarboardCommand extends Command {
 				break;
 			}
 			case 'status': {
+				const botCanRead: boolean = await msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('READ_MESSAGE_HISTORY');
+				const botCanPostLinks: boolean = await msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('EMBED_LINKS');
+				const botCanPostAttachments: boolean = await msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('ATTACH_FILES');
 				// Set up embed message
-				starboardEmbed.setDescription(`Star Board feature: ${starboardEnabled ? '_Enabled_' : '_Disabled_'}
+				starboardEmbed.setDescription(stripIndents`Star Board feature: ${starboardEnabled ? '_Enabled_' : '_Disabled_'}
 										Channel set to: <#${starboard}>
 										Permissions:
 										* READ_MESSAGE_HISTORY: ${botCanRead}
@@ -257,7 +250,6 @@ export default class StarboardCommand extends Command {
 	}
 
 	private sendSuccess(msg: CommandoMessage, embed: MessageEmbed): Promise<Message | Message[]> {
-		// Log the event in the mod log
 		modLogMessage(msg, embed);
 		deleteCommandMessages(msg);
 		stopTyping(msg);
