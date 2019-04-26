@@ -3,13 +3,12 @@ import { Guild, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';
 import * as distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
-import { deleteCommandMessages } from '../../lib/helpers';
+import { deleteCommandMessages } from '../../lib/custom-helpers';
 
-// tslint:disable-next-line:no-var-requires
 const { version, dependencies }: { version: string, dependencies: any } = require('../../../package');
 
 /**
- * Post statistics about the bot.
+ * Returns statistics about the bot.
  *
  * @export
  * @class StatsCommand
@@ -60,25 +59,30 @@ export default class StatsCommand extends Command {
 			.addField('❯ General Stats', stripIndents`
 						• Guilds: ${this.client.guilds.size}
 						• Channels: ${this.client.channels.size}
-						• Users: ${this.client.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b)}
+						• Users: ${this.client.guilds.map((guild: Guild) => guild.memberCount)
+							.reduce((a: number, b: number): number => a + b)}
 						• Commands: ${this.client.registry.commands.size}`, true)
 			.addField('❯ Home Server', 'https://spudnik.io/support', true)
 			.addField('❯ Source Code', 'https://github.com/Spudnik-Group/Spudnik', true)
 			.addField('❯ Dependencies', this.parseDependencies())
 			.setThumbnail(`${this.client.user.avatarURL()}`);
 		
-		deleteCommandMessages(msg, this.client);
+		deleteCommandMessages(msg);
 		
 		return msg.embed(statsEmbed);
 	}
 
 	private parseDependencies() {
-		return Object.entries(dependencies).map((dep: any) => {
-			if (dep[1].startsWith('github:')) {
-				const repo = dep[1].replace('github:', '').split('/');
-				return `[${dep[0]}](https://github.com/${repo[0]}/${repo[1].replace(/#.+/, '')})`;
-			}
-			return `[${dep[0]}](https://npmjs.com/${dep[0]})`;
-		}).join(', ');
+		return Object.entries(dependencies)
+			.map((dep: any) => {
+				if (dep[1].startsWith('github:')) {
+					const repo = dep[1].replace('github:', '').split('/');
+
+					return `[${dep[0]}](https://github.com/${repo[0]}/${repo[1].replace(/#.+/, '')})`;
+				}
+				
+				return `[${dep[0]}](https://npmjs.com/${dep[0]})`;
+			})
+			.join(', ');
 	}
 }

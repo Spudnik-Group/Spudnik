@@ -1,13 +1,14 @@
-import { MessageReaction, Channel, GuildChannel, TextChannel, Message, MessageEmbed } from 'discord.js';
+import { Channel, GuildChannel, TextChannel, Message, MessageEmbed } from 'discord.js';
 import { CommandoClient } from 'discord.js-commando';
 
-const starboardGuildBlacklist: string[] = process.env.STARBOARD_GUILD_BLACKLIST ? process.env.STARBOARD_GUILD_BLACKLIST.split(',') : [];
+const botlistGuilds: string[] = process.env.spud_botlist_guilds ? process.env.spud_botlist_guilds.split(',') : [];
 
-export async function handleRaw(event: any, client: CommandoClient) {
+export const handleRaw = async(event: any, client: CommandoClient) => {
 	if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(event.t)) { return; } //Ignore non-emoji related actions
 	const { d: data } = event;
 	const channel: Channel = await client.channels.get(data.channel_id);
-	if (starboardGuildBlacklist.includes((channel as TextChannel).guild.id)) { return; } //Guild is on Blacklist, ignore.
+	if (!(channel as TextChannel).guild) { return; } //Reaction not in a guild
+	if (botlistGuilds.includes((channel as TextChannel).guild.id)) { return; } //Guild is on Blacklist, ignore.
 	if ((channel as TextChannel).nsfw) { return; } //Ignore NSFW channels
 	if (!(channel as TextChannel).permissionsFor(client.user.id).has('READ_MESSAGE_HISTORY')) { return; } //Bot doesn't have the right permissions to retrieve the message
 	const message: Message = await (channel as TextChannel).messages.fetch(data.message_id);
@@ -23,38 +24,45 @@ export async function handleRaw(event: any, client: CommandoClient) {
 		//Bot doesn't have the right permissions in the starboard channel
 		return;
 	}
-	const emojiKey: any = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
-	const reaction: MessageReaction = message.reactions.get(emojiKey);
+
+	const currentEmojiKey: any = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
+	const reaction: any = message.reactions.get(currentEmojiKey);
 	const starboardMessages = await (starboard as TextChannel).messages.fetch({ limit: 100 });
 	const starboardTrigger: string = await client.provider.get(message.guild.id, 'starboardTrigger', '⭐');
 	const existingStar = starboardMessages.find(m => {
 		// Need this filter if there are non-starboard posts in the starboard channel.
-		if (m.embeds[0].footer) {
-			return m.embeds[0].footer.text.startsWith('⭐') && m.embeds[0].footer.text.endsWith(message.id);
+		if (m.embeds.length > 0) {
+			if (m.embeds[0].footer) {
+				// Find the previously-starred message
+				return m.embeds[0].footer.text.startsWith('⭐') && m.embeds[0].footer.text.endsWith(message.id);
+			}
 		}
 	});
 
-	// If all emojis were removed from this message, check if message is in the starboard
-	if (!reaction) {
-		if (existingStar) {
-			// Remove from the starboard
-			existingStar.delete()
+	// Check for starboard reaction
+	if (starboardTrigger === currentEmojiKey) {
+		// If all of the starboard trigger emojis were removed from this message
+		if (!reaction) {
+			// Check if message is in the starboard
+			if (existingStar) {
+				// And remove it
+				existingStar.delete();
+				
+				return;
+			}
+			
 			return;
 		}
-		return;
-	}
-
-	// Check for starboard reaction
-	if (starboardTrigger === (reaction as MessageReaction).emoji.name) {
-		const stars = await message.reactions.find((mReaction: MessageReaction) => mReaction.emoji.name === starboardTrigger).users.fetch();
+		const stars = reaction.count;
 		const starboardEmbed: MessageEmbed = new MessageEmbed()
 			.setAuthor(message.guild.name, message.guild.iconURL())
 			.setThumbnail(message.author.displayAvatarURL())
 			.addField('Author', message.author.toString(), true)
 			.addField('Channel', (channel as TextChannel).toString(), true)
+			.addField('Jump', `[Link](${message.url})`, true)
 			.setColor(await client.provider.get(message.guild.id, 'embedColor', 5592405))
 			.setTimestamp()
-			.setFooter(`⭐ ${stars.size} | ${message.id} `);
+			.setFooter(`⭐ ${stars} | ${message.id} `);
 
 		// You can't star your own messages
 		if (message.author.id === data.user_id && !client.owners.includes(data.user_id)) {
@@ -91,6 +99,7 @@ export async function handleRaw(event: any, client: CommandoClient) {
 			existingStar.edit({ embed: starboardEmbed })
 				.catch((err) => {
 					client.emit('warn', `Failed to edit starboard embed. Message ID: ${message.id}\nError: ${err}`);
+					
 					return;
 				});
 		} else {
@@ -98,6 +107,7 @@ export async function handleRaw(event: any, client: CommandoClient) {
 			(starboard as TextChannel).send({ embed: starboardEmbed })
 				.catch((err) => {
 					client.emit('warn', `Failed to send new starboard embed. Message ID: ${message.id}\nError: ${err}`);
+					
 					return;
 				});
 		}

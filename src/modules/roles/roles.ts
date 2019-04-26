@@ -1,8 +1,8 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed, Role } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor } from '../../lib/custom-helpers';
-import { startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
+import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
+import { startTyping, stopTyping } from '../../lib/helpers';
 
 /**
  * Lists default and self-assignable roles.
@@ -50,6 +50,7 @@ export default class RoleCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		});
+		
 		let guildAssignableRoles: string[] = await msg.client.provider.get(msg.guild.id, 'assignableRoles', []);
 		let guildDefaultRoles: string[] = await msg.client.provider.get(msg.guild.id, 'defaultRoles', []);
 		
@@ -60,38 +61,46 @@ export default class RoleCommand extends Command {
 
 			if (roles.length > 0) {
 				const rolesListOut: string[] = [];
+
 				roles.forEach((i: Role) => {
 					rolesListOut.push(`* ${i.name} - ${i.members.size} members`);
 				});
+
 				roleEmbed.fields.push({
 					inline: true,
 					name: 'Assignable Roles',
-					value: rolesListOut.sort().join('/n')
+					value: `${rolesListOut.sort().join(`
+					`)}`
 				});
 			}
 		}
+
 		if (Array.isArray(guildDefaultRoles) && guildDefaultRoles.length > 0) {
 			const roles: Role[] = msg.guild.roles.filter((role) => guildDefaultRoles.includes(role.id)).array();
 
 			if (roles.length > 0) {
 				const rolesListOut: string[] = [];
+
 				roles.forEach((i: Role) => {
 					rolesListOut.push(`* ${i.name}`);
 				});
+
 				roleEmbed.fields.push({
 					inline: true,
 					name: 'Default Roles',
-					value: rolesListOut.sort().join('/n')
+					value: `${rolesListOut.sort().join(`
+					`)}`
 				});
 			}
 		}
+
 		roleEmbed.setFooter('Use the `iam`/`iamnot` commands to manage your roles');
 
 		if (Array.isArray(roleEmbed.fields) && roleEmbed.fields.length === 0) {
 			roleEmbed.setDescription('A default role and assignable roles are not set for this guild.');
 		}
 
-		deleteCommandMessages(msg, this.client);
+		deleteCommandMessages(msg);
 		stopTyping(msg);
 		
 		// Send the response

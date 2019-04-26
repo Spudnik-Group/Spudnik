@@ -2,8 +2,8 @@ import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import * as rp from 'request-promise';
-import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
+import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, startTyping, stopTyping } from '../../lib/helpers';
 
 const breweryDbApiKey: string = process.env.spud_brewdbapi;
 
@@ -75,14 +75,17 @@ export default class BrewCommand extends Command {
 
 		startTyping(msg);
 
-		rp(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(args.query)}&key=${breweryDbApiKey}`)
+		return rp(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(args.query)}&key=${breweryDbApiKey}`)
 			.then((content) => {
 				const response = JSON.parse(content);
-				if (response) {
+
+				if (response.data) {
 					const result = response.data[0];
+
 					if (result.description) {
 						const fields: any = [];
 						let thumbnail = '';
+
 						if (result.labels) {
 							thumbnail = result.labels.medium;
 						}
@@ -90,15 +93,18 @@ export default class BrewCommand extends Command {
 						if (result.images) {
 							thumbnail = result.images.squareMedium;
 						}
+
 						if (result.name) {
 							brewEmbed.title = result.name;
 						}
+
 						if (result.style) {
 							fields.push({
 								name: `Style: ${result.style.name}`,
 								value: result.style.description
 							});
 						}
+
 						if (result.abv) {
 							fields.push({
 								inline: true,
@@ -106,6 +112,7 @@ export default class BrewCommand extends Command {
 								value: `${result.abv}%`
 							});
 						}
+
 						if (result.ibu) {
 							fields.push({
 								inline: true,
@@ -133,29 +140,33 @@ export default class BrewCommand extends Command {
 						if (fields !== []) {
 							brewEmbed.fields = fields;
 						}
+
 						if (thumbnail !== '') {
 							brewEmbed.thumbnail = {
 								url: thumbnail
-							};
+							}
 						}
+
 						brewEmbed.setDescription(`\n${result.description}\n\n`);
 					} else {
-						brewEmbed.setDescription(`${response.data[0].name} is a good beer, but I don't have a good way to describe it.`);
+						brewEmbed.setDescription(`${response.data[0].name} is a good beer/brewery, but I don't have a good way to describe it.`);
 					}
 				} else {
 					brewEmbed.setDescription("Damn, I've never heard of that. Where do I need to go to find it?");
 				}
+		
+				deleteCommandMessages(msg);
+				stopTyping(msg);
+		
+				// Send the success response
+				return msg.embed(brewEmbed);
 			})
 			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command ref:brew: ${err}`);
+
 				stopTyping(msg);
+
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			});
-		
-			deleteCommandMessages(msg, this.client);
-			stopTyping(msg);
-	
-			// Send the success response
-			return msg.embed(brewEmbed);
 	}
 }

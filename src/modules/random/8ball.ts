@@ -55,6 +55,7 @@ export default class EightBallCommand extends Command {
 		let response = 'Error getting answer. Try again later?';
 		if (eightBall && eightBall.length > 0) {
 			response = eightBall[getRandomInt(0, eightBall.length) - 1];
+			
 			return msg.embed(new MessageEmbed({
 				color: getEmbedColor(msg),
 				description: `:8ball: **${response}**`,

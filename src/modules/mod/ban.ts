@@ -1,8 +1,8 @@
 import { stripIndents } from 'common-tags';
-import { GuildMember, Message, MessageEmbed, Role, TextChannel } from 'discord.js';
+import { GuildMember, Message, MessageEmbed, Role } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
+import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, startTyping, stopTyping } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 
 /**
@@ -71,7 +71,6 @@ export default class BanCommand extends Command {
 	 * @memberof BanCommand
 	 */
 	public async run(msg: CommandoMessage, args: { member: GuildMember, reason: string, daysOfMessages: number }): Promise<Message | Message[]> {
-		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
 		const memberToBan: GuildMember = args.member;
 		const banEmbed: MessageEmbed = new MessageEmbed({
 			author: {
@@ -87,6 +86,9 @@ export default class BanCommand extends Command {
 
 		// Check if user is able to ban the mentioned user
 		if (!memberToBan.bannable || !(highestRoleOfCallingMember.comparePositionTo(memberToBan.roles.highest) > 0)) {
+			deleteCommandMessages(msg);
+			stopTyping(msg);
+
 			return sendSimpleEmbeddedError(msg, `I can't ban <@${memberToBan.id}>. Do they have the same or a higher role than me or you?`);
 		}
 
@@ -108,10 +110,9 @@ export default class BanCommand extends Command {
 			**Reason:** ${args.reason}`);
 		
 		// Log the event in the mod log
-		if (msg.guild.settings.get('modlogEnabled', true)) {
-			modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, banEmbed);
-		}
-		deleteCommandMessages(msg, this.client);
+		modLogMessage(msg, banEmbed);
+
+		deleteCommandMessages(msg);
 		stopTyping(msg);
 
 		// Send the success response
@@ -127,8 +128,10 @@ export default class BanCommand extends Command {
 		**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
 		**Input:** \`${args.member.user.tag} (${args.member.id})\` || \`${args.reason}\`
 		**Error Message:** ${err}`);
+
 		// Inform the user the command failed
 		stopTyping(msg);
+
 		return sendSimpleEmbeddedError(msg, `Banning ${args.member} for ${args.reason} failed!`);
 	}
 }

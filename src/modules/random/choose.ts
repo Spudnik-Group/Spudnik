@@ -59,6 +59,7 @@ export default class ChooseCommand extends Command {
 		if (options.length < 2) {
 			return sendSimpleEmbeddedError(msg, 'I can\'t choose for you if you don\'t give me more options!', 3000);
 		}
+		
 		return msg.embed({
 			author: {
 				icon_url: msg.client.user.displayAvatarURL,

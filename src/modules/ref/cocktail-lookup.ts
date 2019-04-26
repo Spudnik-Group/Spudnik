@@ -2,8 +2,8 @@ import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import * as rp from 'request-promise';
-import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
+import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, startTyping, stopTyping } from '../../lib/helpers';
 
 /**
  * Post information about a cocktail.
@@ -68,30 +68,34 @@ export default class CocktailCommand extends Command {
 
 		startTyping(msg);
 
-		rp(`http://www.thecocktaildb.com/api/json/v1/1/search.php?s=${encodeURIComponent(args.query)}`)
+		return rp(`http://www.thecocktaildb.com/api/json/v1/1/search.php?s=${encodeURIComponent(args.query)}`)
 			.then((content) => {
 				const response = JSON.parse(content);
+				
 				if (typeof response !== 'undefined' && response.drinks !== null) {
 					const result = response.drinks[0];
-					const ingredients = Object.entries(result).slice(9, 24).map((entry) => entry[1]);
-					const ratios = Object.entries(result).slice(24, 39).map((entry) => entry[1]);
+					const ingredients = this.findSimilarProps(result, 'strIngredient');
+					const ratios = this.findSimilarProps(result, 'strMeasure');
 
-					if (typeof result.strInstructions !== 'undefined' && result.strInstructions !== '' && result.strInstructions !== null) {
+					if (result.strInstructions) {
 						const fields = [];
 						let thumbnail = '';
-						if (typeof result.strDrinkThumb !== 'undefined' && result.strDrinkThumb !== '' && result.strDrinkThumb !== null) {
+
+						if (result.strDrinkThumb) {
 							thumbnail = result.strDrinkThumb;
 						} else {
 							thumbnail = 'https://emojipedia-us.s3.amazonaws.com/thumbs/240/twitter/103/tropical-drink_1f379.png';
 						}
-						if (typeof result.strGlass !== 'undefined' && result.strGlass !== '' && result.strGlass !== null) {
+
+						if (result.strGlass) {
 							fields.push({
 								inline: true,
 								name: 'Glass:',
 								value: result.strGlass
 							});
 						}
-						if (typeof ingredients !== 'undefined' && ingredients.length > 0) {
+
+						if (ingredients) {
 							let ingredientsList = '';
 							ingredients.forEach((value: any, index: number) => {
 								if (value !== '' && value !== '\n' && value !== null) {
@@ -108,6 +112,7 @@ export default class CocktailCommand extends Command {
 								value: ingredientsList
 							});
 						}
+
 						fields.push({
 							name: 'Instructions:',
 							value: result.strInstructions
@@ -122,17 +127,27 @@ export default class CocktailCommand extends Command {
 				} else {
 					cocktailEmbed.setDescription("Damn, I've never heard of that. Where do I need to go to find it?");
 				}
+		
+				deleteCommandMessages(msg);
+				stopTyping(msg);
+		
+				// Send the success response
+				return msg.embed(cocktailEmbed);
 			})
 			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command ref:cocktail: ${err}`);
+
 				stopTyping(msg);
+
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			});
-		
-		deleteCommandMessages(msg, this.client);
-		stopTyping(msg);
+	}
 
-		// Send the success response
-		return msg.embed(cocktailEmbed);
+	private findSimilarProps(obj: any, propName: string): any {
+		return Object.keys(obj).filter(k => {
+			return k.indexOf(propName) === 0;
+		}).map(key => {
+			return obj[key]
+		});
 	}
 }

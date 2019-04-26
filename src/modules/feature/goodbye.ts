@@ -1,8 +1,8 @@
 import { stripIndents } from 'common-tags';
-import { Channel, Message, MessageEmbed, TextChannel } from 'discord.js';
+import { Channel, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, startTyping, sendSimpleEmbeddedMessage, stopTyping, deleteCommandMessages } from '../../lib/helpers';
+import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, startTyping, sendSimpleEmbeddedMessage, stopTyping } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 
 /**
@@ -29,6 +29,7 @@ export default class GoodbyeCommand extends Command {
 					validate: (subCommand: string) => {
 						const allowedSubCommands = ['message', 'channel', 'enable', 'disable'];
 						if (allowedSubCommands.indexOf(subCommand) !== -1) return true;
+						
 						return 'You provided an invalid subcommand.';
 					}
 				},
@@ -84,7 +85,6 @@ export default class GoodbyeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
 		const goodbyeChannel = msg.guild.settings.get('goodbyeChannel');
 		const goodbyeMessage = msg.guild.settings.get('goodbyeMessage', '{user} has left the server.');
 		const goodbyeEnabled = msg.guild.settings.get('goodbyeEnabled', false);
@@ -95,8 +95,10 @@ export default class GoodbyeCommand extends Command {
 			case 'channel': {
 				if (args.content instanceof Channel) {
 					const channelID = (args.content as Channel).id;
+
 					if (goodbyeChannel && goodbyeChannel === channelID) {
 						stopTyping(msg);
+
 						return sendSimpleEmbeddedMessage(msg, `Goodbye channel already set to <#${channelID}>!`, 3000);
 					} else {
 						msg.guild.settings.set('goodbyeChannel', channelID)
@@ -106,11 +108,14 @@ export default class GoodbyeCommand extends Command {
 									**Member:** ${msg.author.tag} (${msg.author.id})
 									**Action:** Goodbye Channel set to <#${channelID}>}
 								`);
+
+								return this.sendSuccess(msg, goodbyeEmbed);
 							})
 							.catch((err: Error) => this.catchError(msg, args, err));
 					}
 				} else {
 					stopTyping(msg);
+
 					return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
 				}
 				break;
@@ -118,6 +123,7 @@ export default class GoodbyeCommand extends Command {
 			case 'message': {
 				if (!args.content) {
 					stopTyping(msg);
+
 					return sendSimpleEmbeddedMessage(msg, 'You must include the new message along with the `message` command. See `help goodbye` for details.\nCurrent Goodbye Message: ```' + goodbyeMessage + '```', 3000);
 				} else {
 					msg.guild.settings.set('goodbyeMessage', args.content)
@@ -129,10 +135,14 @@ export default class GoodbyeCommand extends Command {
 								\`\`\`${args.content}\`\`\`\n
 								Goodbye Message: ${(goodbyeEnabled ? '_Enabled_' : '_Disabled_')}
 							`);
-							if (goodbyeEnabled && goodbyeChannel instanceof Channel)
+
+							if (goodbyeEnabled && goodbyeChannel instanceof Channel) {
 								goodbyeEmbed.description += `\nGoodbye channel: <#${goodbyeChannel}>`;
-							else if (goodbyeEnabled && goodbyeChannel! instanceof Channel)
+							} else if (goodbyeEnabled && goodbyeChannel! instanceof Channel) {
 								goodbyeEmbed.description += '\nGoodbye messages will not display, as a goodbye channel is not set. Use `goodbye channel [channel ref]`.';
+							}
+							
+							return this.sendSuccess(msg, goodbyeEmbed);
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				}
@@ -149,10 +159,13 @@ export default class GoodbyeCommand extends Command {
 								_Enabled_\n
 								Goodbye Channel: <#${goodbyeChannel}>
 							`);
+
+							return this.sendSuccess(msg, goodbyeEmbed);
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				} else {
 					stopTyping(msg);
+
 					return sendSimpleEmbeddedMessage(msg, 'Goodbye message already enabled!', 3000);
 				}
 				break;
@@ -168,36 +181,31 @@ export default class GoodbyeCommand extends Command {
 								_Disabled_\n
 								Goodbye Channel: <#${goodbyeChannel}>
 							`);
+
+							return this.sendSuccess(msg, goodbyeEmbed);
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				} else {
 					stopTyping(msg);
+
 					return sendSimpleEmbeddedMessage(msg, 'Goodbye message already disabled!', 3000);
 				}
 				break;
 			}
 		}
-		
-		// Log the event in the mod log
-		if (msg.guild.settings.get('modlogEnabled', true)) {
-			modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, goodbyeEmbed);
-		}
-		deleteCommandMessages(msg, this.client);
-		stopTyping(msg);
-
-		// Send the success response
-		return msg.embed(goodbyeEmbed);
 	}
 	
 	private catchError(msg: CommandoMessage, args: { subCommand: string, content: Channel | string }, err: Error) {
 		// Build warning message
 		let goodbyeWarn = stripIndents`
-		Error occurred in \`goodbye\` command!
-		**Server:** ${msg.guild.name} (${msg.guild.id})
-		**Author:** ${msg.author.tag} (${msg.author.id})
-		**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
-		**Input:** \`Goodbye ${args.subCommand.toLowerCase()}\``;
+			Error occurred in \`goodbye\` command!
+			**Server:** ${msg.guild.name} (${msg.guild.id})
+			**Author:** ${msg.author.tag} (${msg.author.id})
+			**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+			**Input:** \`Goodbye ${args.subCommand.toLowerCase()}\`
+		`;
 		let goodbyeUserWarn = '';
+		
 		switch (args.subCommand.toLowerCase()) {
 			case 'enable': {
 				goodbyeUserWarn = 'Enabling goodbye feature failed!';
@@ -224,9 +232,22 @@ export default class GoodbyeCommand extends Command {
 			**Error Message:** ${err}`;
 		
 		stopTyping(msg);
+
 		// Emit warn event for debugging
 		msg.client.emit('warn', goodbyeWarn);
+
 		// Inform the user the command failed
 		return sendSimpleEmbeddedError(msg, goodbyeUserWarn);
+	}
+
+	private sendSuccess(msg: CommandoMessage, embed: MessageEmbed): Promise<Message | Message[]> {
+		// Log the event in the mod log
+		modLogMessage(msg, embed);
+
+		deleteCommandMessages(msg);
+		stopTyping(msg);
+
+		// Send the success response
+		return msg.embed(embed);
 	}
 }

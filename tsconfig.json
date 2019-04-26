@@ -5,12 +5,14 @@
 		"lib": [
 			"esnext"
 		],
+		"sourceMap": true,
 		"allowJs": true,
 		"checkJs": true,
 		"outDir": "./dist",
 		"removeComments": true,
 		"strict": false,
 		"noImplicitAny": true,
+		"noUnusedLocals": true,
 		"moduleResolution": "node",
 		"baseUrl": ".",
 		"experimentalDecorators": true

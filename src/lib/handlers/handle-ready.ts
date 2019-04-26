@@ -2,21 +2,20 @@ import chalk from 'chalk';
 import { Guild, PresenceData } from 'discord.js';
 import { CommandoClient } from 'discord.js-commando';
 import { Configuration } from 'src/lib/spudnik';
+import * as rp from 'request-promise';
 
-export async function handleReady(version: string, client: CommandoClient, config: Configuration) {
-	const users: number = client.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b);
-	const guilds: number = client.guilds.array().length;
+export const handleReady = async(version: string, client: CommandoClient, config: Configuration) => {
 	const statuses: PresenceData[] = [
 		{
 			activity: {
-				name: `${client.commandPrefix}help | ${guilds} Servers`,
+				name: `${client.commandPrefix}help | ${client.guilds.array().length} Servers`,
 				type: 'PLAYING'
 			}
 		},
 		{
 			activity: {
 				name: 'spudnik.io',
-				type: 'STREAMING'
+				type: 'PLAYING'
 			}
 		},
 		{
@@ -28,7 +27,7 @@ export async function handleReady(version: string, client: CommandoClient, confi
 		{
 			activity: {
 				name: `Version: v${version} | ${client.commandPrefix}help`,
-				type: 'STREAMING'
+				type: 'PLAYING'
 			}
 		},
 		{
@@ -40,12 +39,18 @@ export async function handleReady(version: string, client: CommandoClient, confi
 		{
 			activity: {
 				name: 'docs.spudnik.io',
-				type: 'STREAMING'
+				type: 'PLAYING'
 			}
 		},
 		{
 			activity: {
-				name: `and Assisting ${users} users on ${guilds} servers`,
+				name: `and Assisting ${client.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b)} users.`,
+				type: 'WATCHING'
+			}
+		},
+		{
+			activity: {
+				name: `and Assisting ${client.guilds.array().length} servers.`,
 				type: 'WATCHING'
 			}
 		},
@@ -57,39 +62,14 @@ export async function handleReady(version: string, client: CommandoClient, confi
 		}
 	];
 
-	console.log(chalk.magenta(`Logged into Discord! Serving in ${guilds} Discord servers`));
+	console.log(chalk.magenta(`Logged into Discord! Serving in ${client.guilds.array().length} Discord servers`));
 	console.log(chalk.blue('---Spudnik Launch Success---'));
 
 	// Update bot status, using array of possible statuses
 	let statusIndex: number = -1;
 	statusIndex = updateStatus(client, statuses, statusIndex);
-	setInterval(() => statusIndex = updateStatus(client, statuses, statusIndex), config.statusUpdateInterval, true);
-	setInterval(() => updateStatusStats(config, client, statuses), config.botListUpdateInterval, true);
-}
-
-/**
- * Updates discord bot list stats and status messages on interval
- */
-const updateStatusStats = (config: Configuration, client: CommandoClient, statuses: PresenceData[]): PresenceData[] => {
-	const users: number = client.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b);
-	const guilds: number = client.guilds.array().length;
-
-	// Update Statuses
-	statuses = statuses.filter((item: PresenceData) => {
-		if (item.activity && item.activity.type !== 'WATCHING') {
-			return true;
-		}
-		return false;
-	});
-
-	statuses.push({
-		activity: {
-			name: `and Assisting ${users} users on ${guilds} servers`,
-			type: 'WATCHING'
-		}
-	});
-
-	return statuses;
+	client.setInterval(() => { statusIndex = updateStatus(client, statuses, statusIndex) }, config.statusUpdateInterval);
+	client.setInterval(() => updateBotListStats(config, client), config.botListUpdateInterval);
 }
 
 /**
@@ -105,4 +85,61 @@ const updateStatus = (client: CommandoClient, statuses: PresenceData[], statusIn
 	client.user.setPresence(statuses[statusIndex]);
 
 	return statusIndex;
+}
+
+/**
+ * Update bot list stats on interval
+ */
+const updateBotListStats = (config: Configuration, client: CommandoClient): void => {
+
+	console.log(`- Bot is serving on ${client.guilds.size} servers.`);
+	// DISCORD.BOTS.gg
+	if (config.botsggApiKey) {
+		rp.post(`https://discord.bots.gg/api/v1/bots/${client.user.id}/stats`, {
+			body: JSON.stringify({ guildCount: client.guilds.size }),
+			headers: { Authorization: config.botsggApiKey }
+		})
+		.then(() => console.log('- Posted statistics successfully: discord.bots.gg'))
+		.catch(() => console.log('Failed to post statistics: discord.bots.gg'))
+	}
+
+	// BOTS.ONDISCORD.xyz
+	if (config.bodApiKey) {
+		rp.post(`https://bots.ondiscord.xyz/bot-api/bots/${client.user.id}/guilds`, {
+			body: JSON.stringify({ guildCount: client.guilds.size }),
+			headers: { Authorization: config.bodApiKey }
+		})
+		.then(() => console.log('- Posted statistics successfully: bots.ondiscord.xyz'))
+		.catch(() => console.log('Failed to post statistics: bots.ondiscord.xyz'))
+	}
+
+	// DISCORDBOTS.org
+	if (config.dbApiKey) {
+		rp.post(`https://discordbots.org/api/bots/${client.user.id}/stats`, {
+			body: JSON.stringify({ server_count: client.guilds.size }),
+			headers: { Authorization: config.dbApiKey }
+		})
+		.then(() => console.log('- Posted statistics successfully: discordbots.org'))
+		.catch(() => console.log('Failed to post statistics: discordbots.org'))
+	}
+
+	// BOTSFORDISCORD.com
+	if (config.bfdApiKey) {
+		rp.post(`https://botsfordiscord.com/api/bots/${client.user.id}/stats`, {
+			body: JSON.stringify({ server_count: client.guilds.size }),
+			headers: { Authorization: config.bfdApiKey }
+		})
+		.then(() => console.log('- Posted statistics successfully: botsfordiscord.com'))
+		.catch(() => console.log('Failed to post statistics: botsfordiscord.com'))
+	}
+
+	// DISCORDBOTLIST.com
+	if (config.dblApiKey) {
+		rp(`https://discordbotlist.com/api/bots/${client.user.id}/stats`, {
+			body: JSON.stringify({ guilds: client.guilds.size, users: client.users.size }),
+			headers: { Authorization: `Bot ${config.dblApiKey}` }
+		})
+		.then(() => console.log('- Posted statistics successfully: discordbotlist.com'))
+		.catch(() => console.log('Failed to post statistics: discordbotlist.com'))
+	}
 }

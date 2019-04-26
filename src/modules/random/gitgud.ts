@@ -1,7 +1,7 @@
 import { stripIndents } from 'common-tags';
 import { GuildMember, Message } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { deleteCommandMessages } from '../../lib/helpers';
+import { deleteCommandMessages } from '../../lib/custom-helpers';
 
 /**
  * Post the "gitgud" image at someone.
@@ -55,13 +55,13 @@ export default class GitGudCommand extends Command {
 		const gitgudImageURL = 'http://i.imgur.com/NqpPXHu.jpg';
 
 		if (args.mention && args.mention !== null) {
-			deleteCommandMessages(msg, this.client);
+			deleteCommandMessages(msg);
 
 			return msg.embed({ image: { url: gitgudImageURL } }, '', {
 				reply: args.mention
 			});
 		} else {
-			deleteCommandMessages(msg, this.client);
+			deleteCommandMessages(msg);
 
 			return msg.embed({ image: { url: gitgudImageURL } });
 		}

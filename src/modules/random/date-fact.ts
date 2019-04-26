@@ -1,8 +1,8 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import * as rp from 'request-promise';
-import { getEmbedColor } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, stopTyping, startTyping, deleteCommandMessages } from '../../lib/helpers';
+import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, stopTyping, startTyping } from '../../lib/helpers';
 
 /**
  * Post a fact about the current date.
@@ -49,21 +49,22 @@ export default class DateFactCommand extends Command {
 
 		startTyping(msg);
 
-		rp('http://numbersapi.com/random/date?json')
+		return rp('http://numbersapi.com/random/date?json')
 			.then((content) => {
 				const data = JSON.parse(content);
 				responseEmbed.setDescription(data.text);
+		
+				deleteCommandMessages(msg);
+				stopTyping(msg);
+
+				// Send the success response
+				return msg.embed(responseEmbed);
 			})
 			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command random:date-fact: ${err}`);
 				stopTyping(msg);
+				
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			});
-		
-		deleteCommandMessages(msg, this.client);
-		stopTyping(msg);
-
-		// Send the success response
-		return msg.embed(responseEmbed);
 	}
 }

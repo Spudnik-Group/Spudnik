@@ -1,8 +1,8 @@
 import { stripIndents } from 'common-tags';
-import { Collection, GuildMember, Message, User, MessageEmbed, TextChannel } from 'discord.js';
+import { Collection, GuildMember, Message, User, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, deleteCommandMessages, startTyping, stopTyping } from '../../lib/helpers';
-import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, stopTyping } from '../../lib/helpers';
+import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
 import * as format from 'date-fns/format';
 
 /**
@@ -34,6 +34,7 @@ export default class PruneCommand extends Command {
 					type: 'integer',
 					validate: (limit: number) => {
 						if (!isNaN(Number(limit)) && limit > 0) { return true; }
+						
 						return 'Invalid number of messages to delete.';
 					}
 				},
@@ -47,6 +48,7 @@ export default class PruneCommand extends Command {
 						const allowedFilters = ['invites', 'user', 'bots', 'uploads', 'links'];
 						if (filter === '') return true;
 						if (allowedFilters.indexOf(filter) !== -1) return true;
+						
 						return 'You provided an invalid filter.';
 					}
 				},
@@ -97,9 +99,8 @@ export default class PruneCommand extends Command {
 	 * @memberof PruneCommand
 	 */
 	public async run(msg: CommandoMessage, args: { limit: number, filter: string, member: GuildMember }): Promise<Message | Message[]> {
-		await deleteCommandMessages(msg, this.client);
+		await deleteCommandMessages(msg);
 		const { filter, limit } = args;
-		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
 		let messageFilter: (message: Message) => boolean;
 
 		startTyping(msg);
@@ -117,6 +118,7 @@ export default class PruneCommand extends Command {
 						messageFilter = (message: Message) => message.author.id === user.id;
 					} else {
 						stopTyping(msg);
+						
 						return sendSimpleEmbeddedError(msg, `${msg.author}, you have to mention someone.`);
 					}
 					break;
@@ -163,10 +165,11 @@ export default class PruneCommand extends Command {
 					**Filter:** ${args.filter}
 				`
 			}).setTimestamp();
-			modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, modlogEmbed);
+			modLogMessage(msg, modlogEmbed);
 
 			// Send the success response
 			stopTyping(msg);
+			
 			return sendSimpleEmbeddedMessage(msg, `Pruned ${limit} messages`, 5000);
 		}
 
@@ -191,10 +194,11 @@ export default class PruneCommand extends Command {
 				**Details:** Deleted ${args.limit} messages from <#${msg.channel.id}>
 			`
 		}).setTimestamp();
-		modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, modlogEmbed);
+		modLogMessage(msg, modlogEmbed);
 
 		// Send the success response
 		stopTyping(msg);
+		
 		return sendSimpleEmbeddedMessage(msg, `Pruned ${limit} messages`, 5000);
 	}
 	
@@ -207,8 +211,10 @@ export default class PruneCommand extends Command {
 		**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
 		**Input:** \`limit: ${args.limit} | filter: ${args.filter} | member: ${args.member}\`
 		**Error Message:** ${err}`);
+
 		// Inform the user the command failed
 		stopTyping(msg);
+		
 		return sendSimpleEmbeddedError(msg, `Pruning ${args.limit} failed!`);
 	}
 }

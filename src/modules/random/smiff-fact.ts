@@ -1,9 +1,8 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { getRandomInt, startTyping, deleteCommandMessages, stopTyping } from '../../lib/helpers';
-import { getEmbedColor } from '../../lib/custom-helpers';
+import { getRandomInt, startTyping, stopTyping } from '../../lib/helpers';
+import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
 
-// tslint:disable-next-line:no-var-requires
 const { smiff }: { smiff: string[] } = require('../../extras/data');
 
 /**
@@ -54,7 +53,7 @@ export default class SmiffFactCommand extends Command {
 		
 		responseEmbed.setDescription(smiff[getRandomInt(0, smiff.length) - 1]);
 
-		deleteCommandMessages(msg, this.client);
+		deleteCommandMessages(msg);
 		stopTyping(msg);
 
 		// Send the success response

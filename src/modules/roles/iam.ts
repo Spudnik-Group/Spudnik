@@ -1,4 +1,3 @@
-import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed, Role } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor } from '../../lib/custom-helpers';

@@ -1,7 +1,8 @@
 import { stripIndents } from 'common-tags';
 import { Message, GuildMember } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedMessage, deleteCommandMessages } from '../../lib/helpers';
+import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { deleteCommandMessages } from '../../lib/custom-helpers';
 
 /**
  * Identify anyone playing games in the guild.
@@ -58,10 +59,40 @@ export default class PlayingCommand extends Command {
 	 */
 	public async run(msg: CommandoMessage, args: { game: string }): Promise<Message | Message[]> {
 		const gameSearch = args.game.toLowerCase();
-		const playingMembers = msg.guild.members.filter((member: GuildMember) => !member.user.bot && member.presence.activity && member.presence.activity.name.toLowerCase().indexOf(gameSearch) > -1);
+		const gamePlayers: { [id: string] : Array<GuildMember> } = {};
 		
-		deleteCommandMessages(msg, this.client);
+		msg.guild.members.forEach((member: GuildMember) => {
+			if (member.user.bot || !member.presence.activity) {
+				return;
+			}
+			
+			const game = member.presence.activity.name.toLowerCase();
+			if (game.indexOf(gameSearch) === -1) {
+				return;
+			}
 
-		return sendSimpleEmbeddedMessage(msg, playingMembers.map((member: GuildMember) => `<@${member.id}> - ${member.presence.activity.name}`).sort().join('\n'));
+			if (!gamePlayers.hasOwnProperty(game)) {
+				gamePlayers[game] = [];
+			}
+			gamePlayers[game].push(member);
+		});
+
+		const sortedMessage = Object.keys(gamePlayers).sort()
+			.map((game) => {
+				return `**${ gamePlayers[game][0].presence.activity.name }**\n` + 
+					gamePlayers[game].sort((a, b) => {
+						const aName = a.displayName.toLowerCase();
+						const bName = b.displayName.toLowerCase();
+
+						return aName < bName ? -1 : aName > bName ? 1 : 0;
+					}).map(member => `<@${ member.id }>`)
+					.join('\n');
+			}).join('\n\n');
+		deleteCommandMessages(msg);
+		
+		return sendSimpleEmbeddedMessage(
+			msg, 
+			sortedMessage || (gameSearch ? `Looks like nobody is playing anything like \`${gameSearch}\`.` : 'Nobody is playing anything right now.')
+		);
 	}
 }

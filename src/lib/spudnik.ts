@@ -13,13 +13,15 @@ import {
 	handleCommandError, handleDebug
 } from './handlers';
 
-// tslint:disable:no-var-requires
 const { version }: { version: string } = require('../../package');
-// tslint:enable:no-var-requires
 const PORT = process.env.PORT || 1337;
 
 export interface Configuration {
+	'bfdApiKey': string,
+	'bodApiKey': string,
 	'botListUpdateInterval': number;
+	'botsggApiKey': string,
+	'dbApiKey': string,
 	'dblApiKey': string;
 	'debug': boolean;
 	'mongoDB': string;
@@ -34,11 +36,21 @@ export interface Configuration {
  *
  * @export
  * @class Spudnik
+ * @property {Configuration} Config
+ * @property {CommandoClient} Discord
  */
 export class Spudnik {
-	public Config: Configuration;
-	public Discord: CommandoClient;
 	private Rollbar: any;
+	/**
+	 * @name Spudnik#Config
+	 * @type Configuration
+	 */
+	public Config: Configuration;
+	/**
+	 * @name Spudnik#Discord
+	 * @type CommandoClient
+	 */
+	public Discord: CommandoClient;
 
 	/**
 	 * Creates an instance of Spudnik.
@@ -62,11 +74,28 @@ export class Spudnik {
 
 		this.Discord = new CommandoClient({
 			commandPrefix: '!',
+			disabledEvents: [
+				'GUILD_INTEGRATIONS_UPDATE',
+				'GUILD_BAN_ADD',
+				'GUILD_BAN_REMOVE',
+				'GUILD_EMOJIS_UPDATE',
+				'CHANNEL_PINS_UPDATE',
+				'MESSAGE_DELETE',
+				'MESSAGE_DELETE_BULK',
+				'MESSAGE_REACTION_ADD',
+				'MESSAGE_REACTION_REMOVE',
+				'MESSAGE_REACTION_REMOVE_ALL',
+				'PRESENCE_UPDATE',
+				'VOICE_STATE_UPDATE',
+				'TYPING_START',
+				'VOICE_STATE_UPDATE',
+				'VOICE_SERVER_UPDATE',
+				'WEBHOOKS_UPDATE'
+			],
 			invite: 'https://spudnik.io/support',
 			messageCacheLifetime: 30,
 			messageSweepInterval: 60,
-			owner: this.Config.owner,
-			unknownCommandResponse: false
+			owner: this.Config.owner
 		});
 
 		this.setupCommands();
@@ -78,44 +107,27 @@ export class Spudnik {
 		console.log(chalk.blue('---Spudnik MECO---'));
 	}
 
-	/**
-	 * Sets up commands for the bot.
-	 *
-	 * @private
-	 * @memberof Spudnik
-	 */
 	private setupCommands = () => {
 		this.Discord.registry
 			.registerDefaultTypes()
 			.registerGroups([
-				['commands', 'Commands'],
+				['convert', 'Convert'],
 				['default', 'Default'],
-				['feature', 'Features'],
-				['games', 'Games'],
+				['feature', 'Feature'],
+				['game', 'Game'],
+				['gaming', 'Gaming'],
 				['misc', 'Misc'],
 				['mod', 'Moderation'],
 				['random', 'Random'],
 				['ref', 'Reference'],
-				['roles', 'Roles'],
+				['roles', 'Role'],
 				['translate', 'Translate'],
-				['util', 'Utility']
+				['util', 'Utility'],
+				['util-required', 'Required Utility']
 			])
-			.registerDefaultCommands({
-				commandState: true,
-				eval: true,
-				help: true,
-				ping: false,
-				prefix: true
-			})
 			.registerCommandsIn(path.join(__dirname, '../modules'));
 	}
 
-	/**
-	 * Sets up the database.
-	 *
-	 * @private
-	 * @memberof Spudnik
-	 */
 	private setupDatabase = () => {
 		Mongoose.Promise = require('bluebird').Promise;
 
@@ -128,12 +140,6 @@ export class Spudnik {
 		});
 	}
 
-	/**
-	 * Sets up the bot events watchers.
-	 *
-	 * @private
-	 * @memberof Spudnik
-	 */
 	private setupEvents = () => {
 		this.Discord
 			.once('ready', async() => handleReady(version, this.Discord, this.Config))
@@ -148,12 +154,6 @@ export class Spudnik {
 			.on('commandError', (cmd, err) => handleCommandError(cmd, err));
 	}
 
-	/**
-	 * Log the bot into discord.
-	 *
-	 * @private
-	 * @memberof Spudnik
-	 */
 	private login = () => {
 		if (this.Config.token) {
 			console.log(chalk.magenta('Logging in to Discord...'));
@@ -164,12 +164,6 @@ export class Spudnik {
 		}
 	}
 
-	/**
-	 * Starts heartbeat service.
-	 *
-	 * @private
-	 * @memberof Spudnik
-	 */
 	private startHeart = () => {
 		http.createServer((request, response) => {
 			response.writeHead(200, { 'Content-Type': 'text/plain' });
@@ -177,6 +171,6 @@ export class Spudnik {
 		}).listen(PORT);
 
 		// Print URL for accessing server
-		console.log(`Heartbeat running on port ${PORT}`);
+		console.log(chalk.red(`Heartbeat running on port ${PORT}`));
 	}
 }

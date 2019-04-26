@@ -1,7 +1,8 @@
 import { stripIndents } from 'common-tags';
 import { Message } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, stopTyping } from '../../lib/helpers';
+import { deleteCommandMessages } from '../../lib/custom-helpers';
 
 /**
  * Unshorten a url.
@@ -58,26 +59,32 @@ export default class UnshortCommand extends Command {
 		let embedMessage = '';
 		startTyping(msg);
 
-		require('url-unshort')().expand(args.query)
+		return require('url-unshort')().expand(args.query)
 			.then((url: string) => {
 				if (url) {
-					deleteCommandMessages(msg, this.client);
+					deleteCommandMessages(msg);
 					stopTyping(msg);
 					embedMessage = `Original url is: <${url}>`;
+		
+					deleteCommandMessages(msg);
+					stopTyping(msg);
+					
+					// Send the success response
+					return sendSimpleEmbeddedMessage(msg, embedMessage);
 				}
+
+				deleteCommandMessages(msg);
 				stopTyping(msg);
+				
 				return sendSimpleEmbeddedError(msg, 'This url can\'t be expanded. Make sure the protocol exists (Http/Https) and try again.', 3000);
 			})
 			.catch((err: Error) => {
 				msg.client.emit('warn', `Error in command misc:unshort: ${err}`);
+
+				deleteCommandMessages(msg);
 				stopTyping(msg);
+				
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. The url may not be valid. Try again?', 3000);
 			});
-		
-		deleteCommandMessages(msg, this.client);
-		stopTyping(msg);
-		
-		// Send the success response
-		return sendSimpleEmbeddedMessage(msg, embedMessage);
 	}
 }

@@ -1,10 +1,10 @@
 import { stripIndents } from 'common-tags';
-import { GuildMember, Message, MessageEmbed, TextChannel } from 'discord.js';
+import { GuildMember, Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import Mongoose = require('mongoose');
 import { Schema, Document, Model } from 'mongoose';
-import { startTyping, stopTyping, deleteCommandMessages, sendSimpleEmbeddedError } from '../../lib/helpers';
-import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
+import { startTyping, stopTyping, sendSimpleEmbeddedError } from '../../lib/helpers';
+import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
 import * as format from 'date-fns/format';
 
 interface IWarningsObject {
@@ -49,8 +49,7 @@ export default class WarnCommand extends Command {
 				},
 				{
 					key: 'points',
-					prompt:
-						'How many warning points should I give this member?',
+					prompt: 'How many warning points should I give this member?',
 					type: 'integer'
 				},
 				{
@@ -91,7 +90,6 @@ export default class WarnCommand extends Command {
 	 * @memberof WarnCommand
 	 */
 	public async run(msg: CommandoMessage, args: { member: GuildMember, points: number, reason: string }): Promise<Message | Message[] | any> {
-		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
 		const warnEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/warning-sign_26a0.png',
@@ -128,6 +126,22 @@ export default class WarnCommand extends Command {
 						if (err) this.catchError(msg, args, err);
 					});
 				}
+
+				// Set up embed message
+				warnEmbed.setDescription(stripIndents`
+					**Member:** ${args.member.user.tag} (${args.member.id})
+					**Action:** Warn
+					**Previous Warning Points:** ${previousPoints}
+					**Current Warning Points:** ${args.points + previousPoints}
+					**Reason:** ${args.reason !== '' ? args.reason : 'No reason has been added by the moderator'}`);
+				
+				// Log the event in the mod log
+				modLogMessage(msg, warnEmbed);
+				deleteCommandMessages(msg);
+				stopTyping(msg);
+	
+				// Send the success response
+				return msg.embed(warnEmbed);
 			} else {
 				// No document for current guild
 				let newWarning = new warningModel({
@@ -143,25 +157,22 @@ export default class WarnCommand extends Command {
 				newWarning.save((err: any, item: IWarningsModel) => {
 					if (err) this.catchError(msg, args, err);
 				});
-			}
 
-			// Set up embed message
-			warnEmbed.setDescription(stripIndents`
-				**Member:** ${args.member.user.tag} (${args.member.id})
-				**Action:** Warn
-				**Previous Warning Points:** ${previousPoints}
-				**Current Warning Points:** ${args.points + previousPoints}
-				**Reason:** ${args.reason !== '' ? args.reason : 'No reason has been added by the moderator'}`);
-			
-			// Log the event in the mod log
-			if (msg.guild.settings.get('modlogEnabled', true)) {
-				modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, warnEmbed);
+				// Set up embed message
+				warnEmbed.setDescription(stripIndents`
+					**Member:** ${args.member.user.tag} (${args.member.id})
+					**Action:** Warn
+					**Current Warning Points:** ${args.points + previousPoints}
+					**Reason:** ${args.reason !== '' ? args.reason : 'No reason has been added by the moderator'}`);
+				
+				// Log the event in the mod log
+				modLogMessage(msg, warnEmbed);
+				deleteCommandMessages(msg);
+				stopTyping(msg);
+	
+				// Send the success response
+				return msg.embed(warnEmbed);
 			}
-			deleteCommandMessages(msg, this.client);
-			stopTyping(msg);
-
-			// Send the success response
-			return msg.embed(warnEmbed);
 		});
 	}
 	
@@ -174,8 +185,10 @@ export default class WarnCommand extends Command {
 		**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
 		**Input:** \`${args.member.user.tag} (${args.member.id})\`|| \`${args.points}\` || \`${args.reason}\`
 		**Error Message:** ${err}`);
+
 		// Inform the user the command failed
 		stopTyping(msg);
+		
 		return sendSimpleEmbeddedError(msg, `Warning ${args.member} failed!`);
 	}
 }

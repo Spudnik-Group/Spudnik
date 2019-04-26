@@ -1,8 +1,8 @@
 import { stripIndents } from 'common-tags';
-import { Message, MessageEmbed, TextChannel, Channel } from 'discord.js';
+import { Message, MessageEmbed, Channel } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, stopTyping, deleteCommandMessages } from '../../lib/helpers';
-import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, stopTyping } from '../../lib/helpers';
+import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
 import * as format from 'date-fns/format';
 
 /**
@@ -24,11 +24,12 @@ export default class ModlogCommand extends Command {
 			args: [
 				{
 					key: 'subCommand',
-					prompt: 'Would you like to enable or disable the feature?\n',
+					prompt: 'What sub-command would you like to use?\nOptions are:\n* channel\n* enable\n* disable',
 					type: 'string',
 					validate: (subCommand: string) => {
-						const allowedSubCommands = ['enable', 'disable'];
+						const allowedSubCommands = ['enable', 'disable', 'channel'];
 						if (allowedSubCommands.indexOf(subCommand) !== -1) return true;
+						
 						return 'You provided an invalid subcommand.';
 					}
 				},
@@ -41,13 +42,14 @@ export default class ModlogCommand extends Command {
 			],
 			description: 'Enable or disable the modlog feature.',
 			details: stripIndents`
-				syntax: \`!modlog <enable|disable>\`
+				syntax: \`!modlog <enable|disable|channel> (#channel)\`
 
 				Supplying no subcommand returns an error.
 				MANAGE_GUILD permission required.`,
 			examples: [
 				'!modlog enable',
-				'!modlog disable'
+				'!modlog disable',
+				'!modlog channel #modlog'
 			],
 			group: 'feature',
 			guildOnly: true,
@@ -70,7 +72,7 @@ export default class ModlogCommand extends Command {
 	 * @memberof ModlogCommand
 	 */
 	public async run(msg: CommandoMessage, args: { subCommand: string, channel: Channel }): Promise<Message | Message[]> {
-		const modlogChannel = msg.guild.settings.get('modlogchannel', null);
+		const modlogChannel = msg.guild.settings.get('modlogChannel', null);
 		const modlogEnabled = msg.guild.settings.get('modlogEnabled', false);
 		const modlogEmbed: MessageEmbed = new MessageEmbed({
 			author: {
@@ -87,6 +89,7 @@ export default class ModlogCommand extends Command {
 			case 'enable': {
 				if (modlogEnabled) {
 					stopTyping(msg);
+
 					return sendSimpleEmbeddedMessage(msg, 'Modlog feature already enabled!', 3000);
 				} else {
 					msg.guild.settings.set('modlogEnabled', true)
@@ -96,6 +99,7 @@ export default class ModlogCommand extends Command {
 								**Member:** ${msg.author.tag} (${msg.author.id})
 								**Action:** Modlog ${args.subCommand.toLowerCase()}
 							`);
+							this.sendSuccess(msg, modlogEmbed);
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				}
@@ -104,6 +108,7 @@ export default class ModlogCommand extends Command {
 			case 'disable': {
 				if (!modlogEnabled) {
 					stopTyping(msg);
+
 					return sendSimpleEmbeddedMessage(msg, 'Modlog feature already disabled!', 3000);
 				} else {
 					msg.guild.settings.set('modlogEnabled', false)
@@ -113,6 +118,7 @@ export default class ModlogCommand extends Command {
 								**Member:** ${msg.author.tag} (${msg.author.id})
 								**Action:** Modlog ${args.subCommand.toLowerCase()}
 							`);
+							this.sendSuccess(msg, modlogEmbed);
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				}
@@ -121,8 +127,10 @@ export default class ModlogCommand extends Command {
 			case 'channel': {
 				if (args.channel instanceof Channel) {
 					const channelID = (args.channel as Channel).id;
+
 					if (modlogChannel && modlogChannel === channelID) {
 						stopTyping(msg);
+
 						return sendSimpleEmbeddedMessage(msg, `Modlog channel already set to <#${channelID}>!`, 3000);
 					} else {
 						msg.guild.settings.set('modlogChannel', channelID)
@@ -130,27 +138,19 @@ export default class ModlogCommand extends Command {
 								// Set up embed message
 								modlogEmbed.setDescription(stripIndents`
 									**Member:** ${msg.author.tag} (${msg.author.id})
-									**Action:** Modlog Channel set to <#${channelID}>}
+									**Action:** Modlog Channel set to <#${channelID}>
 								`);
+								this.sendSuccess(msg, modlogEmbed);
 							})
 							.catch((err: Error) => this.catchError(msg, args, err));
 					}
 				} else {
 					stopTyping(msg);
+
 					return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
 				}
 			}
 		}
-
-		// Log the event in the mod log
-		if (msg.guild.settings.get('modlogEnabled', true)) {
-			modLogMessage(msg, msg.guild, modlogChannel, msg.guild.channels.get(modlogChannel) as TextChannel, modlogEmbed);
-		}
-		deleteCommandMessages(msg, this.client);
-		stopTyping(msg);
-
-		// Send the success response
-		return msg.embed(modlogEmbed);
 	}
 
 	private catchError(msg: CommandoMessage, args: { subCommand: string, channel: Channel }, err: Error) {
@@ -163,6 +163,7 @@ export default class ModlogCommand extends Command {
 			**Input:** \`Modlog ${args.subCommand.toLowerCase()} ${'| channel:' + args.channel}\`
 		`;
 		let modlogUserWarn = '';
+
 		switch (args.subCommand.toLowerCase()) {
 			case 'enable': {
 				modlogUserWarn = 'Enabling modlog feature failed!';
@@ -183,9 +184,22 @@ export default class ModlogCommand extends Command {
 			**Error Message:** ${err}`;
 		
 		stopTyping(msg);
+
 		// Emit warn event for debugging
 		msg.client.emit('warn', modlogWarn);
+
 		// Inform the user the command failed
 		return sendSimpleEmbeddedError(msg, modlogUserWarn);
+	}
+
+	private sendSuccess(msg: CommandoMessage, embed: MessageEmbed): Promise<Message | Message[]> {
+		// Log the event in the mod log
+		modLogMessage(msg, embed);
+		
+		deleteCommandMessages(msg);
+		stopTyping(msg);
+
+		// Send the success response
+		return msg.embed(embed);
 	}
 }
