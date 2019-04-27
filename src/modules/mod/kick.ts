@@ -68,7 +68,7 @@ export default class KickCommand extends Command {
 		const kickEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/eject-symbol_23cf.png',
-				name: 'Das Boot'
+				name: 'Get Out! - уходить!!'
 			},
 			color: getEmbedColor(msg),
 			description: ''
