@@ -82,24 +82,24 @@ export default class EmbedColorCommand extends Command {
 		startTyping(msg);
 
 		if (!args.color) {
-			return msg.guild.settings.remove('embedColor')
-				.then(() => {
-					// Set up embed message
-					embedColorEmbed.setDescription(stripIndents`
-						**Member:** ${msg.author.tag} (${msg.author.id})
-						**Action:** Embed Color Reset
-					`);
-
-					return this.sendSuccess(msg, embedColorEmbed);
-				})
-				.catch((err: Error) => this.catchError(msg, args, err));
-		} else {
 			return msg.guild.settings.set('embedColor', args.color)
 				.then(() => {
 					// Set up embed message
 					embedColorEmbed.setDescription(stripIndents`
 						**Member:** ${msg.author.tag} (${msg.author.id})
 						**Action:** Embed Color set to ${args.color}
+					`);
+
+					return this.sendSuccess(msg, embedColorEmbed);
+				})
+				.catch((err: Error) => this.catchError(msg, args, err));
+		} else {
+			return msg.guild.settings.remove('embedColor')
+				.then(() => {
+					// Set up embed message
+					embedColorEmbed.setDescription(stripIndents`
+						**Member:** ${msg.author.tag} (${msg.author.id})
+						**Action:** Embed Color Reset
 					`);
 
 					return this.sendSuccess(msg, embedColorEmbed);
@@ -130,9 +130,7 @@ export default class EmbedColorCommand extends Command {
 	}
 
 	private sendSuccess(msg: CommandoMessage, embed: MessageEmbed): Promise<Message | Message[]> {
-		// Log the event in the mod log
 		modLogMessage(msg, embed);
-
 		deleteCommandMessages(msg);
 		stopTyping(msg);
 

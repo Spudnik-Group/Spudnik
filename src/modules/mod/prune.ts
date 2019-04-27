@@ -166,8 +166,6 @@ export default class PruneCommand extends Command {
 				`
 			}).setTimestamp();
 			modLogMessage(msg, modlogEmbed);
-
-			// Send the success response
 			stopTyping(msg);
 			
 			return sendSimpleEmbeddedMessage(msg, `Pruned ${limit} messages`, 5000);
@@ -215,6 +213,6 @@ export default class PruneCommand extends Command {
 		// Inform the user the command failed
 		stopTyping(msg);
 		
-		return sendSimpleEmbeddedError(msg, `Pruning ${args.limit} failed!`);
+		return sendSimpleEmbeddedError(msg, `Pruning ${args.limit} failed!`, 3000);
 	}
 }

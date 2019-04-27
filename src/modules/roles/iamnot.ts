@@ -61,11 +61,11 @@ export default class IAmNotCommand extends Command {
 			if (guildAssignableRoles.includes(role.id)) {
 				msg.member.roles.remove(role.id);
 
-				roleEmbed.description = `Removed ${role.name} from your roles.`;
+				roleEmbed.description = `<@${msg.member.id}>, you no longer have the ${role.name} role.`;
 
 				return msg.embed(roleEmbed);
 			} else {
-				return sendSimpleEmbeddedError(msg, `You do not have the role ${role.name}.`, 3000);
+				return sendSimpleEmbeddedError(msg, `<@${msg.member.id}>, you do not have the role ${role.name}.`, 3000);
 			}
 		} else {
 			return sendSimpleEmbeddedError(msg, `Cannot find ${args.query} in list of assignable roles.`, 3000);

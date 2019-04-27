@@ -24,10 +24,10 @@ export default class WelcomeCommand extends Command {
 			args: [
 				{
 					key: 'subCommand',
-					prompt: 'What sub-command would you like to use?\nOptions are:\n* channel\n* message\n* enable\n* disable',
+					prompt: 'What sub-command would you like to use?\nOptions are:\n* status\n* channel\n* message\n* enable\n* disable',
 					type: 'string',
 					validate: (subCommand: string) => {
-						const allowedSubCommands = ['message', 'channel', 'enable', 'disable'];
+						const allowedSubCommands = ['message', 'channel', 'enable', 'disable', 'status'];
 						if (allowedSubCommands.indexOf(subCommand) !== -1) return true;
 						
 						return 'You provided an invalid subcommand.';
@@ -42,18 +42,19 @@ export default class WelcomeCommand extends Command {
 			],
 			description: 'Used to configure the message to be sent when a new user join your guild.',
 			details: stripIndents`
-				syntax: \`!welcome <message|channel|enable|disable> (text | #channelMention)\`
+				syntax: \`!welcome <status|message|channel|enable|disable> (text | #channelMention)\`
 
-				\`message (text to welcome/heckle)\` - Set/return the welcome message. Use { guild } for guild name, and { user } to reference the user joining. Leave blank to show current.
-				\`channel <#channelMention>\` - Set the channel for the welcome message to be displayed.
-				\`enable\` - Enable the welcome message feature.
-				\`disable\` - Disable the welcome message feature.
+				\`status\` - return the welcome feature configuration details.
+				\`message (text to welcome/heckle)\` - set the welcome message. Use { guild } for guild name, and { user } to reference the user joining.
+				\`channel <#channelMention>\` - set the channel for the welcome message to be displayed.
+				\`enable\` - enable the welcome message feature.
+				\`disable\` - disable the welcome message feature.
 
 				MANAGE_GUILD permission required.
 			`,
 			examples: [
 				'!welcome message Please welcome {user} to the guild!',
-				'!welcome message',
+				'!welcome status',
 				'!welcome channel #general',
 				'!welcome enable',
 				'!welcome disable'
@@ -86,9 +87,9 @@ export default class WelcomeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const welcomeChannel = msg.guild.settings.get(msg.guild.id, 'welcomeChannel');
-		const welcomeMessage = msg.guild.settings.get('welcomeMessage', '@here, please Welcome {user} to {guild}!');
-		const welcomeEnabled = msg.guild.settings.get('welcomeEnabled', false);
+		const welcomeChannel = await msg.guild.settings.get('welcomeChannel', null);
+		const welcomeMessage = await msg.guild.settings.get('welcomeMessage', '@here, please Welcome {user} to {guild}!');
+		const welcomeEnabled = await msg.guild.settings.get('welcomeEnabled', false);
 
 		startTyping(msg);
 
@@ -96,6 +97,7 @@ export default class WelcomeCommand extends Command {
 			case 'channel': {
 				if (args.content instanceof Channel) {
 					const channelID = (args.content as Channel).id;
+
 					if (welcomeChannel && welcomeChannel === channelID) {
 						stopTyping(msg);
 
@@ -106,7 +108,7 @@ export default class WelcomeCommand extends Command {
 								// Set up embed message
 								welcomeEmbed.setDescription(stripIndents`
 									**Member:** ${msg.author.tag} (${msg.author.id})
-									**Action:** Welcome Channel set to <#${channelID}>}
+									**Action:** Welcome Channel set to <#${channelID}>
 								`);
 								this.sendSuccess(msg, welcomeEmbed);
 							})
@@ -117,13 +119,12 @@ export default class WelcomeCommand extends Command {
 
 					return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
 				}
-				break;
 			}
 			case 'message': {
 				if (!args.content) {
 					stopTyping(msg);
 
-					return sendSimpleEmbeddedMessage(msg, 'You must include the new message along with the `message` command. See `help welcome` for details.\nCurrent Welcome Message: ```' + welcomeMessage + '```', 3000);
+					return sendSimpleEmbeddedMessage(msg, 'You must include the new message along with the `message` command. See `help welcome` for details.', 3000);
 				} else {
 					msg.guild.settings.set('welcomeMessage', args.content)
 						.then(() => {
@@ -131,41 +132,36 @@ export default class WelcomeCommand extends Command {
 							welcomeEmbed.setDescription(stripIndents`
 								**Member:** ${msg.author.tag} (${msg.author.id})
 								**Action:** Welcome message set to:
-								\`\`\`${args.content}\`\`\`\n
-								Welcome Message: ${(welcomeEnabled ? '_Enabled_' : '_Disabled_')}
+								\`\`\`${args.content}\`\`\`
 							`);
-
-							if (welcomeEnabled && welcomeChannel instanceof Channel) {
-								welcomeEmbed.description += `\nWelcome channel: <#${welcomeChannel}>`;
-							} else if (welcomeEnabled && welcomeChannel! instanceof Channel) {
-								welcomeEmbed.description += '\nWelcome messages will not display, as a welcome channel is not set. Use `welcome channel [channel ref]`.';
-							}
 							this.sendSuccess(msg, welcomeEmbed);
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				}
-				break;
 			}
 			case 'enable': {
-				if (!welcomeEnabled) {
-					msg.guild.settings.set('welcomeEnabled', true)
-						.then(() => {
-							// Set up embed message
-							welcomeEmbed.setDescription(stripIndents`
-								**Member:** ${msg.author.tag} (${msg.author.id})
-								**Action:** Welcome messages set to:
-								_Enabled_\n
-								Welcome Channel: <#${welcomeChannel}>
-							`);
-							this.sendSuccess(msg, welcomeEmbed);
-						})
-						.catch((err: Error) => this.catchError(msg, args, err));
+				if (welcomeChannel) {
+					if (welcomeEnabled) {
+						stopTyping(msg);
+	
+						return sendSimpleEmbeddedMessage(msg, 'Welcome message already enabled!', 3000);
+					} else {
+						msg.guild.settings.set('welcomeEnabled', true)
+							.then(() => {
+								// Set up embed message
+								welcomeEmbed.setDescription(stripIndents`
+									**Member:** ${msg.author.tag} (${msg.author.id})
+									**Action:** Welcome messages set to: _Enabled_
+								`);
+								this.sendSuccess(msg, welcomeEmbed);
+							})
+							.catch((err: Error) => this.catchError(msg, args, err));
+					}
 				} else {
 					stopTyping(msg);
 
-					return sendSimpleEmbeddedMessage(msg, 'Welcome message already enabled!', 3000);
+					return sendSimpleEmbeddedError(msg, 'Please set the channel for the welcome message before enabling the feature. See `help welcome` for info.', 3000);
 				}
-				break;
 			}
 			case 'disable': {
 				if (welcomeEnabled) {
@@ -174,9 +170,7 @@ export default class WelcomeCommand extends Command {
 							// Set up embed message
 							welcomeEmbed.setDescription(stripIndents`
 								**Member:** ${msg.author.tag} (${msg.author.id})
-								**Action:** Welcome messages set to:
-								_Disabled_\n
-								Welcome Channel: <#${welcomeChannel}>
+								**Action:** Welcome messages set to: _Disabled_
 							`);
 							this.sendSuccess(msg, welcomeEmbed);
 						})
@@ -186,7 +180,18 @@ export default class WelcomeCommand extends Command {
 
 					return sendSimpleEmbeddedMessage(msg, 'Welcome message already disabled!', 3000);
 				}
-				break;
+			}
+			case 'status': {
+				// Set up embed message
+				welcomeEmbed.setDescription(stripIndents`Welcome feature: ${welcomeEnabled ? '_Enabled_' : '_Disabled_'}
+				Channel set to: <#${welcomeChannel}>
+				Message set to:
+				\`\`\`${welcomeMessage}\`\`\` `)
+				deleteCommandMessages(msg);
+				stopTyping(msg);
+
+				// Send the success response
+				return msg.embed(welcomeEmbed);
 			}
 		}
 	}
@@ -236,7 +241,6 @@ export default class WelcomeCommand extends Command {
 	}
 
 	private sendSuccess(msg: CommandoMessage, embed: MessageEmbed): Promise<Message | Message[]> {
-		// Log the event in the mod log
 		modLogMessage(msg, embed);
 		deleteCommandMessages(msg);
 		stopTyping(msg);

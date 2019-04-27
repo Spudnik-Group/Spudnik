@@ -40,7 +40,6 @@ export default class AdblockCommand extends Command {
 			details: stripIndents`
 				syntax: \`!adblock <enable|disable>\`
 
-				Supplying no subcommand returns an error.
 				MANAGE_MESSAGES permission required.`,
 			examples: [
 				'!adblock enable',
@@ -67,7 +66,7 @@ export default class AdblockCommand extends Command {
 	 * @memberof AdblockCommand
 	 */
 	public async run(msg: CommandoMessage, args: { subCommand: string }): Promise<Message | Message[]> {
-		const adblockEnabled = msg.guild.settings.get('adblockEnabled', false);
+		const adblockEnabled = await msg.guild.settings.get('adblockEnabled', false);
 		const adblockEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				name: '🛑 Adblock'
@@ -89,28 +88,28 @@ export default class AdblockCommand extends Command {
 						// Set up embed message
 						adblockEmbed.setDescription(stripIndents`
 							**Member:** ${msg.author.tag} (${msg.author.id})
-							**Action:** Adblock ${args.subCommand.toLowerCase()}
+							**Action:** Adblock _Enabled_
 						`);
 						this.sendSuccess(msg, adblockEmbed);
 					})
 					.catch((err: Error) => this.catchError(msg, args, err));
 			}
 		} else if (args.subCommand.toLowerCase() === 'disable') {
-			if (!adblockEnabled) {
-				stopTyping(msg);
-
-				return sendSimpleEmbeddedMessage(msg, 'Adblock feature already disabled!', 3000);
-			} else {
+			if (adblockEnabled) {
 				msg.guild.settings.set('adblockEnabled', false)
 					.then(() => {
 						// Set up embed message
 						adblockEmbed.setDescription(stripIndents`
 							**Member:** ${msg.author.tag} (${msg.author.id})
-							**Action:** Adblock ${args.subCommand.toLowerCase()}
+							**Action:** Adblock _Disabled_
 						`);
 						this.sendSuccess(msg, adblockEmbed);
 					})
 					.catch((err: Error) => this.catchError(msg, args, err));
+			} else {
+				stopTyping(msg);
+
+				return sendSimpleEmbeddedMessage(msg, 'Adblock feature already disabled!', 3000);
 			}
 		}
 	}
@@ -137,9 +136,7 @@ export default class AdblockCommand extends Command {
 	}
 
 	private sendSuccess(msg: CommandoMessage, embed: MessageEmbed): Promise<Message | Message[]> {
-		// Log the event in the mod log
 		modLogMessage(msg, embed);
-
 		deleteCommandMessages(msg);
 		stopTyping(msg);
 

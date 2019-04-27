@@ -89,7 +89,7 @@ export default class BanCommand extends Command {
 			deleteCommandMessages(msg);
 			stopTyping(msg);
 
-			return sendSimpleEmbeddedError(msg, `I can't ban <@${memberToBan.id}>. Do they have the same or a higher role than me or you?`);
+			return sendSimpleEmbeddedError(msg, `I can't ban <@${memberToBan.id}>. Do they have the same or a higher role than me or you?`, 3000);
 		}
 
 		if (args.daysOfMessages) {
@@ -109,9 +109,7 @@ export default class BanCommand extends Command {
 			**Action:** Ban
 			**Reason:** ${args.reason}`);
 		
-		// Log the event in the mod log
 		modLogMessage(msg, banEmbed);
-
 		deleteCommandMessages(msg);
 		stopTyping(msg);
 
@@ -132,6 +130,6 @@ export default class BanCommand extends Command {
 		// Inform the user the command failed
 		stopTyping(msg);
 
-		return sendSimpleEmbeddedError(msg, `Banning ${args.member} for ${args.reason} failed!`);
+		return sendSimpleEmbeddedError(msg, `Banning ${args.member} for ${args.reason} failed!`, 3000);
 	}
 }
