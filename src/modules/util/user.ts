@@ -68,31 +68,41 @@ export default class UserCommand extends Command {
 	 * @memberof UserCommand
 	 */
 	public async run(msg: CommandoMessage, args: { user: User }): Promise<Message | Message[]> {
-		const member = await msg.guild.members.fetch(args.user.id);
-		const roles = member.roles
-			.filter(role => role.id !== msg.guild.defaultRole.id)
-			.sort((a, b) => b.position - a.position)
-			.map(role => role.name);
-		const avatarFormat = member.user.avatar && member.user.avatar.startsWith('a_') ? 'gif' : 'png';
+		const avatarFormat = args.user.avatar && args.user.avatar.startsWith('a_') ? 'gif' : 'png';
 		const userEmbed = new MessageEmbed()
-			.setThumbnail(member.user.displayAvatarURL({ format: avatarFormat }))
+			.setThumbnail(args.user.displayAvatarURL({ format: avatarFormat }))
 			.setColor(getEmbedColor(msg))
-			.setDescription(member.presence.activity
-				? `${activities[member.presence.activity.type]} **${member.presence.activity.name}**`
-				: '')
-			.addField('❯ Name', member.user.tag, true)
-			.addField('❯ ID', member.user.id, true)
-			.addField('❯ Discord Join Date', format(member.user.createdAt, 'MM/DD/YYYY h:mm A'), true)
-			.addField('❯ Bot?', member.user.bot ? 'Yes' : 'No', true)
-			.addField('❯ Server Join Date', format(member.joinedAt, 'MM/DD/YYYY h:mm A'), true)
-			.addField('❯ Nickname', member.nickname || 'None', true)
-			.addField('❯ Highest Role',
-				member.roles.highest.id === msg.guild.defaultRole.id ? 'None' : member.roles.highest.name, true)
-			.addField('❯ Hoist Role', member.roles.hoist ? member.roles.hoist.name : 'None', true)
-			.addField(`❯ Roles (${roles.length})`, roles.length ? trimArray(roles, 10).join(', ') : 'None');
+			.addField('❯ Name', args.user.tag, true)
+			.addField('❯ ID', args.user.id, true)
+			.addField('❯ Discord Join Date', format(args.user.createdAt, 'MM/DD/YYYY h:mm A'), true)
+			.addField('❯ Bot?', args.user.bot ? 'Yes' : 'No', true);
 		
-		deleteCommandMessages(msg);
-
-		return msg.embed(userEmbed);
+		// Check if user is a member of the guild
+		return msg.guild.members.fetch(args.user.id)
+			.then(member => {
+				const roles = member.roles
+					.filter(role => role.id !== msg.guild.defaultRole.id)
+					.sort((a, b) => b.position - a.position)
+					.map(role => role.name);
+				userEmbed
+					.setDescription(member.presence.activity
+						? `${activities[member.presence.activity.type]} **${member.presence.activity.name}**`
+						: '')
+					.addField('❯ Server Join Date', format(member.joinedAt, 'MM/DD/YYYY h:mm A'), true)
+					.addField('❯ Nickname', member.nickname || 'None', true)
+					.addField('❯ Highest Role',
+						member.roles.highest.id === msg.guild.defaultRole.id ? 'None' : member.roles.highest.name, true)
+					.addField('❯ Hoist Role', member.roles.hoist ? member.roles.hoist.name : 'None', true)
+					.addField(`❯ Roles (${roles.length})`, roles.length ? trimArray(roles, 10).join(', ') : 'None');
+					deleteCommandMessages(msg);
+			
+					return msg.embed(userEmbed);
+			})
+			.catch(err => {
+				userEmbed.setFooter('Failed to resolve member, showing basic user information instead.');
+				deleteCommandMessages(msg);
+		
+				return msg.embed(userEmbed);
+			});
 	}
 }
