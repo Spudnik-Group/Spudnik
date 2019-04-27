@@ -261,7 +261,6 @@ export default class RoleCommand extends Command {
 	}
 
 	private sendSuccess(msg: CommandoMessage, embed: MessageEmbed): Promise<Message | Message[]> {
-		// Log the event in the mod log
 		modLogMessage(msg, embed);
 		deleteCommandMessages(msg);
 		stopTyping(msg);

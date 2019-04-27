@@ -93,7 +93,6 @@ export default class StarboardCommand extends Command {
 		const starboardTrigger: string = await msg.guild.settings.get('starboardTrigger', '⭐');
 		const starboardEnabled: boolean = await msg.guild.settings.get('starboardEnabled', false);
 		
-
 		startTyping(msg);
 
 		switch (args.subCommand.toLowerCase()) {
@@ -186,17 +185,20 @@ export default class StarboardCommand extends Command {
 				break;
 			}
 			case 'status': {
-				const botCanRead: boolean = await msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('READ_MESSAGE_HISTORY');
-				const botCanPostLinks: boolean = await msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('EMBED_LINKS');
-				const botCanPostAttachments: boolean = await msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('ATTACH_FILES');
 				// Set up embed message
 				starboardEmbed.setDescription(stripIndents`Star Board feature: ${starboardEnabled ? '_Enabled_' : '_Disabled_'}
 										Channel set to: <#${starboard}>
-										Permissions:
-										* READ_MESSAGE_HISTORY: ${botCanRead}
-										* EMBED_LINKS: ${botCanPostLinks}
-										* ATTACH_FILES: ${botCanPostAttachments}
 										Trigger set to: ${starboardTrigger}`);
+				if (starboard) {
+					const botCanRead: boolean = await msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('READ_MESSAGE_HISTORY');
+					const botCanPostLinks: boolean = await msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('EMBED_LINKS');
+					const botCanPostAttachments: boolean = await msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('ATTACH_FILES');
+					starboardEmbed.description += stripIndents`
+						Permissions:
+						* READ_MESSAGE_HISTORY: ${botCanRead}
+						* EMBED_LINKS: ${botCanPostLinks}
+						* ATTACH_FILES: ${botCanPostAttachments}`
+				}
 				deleteCommandMessages(msg);
 				stopTyping(msg);
 

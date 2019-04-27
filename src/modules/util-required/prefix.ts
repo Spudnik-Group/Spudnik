@@ -1,6 +1,8 @@
-import { Message } from 'discord.js';
+import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { stripIndents } from 'common-tags';
+import { startTyping, stopTyping, sendSimpleEmbeddedError } from '../../lib/helpers';
+import { getEmbedColor, deleteCommandMessages, modLogMessage } from '../../lib/custom-helpers';
 
 /**
  * Returns or sets the command prefix.
@@ -56,23 +58,40 @@ export default class PrefixCommand extends Command {
 	 * @memberof PrefixCommand
 	 */
 	public async run(msg: CommandoMessage, args: { prefix: string }): Promise<Message | Message[]> {
+		const prefixEmbed: MessageEmbed = new MessageEmbed({
+			author: {
+				iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/memo_1f4dd.png',
+				name: 'Prefix'
+			},
+			color: getEmbedColor(msg),
+			description: ''
+		}).setTimestamp();
+
+		startTyping(msg);
+		
 		// Just output the prefix
 		if(!args.prefix) {
 			const prefix = msg.guild ? msg.guild.commandPrefix : this.client.commandPrefix;
-			
-			return msg.reply(stripIndents`
+			prefixEmbed.setDescription(stripIndents`
 				${prefix ? `The command prefix is \`\`${prefix}\`\`.` : 'There is no command prefix.'}
 				To run commands, use ${msg.anyUsage('command')}.
 			`);
+			stopTyping(msg);
+			
+			return msg.embed(prefixEmbed);
 		}
 
 		// Check the user's permission before changing anything
 		if(msg.guild) {
 			if(!msg.member.hasPermission('ADMINISTRATOR') && !this.client.isOwner(msg.author)) {
-				return msg.reply('Only administrators may change the command prefix.');
+				stopTyping(msg);
+
+				return sendSimpleEmbeddedError(msg, 'Only administrators may change the command prefix.', 3000);
 			}
 		} else if(!this.client.isOwner(msg.author)) {
-			return msg.reply('Only the bot owner(s) may change the global command prefix.');
+			stopTyping(msg);
+
+			return sendSimpleEmbeddedError(msg, 'Only the bot owner(s) may change the global command prefix.', 3000);
 		}
 
 		// Save the prefix
@@ -91,8 +110,13 @@ export default class PrefixCommand extends Command {
 			response = prefix ? `Set the command prefix to \`\`${args.prefix}\`\`.` : 'Removed the command prefix entirely.';
 		}
 
-		await msg.reply(`${response} To run commands, use ${msg.anyUsage('command')}.`);
+		prefixEmbed.setDescription(stripIndents`
+			${response} To run commands, use ${msg.anyUsage('command')}.
+		`);
+		deleteCommandMessages(msg);
+		modLogMessage(msg, prefixEmbed);
+		stopTyping(msg);
 
-		return null;
+		return msg.embed(prefixEmbed);
 	}
 }

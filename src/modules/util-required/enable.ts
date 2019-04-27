@@ -1,6 +1,8 @@
-import { Message } from 'discord.js';
+import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient, CommandGroup } from 'discord.js-commando';
 import { stripIndents } from 'common-tags';
+import { getEmbedColor, deleteCommandMessages, modLogMessage } from '../../lib/custom-helpers';
+import { startTyping, stopTyping, sendSimpleEmbeddedError } from '../../lib/helpers';
 
 /**
  * Enables a command or command group.
@@ -66,24 +68,40 @@ export default class EnableCommandCommand extends Command {
 	 */
 	public async run(msg: CommandoMessage, args: {cmdOrGrp: Command | CommandGroup}): Promise<Message | Message[]> {
 		const group = (args.cmdOrGrp as Command).group;
-		if(args.cmdOrGrp.isEnabledIn(msg.guild, true)) {
-			return msg.reply(
+		const enableEmbed: MessageEmbed = new MessageEmbed({
+			author: {
+				icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/heavy-check-mark_2714.png',
+				name: 'Enable'
+			},
+			color: getEmbedColor(msg),
+			description: ''
+		}).setTimestamp();
+
+		startTyping(msg);
+
+		if (args.cmdOrGrp.isEnabledIn(msg.guild, true)) {
+			stopTyping(msg);
+
+			return sendSimpleEmbeddedError(msg,
 				`The \`${args.cmdOrGrp.name}\` ${group ? 'command' : 'group'} is already enabled${
 					group && !group.isEnabledIn(msg.guild) ?
 					`, but the \`${group.name}\` group is disabled, so it still can't be used` :
 					''
-				}.`
-			);
+				}.`, 3000);
 		}
 
 		args.cmdOrGrp.setEnabledIn(msg.guild, true);
-		
-		return msg.reply(
-			`Enabled the \`${args.cmdOrGrp.name}\` ${group ? 'command' : 'group'}${
+		enableEmbed.setDescription(stripIndents`
+			**Moderator:** ${msg.author.tag} (${msg.author.id})
+			**Action:** Enabled the \`${args.cmdOrGrp.name}\` ${group ? 'command' : 'group'}${
 				group && !group.isEnabledIn(msg.guild) ?
 				`, but the \`${group.name}\` group is disabled, so it still can't be used` :
 				''
-			}.`
-		);
+			}.`);
+		deleteCommandMessages(msg);
+		modLogMessage(msg, enableEmbed);
+		stopTyping(msg);
+		
+		return msg.embed(enableEmbed);
 	}
 }

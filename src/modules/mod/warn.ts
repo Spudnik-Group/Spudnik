@@ -129,13 +129,13 @@ export default class WarnCommand extends Command {
 
 				// Set up embed message
 				warnEmbed.setDescription(stripIndents`
+					**Moderator:** ${msg.author.tag} (${msg.author.id})
 					**Member:** ${args.member.user.tag} (${args.member.id})
 					**Action:** Warn
 					**Previous Warning Points:** ${previousPoints}
 					**Current Warning Points:** ${args.points + previousPoints}
 					**Reason:** ${args.reason !== '' ? args.reason : 'No reason has been added by the moderator'}`);
 				
-				// Log the event in the mod log
 				modLogMessage(msg, warnEmbed);
 				deleteCommandMessages(msg);
 				stopTyping(msg);
@@ -165,7 +165,6 @@ export default class WarnCommand extends Command {
 					**Current Warning Points:** ${args.points + previousPoints}
 					**Reason:** ${args.reason !== '' ? args.reason : 'No reason has been added by the moderator'}`);
 				
-				// Log the event in the mod log
 				modLogMessage(msg, warnEmbed);
 				deleteCommandMessages(msg);
 				stopTyping(msg);
@@ -189,6 +188,6 @@ export default class WarnCommand extends Command {
 		// Inform the user the command failed
 		stopTyping(msg);
 		
-		return sendSimpleEmbeddedError(msg, `Warning ${args.member} failed!`);
+		return sendSimpleEmbeddedError(msg, `Warning ${args.member} failed!`, 3000);
 	}
 }

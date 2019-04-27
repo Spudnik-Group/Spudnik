@@ -149,10 +149,10 @@ export default class MoveCommand extends Command {
 				modLogMessage(msg, moveModMessage);
 				deleteCommandMessages(msg);
 			} else {
-				return sendSimpleEmbeddedError(msg, 'Cannot move a text message to a non-text channel.');
+				return sendSimpleEmbeddedError(msg, 'Cannot move a text message to a non-text channel.', 3000);
 			}
 		} else {
-			return sendSimpleEmbeddedError(msg, `Could not find the message with supplied id (${args.messageId}) in this channel.`);
+			return sendSimpleEmbeddedError(msg, `Could not find the message with supplied id (${args.messageId}) in this channel.`, 3000);
 		}
 	}
 }

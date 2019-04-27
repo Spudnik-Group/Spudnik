@@ -130,7 +130,7 @@ export default class TermsOfServiceCommand extends Command {
 								// Set up embed message
 								tosEmbed.setDescription(stripIndents`
 									**Member:** ${msg.author.tag} (${msg.author.id})
-									**Action:** Terms of Service Channel set to <#${channelID}>}
+									**Action:** Terms of Service Channel set to <#${channelID}>
 								`);
 								this.sendSuccess(msg, tosEmbed);
 							})
@@ -141,7 +141,6 @@ export default class TermsOfServiceCommand extends Command {
 
 					return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
 				}
-				break;
 			}
 			case 'list': {
 				if (tosChannel && tosChannel === msg.channel.id) {
@@ -160,7 +159,6 @@ export default class TermsOfServiceCommand extends Command {
 						return sendSimpleEmbeddedError(msg, 'There are no terms of service messages set.', 3000);
 					}
 				}
-				break;
 			}
 			case 'title': {
 				item = Number(args.item);
@@ -239,7 +237,7 @@ export default class TermsOfServiceCommand extends Command {
 					tosList += `${index + 1} - ${message.title}\n`;
 				});
 				tosEmbed.description = `Channel: <#${tosChannel}>\nMessage List:\n`;
-				tosEmbed.description += tosList;
+				tosEmbed.description += `\`\`\`${tosList}\`\`\``;
 
 				deleteCommandMessages(msg);
 				stopTyping(msg);
@@ -288,9 +286,7 @@ export default class TermsOfServiceCommand extends Command {
 	}
 
 	private sendSuccess(msg: CommandoMessage, embed: MessageEmbed): Promise<Message | Message[]> {
-		// Log the event in the mod log
 		modLogMessage(msg, embed);
-
 		deleteCommandMessages(msg);
 		stopTyping(msg);
 
