@@ -51,6 +51,12 @@ export const handleReady = async(version: string, client: CommandoClient, config
 		},
 		{
 			activity: {
+				name: `${client.commandPrefix}upvote 👍`,
+				type: 'PLAYING'
+			}
+		},
+		{
+			activity: {
 				name: `and Assisting ${client.guilds.array().length} servers.`,
 				type: 'WATCHING'
 			}
