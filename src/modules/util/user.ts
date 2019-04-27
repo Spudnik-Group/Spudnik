@@ -41,7 +41,7 @@ export default class UserCommand extends Command {
 			clientPermissions: ['EMBED_LINKS'],
 			description: 'Returns statistics about a user.',
 			details: stripIndents`
-				syntax \`!user (@usermention)\`
+				syntax \`!user (@usermention|snowflake|username)\`
 
 				Supplying no usermention returns details about the calling user.
 			`,
