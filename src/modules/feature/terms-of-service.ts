@@ -132,7 +132,8 @@ export default class TermsOfServiceCommand extends Command {
 									**Member:** ${msg.author.tag} (${msg.author.id})
 									**Action:** Terms of Service Channel set to <#${channelID}>
 								`);
-								this.sendSuccess(msg, tosEmbed);
+
+								return this.sendSuccess(msg, tosEmbed);
 							})
 							.catch((err: Error) => this.catchError(msg, args, err));
 					}
@@ -141,6 +142,7 @@ export default class TermsOfServiceCommand extends Command {
 
 					return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
 				}
+				break;
 			}
 			case 'list': {
 				if (tosChannel && tosChannel === msg.channel.id) {
@@ -159,6 +161,7 @@ export default class TermsOfServiceCommand extends Command {
 						return sendSimpleEmbeddedError(msg, 'There are no terms of service messages set.', 3000);
 					}
 				}
+				break;
 			}
 			case 'title': {
 				item = Number(args.item);
@@ -191,7 +194,8 @@ export default class TermsOfServiceCommand extends Command {
 
 						await msg.guild.settings.set('tosMessageCount', tosMessages.length)
 							.catch((err: Error) => this.catchError(msg, args, err));
-						this.sendSuccess(msg, tosEmbed);
+
+						return this.sendSuccess(msg, tosEmbed);
 					})
 					.catch((err: Error) => this.catchError(msg, args, err));
 				break;
@@ -226,7 +230,8 @@ export default class TermsOfServiceCommand extends Command {
 						
 						await msg.guild.settings.set('tosMessageCount', tosMessages.length)
 							.catch((err: Error) => this.catchError(msg, args, err));
-						this.sendSuccess(msg, tosEmbed);
+
+						return this.sendSuccess(msg, tosEmbed);
 					})
 					.catch((err: Error) => this.catchError(msg, args, err));
 				break;
@@ -244,6 +249,7 @@ export default class TermsOfServiceCommand extends Command {
 
 				// Send the success response
 				return msg.embed(tosEmbed);
+				break;
 			}
 		}
 	}

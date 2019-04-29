@@ -110,7 +110,8 @@ export default class GoodbyeCommand extends Command {
 									**Member:** ${msg.author.tag} (${msg.author.id})
 									**Action:** Goodbye Channel set to <#${channelID}>
 								`);
-								this.sendSuccess(msg, goodbyeEmbed);
+
+								return this.sendSuccess(msg, goodbyeEmbed);
 							})
 							.catch((err: Error) => this.catchError(msg, args, err));
 					}
@@ -119,6 +120,7 @@ export default class GoodbyeCommand extends Command {
 
 					return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
 				}
+				break;
 			}
 			case 'message': {
 				if (!args.content) {
@@ -134,10 +136,12 @@ export default class GoodbyeCommand extends Command {
 								**Action:** Goodbye message set to:
 								\`\`\`${args.content}\`\`\`
 							`);
-							this.sendSuccess(msg, goodbyeEmbed);
+
+							return this.sendSuccess(msg, goodbyeEmbed);
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				}
+				break;
 			}
 			case 'enable': {
 				if (goodbyeChannel) {
@@ -154,7 +158,7 @@ export default class GoodbyeCommand extends Command {
 									**Action:** Goodbye messages set to: _Enabled_
 								`);
 	
-								this.sendSuccess(msg, goodbyeEmbed);
+								return this.sendSuccess(msg, goodbyeEmbed);
 							})
 							.catch((err: Error) => this.catchError(msg, args, err));
 					}
@@ -163,6 +167,7 @@ export default class GoodbyeCommand extends Command {
 
 					return sendSimpleEmbeddedError(msg, 'Please set the channel for the goodbye message before enabling the feature. See `help goodbye` for info.', 3000);
 				}
+				break;
 			}
 			case 'disable': {
 				if (goodbyeEnabled) {
@@ -173,7 +178,8 @@ export default class GoodbyeCommand extends Command {
 								**Member:** ${msg.author.tag} (${msg.author.id})
 								**Action:** Goodbye messages set to: _Disabled_
 							`);
-							this.sendSuccess(msg, goodbyeEmbed);
+
+							return this.sendSuccess(msg, goodbyeEmbed);
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				} else {
@@ -181,6 +187,7 @@ export default class GoodbyeCommand extends Command {
 
 					return sendSimpleEmbeddedMessage(msg, 'Goodbye message already disabled!', 3000);
 				}
+				break;
 			}
 			case 'status': {
 				// Set up embed message
@@ -193,6 +200,7 @@ export default class GoodbyeCommand extends Command {
 
 				// Send the success response
 				return msg.embed(goodbyeEmbed);
+				break;
 			}
 		}
 	}
