@@ -119,7 +119,7 @@ export default class AcceptCommand extends Command {
 						// Log the event in the mod log
 						modLogMessage(msg, acceptEmbed);
 
-						deleteCommandMessages(msg);
+						msg.delete();
 						stopTyping(msg);
 					})
 					.catch((err: Error) => this.catchError(msg, args, err));
