@@ -1,10 +1,7 @@
-import chalk from 'chalk';
-import Rollbar = require('rollbar');
+import { CommandoClient } from 'discord.js-commando';
 
-export const handleDisconnected = (err: Error, rollbar: Rollbar) => {
-	if (process.env.NODE_ENV !== 'development') rollbar.critical(`Disconnected from Discord!\nError: ${err}`);
-	
-	console.log(chalk.red('Disconnected from Discord!'));
+export const handleDisconnected = (err: Error, client: CommandoClient) => {
+	if (process.env.NODE_ENV !== 'development') client.emit('error', `Disconnected from Discord!\nError: ${err}`);
 
 	process.exit();
 }
