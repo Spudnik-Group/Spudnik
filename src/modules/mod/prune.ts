@@ -149,7 +149,7 @@ export default class PruneCommand extends Command {
 					if (response instanceof Message) { response.delete(); }
 				
 					const oldMessage = messagesToDelete.find(msg => {
-						return msg.createdAt > new Date(Date.now() - (14 * 24 * 3600 * 1000));
+						return msg.createdAt < new Date(Date.now() - (14 * 24 * 3600 * 1000));
 					});
 	
 					if (oldMessage) {
@@ -186,7 +186,7 @@ export default class PruneCommand extends Command {
 				if (response instanceof Message) { response.delete(); }
 				
 				const oldMessage = messages.find(msg => {
-					return msg.createdAt > new Date(Date.now() - (14 * 24 * 3600 * 1000));
+					return msg.createdAt < new Date(Date.now() - (14 * 24 * 3600 * 1000));
 				});
 
 				if (oldMessage) {
