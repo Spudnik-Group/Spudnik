@@ -8,15 +8,15 @@ import { stripIndents } from 'common-tags';
  * Post links to upvote the bot's listings.
  *
  * @export
- * @class UpVoteCommand
+ * @class UpvoteCommand
  * @extends {Command}
  */
-export default class UpVoteCommand extends Command {
+export default class UpvoteCommand extends Command {
 	/**
-	 * Creates an instance of UpVoteCommand.
+	 * Creates an instance of UpvoteCommand.
 	 *
 	 * @param {CommandoClient} client
-	 * @memberof UpVoteCommand
+	 * @memberof UpvoteCommand
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
@@ -39,7 +39,7 @@ export default class UpVoteCommand extends Command {
 	 *
 	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
-	 * @memberof UpVoteCommand
+	 * @memberof UpvoteCommand
 	 */
 	public async run(msg: CommandoMessage): Promise<Message | Message[]> {
 		deleteCommandMessages(msg);

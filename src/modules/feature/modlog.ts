@@ -105,7 +105,8 @@ export default class ModlogCommand extends Command {
 									**Member:** ${msg.author.tag} (${msg.author.id})
 									**Action:** Modlog set to: _Enabled_
 								`);
-								this.sendSuccess(msg, modlogEmbed);
+
+								return this.sendSuccess(msg, modlogEmbed);
 							})
 							.catch((err: Error) => this.catchError(msg, args, err));
 					}
@@ -114,6 +115,7 @@ export default class ModlogCommand extends Command {
 
 					return sendSimpleEmbeddedError(msg, 'Please set the channel for the modlog before enabling the feature. See `!help modlog` for info.', 3000);
 				}
+				break;
 			}
 			case 'disable': {
 				if (modlogEnabled) {
@@ -124,7 +126,8 @@ export default class ModlogCommand extends Command {
 								**Member:** ${msg.author.tag} (${msg.author.id})
 								**Action:** Modlog set to: _Disabled_
 							`);
-							this.sendSuccess(msg, modlogEmbed);
+
+							return this.sendSuccess(msg, modlogEmbed);
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				} else {
@@ -132,6 +135,7 @@ export default class ModlogCommand extends Command {
 
 					return sendSimpleEmbeddedMessage(msg, 'Modlog feature already disabled!', 3000);
 				}
+				break;
 			}
 			case 'channel': {
 				if (args.channel instanceof Channel) {
@@ -149,7 +153,8 @@ export default class ModlogCommand extends Command {
 									**Member:** ${msg.author.tag} (${msg.author.id})
 									**Action:** Modlog Channel set to <#${channelID}>
 								`);
-								this.sendSuccess(msg, modlogEmbed);
+
+								return this.sendSuccess(msg, modlogEmbed);
 							})
 							.catch((err: Error) => this.catchError(msg, args, err));
 					}
@@ -158,6 +163,7 @@ export default class ModlogCommand extends Command {
 
 					return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
 				}
+				break;
 			}
 			case 'status': {
 				// Set up embed message
@@ -168,6 +174,7 @@ export default class ModlogCommand extends Command {
 
 				// Send the success response
 				return msg.embed(modlogEmbed);
+				break;
 			}
 		}
 	}

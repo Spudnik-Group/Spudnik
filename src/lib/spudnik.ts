@@ -4,7 +4,6 @@ import { CommandoClient } from 'discord.js-commando';
 import * as http from 'http';
 import Mongoose = require('mongoose');
 import * as path from 'path';
-import * as Rollbar from 'rollbar';
 import { MongoSettingsProvider } from './providers/mongo-settings-provider';
 import {
 	handleReady, handleRaw, handleMessage,
@@ -40,7 +39,6 @@ export interface Configuration {
  * @property {CommandoClient} Discord
  */
 export class Spudnik {
-	private Rollbar: any;
 	/**
 	 * @name Spudnik#Config
 	 * @type Configuration
@@ -62,15 +60,6 @@ export class Spudnik {
 		this.Config = config;
 
 		console.log(chalk.blue('---Spudnik Stage 2 Engaged.---'));
-
-		if (!this.Config.debug && process.env.NODE_ENV !== 'development') {
-			this.Rollbar = new Rollbar({
-				accessToken: this.Config.rollbarApiKey,
-				captureUncaught: true,
-				captureUnhandledRejections: true,
-				environment: process.env.NODE_ENV
-			});
-		}
 
 		this.Discord = new CommandoClient({
 			commandPrefix: '!',
@@ -134,8 +123,7 @@ export class Spudnik {
 		this.Discord.setProvider(
 			Mongoose.connect(this.Config.mongoDB, { useMongoClient: true }).then(() => new MongoSettingsProvider(Mongoose.connection))
 		).catch((err) => {
-			if (process.env.NODE_ENV !== 'development') this.Rollbar.critical(err);
-			console.error(err);
+			if (process.env.NODE_ENV !== 'development') this.Discord.emit('error', `Failed to set provider!\nError: ${err}`);
 			process.exit(-1);
 		});
 	}
@@ -147,8 +135,8 @@ export class Spudnik {
 			.on('message', (message: Message) => handleMessage(message, this.Discord))
 			.on('guildMemberAdd', (member: GuildMember) => handleGuildMemberAdd(member, this.Discord))
 			.on('guildMemberRemove', (member: GuildMember) => handleGuildMemberRemove(member, this.Discord))
-			.on('disconnected', (err: Error) => handleDisconnected(err, this.Rollbar))
-			.on('error', (err: Error) => handleError(err, this.Rollbar))
+			.on('disconnected', (err: Error) => handleDisconnected(err, this.Discord))
+			.on('error', (err: Error) => handleError(err, this.Config))
 			.on('warn', (err: Error) => handleWarn(err, this.Discord))
 			.on('debug', (err: Error) => handleDebug(err))
 			.on('commandError', (cmd, err) => handleCommandError(cmd, err));

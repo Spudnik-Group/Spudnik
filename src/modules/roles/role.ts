@@ -107,7 +107,8 @@ export default class RoleCommand extends Command {
 								**Member:** ${msg.author.tag} (${msg.author.id})
 								**Action:** Added role '${args.role.name}' to the list of assignable roles.
 							`);
-							this.sendSuccess(msg, roleEmbed);
+
+							return this.sendSuccess(msg, roleEmbed);
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				} else {
@@ -134,7 +135,8 @@ export default class RoleCommand extends Command {
 								**Member:** ${msg.author.tag} (${msg.author.id})
 								**Action:** Removed role '${args.role.name}' from the list of assignable roles.
 							`);
-							this.sendSuccess(msg, roleEmbed);
+
+							return this.sendSuccess(msg, roleEmbed);
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				} else {
@@ -153,7 +155,8 @@ export default class RoleCommand extends Command {
 								**Member:** ${msg.author.tag} (${msg.author.id})
 								**Action:** Removed default role(s).
 							`);
-							this.sendSuccess(msg, roleEmbed);
+
+							return this.sendSuccess(msg, roleEmbed);
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				} else if (!guildDefaultRoles.includes(args.role.id)) {
@@ -166,7 +169,8 @@ export default class RoleCommand extends Command {
 								**Member:** ${msg.author.tag} (${msg.author.id})
 								**Action:** Added role '${args.role.name}' to the list of default roles.
 							`);
-							this.sendSuccess(msg, roleEmbed);
+
+							return this.sendSuccess(msg, roleEmbed);
 						})
 						.catch((err: Error) => {
 							msg.client.emit('warn', `Error in command roles:role-add: ${err}`);
@@ -220,6 +224,7 @@ export default class RoleCommand extends Command {
 		
 				// Send the success response
 				return msg.embed(roleEmbed);
+				break;
 			}
 		}
 	}

@@ -22,21 +22,21 @@ Instead, fork the bot and contribute! Ongoing contributors will be invited to jo
 [url-docs-getting-started]: https://docs.spudnik.io/getting-started/
 
 [url-docs]: https://docs.spudnik.io/
-[img-button-docs]: https://i.imgur.com/4PaSXOg.png
+[img-button-docs]: https://i.imgur.com/bLyWo9q.png
 
 [img-banner]: https://i.imgur.com/y0dl0sN.png
 [url-homepage]: https://spudnik.io
 
-[img-button-feathub]: https://i.imgur.com/WQboGWp.png
+[img-button-feathub]: https://i.imgur.com/hznbDlJ.png
 [url-feathub]: https://feathub.com/Spudnik-Group/Spudnik
 
-[img-button-add]: https://i.imgur.com/7Lgbykk.png
+[img-button-add]: https://i.imgur.com/v3WWi7e.png
 [url-invite]: https://spudnik.io/invite
 
-[img-button-support]: https://i.imgur.com/aOCsoRe.png
+[img-button-support]: https://i.imgur.com/NCr9cL8.png
 [url-support]: https://spudnik.io/support
 
-[img-button-project]: https://i.imgur.com/rgrmsbV.png
+[img-button-project]: https://i.imgur.com/jqWPmk4.png
 [url-github-project-board]: https://github.com/orgs/Spudnik-Group/projects/1
 
 [img-current-release]: https://img.shields.io/github/release/Spudnik-Group/Spudnik.svg?style=flat-square
@@ -48,7 +48,7 @@ Instead, fork the bot and contribute! Ongoing contributors will be invited to jo
 [img-build-status]: https://img.shields.io/travis/Spudnik-Group/Spudnik.svg?style=flat-square
 [url-build-status]: https://travis-ci.org/Spudnik-Group/Spudnik
 
-[img-uptime-robot]: https://img.shields.io/uptimerobot/ratio/7/m780969734-824d124e5ea4e2eeb26dcda8.svg
+[img-uptime-robot]: https://img.shields.io/uptimerobot/ratio/7/m780969734-824d124e5ea4e2eeb26dcda8.svg?style=flat-square
 
 [img-code-style]: https://img.shields.io/badge/style-tslint-000000.svg?longCache=true&style=flat-square&label=code%20style
 
