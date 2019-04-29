@@ -93,7 +93,8 @@ export default class DeleteCommandMessagesCommand extends Command {
 							**Member:** ${msg.author.tag} (${msg.author.id})
 							**Action:** DeleteCommandMessages _Enabled_
 						`);
-						this.sendSuccess(msg, deleteCommandMessagesEmbed);
+
+						return this.sendSuccess(msg, deleteCommandMessagesEmbed);
 					})
 					.catch((err: Error) => this.catchError(msg, args, err));
 			}
@@ -106,7 +107,8 @@ export default class DeleteCommandMessagesCommand extends Command {
 							**Member:** ${msg.author.tag} (${msg.author.id})
 							**Action:** DeleteCommandMessages _Disabled_
 						`);
-						this.sendSuccess(msg, deleteCommandMessagesEmbed);
+
+						return this.sendSuccess(msg, deleteCommandMessagesEmbed);
 					})
 					.catch((err: Error) => this.catchError(msg, args, err));
 			} else {

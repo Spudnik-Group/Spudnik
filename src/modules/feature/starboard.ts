@@ -103,7 +103,7 @@ export default class StarboardCommand extends Command {
 					if (starboard && starboard === channelID) {
 						stopTyping(msg);
 
-						return sendSimpleEmbeddedMessage(msg, `Goodbye channel already set to <#${channelID}>!`, 3000);
+						return sendSimpleEmbeddedMessage(msg, `Star Board channel already set to <#${channelID}>!`, 3000);
 					} else {
 						msg.guild.settings.set('starboardChannel', channelID)
 							.then(() => {
@@ -112,7 +112,8 @@ export default class StarboardCommand extends Command {
 									**Member:** ${msg.author.tag} (${msg.author.id})
 									**Action:** Star Board Channel set to <#${channelID}>
 								`);
-								this.sendSuccess(msg, starboardEmbed);
+
+								return this.sendSuccess(msg, starboardEmbed);
 							})
 							.catch((err: Error) => this.catchError(msg, args, err));
 					}
@@ -121,6 +122,7 @@ export default class StarboardCommand extends Command {
 					
 					return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
 				}
+				break;
 			}
 			case 'trigger': {
 				const emojiRegex = /(?:[\u2700-\u27bf]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff]|[\u0023-\u0039]\ufe0f?\u20e3|\u3299|\u3297|\u303d|\u3030|\u24c2|\ud83c[\udd70-\udd71]|\ud83c[\udd7e-\udd7f]|\ud83c\udd8e|\ud83c[\udd91-\udd9a]|\ud83c[\udde6-\uddff]|[\ud83c[\ude01-\ude02]|\ud83c\ude1a|\ud83c\ude2f|[\ud83c[\ude32-\ude3a]|[\ud83c[\ude50-\ude51]|\u203c|\u2049|[\u25aa-\u25ab]|\u25b6|\u25c0|[\u25fb-\u25fe]|\u00a9|\u00ae|\u2122|\u2139|\ud83c\udc04|[\u2600-\u26FF]|\u2b05|\u2b06|\u2b07|\u2b1b|\u2b1c|\u2b50|\u2b55|\u231a|\u231b|\u2328|\u23cf|[\u23e9-\u23f3]|[\u23f8-\u23fa]|\ud83c\udccf|\u2934|\u2935|[\u2190-\u21ff])/g;
@@ -136,10 +138,12 @@ export default class StarboardCommand extends Command {
 								**Member:** ${msg.author.tag} (${msg.author.id})
 								**Action:** Star Board trigger set to: ${args.content}
 							`);
-							this.sendSuccess(msg, starboardEmbed);
+
+							return this.sendSuccess(msg, starboardEmbed);
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				}
+				break;
 			}
 			case 'enable': {
 				if (starboard) {
@@ -155,7 +159,8 @@ export default class StarboardCommand extends Command {
 									**Member:** ${msg.author.tag} (${msg.author.id})
 									**Action:** Star Board set to: _Enabled_
 								`);
-								this.sendSuccess(msg, starboardEmbed);
+
+								return this.sendSuccess(msg, starboardEmbed);
 							})
 							.catch((err: Error) => this.catchError(msg, args, err));
 					}
@@ -164,6 +169,7 @@ export default class StarboardCommand extends Command {
 
 					return sendSimpleEmbeddedError(msg, 'Please set the channel for the Star Board before enabling the feature. See `!help starboard` for info.', 3000);
 				}
+				break;
 			}
 			case 'disable': {
 				if (starboardEnabled) {
@@ -174,7 +180,8 @@ export default class StarboardCommand extends Command {
 								**Member:** ${msg.author.tag} (${msg.author.id})
 								**Action:** Star Board set to: _Disabled_
 							`);
-							this.sendSuccess(msg, starboardEmbed);
+
+							return this.sendSuccess(msg, starboardEmbed);
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				} else {
@@ -188,12 +195,13 @@ export default class StarboardCommand extends Command {
 				// Set up embed message
 				starboardEmbed.setDescription(stripIndents`Star Board feature: ${starboardEnabled ? '_Enabled_' : '_Disabled_'}
 										Channel set to: <#${starboard}>
-										Trigger set to: ${starboardTrigger}`);
+										Reaction Trigger set to: ${starboardTrigger}`);
 				if (starboard) {
 					const botCanRead: boolean = await msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('READ_MESSAGE_HISTORY');
 					const botCanPostLinks: boolean = await msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('EMBED_LINKS');
 					const botCanPostAttachments: boolean = await msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('ATTACH_FILES');
 					starboardEmbed.description += stripIndents`
+
 						Permissions:
 						* READ_MESSAGE_HISTORY: ${botCanRead}
 						* EMBED_LINKS: ${botCanPostLinks}
@@ -204,6 +212,7 @@ export default class StarboardCommand extends Command {
 
 				// Send the success response
 				return msg.embed(starboardEmbed);
+				break;
 			}
 		}
 	}

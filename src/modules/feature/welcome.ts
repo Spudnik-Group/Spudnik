@@ -110,7 +110,8 @@ export default class WelcomeCommand extends Command {
 									**Member:** ${msg.author.tag} (${msg.author.id})
 									**Action:** Welcome Channel set to <#${channelID}>
 								`);
-								this.sendSuccess(msg, welcomeEmbed);
+
+								return this.sendSuccess(msg, welcomeEmbed);
 							})
 							.catch((err: Error) => this.catchError(msg, args, err));
 					}
@@ -119,6 +120,7 @@ export default class WelcomeCommand extends Command {
 
 					return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
 				}
+				break;
 			}
 			case 'message': {
 				if (!args.content) {
@@ -134,10 +136,12 @@ export default class WelcomeCommand extends Command {
 								**Action:** Welcome message set to:
 								\`\`\`${args.content}\`\`\`
 							`);
-							this.sendSuccess(msg, welcomeEmbed);
+
+							return this.sendSuccess(msg, welcomeEmbed);
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				}
+				break;
 			}
 			case 'enable': {
 				if (welcomeChannel) {
@@ -153,7 +157,8 @@ export default class WelcomeCommand extends Command {
 									**Member:** ${msg.author.tag} (${msg.author.id})
 									**Action:** Welcome messages set to: _Enabled_
 								`);
-								this.sendSuccess(msg, welcomeEmbed);
+
+								return this.sendSuccess(msg, welcomeEmbed);
 							})
 							.catch((err: Error) => this.catchError(msg, args, err));
 					}
@@ -162,6 +167,7 @@ export default class WelcomeCommand extends Command {
 
 					return sendSimpleEmbeddedError(msg, 'Please set the channel for the welcome message before enabling the feature. See `help welcome` for info.', 3000);
 				}
+				break;
 			}
 			case 'disable': {
 				if (welcomeEnabled) {
@@ -172,7 +178,8 @@ export default class WelcomeCommand extends Command {
 								**Member:** ${msg.author.tag} (${msg.author.id})
 								**Action:** Welcome messages set to: _Disabled_
 							`);
-							this.sendSuccess(msg, welcomeEmbed);
+
+							return this.sendSuccess(msg, welcomeEmbed);
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				} else {
@@ -180,6 +187,7 @@ export default class WelcomeCommand extends Command {
 
 					return sendSimpleEmbeddedMessage(msg, 'Welcome message already disabled!', 3000);
 				}
+				break;
 			}
 			case 'status': {
 				// Set up embed message
@@ -192,6 +200,7 @@ export default class WelcomeCommand extends Command {
 
 				// Send the success response
 				return msg.embed(welcomeEmbed);
+				break;
 			}
 		}
 	}
