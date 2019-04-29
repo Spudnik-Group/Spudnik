@@ -24,10 +24,10 @@ export default class GoodbyeCommand extends Command {
 			args: [
 				{
 					key: 'subCommand',
-					prompt: 'What sub-command would you like to use?\nOptions are:\n* channel\n* message\n* enable\n* disable',
+					prompt: 'What sub-command would you like to use?\nOptions are:\n* status\n* channel\n* message\n* enable\n* disable',
 					type: 'string',
 					validate: (subCommand: string) => {
-						const allowedSubCommands = ['message', 'channel', 'enable', 'disable'];
+						const allowedSubCommands = ['message', 'channel', 'enable', 'disable', 'status'];
 						if (allowedSubCommands.indexOf(subCommand) !== -1) return true;
 						
 						return 'You provided an invalid subcommand.';
@@ -42,17 +42,19 @@ export default class GoodbyeCommand extends Command {
 			],
 			description: 'Used to configure the message to be sent when a user leaves your guild.',
 			details: stripIndents`
-				syntax: \`!goodbye <message|channel|enable|disable> (text | #channelMention)\`
+				syntax: \`!goodbye <status|message|channel|enable|disable> (text | #channelMention)\`
 
-				\`message (text to say goodbye/heckle)\` - Set/return the goodbye message. Use { guild } for guild name, and { user } to reference the user joining. Leave blank to show current.
-				\`channel <#channelMention>\` - Set the channel for the goodbye message to be displayed.
-				\`enable\` - Enable the goodbye message feature.
-				\`disable\` - Disable the goodbye message feature.
+				\`status\` - return the goodbye feature configuration details.
+				\`message (text to say goodbye/heckle)\` - set the goodbye message. Use { guild } for guild name, and { user } to reference the user leaving.
+				\`channel <#channelMention>\` - set the channel for the goodbye message to be displayed.
+				\`enable\` - enable the goodbye message feature.
+				\`disable\` - disable the goodbye message feature.
 
 				MANAGE_GUILD permission required.
 			`,
 			examples: [
 				'!goodbye message Everyone mourn the loss of {user}',
+				'!goodbye status',
 				'!goodbye channel #general',
 				'!goodbye enable',
 				'!goodbye disable'
@@ -85,9 +87,9 @@ export default class GoodbyeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const goodbyeChannel = msg.guild.settings.get('goodbyeChannel');
-		const goodbyeMessage = msg.guild.settings.get('goodbyeMessage', '{user} has left the server.');
-		const goodbyeEnabled = msg.guild.settings.get('goodbyeEnabled', false);
+		const goodbyeChannel = await msg.guild.settings.get('goodbyeChannel', null);
+		const goodbyeMessage = await msg.guild.settings.get('goodbyeMessage', '{user} has left the server.');
+		const goodbyeEnabled = await msg.guild.settings.get('goodbyeEnabled', false);
 		
 		startTyping(msg);
 
@@ -106,10 +108,9 @@ export default class GoodbyeCommand extends Command {
 								// Set up embed message
 								goodbyeEmbed.setDescription(stripIndents`
 									**Member:** ${msg.author.tag} (${msg.author.id})
-									**Action:** Goodbye Channel set to <#${channelID}>}
+									**Action:** Goodbye Channel set to <#${channelID}>
 								`);
-
-								return this.sendSuccess(msg, goodbyeEmbed);
+								this.sendSuccess(msg, goodbyeEmbed);
 							})
 							.catch((err: Error) => this.catchError(msg, args, err));
 					}
@@ -118,13 +119,12 @@ export default class GoodbyeCommand extends Command {
 
 					return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
 				}
-				break;
 			}
 			case 'message': {
 				if (!args.content) {
 					stopTyping(msg);
 
-					return sendSimpleEmbeddedMessage(msg, 'You must include the new message along with the `message` command. See `help goodbye` for details.\nCurrent Goodbye Message: ```' + goodbyeMessage + '```', 3000);
+					return sendSimpleEmbeddedMessage(msg, 'You must include the new message along with the `message` command. See `help goodbye` for details.', 3000);
 				} else {
 					msg.guild.settings.set('goodbyeMessage', args.content)
 						.then(() => {
@@ -132,43 +132,37 @@ export default class GoodbyeCommand extends Command {
 							goodbyeEmbed.setDescription(stripIndents`
 								**Member:** ${msg.author.tag} (${msg.author.id})
 								**Action:** Goodbye message set to:
-								\`\`\`${args.content}\`\`\`\n
-								Goodbye Message: ${(goodbyeEnabled ? '_Enabled_' : '_Disabled_')}
+								\`\`\`${args.content}\`\`\`
 							`);
-
-							if (goodbyeEnabled && goodbyeChannel instanceof Channel) {
-								goodbyeEmbed.description += `\nGoodbye channel: <#${goodbyeChannel}>`;
-							} else if (goodbyeEnabled && goodbyeChannel! instanceof Channel) {
-								goodbyeEmbed.description += '\nGoodbye messages will not display, as a goodbye channel is not set. Use `goodbye channel [channel ref]`.';
-							}
-							
-							return this.sendSuccess(msg, goodbyeEmbed);
+							this.sendSuccess(msg, goodbyeEmbed);
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				}
-				break;
 			}
 			case 'enable': {
-				if (!goodbyeEnabled) {
-					msg.guild.settings.set('goodbyeEnabled', true)
-						.then(() => {
-							// Set up embed message
-							goodbyeEmbed.setDescription(stripIndents`
-								**Member:** ${msg.author.tag} (${msg.author.id})
-								**Action:** Goodbye messages set to:
-								_Enabled_\n
-								Goodbye Channel: <#${goodbyeChannel}>
-							`);
-
-							return this.sendSuccess(msg, goodbyeEmbed);
-						})
-						.catch((err: Error) => this.catchError(msg, args, err));
+				if (goodbyeChannel) {
+					if (goodbyeEnabled) {
+						stopTyping(msg);
+	
+						return sendSimpleEmbeddedMessage(msg, 'Goodbye message already enabled!', 3000);
+					} else {
+						msg.guild.settings.set('goodbyeEnabled', true)
+							.then(() => {
+								// Set up embed message
+								goodbyeEmbed.setDescription(stripIndents`
+									**Member:** ${msg.author.tag} (${msg.author.id})
+									**Action:** Goodbye messages set to: _Enabled_
+								`);
+	
+								this.sendSuccess(msg, goodbyeEmbed);
+							})
+							.catch((err: Error) => this.catchError(msg, args, err));
+					}
 				} else {
 					stopTyping(msg);
 
-					return sendSimpleEmbeddedMessage(msg, 'Goodbye message already enabled!', 3000);
+					return sendSimpleEmbeddedError(msg, 'Please set the channel for the goodbye message before enabling the feature. See `help goodbye` for info.', 3000);
 				}
-				break;
 			}
 			case 'disable': {
 				if (goodbyeEnabled) {
@@ -177,12 +171,9 @@ export default class GoodbyeCommand extends Command {
 							// Set up embed message
 							goodbyeEmbed.setDescription(stripIndents`
 								**Member:** ${msg.author.tag} (${msg.author.id})
-								**Action:** Goodbye messages set to:
-								_Disabled_\n
-								Goodbye Channel: <#${goodbyeChannel}>
+								**Action:** Goodbye messages set to: _Disabled_
 							`);
-
-							return this.sendSuccess(msg, goodbyeEmbed);
+							this.sendSuccess(msg, goodbyeEmbed);
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				} else {
@@ -190,7 +181,18 @@ export default class GoodbyeCommand extends Command {
 
 					return sendSimpleEmbeddedMessage(msg, 'Goodbye message already disabled!', 3000);
 				}
-				break;
+			}
+			case 'status': {
+				// Set up embed message
+				goodbyeEmbed.setDescription(stripIndents`Goodbye feature: ${goodbyeEnabled ? '_Enabled_' : '_Disabled_'}
+				Channel set to: <#${goodbyeChannel}>
+				Message set to:
+				\`\`\`${goodbyeMessage}\`\`\` `)
+				deleteCommandMessages(msg);
+				stopTyping(msg);
+
+				// Send the success response
+				return msg.embed(goodbyeEmbed);
 			}
 		}
 	}
@@ -241,9 +243,7 @@ export default class GoodbyeCommand extends Command {
 	}
 
 	private sendSuccess(msg: CommandoMessage, embed: MessageEmbed): Promise<Message | Message[]> {
-		// Log the event in the mod log
 		modLogMessage(msg, embed);
-
 		deleteCommandMessages(msg);
 		stopTyping(msg);
 

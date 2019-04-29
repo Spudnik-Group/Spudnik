@@ -43,7 +43,6 @@ export default class DeleteCommandMessagesCommand extends Command {
 			details: stripIndents`
 				syntax: \`!delete-command-messages <enable|disable>\`
 
-				Supplying no subcommand returns an error.
 				MANAGE_MESSAGES permission required.`,
 			examples: [
 				'!delete-command-messages enable',
@@ -70,7 +69,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 	 * @memberof DeleteCommandMessagesCommand
 	 */
 	public async run(msg: CommandoMessage, args: { subCommand: string }): Promise<Message | Message[]> {
-		const deleteCommandMessagesEnabled = msg.guild.settings.get('deleteCommandMessage', false);
+		const deleteCommandMessagesEnabled = await msg.guild.settings.get('deleteCommandMessage', false);
 		const deleteCommandMessagesEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				name: '🛑 DeleteCommandMessages'
@@ -92,28 +91,28 @@ export default class DeleteCommandMessagesCommand extends Command {
 						// Set up embed message
 						deleteCommandMessagesEmbed.setDescription(stripIndents`
 							**Member:** ${msg.author.tag} (${msg.author.id})
-							**Action:** DeleteCommandMessages ${args.subCommand.toLowerCase()}
+							**Action:** DeleteCommandMessages _Enabled_
 						`);
 						this.sendSuccess(msg, deleteCommandMessagesEmbed);
 					})
 					.catch((err: Error) => this.catchError(msg, args, err));
 			}
 		} else if (args.subCommand.toLowerCase() === 'disable') {
-			if (!deleteCommandMessagesEnabled) {
-				stopTyping(msg);
-
-				return sendSimpleEmbeddedMessage(msg, 'DeleteCommandMessages feature already disabled!', 3000);
-			} else {
+			if (deleteCommandMessagesEnabled) {
 				msg.guild.settings.set('deleteCommandMessage', false)
 					.then(() => {
 						// Set up embed message
 						deleteCommandMessagesEmbed.setDescription(stripIndents`
 							**Member:** ${msg.author.tag} (${msg.author.id})
-							**Action:** DeleteCommandMessages ${args.subCommand.toLowerCase()}
+							**Action:** DeleteCommandMessages _Disabled_
 						`);
 						this.sendSuccess(msg, deleteCommandMessagesEmbed);
 					})
 					.catch((err: Error) => this.catchError(msg, args, err));
+			} else {
+				stopTyping(msg);
+
+				return sendSimpleEmbeddedMessage(msg, 'DeleteCommandMessages feature already disabled!', 3000);
 			}
 		}
 	}
@@ -140,9 +139,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 	}
 	
 	private sendSuccess(msg: CommandoMessage, embed: MessageEmbed): Promise<Message | Message[]> {
-		// Log the event in the mod log
 		modLogMessage(msg, embed);
-
 		deleteCommandMessages(msg);
 		stopTyping(msg);
 

@@ -3,6 +3,7 @@ import { Guild, PresenceData } from 'discord.js';
 import { CommandoClient } from 'discord.js-commando';
 import { Configuration } from 'src/lib/spudnik';
 import * as rp from 'request-promise';
+import { stripIndents } from 'common-tags';
 
 export const handleReady = async(version: string, client: CommandoClient, config: Configuration) => {
 	const statuses: PresenceData[] = [
@@ -46,6 +47,12 @@ export const handleReady = async(version: string, client: CommandoClient, config
 			activity: {
 				name: `and Assisting ${client.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b)} users.`,
 				type: 'WATCHING'
+			}
+		},
+		{
+			activity: {
+				name: `${client.commandPrefix}upvote 👍`,
+				type: 'PLAYING'
 			}
 		},
 		{
@@ -100,7 +107,9 @@ const updateBotListStats = (config: Configuration, client: CommandoClient): void
 			headers: { Authorization: config.botsggApiKey }
 		})
 		.then(() => console.log('- Posted statistics successfully: discord.bots.gg'))
-		.catch(() => console.log('Failed to post statistics: discord.bots.gg'))
+		.catch((err) => console.log(stripIndents`- Failed to post statistics: discord.bots.gg
+			Error: ${err}
+		`))
 	}
 
 	// BOTS.ONDISCORD.xyz
@@ -110,7 +119,9 @@ const updateBotListStats = (config: Configuration, client: CommandoClient): void
 			headers: { Authorization: config.bodApiKey }
 		})
 		.then(() => console.log('- Posted statistics successfully: bots.ondiscord.xyz'))
-		.catch(() => console.log('Failed to post statistics: bots.ondiscord.xyz'))
+		.catch((err) => console.log(stripIndents`- Failed to post statistics: bots.ondiscord.xyz
+			Error: ${err}
+		`))
 	}
 
 	// DISCORDBOTS.org
@@ -120,7 +131,9 @@ const updateBotListStats = (config: Configuration, client: CommandoClient): void
 			headers: { Authorization: config.dbApiKey }
 		})
 		.then(() => console.log('- Posted statistics successfully: discordbots.org'))
-		.catch(() => console.log('Failed to post statistics: discordbots.org'))
+		.catch((err) => console.log(stripIndents`- Failed to post statistics: discordbots.org
+			Error: ${err}
+		`))
 	}
 
 	// BOTSFORDISCORD.com
@@ -130,7 +143,9 @@ const updateBotListStats = (config: Configuration, client: CommandoClient): void
 			headers: { Authorization: config.bfdApiKey }
 		})
 		.then(() => console.log('- Posted statistics successfully: botsfordiscord.com'))
-		.catch(() => console.log('Failed to post statistics: botsfordiscord.com'))
+		.catch((err) => console.log(stripIndents`- Failed to post statistics: botsfordiscord.com
+			Error: ${err}
+		`))
 	}
 
 	// DISCORDBOTLIST.com
@@ -140,6 +155,8 @@ const updateBotListStats = (config: Configuration, client: CommandoClient): void
 			headers: { Authorization: `Bot ${config.dblApiKey}` }
 		})
 		.then(() => console.log('- Posted statistics successfully: discordbotlist.com'))
-		.catch(() => console.log('Failed to post statistics: discordbotlist.com'))
+		.catch((err) => console.log(stripIndents`- Failed to post statistics: discordbotlist.com
+			Error: ${err}
+		`))
 	}
 }

@@ -9,7 +9,7 @@ export const handleWarn = (err: Error, client: CommandoClient) => {
 	**Time:** ${format(new Date(), 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
 	**Warning Message:** ${err}`;
 	
-	if (!process.env.spud_debug) {
+	if (process.env.spud_issuelog) {
 		const channel = client.channels.get(process.env.spud_issuelog) as TextChannel;
 		channel.send(message);
 	}

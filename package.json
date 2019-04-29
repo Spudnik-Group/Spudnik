@@ -1,7 +1,7 @@
 {
 	"name": "spudnik",
 	"description": "An awesome chat bot for Discord.",
-	"version": "0.7.1",
+	"version": "0.7.2",
 	"license": "Apache-2.0",
 	"readme": "README.md",
 	"engines": {

@@ -30,7 +30,7 @@ export default class TermsOfServiceCommand extends Command {
 			args: [
 				{
 					key: 'subCommand',
-					prompt: 'What sub-command would you like to use?\nOptions are:\n* channel\n* title\n* body\n* list',
+					prompt: 'What sub-command would you like to use?\nOptions are:\n* channel\n* title\n* body\n* list\n* status',
 					type: 'string',
 					validate: (subCommand: string) => {
 						const allowedSubcommands = ['channel', 'title', 'body', 'list', 'status'];
@@ -42,7 +42,7 @@ export default class TermsOfServiceCommand extends Command {
 				{
 					default: '',
 					key: 'item',
-					prompt: 'channelMention or message number',
+					prompt: '#channelMention or message number',
 					type: 'channel|integer'
 				},
 				{
@@ -56,11 +56,11 @@ export default class TermsOfServiceCommand extends Command {
 			details: stripIndents`
 				syntax: \`!tos (channel|title|body|list|status) (#channelMention | message number) (text)\`
 
-				\`channel <#channelMention>\` - Sets the channel to display the terms of service in.
-				\`title <info block number> <text>\` - Edit the title of a terms of service info block.
-				\`body <info block number> <text>\` - Edit the body of a terms of service info block.
-				\`list\` - returns all the terms of service embedded blocks.
-				\`status\` - returns details on the terms of service feature.
+				\`channel <#channelMention>\` - set the channel to display the terms of service in.
+				\`title <info block number> <text>\` - edit the title of a terms of service info block.
+				\`body <info block number> <text>\` - edit the body of a terms of service info block.
+				\`list\` - return all the terms of service embedded blocks.
+				\`status\` - return the terms of service feature configuration details.
 
 				MANAGE_GUILD permission required.`,
 			examples: [
@@ -99,7 +99,7 @@ export default class TermsOfServiceCommand extends Command {
 			color: getEmbedColor(msg)
 		}).setTimestamp();
 		const tosChannel: string = await msg.guild.settings.get('tosChannel', null);
-		const tosMessageCount: number = await msg.guild.settings.get('tosMessageCount') || 0;
+		const tosMessageCount: number = await msg.guild.settings.get('tosMessageCount', 0);
 		const tosMessages: ITOSMessage[] = [];
 
 		startTyping(msg);
@@ -130,7 +130,7 @@ export default class TermsOfServiceCommand extends Command {
 								// Set up embed message
 								tosEmbed.setDescription(stripIndents`
 									**Member:** ${msg.author.tag} (${msg.author.id})
-									**Action:** Terms of Service Channel set to <#${channelID}>}
+									**Action:** Terms of Service Channel set to <#${channelID}>
 								`);
 								this.sendSuccess(msg, tosEmbed);
 							})
@@ -141,7 +141,6 @@ export default class TermsOfServiceCommand extends Command {
 
 					return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
 				}
-				break;
 			}
 			case 'list': {
 				if (tosChannel && tosChannel === msg.channel.id) {
@@ -160,7 +159,6 @@ export default class TermsOfServiceCommand extends Command {
 						return sendSimpleEmbeddedError(msg, 'There are no terms of service messages set.', 3000);
 					}
 				}
-				break;
 			}
 			case 'title': {
 				item = Number(args.item);
@@ -239,7 +237,7 @@ export default class TermsOfServiceCommand extends Command {
 					tosList += `${index + 1} - ${message.title}\n`;
 				});
 				tosEmbed.description = `Channel: <#${tosChannel}>\nMessage List:\n`;
-				tosEmbed.description += tosList;
+				tosEmbed.description += `\`\`\`${tosList}\`\`\``;
 
 				deleteCommandMessages(msg);
 				stopTyping(msg);
@@ -288,9 +286,7 @@ export default class TermsOfServiceCommand extends Command {
 	}
 
 	private sendSuccess(msg: CommandoMessage, embed: MessageEmbed): Promise<Message | Message[]> {
-		// Log the event in the mod log
 		modLogMessage(msg, embed);
-
 		deleteCommandMessages(msg);
 		stopTyping(msg);
 

@@ -1,6 +1,8 @@
-import { Message } from 'discord.js';
+import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient, CommandGroup } from 'discord.js-commando';
 import { stripIndents } from 'common-tags';
+import { deleteCommandMessages, modLogMessage, getEmbedColor } from '../../lib/custom-helpers';
+import { stopTyping, startTyping, sendSimpleEmbeddedError } from '../../lib/helpers';
 
 /**
  * Disables a command or command group.
@@ -66,20 +68,40 @@ export default class DisableCommandCommand extends Command {
 	 */
 	public async run(msg: CommandoMessage, args: {cmdOrGrp: Command | CommandGroup}): Promise<Message | Message[]> {
 		const group = (args.cmdOrGrp as Command).group;
-		if(!args.cmdOrGrp.isEnabledIn(msg.guild, true)) {
-			return msg.reply(
-				`The \`${args.cmdOrGrp.name}\` ${group ? 'command' : 'group'} is already disabled.`
-			);
+		const disableEmbed: MessageEmbed = new MessageEmbed({
+			author: {
+				icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/cross-mark_274c.png',
+				name: 'Disable'
+			},
+			color: getEmbedColor(msg),
+			description: ''
+		}).setTimestamp();
+
+		startTyping(msg);
+
+		if (!args.cmdOrGrp.isEnabledIn(msg.guild, true)) {
+			stopTyping(msg);
+
+			return sendSimpleEmbeddedError(msg,
+				`The \`${args.cmdOrGrp.name}\` ${group ? 'command' : 'group'} is already disabled.`, 3000);
 		}
 
 		if(args.cmdOrGrp.guarded) {
-			return msg.reply(
-				`You cannot disable the \`${args.cmdOrGrp.name}\` ${group ? 'command' : 'group'}.`
+			stopTyping(msg);
+
+			return sendSimpleEmbeddedError(msg,
+				`You cannot disable the \`${args.cmdOrGrp.name}\` ${group ? 'command' : 'group'}.`, 3000
 			);
 		}
 
 		args.cmdOrGrp.setEnabledIn(msg.guild, false);
+		disableEmbed.setDescription(stripIndents`
+			**Moderator:** ${msg.author.tag} (${msg.author.id})
+			**Action:** Disabled the \`${args.cmdOrGrp.name}\` ${group ? 'command' : 'group'}.`);
+		deleteCommandMessages(msg);
+		modLogMessage(msg, disableEmbed);
+		stopTyping(msg);
 		
-		return msg.reply(`Disabled the \`${args.cmdOrGrp.name}\` ${group ? 'command' : 'group'}.`);
+		return msg.embed(disableEmbed);
 	}
 }

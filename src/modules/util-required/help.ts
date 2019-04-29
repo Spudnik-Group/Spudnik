@@ -36,7 +36,6 @@ export default class HelpCommand extends Command {
 			examples: ['!help', '!help prefix'],
 			group: 'util-required',
 			guarded: true,
-			guildOnly: true,
 			memberName: 'help',
 			name: 'help'
 		});

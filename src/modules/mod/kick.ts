@@ -68,7 +68,7 @@ export default class KickCommand extends Command {
 		const kickEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/eject-symbol_23cf.png',
-				name: 'Das Boot'
+				name: 'Get Out! - уходить!!'
 			},
 			color: getEmbedColor(msg),
 			description: ''
@@ -80,7 +80,7 @@ export default class KickCommand extends Command {
 		if (!memberToKick.kickable || !(msg.member.roles.highest.comparePositionTo(memberToKick.roles.highest) > 0)) {
 			stopTyping(msg);
 			
-			return sendSimpleEmbeddedError(msg, `I can't kick ${memberToKick}. Do they have the same or a higher role than me or you?`);
+			return sendSimpleEmbeddedError(msg, `I can't kick ${memberToKick}. Do they have the same or a higher role than me or you?`, 3000);
 		}
 
 		memberToKick.kick(`Kicked by: ${msg.author} for: ${args.reason}`)
@@ -93,9 +93,7 @@ export default class KickCommand extends Command {
 					**Reason:** ${args.reason}
 				`);
 
-				// Log the event in the mod log
 				modLogMessage(msg, kickEmbed);
-
 				deleteCommandMessages(msg);
 				stopTyping(msg);
 
@@ -115,7 +113,7 @@ export default class KickCommand extends Command {
 				// Inform the user the command failed
 				stopTyping(msg);
 
-				return sendSimpleEmbeddedError(msg, `Kicking ${args.member} for ${args.reason} failed!`);
+				return sendSimpleEmbeddedError(msg, `Kicking ${args.member} for ${args.reason} failed!`, 3000);
 			});
 	}
 }

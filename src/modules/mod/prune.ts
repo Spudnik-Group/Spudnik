@@ -2,7 +2,7 @@ import { stripIndents } from 'common-tags';
 import { Collection, GuildMember, Message, User, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, stopTyping } from '../../lib/helpers';
-import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
+import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
 import * as format from 'date-fns/format';
 
 /**
@@ -99,7 +99,7 @@ export default class PruneCommand extends Command {
 	 * @memberof PruneCommand
 	 */
 	public async run(msg: CommandoMessage, args: { limit: number, filter: string, member: GuildMember }): Promise<Message | Message[]> {
-		await deleteCommandMessages(msg);
+		await msg.delete();
 		const { filter, limit } = args;
 		let messageFilter: (message: Message) => boolean;
 
@@ -119,7 +119,7 @@ export default class PruneCommand extends Command {
 					} else {
 						stopTyping(msg);
 						
-						return sendSimpleEmbeddedError(msg, `${msg.author}, you have to mention someone.`);
+						return sendSimpleEmbeddedError(msg, `${msg.author}, you have to mention someone.`, 3000);
 					}
 					break;
 				}
@@ -146,9 +146,18 @@ export default class PruneCommand extends Command {
 
 			await sendSimpleEmbeddedMessage(msg, `Pruning ${limit} messages.`)
 				.then((response: Message | Message[]) => {
-					msg.channel.bulkDelete(messagesToDelete.array().reverse())
-						.then(() => { if (response instanceof Message) { response.delete(); } })
-						.catch((err: Error) => this.catchError(msg, args, err));
+					if (response instanceof Message) { response.delete(); }
+				
+					const oldMessage = messagesToDelete.find(msg => {
+						return msg.createdAt > new Date(Date.now() - (14 * 24 * 3600 * 1000));
+					});
+	
+					if (oldMessage) {
+						return sendSimpleEmbeddedError(msg, "You can't delete messages older than 14 days", 3000);
+					} else {
+						msg.channel.bulkDelete(messagesToDelete.array().reverse())
+							.catch((err: Error) => this.catchError(msg, args, err));
+					}
 				});
 
 			// Log the event in the mod log
@@ -166,8 +175,6 @@ export default class PruneCommand extends Command {
 				`
 			}).setTimestamp();
 			modLogMessage(msg, modlogEmbed);
-
-			// Send the success response
 			stopTyping(msg);
 			
 			return sendSimpleEmbeddedMessage(msg, `Pruned ${limit} messages`, 5000);
@@ -176,9 +183,18 @@ export default class PruneCommand extends Command {
 		const messages: Collection<string, Message> = await msg.channel.messages.fetch({ limit: limit });
 		await sendSimpleEmbeddedMessage(msg, `Pruning ${limit} messages.`)
 			.then((response: Message | Message[]) => {
-				msg.channel.bulkDelete(messages.array().reverse())
-					.then(() => { if (response instanceof Message) { response.delete(); } })
-					.catch((err: Error) => this.catchError(msg, args, err));
+				if (response instanceof Message) { response.delete(); }
+				
+				const oldMessage = messages.find(msg => {
+					return msg.createdAt > new Date(Date.now() - (14 * 24 * 3600 * 1000));
+				});
+
+				if (oldMessage) {
+					return sendSimpleEmbeddedError(msg, "You can't delete messages older than 14 days", 3000);
+				} else {
+					msg.channel.bulkDelete(messages.array().reverse())
+						.catch((err: Error) => this.catchError(msg, args, err));
+				}
 			});
 
 		// Log the event in the mod log
@@ -215,6 +231,6 @@ export default class PruneCommand extends Command {
 		// Inform the user the command failed
 		stopTyping(msg);
 		
-		return sendSimpleEmbeddedError(msg, `Pruning ${args.limit} failed!`);
+		return sendSimpleEmbeddedError(msg, `Pruning ${args.limit} messages failed!`, 3000);
 	}
 }

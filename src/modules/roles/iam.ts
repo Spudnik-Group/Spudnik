@@ -61,11 +61,11 @@ export default class IAmNotCommand extends Command {
 			if (!msg.member.roles.keyArray().includes(role.id)) {
 				msg.member.roles.add(role.id);
 
-				roleEmbed.description = `Added ${role.name} to your roles.`;
+				roleEmbed.description = `<@${msg.member.id}>, you now have the ${role.name} role.`;
 
 				return msg.embed(roleEmbed);
 			} else {
-				return sendSimpleEmbeddedError(msg, `You already have the role ${role.name}.`, 3000);
+				return sendSimpleEmbeddedError(msg, `<@${msg.member.id}>, you already have the role ${role.name}.`, 3000);
 			}
 		} else {
 			return sendSimpleEmbeddedError(msg, `Cannot find ${args.query} in list of assignable roles.`, 3000);
