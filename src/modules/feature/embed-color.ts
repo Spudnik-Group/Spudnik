@@ -81,7 +81,7 @@ export default class EmbedColorCommand extends Command {
 
 		startTyping(msg);
 
-		if (!args.color) {
+		if (args.color) {
 			return msg.guild.settings.set('embedColor', args.color)
 				.then(() => {
 					// Set up embed message
@@ -122,10 +122,10 @@ export default class EmbedColorCommand extends Command {
 		// Inform the user the command failed
 		stopTyping(msg);
 
-		if (!args.color) {
-			return sendSimpleEmbeddedError(msg, 'There was an error resetting the embed color.');
-		} else {
+		if (args.color) {
 			return sendSimpleEmbeddedError(msg, `There was an error setting the embed color to ${args.color}`)
+		} else {
+			return sendSimpleEmbeddedError(msg, 'There was an error resetting the embed color.');
 		}
 	}
 

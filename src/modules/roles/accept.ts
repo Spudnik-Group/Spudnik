@@ -121,6 +121,8 @@ export default class AcceptCommand extends Command {
 
 						msg.delete();
 						stopTyping(msg);
+						
+						return;
 					})
 					.catch((err: Error) => this.catchError(msg, args, err));
 			}

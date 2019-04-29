@@ -2,7 +2,7 @@ import { stripIndents } from 'common-tags';
 import { Collection, GuildMember, Message, User, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, stopTyping } from '../../lib/helpers';
-import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
+import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
 import * as format from 'date-fns/format';
 
 /**
