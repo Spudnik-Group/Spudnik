@@ -1,28 +1,24 @@
-<footer class="page-footer text-center font-small mt-4 wow fadeIn">
-	<div class="footer-copyright py-3">
-		© 2018 Copyright:
-		<a href="https://github.com/Spudnik-Group" target="_blank"> Spudnik-Group </a>
-		{% if page.layout == "home" %}
-		<a style="background-color:black;color:white;text-decoration:none;padding:4px 6px;font-family:-apple-system, BlinkMacSystemFont, &quot;San Francisco&quot;, &quot;Helvetica Neue&quot;, Helvetica, Ubuntu, Roboto, Noto, &quot;Segoe UI&quot;, Arial, sans-serif;font-size:12px;font-weight:bold;line-height:1.2;display:inline-block;border-radius:3px;"
-		    href="https://unsplash.com/@nasa?utm_medium=referral&amp;utm_campaign=photographer-credit&amp;utm_content=creditBadge"
-		    target="_blank" rel="noopener noreferrer" title="Download free do whatever you want high-resolution photos from NASA">
-			<span style="display:inline-block;padding:2px 3px;">
-				<svg xmlns="http://www.w3.org/2000/svg" style="height:12px;width:auto;position:relative;vertical-align:middle;top:-1px;fill:white;"
-				    viewBox="0 0 32 32">
-					<title>unsplash-logo</title>
-					<path d="M20.8 18.1c0 2.7-2.2 4.8-4.8 4.8s-4.8-2.1-4.8-4.8c0-2.7 2.2-4.8 4.8-4.8 2.7.1 4.8 2.2 4.8 4.8zm11.2-7.4v14.9c0 2.3-1.9 4.3-4.3 4.3h-23.4c-2.4 0-4.3-1.9-4.3-4.3v-15c0-2.3 1.9-4.3 4.3-4.3h3.7l.8-2.3c.4-1.1 1.7-2 2.9-2h8.6c1.2 0 2.5.9 2.9 2l.8 2.4h3.7c2.4 0 4.3 1.9 4.3 4.3zm-8.6 7.5c0-4.1-3.3-7.5-7.5-7.5-4.1 0-7.5 3.4-7.5 7.5s3.3 7.5 7.5 7.5c4.2-.1 7.5-3.4 7.5-7.5z"></path>
-				</svg>
-			</span>
-			<span style="display:inline-block;padding:2px 3px;">NASA</span>
-			{% endif %}
-		</a>
+<footer class="page-footer">
+	<div class="footer-copyright">
+		<div class="container center-align">
+			© <span id="copyright-year">2019</span> Copyright:
+			<a href="https://github.com/Spudnik-Group" target="_blank"> Spudnik-Group </a>
+		</div>
 	</div>
 </footer>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.13.0/umd/popper.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.0/js/mdb.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script defer src="https://use.fontawesome.com/releases/v5.8.1/js/brands.js" integrity="sha384-rUOIFHM3HXni/WG5pzDhA1e2Js5nn4bWudTYujHbbI9ztBIxK54CL4ZNZWwcBQeD" crossorigin="anonymous"></script>
+<script defer src="https://use.fontawesome.com/releases/v5.8.1/js/fontawesome.js" integrity="sha384-EMmnH+Njn8umuoSMZ3Ae3bC9hDknHKOWL2e9WJD/cN6XLeAN7tr5ZQ0Hx5HDHtkS" crossorigin="anonymous"></script>
 <script type="text/javascript">
+	document.getElementById('copyright-year').innerHTML = new Date().getFullYear();
+	// Materialize Stuff
+	document.addEventListener('DOMContentLoaded', function() {
+		var dropdown = document.querySelectorAll('.dropdown-trigger');
+		var elems = document.querySelectorAll('.sidenav');
+		var instances = M.Sidenav.init(elems, {});
+		var instances2 = M.Dropdown.init(dropdown, {hover: true});
+	});
+
 	(function (i, s, o, g, r, a, m) {
 		i['GoogleAnalyticsObject'] = r;
 		i[r] = i[r] || function () {
@@ -37,7 +33,6 @@
 
 	ga('create', 'UA-119179072-1', 'auto');
 	ga('send', 'pageview');
-	new WOW().init();
 </script>
 </body>
 
