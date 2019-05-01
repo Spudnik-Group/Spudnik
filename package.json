@@ -49,15 +49,15 @@
 		"wikijs": "^4.11.1"
 	},
 	"devDependencies": {
-		"@types/chalk": "^2.2.0",
-		"@types/common-tags": "^1.8.0",
-		"@types/date-fns": "^2.6.0",
-		"@types/mongoose": "^5.3.24",
-		"@types/node": "^10.14.4",
-		"@types/request-promise": "^4.1.42",
-		"nodemon": "^1.18.10",
-		"tslint": "^5.15.0",
-		"tslint-jsdoc-rules": "^0.2.0",
-		"typescript": "^3.2.2"
+		"@types/chalk": "2.2.0",
+		"@types/common-tags": "1.8.0",
+		"@types/date-fns": "2.6.0",
+		"@types/mongoose": "5.3.27",
+		"@types/node": "10.14.6",
+		"@types/request-promise": "4.1.43",
+		"nodemon": "1.19.0",
+		"tslint": "5.16.0",
+		"tslint-jsdoc-rules": "0.2.0",
+		"typescript": "3.4.5"
 	}
 }
