@@ -144,7 +144,7 @@ export default class PruneCommand extends Command {
 			const messages: Collection<string, Message> = await msg.channel.messages.fetch({ limit: limit });
 			const messagesToDelete: Collection<string, Message> = messages.filter(messageFilter);
 
-			await sendSimpleEmbeddedMessage(msg, `Pruning ${limit} messages.`)
+			sendSimpleEmbeddedMessage(msg, `Pruning ${limit} messages.`)
 				.then((response: Message | Message[]) => {
 					if (response instanceof Message) { response.delete(); }
 				
@@ -156,66 +156,68 @@ export default class PruneCommand extends Command {
 						return sendSimpleEmbeddedError(msg, "You can't delete messages older than 14 days", 3000);
 					} else {
 						msg.channel.bulkDelete(messagesToDelete.array().reverse())
+							.then(() => {
+								// Log the event in the mod log
+								const modlogEmbed: MessageEmbed = new MessageEmbed({
+									author: {
+										iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/black-scissors_2702.png',
+										name: 'Prune'
+									},
+									color: getEmbedColor(msg),
+									description: stripIndents`
+										**Moderator:** ${msg.author.tag} (${msg.author.id})
+										**Action:** Prune
+										**Details:** Deleted ${args.limit} messages from <#${msg.channel.id}>
+										**Filter:** ${args.filter}
+									`
+								}).setTimestamp();
+								modLogMessage(msg, modlogEmbed);
+								stopTyping(msg);
+								
+								return sendSimpleEmbeddedMessage(msg, `Pruned ${limit} messages`, 5000);
+							})
 							.catch((err: Error) => this.catchError(msg, args, err));
 					}
 				});
-
-			// Log the event in the mod log
-			const modlogEmbed: MessageEmbed = new MessageEmbed({
-				author: {
-					iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/black-scissors_2702.png',
-					name: 'Prune'
-				},
-				color: getEmbedColor(msg),
-				description: stripIndents`
-					**Moderator:** ${msg.author.tag} (${msg.author.id})
-					**Action:** Prune
-					**Details:** Deleted ${args.limit} messages from <#${msg.channel.id}>
-					**Filter:** ${args.filter}
-				`
-			}).setTimestamp();
-			modLogMessage(msg, modlogEmbed);
-			stopTyping(msg);
-			
-			return sendSimpleEmbeddedMessage(msg, `Pruned ${limit} messages`, 5000);
-		}
-
-		const messages: Collection<string, Message> = await msg.channel.messages.fetch({ limit: limit });
-		await sendSimpleEmbeddedMessage(msg, `Pruning ${limit} messages.`)
-			.then((response: Message | Message[]) => {
-				if (response instanceof Message) { response.delete(); }
-				
-				const oldMessage = messages.find(msg => {
-					return msg.createdAt < new Date(Date.now() - (14 * 24 * 3600 * 1000));
+		} else {
+			const messages: Collection<string, Message> = await msg.channel.messages.fetch({ limit: limit });
+			sendSimpleEmbeddedMessage(msg, `Pruning ${limit} messages.`)
+				.then((response: Message | Message[]) => {
+					if (response instanceof Message) { response.delete(); }
+					
+					const oldMessage = messages.find(msg => {
+						return msg.createdAt < new Date(Date.now() - (14 * 24 * 3600 * 1000));
+					});
+	
+					if (oldMessage) {
+						return sendSimpleEmbeddedError(msg, "You can't delete messages older than 14 days", 3000);
+					} else {
+						msg.channel.bulkDelete(messages.array().reverse())
+							.then(() => {
+								// Log the event in the mod log
+								const modlogEmbed: MessageEmbed = new MessageEmbed({
+									author: {
+										iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/black-scissors_2702.png',
+										name: 'Prune'
+									},
+									color: getEmbedColor(msg),
+									description: stripIndents`
+										**Moderator:** ${msg.author.tag} (${msg.author.id})
+										**Action:** Prune
+										**Details:** Deleted ${args.limit} messages from <#${msg.channel.id}>
+									`
+								}).setTimestamp();
+								modLogMessage(msg, modlogEmbed);
+						
+								// Send the success response
+								stopTyping(msg);
+								
+								return sendSimpleEmbeddedMessage(msg, `Pruned ${limit} messages`, 5000);
+							})
+							.catch((err: Error) => this.catchError(msg, args, err));
+					}
 				});
-
-				if (oldMessage) {
-					return sendSimpleEmbeddedError(msg, "You can't delete messages older than 14 days", 3000);
-				} else {
-					msg.channel.bulkDelete(messages.array().reverse())
-						.catch((err: Error) => this.catchError(msg, args, err));
-				}
-			});
-
-		// Log the event in the mod log
-		const modlogEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/black-scissors_2702.png',
-				name: 'Prune'
-			},
-			color: getEmbedColor(msg),
-			description: stripIndents`
-				**Moderator:** ${msg.author.tag} (${msg.author.id})
-				**Action:** Prune
-				**Details:** Deleted ${args.limit} messages from <#${msg.channel.id}>
-			`
-		}).setTimestamp();
-		modLogMessage(msg, modlogEmbed);
-
-		// Send the success response
-		stopTyping(msg);
-		
-		return sendSimpleEmbeddedMessage(msg, `Pruned ${limit} messages`, 5000);
+		}
 	}
 	
 	private catchError(msg: CommandoMessage, args: { limit: number, filter: string, member: GuildMember }, err: Error) {
