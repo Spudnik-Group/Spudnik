@@ -102,6 +102,7 @@ export class Spudnik {
 			.registerGroups([
 				['convert', 'Convert'],
 				['default', 'Default'],
+				['dev', 'Developer'],
 				['feature', 'Feature'],
 				['game', 'Game'],
 				['gaming', 'Gaming'],

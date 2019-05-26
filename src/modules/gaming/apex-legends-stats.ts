@@ -133,8 +133,7 @@ export default class ApexLegendsStatsCommand extends Command {
 			thumbnail: {
 				url: ''
 			}
-		});
-		
+		});	
 
 		startTyping(msg);
 
