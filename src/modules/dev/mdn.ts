@@ -29,6 +29,7 @@ export default class MdnReferenceCommand extends Command {
 					type: 'string'
 				}
 			],
+			clientPermissions: ['EMBED_LINKS'],
 			description: 'Returns results for the supplied query from the MDN.',
 			details: stripIndents`
 				syntax: \`!mdn <query>\`
