@@ -39,12 +39,6 @@ export const handleReady = async(version: string, client: CommandoClient, config
 		},
 		{
 			activity: {
-				name: 'docs.spudnik.io',
-				type: 'PLAYING'
-			}
-		},
-		{
-			activity: {
 				name: `and Assisting ${client.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b)} users.`,
 				type: 'WATCHING'
 			}
@@ -53,6 +47,17 @@ export const handleReady = async(version: string, client: CommandoClient, config
 			activity: {
 				name: `${client.commandPrefix}upvote 👍`,
 				type: 'PLAYING'
+			}
+		},
+		{
+			activity: {
+				name: 'docs.spudnik.io',
+				type: 'PLAYING'
+			}
+		},
+		{
+			activity: {
+				name: `${client.commandPrefix}changelog 📜`
 			}
 		},
 		{
