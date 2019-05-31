@@ -72,10 +72,14 @@ export default class StackOverflowCommand extends Command {
 
 		startTyping(msg);
 
-		return rp.get(`https://api.stackexchange.com/2.2/search/advanced?${queryParams}`)
+		return rp.get({
+			gzip: true,
+			json: true,
+			uri: `https://api.stackexchange.com/2.2/search/advanced?${queryParams}`
+		})
 			.then((res: any) => {
 				const data = res;
-				if (!data.items.length) {
+				if (!data.items) {
 					stopTyping(msg);
 
 					return sendSimpleEmbeddedError(msg, 'Your query did not return any results', 3000)
