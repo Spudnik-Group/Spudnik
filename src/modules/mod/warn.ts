@@ -50,7 +50,14 @@ export default class WarnCommand extends Command {
 				{
 					key: 'points',
 					prompt: 'How many warning points should I give this member?',
-					type: 'integer'
+					type: 'integer',
+					validate: (points: number) => {
+						if (points < 1) {
+							return 'You must provide a positive number.';
+						}
+						
+						return true;
+					}
 				},
 				{
 					default: '',
