@@ -21,7 +21,7 @@ export default class TopicCommand extends Command {
 		super(client, {
 			description: 'Returns the purpose of the chat channel.',
 			examples: ['!topic'],
-			group: 'misc',
+			group: 'util',
 			guildOnly: true,
 			memberName: 'topic',
 			name: 'topic',

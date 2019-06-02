@@ -5,27 +5,27 @@ import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, stopTyping, startTyping } from '../../lib/helpers';
 
 /**
- * Post a random dog fact.
+ * Post a fact about the current date.
  *
  * @export
- * @class DogFactCommand
+ * @class DateFactCommand
  * @extends {Command}
  */
-export default class DogFactCommand extends Command {
+export default class DateFactCommand extends Command {
 	/**
-	 * Creates an instance of DogFactCommand.
+	 * Creates an instance of DateFactCommand.
 	 *
 	 * @param {CommandoClient} client
-	 * @memberof DogFactCommand
+	 * @memberof DateFactCommand
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Returns a random dog fact.',
-			examples: ['!dog-fact'],
-			group: 'random',
+			description: 'Returns a random date fact.',
+			examples: ['!date-fact'],
+			group: 'facts',
 			guildOnly: true,
-			memberName: 'dog-fact',
-			name: 'dog-fact',
+			memberName: 'date-fact',
+			name: 'date-fact',
 			throttling: {
 				duration: 3,
 				usages: 2
@@ -34,25 +34,25 @@ export default class DogFactCommand extends Command {
 	}
 
 	/**
-	 * Run the "dog-fact" command.
+	 * Run the "date-fact" command.
 	 *
 	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
-	 * @memberof DogFactCommand
+	 * @memberof DateFactCommand
 	 */
 	public async run(msg: CommandoMessage): Promise<Message | Message[]> {
 		const responseEmbed: MessageEmbed = new MessageEmbed({
 			color: getEmbedColor(msg),
 			description: '',
-			title: ':dog: Fact'
+			title: 'Date Fact'
 		});
 
 		startTyping(msg);
 
-		return rp('https://dog-api.kinduff.com/api/facts')
+		return rp('http://numbersapi.com/random/date?json')
 			.then((content) => {
 				const data = JSON.parse(content);
-				responseEmbed.setDescription(data.facts[0]);
+				responseEmbed.setDescription(data.text);
 		
 				deleteCommandMessages(msg);
 				stopTyping(msg);
@@ -61,7 +61,7 @@ export default class DogFactCommand extends Command {
 				return msg.embed(responseEmbed);
 			})
 			.catch((err: Error) => {
-				msg.client.emit('warn', `Error in command random:dog-fact: ${err}`);
+				msg.client.emit('warn', `Error in command random:date-fact: ${err}`);
 				stopTyping(msg);
 				
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);

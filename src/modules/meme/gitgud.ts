@@ -32,7 +32,7 @@ export default class GitGudCommand extends Command {
 				syntax: \`!gitgud (@user mention)\`
 			`,
 			examples: ['!gitgud', '!gitgud @Nebula#1337'],
-			group: 'random',
+			group: 'meme',
 			guildOnly: true,
 			memberName: 'gitgud',
 			name: 'gitgud',

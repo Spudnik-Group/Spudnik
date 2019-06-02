@@ -2,30 +2,30 @@ import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import * as rp from 'request-promise';
 import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, stopTyping, startTyping } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, startTyping, stopTyping } from '../../lib/helpers';
 
 /**
- * Post a random cat fact.
+ * Post a random fact about the year.
  *
  * @export
- * @class CatFactCommand
+ * @class YearFactCommand
  * @extends {Command}
  */
-export default class CatFactCommand extends Command {
+export default class YearFactCommand extends Command {
 	/**
-	 * Creates an instance of CatFactCommand.
+	 * Creates an instance of YearFactCommand.
 	 *
 	 * @param {CommandoClient} client
-	 * @memberof CatFactCommand
+	 * @memberof YearFactCommand
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Returns a random cat fact.',
-			examples: ['!cat-fact'],
-			group: 'random',
+			description: 'Returns a random year fact.',
+			examples: ['!year-fact'],
+			group: 'facts',
 			guildOnly: true,
-			memberName: 'cat-fact',
-			name: 'cat-fact',
+			memberName: 'year-fact',
+			name: 'year-fact',
 			throttling: {
 				duration: 3,
 				usages: 2
@@ -34,34 +34,34 @@ export default class CatFactCommand extends Command {
 	}
 
 	/**
-	 * Run the "cat-fact" command.
+	 * Run the "year-fact" command.
 	 *
 	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
-	 * @memberof CatFactCommand
+	 * @memberof YearFactCommand
 	 */
 	public async run(msg: CommandoMessage): Promise<Message | Message[]> {
 		const responseEmbed: MessageEmbed = new MessageEmbed({
 			color: getEmbedColor(msg),
 			description: '',
-			title: ':cat: Fact'
+			title: 'Year Fact'
 		});
 
 		startTyping(msg);
 
-		return rp('https://catfact.ninja/fact')
+		return rp('http://numbersapi.com/random/year?json')
 			.then((content) => {
 				const data = JSON.parse(content);
-				responseEmbed.setDescription(data.fact);
-
+				responseEmbed.setDescription(data.text);
+		
 				deleteCommandMessages(msg);
 				stopTyping(msg);
-
+		
 				// Send the success response
 				return msg.embed(responseEmbed);
 			})
 			.catch((err: Error) => {
-				msg.client.emit('warn', `Error in command random:cat-fact: ${err}`);
+				msg.client.emit('warn', `Error in command random:year-fact: ${err}`);
 				stopTyping(msg);
 				
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);

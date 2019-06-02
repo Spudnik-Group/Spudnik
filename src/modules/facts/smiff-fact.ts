@@ -24,7 +24,7 @@ export default class SmiffFactCommand extends Command {
 			aliases: ['smith-fact', 'willsmith'],
 			description: 'Returns a random Will Smith fact.',
 			examples: ['!smiff-fact'],
-			group: 'random',
+			group: 'facts',
 			guildOnly: true,
 			memberName: 'smiff-fact',
 			name: 'smiff-fact',

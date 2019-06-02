@@ -5,28 +5,27 @@ import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, stopTyping, startTyping } from '../../lib/helpers';
 
 /**
- * Post a random chuck norris fact.
+ * Post a random cat fact.
  *
  * @export
- * @class ChuckFactCommand
+ * @class CatFactCommand
  * @extends {Command}
  */
-export default class ChuckFactCommand extends Command {
+export default class CatFactCommand extends Command {
 	/**
-	 * Creates an instance of ChuckFactCommand.
+	 * Creates an instance of CatFactCommand.
 	 *
 	 * @param {CommandoClient} client
-	 * @memberof ChuckFactCommand
+	 * @memberof CatFactCommand
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			aliases: ['chucknorris', 'norrisfact', 'chuck-norris'],
-			description: 'Returns a random Chuck Norris fact.',
-			examples: ['!chuck-fact'],
-			group: 'random',
+			description: 'Returns a random cat fact.',
+			examples: ['!cat-fact'],
+			group: 'facts',
 			guildOnly: true,
-			memberName: 'chuck-fact',
-			name: 'chuck-fact',
+			memberName: 'cat-fact',
+			name: 'cat-fact',
 			throttling: {
 				duration: 3,
 				usages: 2
@@ -35,34 +34,34 @@ export default class ChuckFactCommand extends Command {
 	}
 
 	/**
-	 * Run the "chuck-fact" command.
+	 * Run the "cat-fact" command.
 	 *
 	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
-	 * @memberof ChuckFactCommand
+	 * @memberof CatFactCommand
 	 */
 	public async run(msg: CommandoMessage): Promise<Message | Message[]> {
 		const responseEmbed: MessageEmbed = new MessageEmbed({
 			color: getEmbedColor(msg),
 			description: '',
-			title: 'Chuck Norris Fact'
+			title: ':cat: Fact'
 		});
 
 		startTyping(msg);
 
-		return rp('http://api.icndb.com/jokes/random')
+		return rp('https://catfact.ninja/fact')
 			.then((content) => {
 				const data = JSON.parse(content);
-				responseEmbed.setDescription(data.value.joke);
-		
+				responseEmbed.setDescription(data.fact);
+
 				deleteCommandMessages(msg);
 				stopTyping(msg);
-		
+
 				// Send the success response
 				return msg.embed(responseEmbed);
 			})
 			.catch((err: Error) => {
-				msg.client.emit('warn', `Error in command random:chuck-fact: ${err}`);
+				msg.client.emit('warn', `Error in command random:cat-fact: ${err}`);
 				stopTyping(msg);
 				
 				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);

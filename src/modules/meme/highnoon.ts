@@ -22,7 +22,7 @@ export default class HighNoonCommand extends Command {
 		super(client, {
 			description: 'Displays the High Noon XKCD comic.',
 			examples: ['!highnoon'],
-			group: 'misc',
+			group: 'meme',
 			guildOnly: true,
 			memberName: 'highnoon',
 			name: 'highnoon',
