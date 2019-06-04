@@ -43,7 +43,7 @@ export default class ClearWarnsCommand extends Command {
 		super(client, {
 			aliases: [
 				'clear-warn',
-				'warn-clear',
+				'warn-clear'
 			],
 			args: [
 				{
