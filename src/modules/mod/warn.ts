@@ -116,14 +116,14 @@ export default class WarnCommand extends Command {
 				// Warnings present for current guild
 				const warningsForCurrentGuild: IWarningsObject[] = res.warnings;
 				// Check for previous warnings of currentMember
-				const warningForCurrentMember = warningsForCurrentGuild.filter((item) => {
+				const warningForCurrentMember = warningsForCurrentGuild.find((item) => {
 					return item.id === args.member.id;
 				});
-				if (warningForCurrentMember.length) {
+				if (warningForCurrentMember) {
 					// Previous warnings present
-					previousPoints = warningForCurrentMember[0].points;
+					previousPoints = warningForCurrentMember.points;
 					// Update previous warning points
-					warningModel.update({ 'guild': msg.guild.id, 'warnings.id': args.member }, { '$set': { 'warnings.$.points': args.points + previousPoints } }, (err: any, raw: any) => {
+					warningModel.update({ 'guild': msg.guild.id, 'warnings.id': args.member.id }, { '$set': { 'warnings.$.points': args.points + previousPoints } }, (err: any) => {
 						if (err) this.catchError(msg, args, err);
 					});
 				} else {

@@ -108,19 +108,21 @@ export default class ClearWarnsCommand extends Command {
 				// Warnings present for current guild
 				const warningsForCurrentGuild: IWarningsObject[] = res.warnings;
 				// Check for previous warnings of currentMember
-				const warningForCurrentMember = warningsForCurrentGuild.filter((item) => {
+				const warningForCurrentMember = warningsForCurrentGuild.find((item) => {
 					return item.id === args.member.id;
 				});
-				if (warningForCurrentMember.length) {
+				if (warningForCurrentMember) {
 					// Previous warnings present
-					previousPoints = warningForCurrentMember[0].points;
+					previousPoints = warningForCurrentMember.points;
 					// Update previous warning points
-					warningModel.remove({ 'guild': msg.guild.id, 'warnings.id': args.member });
+					warningModel.update({ 'guild': msg.guild.id, 'warnings.id': args.member.id }, { '$set': { 'warnings.$.points': 0 } }, (err: any) => {
+						if (err) this.catchError(msg, args, err);
+					});
 					// Set up embed message
 					warnEmbed.setDescription(stripIndents`
 						**Moderator:** ${msg.author.tag} (${msg.author.id})
 						**Member:** ${args.member.user.tag} (${args.member.id})
-						**Action:** Warn
+						**Action:** Clear Warns
 						**Previous Warning Points:** ${previousPoints}
 						**Current Warning Points:** 0
 						**Reason:** ${args.reason !== '' ? args.reason : 'No reason has been added by the moderator'}`);
