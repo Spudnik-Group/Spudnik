@@ -69,6 +69,7 @@ export default class StrawpollCommand extends Command {
 				options: args.options,
 				title: args.title
 			},
+			json: true,
 			uri: 'https://www.strawpoll.me/api/v2/polls'
 		})
 			.then((res: any) => {

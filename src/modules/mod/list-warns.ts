@@ -43,8 +43,8 @@ export default class ListWarnsCommand extends Command {
 		super(client, {
 			aliases: [
 				'list-warn',
-                'warn-list',
-                'warns'
+				'warn-list',
+				'warns'
 			],
 			description: 'List warns for the guild.',
 			details: stripIndents`
@@ -97,7 +97,8 @@ export default class ListWarnsCommand extends Command {
 
 						**${warning.tag}** (${warning.id}) - ${warning.points} Points
 					`;
-				})
+				});
+				warnEmbed.description += '\n\n';
 
 				deleteCommandMessages(msg);
 				stopTyping(msg);
