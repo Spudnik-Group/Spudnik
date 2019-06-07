@@ -1,39 +1,54 @@
-<nav class="navbar fixed-top navbar-expand-lg {% if page.layout == "home" %} navbar-dark {% else %} navbar-light {% endif %}  scrolling-navbar">
-	<div class="container">
-		<a class="navbar-brand" href="https://spudnik.io" target="_blank">
-			<strong>Spudnik</strong>
-		</a>
-		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-		    aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-		<div class="collapse navbar-collapse" id="navbarSupportedContent">
-			<ul class="navbar-nav mr-auto">
-				<li class="nav-item">
-					<a class="nav-link" href="https://spudnik.io" target="_blank">Home</a>
-				</li>
-				<li class="nav-item dropdown active">
-					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Doc <span class="sr-only">(current)</span>
-					</a>
-					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<a class="dropdown-item {% if page.layout == "home" %}active{% endif %}" href="#">Home {% if page.layout == "home" %}<span class="sr-only">(current)</span>{% endif %}</a>
-						<a class="dropdown-item {% if page.layout == "getting-started" %}active{% endif %}" href="/getting-started">Getting Started {% if page.layout == "getting-started" %}<span class="sr-only">(current)</span>{% endif %}</a>
-						<a class="dropdown-item {% if page.layout == "commands" %}active{% endif %}" href="/commands">Command List {% if page.layout == "commands" %}<span class="sr-only">(current)</span>{% endif %}</a>
-					</div>
-				</li>
-			</ul>
-			<ul class="navbar-nav nav-flex-icons">
-				<li class="nav-item">
-					<a href="https://twitter.com/Spudnik_Bot" class="nav-link" target="_blank">
-						<i class="fab fa-twitter"></i>
-					</a>
-				</li>
-				<li class="nav-item">
-					<a href="https://github.com/Spudnik-Group/Spudnik" class="nav-link" target="_blank">
-						<i class="fab fa-github"></i>
-					</a>
-				</li>
-			</ul>
-		</div>
+<nav class="deep-purple darken-4" role="navigation">
+	<div class="nav-wrapper">
+		<a href="#" data-target="mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+		<a id="logo-container" class="brand-logo" href="https://spudnik.io">Spudnik</a>
+		<ul class="top-nav hide-on-med-and-down">
+			<!-- <li>
+				<a href="https://spudnik.io/features">Features</a>
+			</li> -->
+			<li>
+				<a class="{% if page.layout == 'home' %}active{% endif %} dropdown-trigger" data-target="docs">Documentation<i class="material-icons right">arrow_drop_down</i></a>
+			</li>
+		</ul>
+		<ul class="sidenav" id="mobile">
+			<li>
+				<div class="user-view center-align">
+					<img class="circle" src="https://i.imgur.com/xF8vf6H.png">
+					<a href="/"><span class="black-text name">Spudnik</span></a>
+				</div>
+			</li>
+			<li><div class="divider"></div></li>
+			<!-- <li>
+				<a href="https://spudnik.io/features">Features</a>
+			</li> -->
+			<li>
+				<a class="{% if page.layout == 'home' %}active{% endif %}" href="/">Docs Home</a>
+			</li>
+			<li>
+				<a class="{% if page.layout == 'getting-started' %}active{% endif %}" href="/getting-started">Getting Started</a>
+			</li>
+			<li>
+				<a class="{% if page.layout == 'commands' %}active{% endif %}" href="/commands">Command List</a>
+			</li>
+		</ul>
+		
+		<ul class="right">
+			<li>
+				<a href="https://twitter.com/Spudnik_Bot" class="nav-link">
+					<i class="fab fa-twitter"></i>
+				</a>
+			</li>
+			<li>
+				<a href="https://github.com/Spudnik-Group/Spudnik" class="nav-link">
+					<i class="fab fa-github"></i>
+				</a>
+			</li>
+		</ul>
 	</div>
 </nav>
+
+<ul id="docs" class="dropdown-content">
+	<li><a href="/">Docs Home</a></li>
+	<li><a href="/getting-started">Getting Started</a></li>
+	<li><a href="/commands">Command List</a></li>
+</ul>
