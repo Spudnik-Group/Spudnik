@@ -5,7 +5,7 @@ import { startTyping, sendSimpleEmbeddedError, stopTyping } from '../../lib/help
 import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
 import * as rp from 'request-promise';
 
-const apiKey = process.env.spud_apexapikey;
+const apiKey = process.env.spud_trackerapi;
 
 const platforms: { [platform: string]: number } = {
 	'pc': 5,
@@ -133,8 +133,7 @@ export default class ApexLegendsStatsCommand extends Command {
 			thumbnail: {
 				url: ''
 			}
-		});
-		
+		});	
 
 		startTyping(msg);
 

@@ -1,0 +1,1 @@
+Returns GitHub release notes for the 3 most recent releases.

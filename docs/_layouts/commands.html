@@ -1,55 +1,70 @@
 {% include head.html %}
 {% include nav.html %}
 
-<main style="padding-top:100px;">
+<main>
 	<div class="container">
-		<h2>Command List</h2>
-		<p>
-			The default prefix is <code>!</code>, but you can also @mention the bot and use commands that way as well (ex: <code>@spudnik help</code>).<br />
-			You can customize the default command prefix, too, just take a look at our <a href="/getting-started">Getting Started Guide</a>
-		</p>
-		{% assign groups = site.data.command_groups | sort %}
-		{% for group_hash in groups %} {% assign group = group_hash[1] | sort %}
-			{% capture thecycle %}{% cycle 'odd', 'even' %}{% endcapture %}
-			<hr class="mb-5">
-			<section class="wow fadeIn">
-				<h3>
-					<a href="#{{ group_hash[0] }}"></a>
+		<div class="row">
+			<div class="col s12 m9 l10">
+				<h2>Command List</h2>
+				<p>
+					The default prefix is <code>!</code>, but you can also @mention the bot and use commands that way as well (ex: <code>@spudnik help</code>).<br />
+					You can customize the default command prefix, too, just take a look at our <a href="/getting-started">Getting Started Guide</a>
+				</p>
+				{% assign groups = site.data.command_groups | sort %}
+				{% for group_hash in groups %} {% assign group = group_hash[1] | sort %}
+					<hr>
 					{% assign group_title = group_hash[0] | split: '_' %}
 					{% capture group_title %}{% for word in group_title %}{{ word | capitalize }} {% endfor %}{% endcapture %}
-					{{ group_title }}
-				</h3>
-				<table class="table table-bordered {% if thecycle == 'odd' %}table-dark{% endif %}">
-					<thead>
-						<tr>
-							<th scope="col">Feature</th>
-							<th scope="col">Description</th>
-							<th scope="col">Usage</th>
-						</tr>
-					</thead>
-					<tbody>
-						{% for cmd_hash in group %}
-							{% assign cmd = cmd_hash[1] %}
-							<tr>
-								<td>{{ cmd_hash[0] }}</td>
-								<td>
-									{% assign descPath = 'command_descriptions/' | append: group_hash[0] | append: '/' | append: cmd_hash[0] | append: '.md' %}
-									{% capture desc %}{% include {{descPath}} %}{% endcapture %}
-									{{ desc | markdownify }}
-								</td>
-								<td>
-									<ul class="command-usage">
-										{%for usage in cmd.usage %}
-											<li><code>{{ usage | escape }}</code></li>
-										{% endfor %}
-									</ul>
-								</td>
-							</tr>
-						{% endfor %}
-					</tbody>
-				</table>
-			</section>
-		{% endfor %}
+					<section id="{{ group_hash[0] }}" class="scrollspy">
+						<h3>{{ group_title }}</h3>
+						<table class="striped">
+							<thead>
+								<tr>
+									<th scope="col">Feature</th>
+									<th scope="col">Description</th>
+									<th scope="col">Usage</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for cmd_hash in group %}
+									{% assign cmd = cmd_hash[1] %}
+									<tr>
+										<td><b>{{ cmd_hash[0] }}</b></td>
+										<td>
+											{% assign descPath = 'command_descriptions/' | append: group_hash[0] | append: '/' | append: cmd_hash[0] | append: '.md' %}
+											{% capture desc %}{% include {{descPath}} %}{% endcapture %}
+											{{ desc | markdownify }}
+										</td>
+										<td>
+											<ul class="command-usage">
+												{%for usage in cmd.usage %}
+													<li><code>{{ usage | escape }}</code></li>
+												{% endfor %}
+											</ul>
+										</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</section>
+				{% endfor %}
+			</div>
+			<div class="col hide-on-small-only m3 l2 toc-wrapper">
+				<ul class="section table-of-contents pinned">
+				</ul>
+				<script>
+					const sectionList = document.querySelectorAll('section.scrollspy');
+					sectionList.forEach(item => {
+						const tocItem = document.createElement('li');
+						const tocLink = document.createElement('a');
+						tocLink.innerText = item.id.toUpperCase();
+						tocLink.href = `#${item.id}`;
+						tocItem.append(tocLink);
+						document.getElementsByClassName('table-of-contents')[0].append(tocItem);
+					});
+				</script>
+			</div>
+		</div>
 	</div>
 </main>
 
