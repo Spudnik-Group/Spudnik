@@ -14,9 +14,11 @@
 	// Materialize Stuff
 	document.addEventListener('DOMContentLoaded', function() {
 		var dropdown = document.querySelectorAll('.dropdown-trigger');
-		var elems = document.querySelectorAll('.sidenav');
-		var instances = M.Sidenav.init(elems, {});
+		var sidenav = document.querySelectorAll('.sidenav');
+		var scrollspyItems = document.querySelectorAll('.scrollspy');
+		var instances = M.Sidenav.init(sidenav, {});
 		var instances2 = M.Dropdown.init(dropdown, {hover: true});
+		var instances3 = M.ScrollSpy.init(scrollspyItems, {});
 	});
 
 	(function (i, s, o, g, r, a, m) {
