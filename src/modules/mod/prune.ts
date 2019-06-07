@@ -143,18 +143,19 @@ export default class PruneCommand extends Command {
 
 			const messages: Collection<string, Message> = await msg.channel.messages.fetch({ limit: limit });
 			const messagesToDelete: Collection<string, Message> = messages.filter(messageFilter);
+			const oldMessage = messagesToDelete.find(msg => {
+				return msg.createdAt < new Date(Date.now() - (14 * 24 * 3600 * 1000));
+			});
 
-			sendSimpleEmbeddedMessage(msg, `Pruning ${limit} messages.`)
-				.then((response: Message | Message[]) => {
-					if (response instanceof Message) { response.delete(); }
-				
-					const oldMessage = messagesToDelete.find(msg => {
-						return msg.createdAt < new Date(Date.now() - (14 * 24 * 3600 * 1000));
-					});
-	
-					if (oldMessage) {
-						return sendSimpleEmbeddedError(msg, "You can't delete messages older than 14 days", 3000);
-					} else {
+			if (oldMessage) {
+				stopTyping(msg);
+
+				return sendSimpleEmbeddedError(msg, "You can't delete messages older than 14 days", 3000);
+			} else {
+				sendSimpleEmbeddedMessage(msg, `Pruning ${limit} messages.`)
+					.then((response: Message | Message[]) => {
+						if (response instanceof Message) { response.delete(); }
+					
 						msg.channel.bulkDelete(messagesToDelete.array().reverse())
 							.then(() => {
 								// Log the event in the mod log
@@ -177,21 +178,23 @@ export default class PruneCommand extends Command {
 								return sendSimpleEmbeddedMessage(msg, `Pruned ${limit} messages`, 5000);
 							})
 							.catch((err: Error) => this.catchError(msg, args, err));
-					}
-				});
+					});
+			}
 		} else {
 			const messages: Collection<string, Message> = await msg.channel.messages.fetch({ limit: limit });
-			sendSimpleEmbeddedMessage(msg, `Pruning ${limit} messages.`)
-				.then((response: Message | Message[]) => {
-					if (response instanceof Message) { response.delete(); }
-					
-					const oldMessage = messages.find(msg => {
-						return msg.createdAt < new Date(Date.now() - (14 * 24 * 3600 * 1000));
-					});
-	
-					if (oldMessage) {
-						return sendSimpleEmbeddedError(msg, "You can't delete messages older than 14 days", 3000);
-					} else {
+			const oldMessage = messages.find(msg => {
+				return msg.createdAt < new Date(Date.now() - (14 * 24 * 3600 * 1000));
+			});
+
+			if (oldMessage) {
+				stopTyping(msg);
+				
+				return sendSimpleEmbeddedError(msg, "You can't delete messages older than 14 days", 3000);
+			} else {
+				sendSimpleEmbeddedMessage(msg, `Pruning ${limit} messages.`)
+					.then((response: Message | Message[]) => {
+						if (response instanceof Message) { response.delete(); }
+						
 						msg.channel.bulkDelete(messages.array().reverse())
 							.then(() => {
 								// Log the event in the mod log
@@ -215,8 +218,8 @@ export default class PruneCommand extends Command {
 								return sendSimpleEmbeddedMessage(msg, `Pruned ${limit} messages`, 5000);
 							})
 							.catch((err: Error) => this.catchError(msg, args, err));
-					}
-				});
+					});
+			}
 		}
 	}
 	
