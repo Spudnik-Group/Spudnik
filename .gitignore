@@ -14,13 +14,3 @@ node_modules
 
 #other node stuffs
 package-lock.json
-
-#config files
-config/*.json
-config/*/*.json
-
-assets\.zip
-
-config/*.json
-
-assets/
