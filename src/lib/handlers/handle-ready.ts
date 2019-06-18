@@ -159,7 +159,7 @@ const updateBotListStats = (config: Configuration, client: CommandoClient): void
 
 	// DISCORDBOTLIST.com
 	if (config.dblApiKey) {
-		rp(`https://discordbotlist.com/api/bots/${client.user.id}/stats`, {
+		rp.post(`https://discordbotlist.com/api/bots/${client.user.id}/stats`, {
 			body: { guilds: Number(client.guilds.size), users: Number(client.users.size) },
 			headers: { Authorization: `Bot ${config.dblApiKey}` },
 			json: true
