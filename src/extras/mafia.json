@@ -1,4 +1,4 @@
-module.exports = {
+{
 	"questions": {
 		"mafia": "Who do you want to kill?",
 		"doctor": "Who do you want to save?",
@@ -26,4 +26,4 @@ module.exports = {
 		" before they could even mutter a word.",
 		", who left a large mess in the kitchen."
 	]
-};
+}

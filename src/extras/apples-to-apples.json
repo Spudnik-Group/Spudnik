@@ -1,4 +1,4 @@
-module.exports = {
+{
 	"greenCards": [
 		"Absurd (ridiculous, senseless, foolish)",
 		"Addictive (obsessive, consuming, captivating)",
@@ -1000,4 +1000,4 @@ module.exports = {
 		"Zucchini",
 		"<Blank>"
 	]
-};
+}

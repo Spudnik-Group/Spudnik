@@ -1,4 +1,4 @@
-module.exports = {
+{
 	"bloodbath": [
 		{
 			"text": "(Player1) grabs a shovel.",
@@ -1675,4 +1675,4 @@ module.exports = {
 			"deaths": []
 		}
 	]
-};
+}

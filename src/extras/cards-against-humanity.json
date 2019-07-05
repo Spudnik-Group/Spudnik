@@ -1,4 +1,4 @@
-module.exports = {
+{
 	"blackCards": [
 		{
 			"text": "Why can't I sleep at night?",
@@ -3220,4 +3220,4 @@ module.exports = {
 		"<Blank>",
 		"Discord."
 	]
-};
+}

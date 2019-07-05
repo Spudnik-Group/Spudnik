@@ -1,4 +1,4 @@
-module.exports = {
+{
 	"junk": {
 		"symbol": "🔧",
 		"max": 5,
@@ -19,4 +19,4 @@ module.exports = {
 		"max": 500,
 		"min": 300
 	}
-};
+}
