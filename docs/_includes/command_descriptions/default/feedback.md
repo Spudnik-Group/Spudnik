@@ -1,1 +1,0 @@
-Provides links to suggest features, submit bugs, or email the devs.

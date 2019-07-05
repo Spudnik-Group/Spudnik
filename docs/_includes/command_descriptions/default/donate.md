@@ -1,1 +1,0 @@
-Returns options to donate to help support development and hosting of the bot.
