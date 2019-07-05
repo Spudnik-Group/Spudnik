@@ -132,6 +132,7 @@ export default class TermsOfServiceCommand extends Command {
 									**Member:** ${msg.author.tag} (${msg.author.id})
 									**Action:** Terms of Service Channel set to <#${channelID}>
 								`);
+								tosEmbed.setFooter('Use the `tos status` command to see the details of this feature');
 
 								return this.sendSuccess(msg, tosEmbed);
 							})
@@ -191,6 +192,7 @@ export default class TermsOfServiceCommand extends Command {
 							**Member:** ${msg.author.tag} (${msg.author.id})
 							**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
 						`);
+						tosEmbed.setFooter('Use the `tos status` command to see the details of this feature');
 
 						await msg.guild.settings.set('tosMessageCount', tosMessages.length)
 							.catch((err: Error) => this.catchError(msg, args, err));
@@ -227,6 +229,7 @@ export default class TermsOfServiceCommand extends Command {
 							**Member:** ${msg.author.tag} (${msg.author.id})
 							**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
 						`);
+						tosEmbed.setFooter('Use the `tos status` command to see the details of this feature');
 						
 						await msg.guild.settings.set('tosMessageCount', tosMessages.length)
 							.catch((err: Error) => this.catchError(msg, args, err));
