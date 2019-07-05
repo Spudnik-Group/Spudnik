@@ -8,7 +8,7 @@
 
 [![Add to Discord][img-button-add]][url-invite] [![Join Support Server][img-button-support]][url-support]
 
-[![Uptime][img-uptime-robot]][url-homepage] [![Current Release][img-current-release]][url-current-release] [![discord.js][img-discord-js]][url-discord-js] [![Commando][img-commando]][url-commando] [![License][img-license]][url-license] [![Build Status][img-build-status]][url-build-status] ![Code Style: tslint][img-code-style]
+[![Uptime][img-uptime-robot]][url-homepage] [![Current Release][img-current-release]][url-current-release] [![discord.js][img-discord-js]][url-discord-js] [![Commando][img-commando]][url-commando] [![License][img-license]][url-license] [![Build Status][img-build-status]][url-build-status] ![Code Style: tslint][img-code-style] [![Codacy Badge][img-codacy]][url-codacy]
 
 [![Documentation][img-button-docs]][url-docs] [![Feature Requests][img-button-feathub]][url-feathub] [![Project Board][img-button-project]][url-github-project-board]
 
@@ -52,6 +52,8 @@ Instead, fork the bot and contribute! Ongoing contributors will be invited to jo
 
 [img-code-style]: https://img.shields.io/badge/style-tslint-000000.svg?longCache=true&style=flat-square&label=code%20style
 
+[img-codacy]: https://api.codacy.com/project/badge/Grade/d14269a4c36b4a6fb6996cb2596f0631
+[url-codacy]: https://www.codacy.com/app/naterchrdsn/Spudnik?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Spudnik-Group/Spudnik&amp;utm_campaign=Badge_Grade
 
 [img-discord-js]: https://img.shields.io/badge/library-discord.js-blue.svg?style=flat-square
 [url-discord-js]: https://discord.js.org/#/
