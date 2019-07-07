@@ -5,7 +5,7 @@ import { disambiguation, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
 
 /**
- * Returns a list of available commands, or detailed information for a specific command.
+ * Returns helpful information on the bot, or detailed information for a specific command.
  *
  * @export
  * @class HelpCommand
@@ -28,7 +28,7 @@ export default class HelpCommand extends Command {
 					type: 'string'
 				}
 			],
-			description: 'Used to return information on how to get help with the bot, or detailed information for a specified command.',
+			description: 'Used to return helpful information on the bot, or detailed information for a specified command.',
 			examples: ['!help', '!help prefix'],
 			group: 'help',
 			guarded: true,
@@ -76,20 +76,20 @@ export default class HelpCommand extends Command {
 				return msg.reply(disambiguation(commands, 'commands'));
 			} else {
 				return msg.reply(
-					`Unable to identify command. Use \`${msg.guild.commandPrefix}help\` to view the list of command categories or \`${msg.guild.commandPrefix}commands <categoryName>\` to view the list of commands in a given category.`);
+					`Unable to identify command. Use \`${msg.guild.commandPrefix}commands\` to view the list of command groups or \`${msg.guild.commandPrefix}commands <groupName>\` to view the list of commands in a given group.`);
 			}
 		} else {
 			helpEmbed
 				.setTitle('**Help**')
 				.setThumbnail(`${this.client.user.avatarURL()}`)
 				.setDescription(stripIndents`
-					To get the list of command categories, type \`${msg.guild.commandPrefix}commands\`.
-					To get the list of commands in a specific category, type \`${msg.guild.commandPrefix}commands <categoryName>\`.
+					To get the list of command groups, type \`${msg.guild.commandPrefix}commands\`.
+					To get the list of commands in a specific group, type \`${msg.guild.commandPrefix}commands <groupName>\`.
 					To get help with a specific command, type \`${msg.guild.commandPrefix}help <commandName>\`.
 				`)
 				.addField('❯ Spudnik Command', '[Join](https://spudnik.io/support)', true)
 				.addField('❯ Invite to Your Server!', '[Invite](https://spudnik.io/invite)', true)
-				.setFooter(`Server Prefix: ${msg.guild.commandPrefix} • Total Commands: ${msg.client.registry.commands.size}`);
+				.setFooter(`Server Prefix: ${msg.guild.commandPrefix} • Total Commands: ${this.client.registry.commands.size}`);
 			
 			deleteCommandMessages(msg);
 
