@@ -46,7 +46,8 @@
 		"soap": "^0.27.0",
 		"urban-dictionary": "^2.2.1",
 		"url-unshort": "^5.0.0",
-		"wikijs": "^4.11.1"
+		"wikijs": "^4.11.1",
+		"zucc": "^0.1.2"
 	},
 	"devDependencies": {
 		"@types/chalk": "2.2.0",
