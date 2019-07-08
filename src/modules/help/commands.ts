@@ -62,7 +62,7 @@ export default class CommandsCommand extends Command {
 			const parsedGroup: string = args.groupName.split(' ').join('-').toLowerCase();
 
 			if (groups.find((g: any) => g.id === parsedGroup)) {
-				const commands = this.client.registry.commands.array().filter((command: any) => command.groupID === parsedGroup)
+				const commands = this.client.registry.commands.array().filter((command: any) => command.groupID === parsedGroup);
 				commandsEmbed
 					.setTitle(`List of commands in the ${args.groupName} category`)
 					.setDescription(`Use the \`commands\` command to get a list of all ${groups.length} command groups.`)
