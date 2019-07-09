@@ -101,21 +101,27 @@ export default class R6StatsCommand extends Command {
 			const matches = search.results.filter((result: any) => result.player);
 			if (matches.length) {
 				// TODO: change this to allow selection of a result
-				const firstMatch = matches[0];
+				const firstMatch = matches.find((item: any) => item.player);
 				const playerStats = await Scout.players.get(games.r6siege.id, firstMatch.player.playerId, '*');
-				r6Embed.setDescription(stripIndents`
-					**${firstMatch.persona.handle}**
+				if (playerStats) {
+					r6Embed.setDescription(stripIndents`
+						**${firstMatch.persona.handle}**
+	
+						${playerStats.metadata[1].name}: ${playerStats.metadata[1].displayValue}
+					`);
+					playerStats.stats.forEach((statObj: any) => {
+						if (!statObj.displayValue) return;
+						r6Embed.addField(statObj.metadata.name, statObj.displayValue, true);
+					});
+					deleteCommandMessages(msg);
+					stopTyping(msg);
+	
+					return msg.embed(r6Embed);
+				} else {
+					stopTyping(msg);
 
-					${playerStats.metadata[1].name}: ${playerStats.metadata[1].displayValue}
-				`);
-				playerStats.stats.forEach((statObj: any) => {
-					if (!statObj.displayValue) return;
-					r6Embed.addField(statObj.metadata.name, statObj.displayValue, true);
-				});
-				deleteCommandMessages(msg);
-				stopTyping(msg);
-
-				return msg.embed(r6Embed);
+					return sendSimpleEmbeddedError(msg, 'Couldn\'t retrieve stats for that person, check the spelling and try again.', 3000);
+				}
 			} else {
 				stopTyping(msg);
 	

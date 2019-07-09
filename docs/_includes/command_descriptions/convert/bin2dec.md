@@ -1,1 +1,0 @@
-Converts Binary to Decimal

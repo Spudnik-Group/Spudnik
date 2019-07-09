@@ -1,1 +1,0 @@
-Play a game of slots.

@@ -110,6 +110,7 @@ export default class GoodbyeCommand extends Command {
 									**Member:** ${msg.author.tag} (${msg.author.id})
 									**Action:** Goodbye Channel set to <#${channelID}>
 								`);
+								goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
 
 								return this.sendSuccess(msg, goodbyeEmbed);
 							})
@@ -136,6 +137,7 @@ export default class GoodbyeCommand extends Command {
 								**Action:** Goodbye message set to:
 								\`\`\`${args.content}\`\`\`
 							`);
+							goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
 
 							return this.sendSuccess(msg, goodbyeEmbed);
 						})
@@ -157,6 +159,7 @@ export default class GoodbyeCommand extends Command {
 									**Member:** ${msg.author.tag} (${msg.author.id})
 									**Action:** Goodbye messages set to: _Enabled_
 								`);
+								goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
 	
 								return this.sendSuccess(msg, goodbyeEmbed);
 							})
@@ -178,6 +181,7 @@ export default class GoodbyeCommand extends Command {
 								**Member:** ${msg.author.tag} (${msg.author.id})
 								**Action:** Goodbye messages set to: _Disabled_
 							`);
+							goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
 
 							return this.sendSuccess(msg, goodbyeEmbed);
 						})

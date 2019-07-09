@@ -1,1 +1,0 @@
-Blesses you with a random bacon gif.

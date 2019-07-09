@@ -3,7 +3,7 @@ import { Collection, Message } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { awaitPlayers, delay, sendSimpleEmbeddedError, shuffle } from '../../lib/helpers';
 // tslint:disable-next-line:no-var-requires
-const data = require('../../extras/wizard-convention.js');
+const data = require('../../extras/wizard-convention');
 
 /**
  * Starts a game of Wizard Convention.

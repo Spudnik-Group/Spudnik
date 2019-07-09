@@ -112,6 +112,7 @@ export default class StarboardCommand extends Command {
 									**Member:** ${msg.author.tag} (${msg.author.id})
 									**Action:** Star Board Channel set to <#${channelID}>
 								`);
+								starboardEmbed.setFooter('Use the `starboard status` command to see the details of this feature');
 
 								return this.sendSuccess(msg, starboardEmbed);
 							})
@@ -138,6 +139,7 @@ export default class StarboardCommand extends Command {
 								**Member:** ${msg.author.tag} (${msg.author.id})
 								**Action:** Star Board trigger set to: ${args.content}
 							`);
+							starboardEmbed.setFooter('Use the `starboard status` command to see the details of this feature');
 
 							return this.sendSuccess(msg, starboardEmbed);
 						})
@@ -159,6 +161,7 @@ export default class StarboardCommand extends Command {
 									**Member:** ${msg.author.tag} (${msg.author.id})
 									**Action:** Star Board set to: _Enabled_
 								`);
+								starboardEmbed.setFooter('Use the `starboard status` command to see the details of this feature');
 
 								return this.sendSuccess(msg, starboardEmbed);
 							})
@@ -180,6 +183,7 @@ export default class StarboardCommand extends Command {
 								**Member:** ${msg.author.tag} (${msg.author.id})
 								**Action:** Star Board set to: _Disabled_
 							`);
+							starboardEmbed.setFooter('Use the `starboard status` command to see the details of this feature');
 
 							return this.sendSuccess(msg, starboardEmbed);
 						})
@@ -212,7 +216,6 @@ export default class StarboardCommand extends Command {
 
 				// Send the success response
 				return msg.embed(starboardEmbed);
-				break;
 			}
 		}
 	}

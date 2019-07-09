@@ -1,1 +1,0 @@
-Returns the purpose of the chat channel.

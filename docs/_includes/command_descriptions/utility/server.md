@@ -1,1 +1,0 @@
-Returns statistics about the server.

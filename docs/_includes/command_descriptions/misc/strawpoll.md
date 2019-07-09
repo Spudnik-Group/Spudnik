@@ -1,1 +1,0 @@
-Generates a Strawpoll with the provided options.
