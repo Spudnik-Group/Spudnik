@@ -3,7 +3,7 @@ import { Collection, Message } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { awaitPlayers, shuffle } from '../../lib/helpers';
 // tslint:disable-next-line:no-var-requires
-const data = require('../../extras/apples-to-apples.js');
+const data = require('../../extras/apples-to-apples');
 
 /**
  * Starts a game of Apples To Apples.

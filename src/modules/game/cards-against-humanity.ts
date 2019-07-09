@@ -3,7 +3,7 @@ import { Collection, Message } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { awaitPlayers, escapeMarkdown, shuffle } from '../../lib/helpers';
 // tslint:disable-next-line
-const { blackCards, whiteCards } = require('../../extras/cards-against-humanity.js');
+const { blackCards, whiteCards } = require('../../extras/cards-against-humanity');
 
 /**
  * Starts a game of Cards Against Humanity.

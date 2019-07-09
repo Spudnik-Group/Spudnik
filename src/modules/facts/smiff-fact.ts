@@ -3,6 +3,7 @@ import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getRandomInt, startTyping, stopTyping } from '../../lib/helpers';
 import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
 
+// tslint:disable-next-line:no-var-requires
 const { smiff }: { smiff: string[] } = require('../../extras/data');
 
 /**

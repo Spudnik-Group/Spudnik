@@ -15,13 +15,12 @@
 		"noUnusedLocals": true,
 		"moduleResolution": "node",
 		"baseUrl": ".",
-		"experimentalDecorators": true
+		"experimentalDecorators": true,
+		"resolveJsonModule": true
 	},
-	"exclude": [
-		"node_modules",
-		"dist",
-		"docs",
-		"config",
-		"scripts"
+	"include": [
+		"./launch.ts",
+		"./src/**/*.json",
+		"./src/**/*.ts"
 	]
 }

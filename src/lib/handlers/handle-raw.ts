@@ -61,7 +61,7 @@ export const handleRaw = async(event: any, client: CommandoClient) => {
 			.addField('Channel', (channel as TextChannel).toString(), true)
 			.addField('Jump', `[Link](${message.url})`, true)
 			.setColor(await client.provider.get(message.guild.id, 'embedColor', 5592405))
-			.setTimestamp()
+			.setTimestamp(message.createdTimestamp)
 			.setFooter(`⭐ ${stars} | ${message.id} `);
 
 		// You can't star your own messages

@@ -1,1 +1,0 @@
-Returns a link to my support server!

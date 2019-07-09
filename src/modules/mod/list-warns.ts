@@ -81,7 +81,7 @@ export default class ListWarnsCommand extends Command {
 			},
 			color: getEmbedColor(msg),
 			description: ''
-		}).setTimestamp();
+		});
 
 		startTyping(msg);
 

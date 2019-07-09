@@ -1,1 +1,0 @@
-Returns links to upvote the bot on bot listing sites.
