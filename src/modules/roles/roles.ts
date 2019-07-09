@@ -48,7 +48,10 @@ export default class RoleCommand extends Command {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/110/lock_1f512.png',
 				name: 'Role Manager'
 			},
-			color: getEmbedColor(msg)
+			color: getEmbedColor(msg),
+			footer: {
+				text: 'Use the `iam`/`iamnot` commands to manage your roles'
+			}
 		});
 		
 		let guildAssignableRoles: string[] = await msg.client.provider.get(msg.guild.id, 'assignableRoles', []);
@@ -93,8 +96,6 @@ export default class RoleCommand extends Command {
 				});
 			}
 		}
-
-		roleEmbed.setFooter('Use the `iam`/`iamnot` commands to manage your roles');
 
 		if (Array.isArray(roleEmbed.fields) && roleEmbed.fields.length === 0) {
 			roleEmbed.setDescription('A default role and assignable roles are not set for this guild.');

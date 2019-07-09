@@ -2,6 +2,7 @@ import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
 import { startTyping, stopTyping } from '../../lib/helpers';
+import { stripIndents } from 'common-tags';
 
 /**
  * Simulate dice rolling.
@@ -21,18 +22,26 @@ export default class RollCommand extends Command {
 		super(client, {
 			args: [
 				{
-					infinite: true,
-					key: 'rolls',
+					default: '1d20',
+					key: 'roll',
 					prompt: 'What die combo would you like to roll?',
+					type: 'string'
+				},
+				{
+					default: '',
+					key: 'reason',
+					prompt: 'What are you rolling the dice for?',
 					type: 'string'
 				}
 			],
-			description: 'Roll one die with x sides, or multiple dice using d20 syntax.',
-			details: 'syntax: `!roll <# of sides|[# of dice]d[# of sides]+modifiers [# of dice]d[# of sides]+modifiers ...>`\n\nYou can supply an infinite number of rolls.',
+			description: 'Roll one die with x sides + any modifiers, with an optional reason.',
+			details: 'syntax: `!roll [# of sides | [# of dice]d[# of sides]+modifiers] [reason] >`',
 			examples: [
+				'!roll',
+				'!roll 6',
 				'!roll 2d20',
 				'!roll 4d8+2',
-				'!roll 2d8+2 4d6'
+				'!roll 2d8+2 to kick someone from the server'
 			],
 			group: 'random',
 			guildOnly: true,
@@ -49,8 +58,8 @@ export default class RollCommand extends Command {
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof RollCommand
 	 */
-	public async run(msg: CommandoMessage, args: { rolls: string[] }): Promise<Message | Message[]> {
-		const input: string[] = args.rolls;
+	public async run(msg: CommandoMessage, args: { roll: string, reason: string }): Promise<Message | Message[]> {
+		const result = require('d20').roll(args.roll);
 		const diceEmbed: MessageEmbed = new MessageEmbed({
 			color: getEmbedColor(msg),
 			description: '',
@@ -58,11 +67,14 @@ export default class RollCommand extends Command {
 		});
 
 		startTyping(msg);
+		diceEmbed.description = stripIndents`
+			Roll: ${args.roll}${args.reason ? `
 
-		input.forEach((item) => {
-			const result = require('d20').roll(item);
-			diceEmbed.description += `Roll: ${item} -- Result: ${result}\n`;
-		});
+			For: ${args.reason}` : ''}
+
+			--
+			Result: ${result}
+		`;
 
 		deleteCommandMessages(msg);
 		stopTyping(msg);

@@ -1,1 +1,0 @@
-Who is the Mafia? Who is the doctor? Who is the detective? Will the Mafia kill them all?

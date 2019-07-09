@@ -1,1 +1,0 @@
-Returns a random cat fact.

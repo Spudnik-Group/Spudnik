@@ -1,1 +1,0 @@
-Converts Hexadecimal to Binary

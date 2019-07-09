@@ -24,10 +24,10 @@ export default class RoleCommand extends Command {
 			args: [
 				{
 					key: 'subCommand',
-					prompt: 'What sub-command would you like to use?\nOptions are:\n* add\n* remove\n* list\n* default',
+					prompt: 'What sub-command would you like to use?\nOptions are:\n* add\n* remove\n* default',
 					type: 'string',
 					validate: (subCommand: string) => {
-						const allowedSubcommands = ['add', 'remove', 'list', 'default'];
+						const allowedSubcommands = ['add', 'remove', 'default'];
 						if (allowedSubcommands.indexOf(subCommand) !== -1) return true;
 						
 						return 'You provided an invalid sub-command.\nOptions are:\n* add\n* remove\n* list\n* default';
@@ -43,11 +43,10 @@ export default class RoleCommand extends Command {
 			clientPermissions: ['MANAGE_ROLES'],
 			description: 'Used to configure the role management feature.',
 			details: stripIndents`
-				syntax: \`!role <add|remove|list|default> (@roleMention)\`
+				syntax: \`!role <add|remove|default> (@roleMention)\`
 
 				\`add <@roleMention>\` - adds the role to the list of self-assignable-roles.
 				\`remove <@roleMention>\` - removes the role from the list of self-assignable-roles.
-				\`list\` - lists the available self-assignable-roles.
 				\`default (@roleMention)\` - sets the default role, or clears all if no role is provided.
 
 				MANAGE_ROLES permission required.
@@ -55,7 +54,6 @@ export default class RoleCommand extends Command {
 			examples: [
 				'!role add @PUBG',
 				'!role remove @Fortnite',
-				'!role list',
 				'!role default @Pleb',
 				'!role default'
 			],
@@ -81,7 +79,10 @@ export default class RoleCommand extends Command {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/110/lock_1f512.png',
 				name: 'Role Manager'
 			},
-			color: getEmbedColor(msg)
+			color: getEmbedColor(msg),
+			footer: {
+				text: 'Use the `roles` command to list the current default & assignable roles'
+			}
 		}).setTimestamp();
 
 		let guildAssignableRoles: string[] = await msg.guild.settings.get('assignableRoles', []);
@@ -178,52 +179,6 @@ export default class RoleCommand extends Command {
 							return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
 						});
 				}
-				break;
-			}
-			case 'list': {
-				if (Array.isArray(guildAssignableRoles) && guildAssignableRoles.length > 0) {
-					const roles: Role[] = msg.guild.roles.filter((role) => guildAssignableRoles.includes(role.id)).array();
-		
-					if (roles.length > 0) {
-						const rolesListOut: string[] = [];
-
-						roles.forEach((i: Role) => {
-							rolesListOut.push(`* ${i.name}`);
-						});
-
-						roleEmbed.fields.push({
-							inline: true,
-							name: 'Assignable Roles',
-							value: rolesListOut.sort().join('/n')
-						});
-					}
-				}
-				if (Array.isArray(guildDefaultRoles) && guildDefaultRoles.length > 0) {
-					const roles: Role[] = msg.guild.roles.filter((role) => guildDefaultRoles.includes(role.id)).array();
-		
-					if (roles.length > 0) {
-						const rolesListOut: string[] = [];
-
-						roles.forEach((i: Role) => {
-							rolesListOut.push(`* ${i.name}`);
-						});
-
-						roleEmbed.fields.push({
-							inline: true,
-							name: 'Default Roles',
-							value: rolesListOut.sort().join('/n')
-						});
-					}
-				}
-				if (Array.isArray(roleEmbed.fields) && roleEmbed.fields.length === 0) {
-					roleEmbed.setDescription('A default role and assignable roles are not set for this guild.');
-				}
-
-				deleteCommandMessages(msg);
-				stopTyping(msg);
-		
-				// Send the success response
-				return msg.embed(roleEmbed);
 				break;
 			}
 		}

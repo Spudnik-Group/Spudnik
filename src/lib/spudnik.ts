@@ -103,6 +103,7 @@ export class Spudnik {
 				['convert', 'Convert'],
 				['default', 'Default'],
 				['dev', 'Developer'],
+				['help', 'Help'],
 				['facts', 'Facts'],
 				['feature', 'Feature'],
 				['game', 'Game'],

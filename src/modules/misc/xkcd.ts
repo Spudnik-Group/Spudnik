@@ -66,7 +66,7 @@ export default class XkcdCommand extends Command {
 		const xkcdEmbed: MessageEmbed = new MessageEmbed({
 			color: getEmbedColor(msg),
 			description: ''
-		}).setTimestamp();
+		});
 
 		let url: string = 'http://xkcd.com/';
 

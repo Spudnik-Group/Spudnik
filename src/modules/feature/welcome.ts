@@ -110,6 +110,7 @@ export default class WelcomeCommand extends Command {
 									**Member:** ${msg.author.tag} (${msg.author.id})
 									**Action:** Welcome Channel set to <#${channelID}>
 								`);
+								welcomeEmbed.setFooter('Use the `welcome status` command to see the details of this feature');
 
 								return this.sendSuccess(msg, welcomeEmbed);
 							})
@@ -136,6 +137,7 @@ export default class WelcomeCommand extends Command {
 								**Action:** Welcome message set to:
 								\`\`\`${args.content}\`\`\`
 							`);
+							welcomeEmbed.setFooter('Use the `welcome status` command to see the details of this feature');
 
 							return this.sendSuccess(msg, welcomeEmbed);
 						})
@@ -157,6 +159,7 @@ export default class WelcomeCommand extends Command {
 									**Member:** ${msg.author.tag} (${msg.author.id})
 									**Action:** Welcome messages set to: _Enabled_
 								`);
+								welcomeEmbed.setFooter('Use the `welcome status` command to see the details of this feature');
 
 								return this.sendSuccess(msg, welcomeEmbed);
 							})
@@ -178,6 +181,7 @@ export default class WelcomeCommand extends Command {
 								**Member:** ${msg.author.tag} (${msg.author.id})
 								**Action:** Welcome messages set to: _Disabled_
 							`);
+							welcomeEmbed.setFooter('Use the `welcome status` command to see the details of this feature');
 
 							return this.sendSuccess(msg, welcomeEmbed);
 						})

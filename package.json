@@ -1,7 +1,7 @@
 {
 	"name": "spudnik",
-	"description": "An awesome chat bot for Discord.",
-	"version": "0.8.1",
+	"description": "Spudnik is a free and open source Discord chat bot focused on guild management and adding interesting and useful functionality to your server. It was built on top of some of the most popular and widely used frameworks for extendibility, and written with organization and stability in mind. It also ships with ZERO weeb commands/references!",
+	"version": "0.9.0",
 	"license": "Apache-2.0",
 	"readme": "README.md",
 	"engines": {
@@ -21,7 +21,7 @@
 		"preinstall": "npm i -g node-gyp typescript",
 		"lint": "tslint -p ./tslint.json",
 		"test": "npm run lint",
-		"prestart": "tsc",
+		"prestart": "rimraf ./dist && tsc",
 		"start": "node ./node_modules/nodemon/bin/nodemon.js",
 		"start:prod": "node ./dist/launch.js",
 		"start:docs": "cd ./docs && bundle exec jekyll serve"
@@ -46,7 +46,8 @@
 		"soap": "^0.27.0",
 		"urban-dictionary": "^2.2.1",
 		"url-unshort": "^5.0.0",
-		"wikijs": "^4.11.1"
+		"wikijs": "^4.11.1",
+		"zucc": "^0.1.2"
 	},
 	"devDependencies": {
 		"@types/chalk": "2.2.0",
@@ -56,6 +57,7 @@
 		"@types/node": "10.14.6",
 		"@types/request-promise": "4.1.43",
 		"nodemon": "1.19.0",
+		"rimraf": "^2.6.3",
 		"tslint": "5.16.0",
 		"tslint-jsdoc-rules": "0.2.0",
 		"typescript": "3.4.5"

@@ -1,1 +1,0 @@
-Who is the Dragon? Who is the healer? Who is the mind reader? Will the Dragon eat them all?

@@ -62,8 +62,9 @@ export default class StatsCommand extends Command {
 						• Users: ${this.client.guilds.map((guild: Guild) => guild.memberCount)
 							.reduce((a: number, b: number): number => a + b)}
 						• Commands: ${this.client.registry.commands.size}`, true)
-			.addField('❯ Home Server', 'https://spudnik.io/support', true)
-			.addField('❯ Source Code', 'https://github.com/Spudnik-Group/Spudnik', true)
+			.addField('❯ Spudnik Command', '[Join](https://spudnik.io/support)', true)
+			.addField('❯ Source Code', '[View](https://github.com/Spudnik-Group/Spudnik)', true)
+			.addField('❯ Invite to Your Server!', '[Invite](https://spudnik.io/invite)', true)
 			.addField('❯ Dependencies', this.parseDependencies())
 			.setThumbnail(`${this.client.user.avatarURL()}`);
 		

@@ -105,6 +105,7 @@ export default class ModlogCommand extends Command {
 									**Member:** ${msg.author.tag} (${msg.author.id})
 									**Action:** Modlog set to: _Enabled_
 								`);
+								modlogEmbed.setFooter('Use the `modlog status` command to see the details of this feature');
 
 								return this.sendSuccess(msg, modlogEmbed);
 							})
@@ -126,6 +127,7 @@ export default class ModlogCommand extends Command {
 								**Member:** ${msg.author.tag} (${msg.author.id})
 								**Action:** Modlog set to: _Disabled_
 							`);
+							modlogEmbed.setFooter('Use the `modlog status` command to see the details of this feature');
 
 							return this.sendSuccess(msg, modlogEmbed);
 						})
@@ -153,6 +155,7 @@ export default class ModlogCommand extends Command {
 									**Member:** ${msg.author.tag} (${msg.author.id})
 									**Action:** Modlog Channel set to <#${channelID}>
 								`);
+								modlogEmbed.setFooter('Use the `modlog status` command to see the details of this feature');
 
 								return this.sendSuccess(msg, modlogEmbed);
 							})
@@ -174,7 +177,6 @@ export default class ModlogCommand extends Command {
 
 				// Send the success response
 				return msg.embed(modlogEmbed);
-				break;
 			}
 		}
 	}
