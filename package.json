@@ -55,7 +55,7 @@
 		"@types/date-fns": "2.6.0",
 		"@types/mongoose": "5.3.27",
 		"@types/node": "10.14.6",
-		"@types/request-promise": "4.1.43",
+		"@types/request-promise": "4.1.44",
 		"nodemon": "1.19.0",
 		"rimraf": "^2.6.3",
 		"tslint": "5.16.0",
