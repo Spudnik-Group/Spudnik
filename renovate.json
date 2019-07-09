@@ -1,5 +1,20 @@
 {
+  "assignees": [
+    "naterchrdsn",
+    "develogix"
+  ],
+  "baseBranches": [
+    "staging"
+  ],
   "extends": [
-    "config:base"
-  ]
+    "config:base",
+    ":label(devops)",
+    ":automergeMinor"
+  ],
+  "supportPolicy": [
+    "lts"
+  ],
+  "travis": {
+    "enabled": true
+  }
 }
