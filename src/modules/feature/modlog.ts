@@ -177,7 +177,6 @@ export default class ModlogCommand extends Command {
 
 				// Send the success response
 				return msg.embed(modlogEmbed);
-				break;
 			}
 		}
 	}

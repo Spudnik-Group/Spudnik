@@ -216,7 +216,6 @@ export default class StarboardCommand extends Command {
 
 				// Send the success response
 				return msg.embed(starboardEmbed);
-				break;
 			}
 		}
 	}
