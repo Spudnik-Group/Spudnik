@@ -97,7 +97,7 @@ export default class TermsOfServiceCommand extends Command {
 				name: 'Terms of Service'
 			},
 			color: getEmbedColor(msg)
-		}).setTimestamp();
+		});
 		const tosChannel: string = await msg.guild.settings.get('tosChannel', null);
 		const tosMessageCount: number = await msg.guild.settings.get('tosMessageCount', 0);
 		const tosMessages: ITOSMessage[] = [];
@@ -128,11 +128,13 @@ export default class TermsOfServiceCommand extends Command {
 						msg.guild.settings.set('tosChannel', channelID)
 							.then(() => {
 								// Set up embed message
-								tosEmbed.setDescription(stripIndents`
-									**Member:** ${msg.author.tag} (${msg.author.id})
-									**Action:** Terms of Service Channel set to <#${channelID}>
-								`);
-								tosEmbed.setFooter('Use the `tos status` command to see the details of this feature');
+								tosEmbed
+									.setDescription(stripIndents`
+										**Member:** ${msg.author.tag} (${msg.author.id})
+										**Action:** Terms of Service Channel set to <#${channelID}>
+									`)
+									.setFooter('Use the `tos status` command to see the details of this feature')
+									.setTimestamp();
 
 								return this.sendSuccess(msg, tosEmbed);
 							})
@@ -188,11 +190,13 @@ export default class TermsOfServiceCommand extends Command {
 				message.title = args.text;
 				msg.guild.settings.set(`tosMessage${item}`, message)
 					.then(async () => {
-						tosEmbed.setDescription(stripIndents`
-							**Member:** ${msg.author.tag} (${msg.author.id})
-							**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
-						`);
-						tosEmbed.setFooter('Use the `tos status` command to see the details of this feature');
+						tosEmbed
+							.setDescription(stripIndents`
+								**Member:** ${msg.author.tag} (${msg.author.id})
+								**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
+							`)
+							.setFooter('Use the `tos status` command to see the details of this feature')
+							.setTimestamp();
 
 						await msg.guild.settings.set('tosMessageCount', tosMessages.length)
 							.catch((err: Error) => this.catchError(msg, args, err));
@@ -225,11 +229,13 @@ export default class TermsOfServiceCommand extends Command {
 				message.body = args.text;
 				msg.guild.settings.set(`tosMessage${args.item}`, message)
 					.then(async () => {
-						tosEmbed.setDescription(stripIndents`
-							**Member:** ${msg.author.tag} (${msg.author.id})
-							**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
-						`);
-						tosEmbed.setFooter('Use the `tos status` command to see the details of this feature');
+						tosEmbed
+							.setDescription(stripIndents`
+								**Member:** ${msg.author.tag} (${msg.author.id})
+								**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
+							`)
+							.setFooter('Use the `tos status` command to see the details of this feature')
+							.setTimestamp();
 						
 						await msg.guild.settings.set('tosMessageCount', tosMessages.length)
 							.catch((err: Error) => this.catchError(msg, args, err));

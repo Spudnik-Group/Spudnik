@@ -40,6 +40,7 @@ export default class EnableCommandCommand extends Command {
 			examples: ['enable util', 'enable Utility', 'enable prefix'],
 			group: 'util-required',
 			guarded: true,
+			guildOnly: true,
 			memberName: 'enable',
 			name: 'enable'
 		});
