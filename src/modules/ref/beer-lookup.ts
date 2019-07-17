@@ -1,7 +1,7 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import * as rp from 'request-promise';
+import axios, { AxiosResponse } from 'axios';
 import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, startTyping, stopTyping } from '../../lib/helpers';
 
@@ -75,98 +75,96 @@ export default class BrewCommand extends Command {
 
 		startTyping(msg);
 
-		return rp(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(args.query)}&key=${breweryDbApiKey}`)
-			.then((content) => {
-				const response = JSON.parse(content);
+		try {
+			const response: AxiosResponse<any> = await axios(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(args.query)}&key=${breweryDbApiKey}`)
 
-				if (response.data) {
-					const result = response.data[0];
+			if (response.data.data) {
+				const result = response.data.data[0];
 
-					if (result.description) {
-						const fields: any = [];
-						let thumbnail = '';
+				if (result.description) {
+					const fields: any = [];
+					let thumbnail = '';
 
-						if (result.labels) {
-							thumbnail = result.labels.medium;
-						}
-
-						if (result.images) {
-							thumbnail = result.images.squareMedium;
-						}
-
-						if (result.name) {
-							brewEmbed.title = result.name;
-						}
-
-						if (result.style) {
-							fields.push({
-								name: `Style: ${result.style.name}`,
-								value: result.style.description
-							});
-						}
-
-						if (result.abv) {
-							fields.push({
-								inline: true,
-								name: 'ABV (Alcohol By Volume)',
-								value: `${result.abv}%`
-							});
-						}
-
-						if (result.ibu) {
-							fields.push({
-								inline: true,
-								name: 'IBU (International Bitterness Units)',
-								value: `${result.ibu}/100`
-							});
-						}
-
-						if (result.website) {
-							fields.push({
-								inline: true,
-								name: 'Website',
-								value: result.website
-							});
-						}
-
-						if (result.established) {
-							fields.push({
-								inline: true,
-								name: 'Year Established',
-								value: result.established
-							});
-						}
-
-						if (fields !== []) {
-							brewEmbed.fields = fields;
-						}
-
-						if (thumbnail !== '') {
-							brewEmbed.thumbnail = {
-								url: thumbnail
-							}
-						}
-
-						brewEmbed.setDescription(`\n${result.description}\n\n`);
-					} else {
-						brewEmbed.setDescription(`${response.data[0].name} is a good beer/brewery, but I don't have a good way to describe it.`);
+					if (result.labels) {
+						thumbnail = result.labels.medium;
 					}
+
+					if (result.images) {
+						thumbnail = result.images.squareMedium;
+					}
+
+					if (result.name) {
+						brewEmbed.title = result.name;
+					}
+
+					if (result.style) {
+						fields.push({
+							name: `Style: ${result.style.name}`,
+							value: result.style.description
+						});
+					}
+
+					if (result.abv) {
+						fields.push({
+							inline: true,
+							name: 'ABV (Alcohol By Volume)',
+							value: `${result.abv}%`
+						});
+					}
+
+					if (result.ibu) {
+						fields.push({
+							inline: true,
+							name: 'IBU (International Bitterness Units)',
+							value: `${result.ibu}/100`
+						});
+					}
+
+					if (result.website) {
+						fields.push({
+							inline: true,
+							name: 'Website',
+							value: result.website
+						});
+					}
+
+					if (result.established) {
+						fields.push({
+							inline: true,
+							name: 'Year Established',
+							value: result.established
+						});
+					}
+
+					if (fields !== []) {
+						brewEmbed.fields = fields;
+					}
+
+					if (thumbnail !== '') {
+						brewEmbed.thumbnail = {
+							url: thumbnail
+						}
+					}
+
+					brewEmbed.setDescription(`\n${result.description}\n\n`);
 				} else {
-					brewEmbed.setDescription("Damn, I've never heard of that. Where do I need to go to find it?");
+					brewEmbed.setDescription(`${response.data[0].name} is a good beer/brewery, but I don't have a good way to describe it.`);
 				}
-		
-				deleteCommandMessages(msg);
-				stopTyping(msg);
-		
-				// Send the success response
-				return msg.embed(brewEmbed);
-			})
-			.catch((err: Error) => {
-				msg.client.emit('warn', `Error in command ref:brew: ${err}`);
+			} else {
+				brewEmbed.setDescription("Damn, I've never heard of that. Where do I need to go to find it?");
+			}
+		} catch(err) {
+			msg.client.emit('warn', `Error in command ref:brew: ${err}`);
 
-				stopTyping(msg);
+			stopTyping(msg);
 
-				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
-			});
+			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+		}
+
+		deleteCommandMessages(msg);
+		stopTyping(msg);
+
+		// Send the success response
+		return msg.embed(brewEmbed);
 	}
 }
