@@ -40,6 +40,7 @@ export default class DisableCommandCommand extends Command {
 			examples: ['disable util', 'disable Utility', 'disable prefix'],
 			group: 'util-required',
 			guarded: true,
+			guildOnly: true,
 			memberName: 'disable',
 			name: 'disable'
 		});

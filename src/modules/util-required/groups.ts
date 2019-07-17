@@ -23,6 +23,7 @@ export default class ListGroupsCommand extends Command {
 			details: 'ADMINISTRATOR permission required.',
 			group: 'util-required',
 			guarded: true,
+			guildOnly: true,
 			memberName: 'groups',
 			name: 'groups'
 		});
