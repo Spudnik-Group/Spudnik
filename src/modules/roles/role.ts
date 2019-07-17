@@ -30,7 +30,7 @@ export default class RoleCommand extends Command {
 						const allowedSubcommands = ['add', 'remove', 'default'];
 						if (allowedSubcommands.indexOf(subCommand) !== -1) return true;
 						
-						return 'You provided an invalid sub-command.\nOptions are:\n* add\n* remove\n* list\n* default';
+						return 'You provided an invalid sub-command.\nOptions are:\n* add\n* remove\n* default';
 					}
 				},
 				{
