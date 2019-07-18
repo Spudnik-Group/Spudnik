@@ -55,5 +55,5 @@ export const modLogMessage = (msg: CommandoMessage, embed: MessageEmbed): Promis
  * @returns void
  */
 export const deleteCommandMessages = (msg: CommandoMessage): void => {
-	if (msg.deletable && msg.guild.settings.get('deleteCommandMessages', false)) msg.delete();
+	if (msg.deletable && msg.guild.settings.get('deleteCommandMessage', false)) msg.delete();
 }
