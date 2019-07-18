@@ -71,6 +71,12 @@ export const handleReady = async(version: string, client: CommandoClient, config
 				name: 'For the Motherland!',
 				type: 'PLAYING'
 			}
+		},
+		{
+			activity: {
+				name: '!feedback 😠😍',
+				type: 'PLAYING'
+			}
 		}
 	];
 

@@ -58,7 +58,7 @@ export default class TopicCommand extends Command {
 		return msg.embed({
 			color: getEmbedColor(msg),
 			description: `Channel Topic: ${response}`,
-			thumbnail: { url: this.client.user.avatarURL },
+			thumbnail: { url: this.client.user.avatarURL.toString() },
 			title: channel.name
 		});
 	}

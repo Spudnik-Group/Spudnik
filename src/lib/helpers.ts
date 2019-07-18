@@ -17,7 +17,7 @@ const no = ['no', 'n', 'nah', 'nope'];
 export const sendSimpleEmbeddedMessage = (msg: CommandoMessage, text: string, timeout?: number): Promise<Message | Message[]> => {
 	const promise: Promise<Message | Message[]> = msg.embed({
 		author: {
-			icon_url: msg.client.user.displayAvatarURL,
+			iconURL: msg.client.user.displayAvatarURL.toString(),
 			name: `${msg.client.user.username}`
 		},
 		color: getEmbedColor(msg),
@@ -80,7 +80,7 @@ export const sendSimpleEmbeddedMessageWithAuthor = (msg: CommandoMessage, text: 
 export const sendSimpleEmbeddedMessageWithTitle = (msg: CommandoMessage, text: string, title: string, timeout?: number): Promise<Message | Message[]> => {
 	const promise: Promise<Message | Message[]> = msg.embed({
 		author: {
-			icon_url: msg.client.user.displayAvatarURL,
+			iconURL: msg.client.user.displayAvatarURL.toString(),
 			name: `${msg.client.user.username}`
 		},
 		color: getEmbedColor(msg),
@@ -113,7 +113,7 @@ export const sendSimpleEmbeddedMessageWithTitle = (msg: CommandoMessage, text: s
 export const sendSimpleEmbeddedError = (msg: CommandoMessage, text: string, timeout?: number): Promise<Message | Message[]> => {
 	const promise: Promise<Message | Message[]> = msg.embed({
 		author: {
-			icon_url: msg.client.user.displayAvatarURL,
+			iconURL: msg.client.user.displayAvatarURL.toString(),
 			name: `${msg.client.user.username}`
 		},
 		color: 16711680,
@@ -145,7 +145,7 @@ export const sendSimpleEmbeddedError = (msg: CommandoMessage, text: string, time
 export const sendSimpleEmbeddedSuccess = (msg: CommandoMessage, text: string, timeout?: number): Promise<Message | Message[]> => {
 	const promise: Promise<Message | Message[]> = msg.embed({
 		author: {
-			icon_url: msg.client.user.displayAvatarURL,
+			iconURL: msg.client.user.displayAvatarURL.toString(),
 			name: `${msg.client.user.username}`
 		},
 		color: 3447003,
@@ -177,7 +177,7 @@ export const sendSimpleEmbeddedSuccess = (msg: CommandoMessage, text: string, ti
 export const sendSimpleEmbeddedImage = (msg: CommandoMessage, url: string, description?: string): Promise<Message | Message[]> => {
 	return msg.embed({
 		author: {
-			icon_url: msg.client.user.displayAvatarURL,
+			iconURL: msg.client.user.displayAvatarURL.toString(),
 			name: `${msg.client.user.username}`
 		},
 		color: 3447003,
