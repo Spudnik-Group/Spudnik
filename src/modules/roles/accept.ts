@@ -49,7 +49,8 @@ export default class AcceptCommand extends Command {
 			throttling: {
 				duration: 3,
 				usages: 2
-			}
+			},
+			userPermissions: ['MANAGE_ROLES']
 		});
 	}
 
@@ -70,11 +71,12 @@ export default class AcceptCommand extends Command {
 			color: getEmbedColor(msg)
 		}).setTimestamp();
 
-		startTyping(msg);
 
 		if (args.channel instanceof Channel) {
 			const channelID = (args.channel as Channel).id;
 			const tosChannel = msg.guild.settings.get('tosChannel', null);
+
+			startTyping(msg);
 
 			if (tosChannel && tosChannel === channelID) {
 				stopTyping(msg);
@@ -82,49 +84,46 @@ export default class AcceptCommand extends Command {
 				return sendSimpleEmbeddedMessage(msg, `Accept channel already set to <#${channelID}>!`, 3000);
 			}
 
-			if (msg.member.hasPermission('MANAGE_ROLES')) {
-				msg.guild.settings.set('tosChannel', args.channel.id)
-					.then(() => {
-						// Set up embed message
-						acceptEmbed.setDescription(stripIndents`
-							**Member:** ${msg.author.tag} (${msg.author.id})
-							**Action:** Accept channel set to <#${args.channel.id}>.
-						`);
+			msg.guild.settings.set('tosChannel', args.channel.id)
+				.then(() => {
+					// Set up embed message
+					acceptEmbed.setDescription(stripIndents`
+						**Member:** ${msg.author.tag} (${msg.author.id})
+						**Action:** Accept channel set to <#${args.channel.id}>.
+					`);
 
-						return this.sendSuccess(msg, acceptEmbed);
-					})
-					.catch((err: Error) => this.catchError(msg, args, err));
-			} else {
-				stopTyping(msg);
-
-				return sendSimpleEmbeddedError(msg, 'You do not have permission to run this command.', 3000);
-			}
+					return this.sendSuccess(msg, acceptEmbed);
+				})
+				.catch((err: Error) => this.catchError(msg, args, err));
 		} else if (args.channel === '') {
-			const acceptRole: string = msg.guild.settings.get('defaultRole', null);
-			const role: Role | undefined = msg.guild.roles.get(acceptRole);
+			const defaultRoles: string[] = msg.guild.settings.get('defaultRoles', []);
 			const acceptChannel: string = msg.guild.settings.get('tosChannel', null);
 
-			if (role && !msg.member.roles.has(acceptRole) && msg.channel.id === acceptChannel) {
-				msg.member.roles.add(acceptRole)
-					.then((member) => {
-						// Set up embed message
-						acceptEmbed.setDescription(stripIndents`
-							**Member:** ${msg.author.tag} (${msg.author.id})
-							**Action:** The default role of ${role.name} for the guild ${msg.guild.name} has been applied.
-						`);
+			if (defaultRoles.length > 0 && msg.channel.id === acceptChannel) {
+				startTyping(msg);
+				const defaultRoleList: Role[] = [];
+				defaultRoles.forEach(roleId => {
+					defaultRoleList.push(msg.guild.roles.get(roleId))
+				});
+				defaultRoleList.filter(role => role).forEach(role => {
+					msg.member.roles.add(role)
+						.catch((err: Error) => this.catchError(msg, args, err));
+				});
 
-						// DM the new member
-						member.send(acceptEmbed);
+				// Set up embed message
+				acceptEmbed.setDescription(stripIndents`
+					**Member:** ${msg.author.tag} (${msg.author.id})
+					**Action:** The default role(s) of \`${defaultRoles.join(', ')}\` for the guild ${msg.guild.name} has been applied.
+				`);
 
-						// Log the event in the mod log
-						modLogMessage(msg, acceptEmbed);
+				// DM the new member
+				msg.member.send(acceptEmbed);
 
-						msg.delete();
-						stopTyping(msg);
-						
-						return;
-					})
-					.catch((err: Error) => this.catchError(msg, args, err));
+				// Log the event in the mod log
+				modLogMessage(msg, acceptEmbed);
+
+				msg.delete();
+				stopTyping(msg);
 			}
 		}
 	}
