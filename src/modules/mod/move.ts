@@ -141,7 +141,7 @@ export default class MoveCommand extends Command {
 						**Moderator:** ${msg.author.tag} (${msg.author.id})
 						**Member:** ${originalMessageAuthor.user.tag} (${originalMessageAuthor.id})
 						**Action:** Move
-						**Channels:** From- <#${originalChannel.id}> ==> To- <#${destinationChannel.id}
+						**Channels:** _from_ - <#${originalChannel.id}> > _to_ - <#${destinationChannel.id}>
 						**Reason:** ${args.reason}
 					`
 				}).setTimestamp();
