@@ -13,10 +13,10 @@ import { startTyping, stopTyping } from '../../lib/helpers';
  */
 export default class RolesCommand extends Command {
 	/**
-	 * Creates an instance of RoleCommand.
+	 * Creates an instance of RolesCommand.
 	 *
 	 * @param {CommandoClient} client
-	 * @memberof RoleCommand
+	 * @memberof RolesCommand
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
@@ -40,7 +40,7 @@ export default class RolesCommand extends Command {
 	 *
 	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
-	 * @memberof RoleCommand
+	 * @memberof RolesCommand
 	 */
 	public async run(msg: CommandoMessage): Promise<Message | Message[]> {
 		const roleEmbed: MessageEmbed = new MessageEmbed({
