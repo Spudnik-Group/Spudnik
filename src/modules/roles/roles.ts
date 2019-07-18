@@ -8,10 +8,10 @@ import { startTyping, stopTyping } from '../../lib/helpers';
  * Lists default and self-assignable roles.
  *
  * @export
- * @class RoleCommand
+ * @class RolesCommand
  * @extends {Command}
  */
-export default class RoleCommand extends Command {
+export default class RolesCommand extends Command {
 	/**
 	 * Creates an instance of RoleCommand.
 	 *
