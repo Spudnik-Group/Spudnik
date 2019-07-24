@@ -119,7 +119,7 @@ export default class RoleCommand extends Command {
 					return sendSimpleEmbeddedError(msg, 'No role specified!', 3000);
 				}
 
-				if(!msg.guild.roles.has(args.name)){
+				if(!msg.guild.roles.has(args.name)) {
 					stopTyping(msg);
 
 					return sendSimpleEmbeddedError(msg, 'Invalid role specified!', 3000);
