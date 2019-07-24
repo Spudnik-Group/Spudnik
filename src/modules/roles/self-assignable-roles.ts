@@ -1,5 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { Message, MessageEmbed, Role, Guild, ColorResolvable } from 'discord.js';
+import { Message, MessageEmbed, Role } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, startTyping, stopTyping } from '../../lib/helpers';
@@ -9,18 +9,21 @@ import * as format from 'date-fns/format';
  * Manage self-assignable roles.
  *
  * @export
- * @class RoleCommand
+ * @class SelfAssignableRoleCommand
  * @extends {Command}
  */
-export default class RoleCommand extends Command {
+export default class SelfAssignableRolesCommand extends Command {
 	/**
-	 * Creates an instance of RoleCommand.
+	 * Creates an instance of SelfAssignableRolesCommand.
 	 *
 	 * @param {CommandoClient} client
-	 * @memberof RoleCommand
+	 * @memberof SelfAssignableRolesCommand
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
+			aliases: [
+				'sar'
+			],
 			args: [
 				{
 					key: 'subCommand',
@@ -29,19 +32,15 @@ export default class RoleCommand extends Command {
 					validate: (subCommand: string) => {
 						const allowedSubcommands = ['add', 'remove'];
 						if (allowedSubcommands.indexOf(subCommand) !== -1) return true;
-
+						
 						return 'You provided an invalid sub-command.\nOptions are:\n* add\n* remove';
 					}
 				},
 				{
+					default: '',
 					key: 'role',
 					prompt: 'What role?\n',
-					type: 'string'
-				},
-				{
-					key: 'color',
-					prompt: 'What color?\n',
-					type: 'string'
+					type: 'role'
 				}
 			],
 			clientPermissions: ['MANAGE_ROLES'],
@@ -49,19 +48,19 @@ export default class RoleCommand extends Command {
 			details: stripIndents`
 				syntax: \`!sar <add|remove> (@roleMention)\`
 
-				\`add <@roleMention>\` - adds the role to your guild.
-				\`remove <@roleMention>\` - removes the role from your guild.
+				\`add <@roleMention>\` - adds the role to the list of self-assignable-roles.
+				\`remove <@roleMention>\` - removes the role from the list of self-assignable-roles.
 
 				MANAGE_ROLES permission required.
 			`,
 			examples: [
-				'!role add @PUBG',
-				'!role remove @Fortnite'
+				'!sar add @PUBG',
+				'!sar remove @Fortnite'
 			],
 			group: 'feature',
 			guildOnly: true,
-			memberName: 'role',
-			name: 'role',
+			memberName: 'self-assignable-roles',
+			name: 'self-assignable-roles',
 			userPermissions: ['MANAGE_ROLES']
 		});
 	}
@@ -72,9 +71,9 @@ export default class RoleCommand extends Command {
 	 * @param {CommandoMessage} msg
 	 * @param {{ subCommand: string, role: Role }} args
 	 * @returns {(Promise<Message | Message[]>)}
-	 * @memberof RoleManagementCommands
+	 * @memberof SelfAssignableRolesCommand
 	 */
-	public async run(msg: CommandoMessage, args: { subCommand: string, name: string, color: string }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { subCommand: string, role: Role }): Promise<Message | Message[]> {
 		const roleEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/110/lock_1f512.png',
@@ -82,90 +81,99 @@ export default class RoleCommand extends Command {
 			},
 			color: getEmbedColor(msg),
 			footer: {
-				text: 'Use the `role` command to add/remove a role from your guild'
+				text: 'Use the `roles` command to list the current default & assignable roles'
 			}
 		}).setTimestamp();
+
+		let guildAssignableRoles: string[] = await msg.guild.settings.get('assignableRoles', []);
 
 		startTyping(msg);
 
 		switch (args.subCommand.toLowerCase()) {
 			case 'add': {
-				if (!args.name) {
+				if (!args.role) {
 					stopTyping(msg);
 
 					return sendSimpleEmbeddedError(msg, 'No role specified!', 3000);
 				}
 
-				msg.guild.roles.create({
-					data: {
-						color: args.color,
-						name: args.name
-					}
-				})
-				.then(() => {
-					roleEmbed.setDescription(stripIndents`
-                        **Member:** ${msg.author.tag} (${msg.author.id})
-                        **Action:** Added role '${args.name}' to the guild.
-                    `);
-				})
-				.catch((err: Error) => this.catchError(msg, args, err));
+				if (!guildAssignableRoles.includes(args.role.id)) {
+					guildAssignableRoles.push(args.role.id);
 
+					msg.guild.settings.set('assignableRoles', guildAssignableRoles)
+						.then(() => {
+							// Set up embed message
+							roleEmbed.setDescription(stripIndents`
+								**Member:** ${msg.author.tag} (${msg.author.id})
+								**Action:** Added role '${args.role.name}' to the list of assignable roles.
+							`);
+
+							return this.sendSuccess(msg, roleEmbed);
+						})
+						.catch((err: Error) => this.catchError(msg, args, err));
+				} else {
+					stopTyping(msg);
+
+					return sendSimpleEmbeddedError(msg, `${args.role.name} is already in the list of assignable roles for this guild.`, 3000);
+				}
 				break;
 			}
 			case 'remove': {
-				if (!args.name) {
+				if (!args.role) {
 					stopTyping(msg);
-
+					
 					return sendSimpleEmbeddedError(msg, 'No role specified!', 3000);
 				}
 
-				if(!msg.guild.roles.has(args.name)) {
+				if (guildAssignableRoles.includes(args.role.id)) {
+					guildAssignableRoles = guildAssignableRoles.filter((i: string) => i !== args.role.id);
+
+					msg.guild.settings.set('assignableRoles', guildAssignableRoles)
+						.then(() => {
+							// Set up embed message
+							roleEmbed.setDescription(stripIndents`
+								**Member:** ${msg.author.tag} (${msg.author.id})
+								**Action:** Removed role '${args.role.name}' from the list of assignable roles.
+							`);
+
+							return this.sendSuccess(msg, roleEmbed);
+						})
+						.catch((err: Error) => this.catchError(msg, args, err));
+				} else {
 					stopTyping(msg);
 
-					return sendSimpleEmbeddedError(msg, 'Invalid role specified!', 3000);
+					return sendSimpleEmbeddedError(msg, `Could not find role with name ${args.role.name} in the list of assignable roles for this guild.`, 3000);
 				}
-
-				if (msg.guild.roles.delete(args.name)) {
-					roleEmbed.setDescription(stripIndents`
-                        **Member:** ${msg.author.tag} (${msg.author.id})
-                        **Action:** Removed role '${args.name}' to the guild.
-					`);
-					
-					return this.sendSuccess(msg, roleEmbed);
-				} else {
-					this.catchError(msg, args, null);
-				}
-
 				break;
 			}
 		}
 	}
-
-	private catchError(msg: CommandoMessage, args: { subCommand: string, name: string, color: string }, err: Error) {
+	
+	private catchError(msg: CommandoMessage, args: { subCommand: string, role: Role }, err: Error) {
 		// Build warning message
 		let roleWarn = stripIndents`
 			Error occurred in \`role-management\` command!
 			**Server:** ${msg.guild.name} (${msg.guild.id})
 			**Author:** ${msg.author.tag} (${msg.author.id})
 			**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
-			**Input:** \`Role ${args.subCommand.toLowerCase()}\` | role name: ${args.name} | color: ${args.color}`;
+			**Input:** \`Role ${args.subCommand.toLowerCase()}\` | role name: ${args.role}`;
 		let roleUserWarn = '';
 
 		switch (args.subCommand.toLowerCase()) {
 			case 'add': {
-				roleUserWarn = 'Adding new role failed!\n';
+				roleUserWarn = 'Adding new self assignable role failed!\n';
 				break;
 			}
 			case 'remove': {
-				roleUserWarn = 'Removing role failed!\n';
+				roleUserWarn = 'Removing self assignable role failed!\n';
 				break;
 			}
 		}
-
+		
 		roleWarn += `**Error Message:** ${err}`;
-
+		
 		stopTyping(msg);
-
+		
 		// Emit warn event for debugging
 		msg.client.emit('warn', roleWarn);
 

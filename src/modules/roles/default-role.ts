@@ -1,18 +1,18 @@
 import { stripIndents } from 'common-tags';
-import { Message, MessageEmbed, Role, Guild, ColorResolvable } from 'discord.js';
+import { Message, MessageEmbed, Role } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, startTyping, stopTyping } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 
 /**
- * Manage self-assignable roles.
+ * Manage setting a default role.
  *
  * @export
- * @class RoleCommand
+ * @class DefaultRoleCommand
  * @extends {Command}
  */
-export default class RoleCommand extends Command {
+export default class DefaultRoleCommand extends Command {
 	/**
 	 * Creates an instance of RoleCommand.
 	 *
@@ -21,47 +21,34 @@ export default class RoleCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
+			aliases: [
+				'dr'
+			],
 			args: [
 				{
-					key: 'subCommand',
-					prompt: 'What sub-command would you like to use?\nOptions are:\n* add\n* remove',
-					type: 'string',
-					validate: (subCommand: string) => {
-						const allowedSubcommands = ['add', 'remove'];
-						if (allowedSubcommands.indexOf(subCommand) !== -1) return true;
-
-						return 'You provided an invalid sub-command.\nOptions are:\n* add\n* remove';
-					}
-				},
-				{
+					default: '',
 					key: 'role',
 					prompt: 'What role?\n',
-					type: 'string'
-				},
-				{
-					key: 'color',
-					prompt: 'What color?\n',
-					type: 'string'
+					type: 'role'
 				}
 			],
 			clientPermissions: ['MANAGE_ROLES'],
 			description: 'Used to configure the self-assignable roles feature.',
 			details: stripIndents`
-				syntax: \`!sar <add|remove> (@roleMention)\`
-
-				\`add <@roleMention>\` - adds the role to your guild.
-				\`remove <@roleMention>\` - removes the role from your guild.
+                syntax: \`!dr (@roleMention)\`
+                
+				\`(@roleMention)\` - sets the default role, or clears all if no role is provided.
 
 				MANAGE_ROLES permission required.
 			`,
 			examples: [
-				'!role add @PUBG',
-				'!role remove @Fortnite'
+				'!dr @Pleb',
+				'!dr'
 			],
 			group: 'feature',
 			guildOnly: true,
-			memberName: 'role',
-			name: 'role',
+			memberName: 'default-role',
+			name: 'default-role',
 			userPermissions: ['MANAGE_ROLES']
 		});
 	}
@@ -74,7 +61,7 @@ export default class RoleCommand extends Command {
 	 * @returns {(Promise<Message | Message[]>)}
 	 * @memberof RoleManagementCommands
 	 */
-	public async run(msg: CommandoMessage, args: { subCommand: string, name: string, color: string }): Promise<Message | Message[]> {
+	public async run(msg: CommandoMessage, args: { role: Role }): Promise<Message | Message[]> {
 		const roleEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/110/lock_1f512.png',
@@ -82,82 +69,68 @@ export default class RoleCommand extends Command {
 			},
 			color: getEmbedColor(msg),
 			footer: {
-				text: 'Use the `role` command to add/remove a role from your guild'
+				text: 'Use the `roles` command to list the current default & assignable roles'
 			}
 		}).setTimestamp();
 
+		let guildDefaultRoles: string[] = await msg.guild.settings.get('defaultRoles', []);
+
 		startTyping(msg);
 
-		switch (args.subCommand.toLowerCase()) {
-			case 'add': {
-				if (!args.name) {
-					stopTyping(msg);
-
-					return sendSimpleEmbeddedError(msg, 'No role specified!', 3000);
-				}
-
-				msg.guild.roles.create({
-					data: {
-						color: args.color,
-						name: args.name
-					}
-				})
+		if (!args.role) {
+			msg.guild.settings.set('defaultRoles', [])
 				.then(() => {
+					// Set up embed message
 					roleEmbed.setDescription(stripIndents`
                         **Member:** ${msg.author.tag} (${msg.author.id})
-                        **Action:** Added role '${args.name}' to the guild.
+                        **Action:** Removed default role(s).
                     `);
+
+					return this.sendSuccess(msg, roleEmbed);
 				})
 				.catch((err: Error) => this.catchError(msg, args, err));
+		} else if (!guildDefaultRoles.includes(args.role.id)) {
+			guildDefaultRoles.push(args.role.id);
 
-				break;
-			}
-			case 'remove': {
-				if (!args.name) {
-					stopTyping(msg);
-
-					return sendSimpleEmbeddedError(msg, 'No role specified!', 3000);
-				}
-
-				if(!msg.guild.roles.has(args.name)) {
-					stopTyping(msg);
-
-					return sendSimpleEmbeddedError(msg, 'Invalid role specified!', 3000);
-				}
-
-				if (msg.guild.roles.delete(args.name)) {
+			msg.guild.settings.set('defaultRoles', guildDefaultRoles)
+				.then(() => {
+					// Set up embed message
 					roleEmbed.setDescription(stripIndents`
                         **Member:** ${msg.author.tag} (${msg.author.id})
-                        **Action:** Removed role '${args.name}' to the guild.
-					`);
-					
-					return this.sendSuccess(msg, roleEmbed);
-				} else {
-					this.catchError(msg, args, null);
-				}
+                        **Action:** Added role '${args.role.name}' to the list of default roles.
+                    `);
 
-				break;
-			}
+					return this.sendSuccess(msg, roleEmbed);
+				})
+				.catch((err: Error) => {
+					msg.client.emit('warn', `Error in command roles:role-add: ${err}`);
+
+					return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
+				});
 		}
 	}
 
-	private catchError(msg: CommandoMessage, args: { subCommand: string, name: string, color: string }, err: Error) {
+	private catchError(msg: CommandoMessage, args: { subCommand: string, role: Role }, err: Error) {
 		// Build warning message
 		let roleWarn = stripIndents`
 			Error occurred in \`role-management\` command!
 			**Server:** ${msg.guild.name} (${msg.guild.id})
 			**Author:** ${msg.author.tag} (${msg.author.id})
 			**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
-			**Input:** \`Role ${args.subCommand.toLowerCase()}\` | role name: ${args.name} | color: ${args.color}`;
+			**Input:** \`Role ${args.subCommand.toLowerCase()}\` | role name: ${args.role}`;
 		let roleUserWarn = '';
 
 		switch (args.subCommand.toLowerCase()) {
+			case 'default': {
+				roleUserWarn = 'Setting/Clearing default role failed!\n';
+				break;
+			}
 			case 'add': {
 				roleUserWarn = 'Adding new role failed!\n';
 				break;
 			}
 			case 'remove': {
-				roleUserWarn = 'Removing role failed!\n';
+				roleUserWarn = 'Removing role message!\n';
 				break;
 			}
 		}
