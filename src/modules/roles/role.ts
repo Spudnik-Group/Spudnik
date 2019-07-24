@@ -101,17 +101,18 @@ export default class RoleCommand extends Command {
 				if (!guildAssignableRoles.includes(args.role.id)) {
 					guildAssignableRoles.push(args.role.id);
 
-					msg.guild.settings.set('assignableRoles', guildAssignableRoles)
-						.then(() => {
-							// Set up embed message
-							roleEmbed.setDescription(stripIndents`
-								**Member:** ${msg.author.tag} (${msg.author.id})
-								**Action:** Added role '${args.role.name}' to the list of assignable roles.
-							`);
+					try {
+						await msg.guild.settings.set('assignableRoles', guildAssignableRoles);
+						// Set up embed message
+						roleEmbed.setDescription(stripIndents`
+							**Member:** ${msg.author.tag} (${msg.author.id})
+							**Action:** Added role '${args.role.name}' to the list of assignable roles.
+						`);
 
-							return this.sendSuccess(msg, roleEmbed);
-						})
-						.catch((err: Error) => this.catchError(msg, args, err));
+						return this.sendSuccess(msg, roleEmbed);
+					} catch (err) {
+						this.catchError(msg, args, err);
+					}
 				} else {
 					stopTyping(msg);
 
@@ -129,17 +130,18 @@ export default class RoleCommand extends Command {
 				if (guildAssignableRoles.includes(args.role.id)) {
 					guildAssignableRoles = guildAssignableRoles.filter((i: string) => i !== args.role.id);
 
-					msg.guild.settings.set('assignableRoles', guildAssignableRoles)
-						.then(() => {
-							// Set up embed message
-							roleEmbed.setDescription(stripIndents`
-								**Member:** ${msg.author.tag} (${msg.author.id})
-								**Action:** Removed role '${args.role.name}' from the list of assignable roles.
-							`);
+					try {
+						await msg.guild.settings.set('assignableRoles', guildAssignableRoles);
+						// Set up embed message
+						roleEmbed.setDescription(stripIndents`
+							**Member:** ${msg.author.tag} (${msg.author.id})
+							**Action:** Removed role '${args.role.name}' from the list of assignable roles.
+						`);
 
-							return this.sendSuccess(msg, roleEmbed);
-						})
-						.catch((err: Error) => this.catchError(msg, args, err));
+						return this.sendSuccess(msg, roleEmbed);
+					} catch (err) {
+						this.catchError(msg, args, err);
+					}
 				} else {
 					stopTyping(msg);
 
@@ -149,35 +151,35 @@ export default class RoleCommand extends Command {
 			}
 			case 'default': {
 				if (!args.role) {
-					msg.guild.settings.set('defaultRoles', [])
-						.then(() => {
-							// Set up embed message
-							roleEmbed.setDescription(stripIndents`
-								**Member:** ${msg.author.tag} (${msg.author.id})
-								**Action:** Removed default role(s).
-							`);
+					try {
+						await msg.guild.settings.set('defaultRoles', []);
+						// Set up embed message
+						roleEmbed.setDescription(stripIndents`
+							**Member:** ${msg.author.tag} (${msg.author.id})
+							**Action:** Removed default role(s).
+						`);
 
-							return this.sendSuccess(msg, roleEmbed);
-						})
-						.catch((err: Error) => this.catchError(msg, args, err));
+						return this.sendSuccess(msg, roleEmbed);
+					} catch (err) {
+						this.catchError(msg, args, err);
+					}
 				} else if (!guildDefaultRoles.includes(args.role.id)) {
 					guildDefaultRoles.push(args.role.id);
 
-					msg.guild.settings.set('defaultRoles', guildDefaultRoles)
-						.then(() => {
-							// Set up embed message
-							roleEmbed.setDescription(stripIndents`
-								**Member:** ${msg.author.tag} (${msg.author.id})
-								**Action:** Added role '${args.role.name}' to the list of default roles.
-							`);
+					try {
+						await msg.guild.settings.set('defaultRoles', guildDefaultRoles);
+						// Set up embed message
+						roleEmbed.setDescription(stripIndents`
+							**Member:** ${msg.author.tag} (${msg.author.id})
+							**Action:** Added role '${args.role.name}' to the list of default roles.
+						`);
 
-							return this.sendSuccess(msg, roleEmbed);
-						})
-						.catch((err: Error) => {
-							msg.client.emit('warn', `Error in command roles:role-add: ${err}`);
+						return this.sendSuccess(msg, roleEmbed);
+					} catch (err) {
+						msg.client.emit('warn', `Error in command roles:role-add: ${err}`);
 
-							return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
-						});
+						return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
+					}
 				}
 				break;
 			}

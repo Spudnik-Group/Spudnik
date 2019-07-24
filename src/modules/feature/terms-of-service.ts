@@ -125,20 +125,21 @@ export default class TermsOfServiceCommand extends Command {
 
 						return sendSimpleEmbeddedMessage(msg, `Terms of Service channel already set to <#${channelID}>!`, 3000);
 					} else {
-						msg.guild.settings.set('tosChannel', channelID)
-							.then(() => {
-								// Set up embed message
-								tosEmbed
-									.setDescription(stripIndents`
-										**Member:** ${msg.author.tag} (${msg.author.id})
-										**Action:** Terms of Service Channel set to <#${channelID}>
-									`)
-									.setFooter('Use the `tos status` command to see the details of this feature')
-									.setTimestamp();
+						try {
+							await msg.guild.settings.set('tosChannel', channelID);
+							// Set up embed message
+							tosEmbed
+								.setDescription(stripIndents`
+									**Member:** ${msg.author.tag} (${msg.author.id})
+									**Action:** Terms of Service Channel set to <#${channelID}>
+								`)
+								.setFooter('Use the `tos status` command to see the details of this feature')
+								.setTimestamp();
 
-								return this.sendSuccess(msg, tosEmbed);
-							})
-							.catch((err: Error) => this.catchError(msg, args, err));
+							return this.sendSuccess(msg, tosEmbed);
+						} catch (err) {
+							this.catchError(msg, args, err);
+						}
 					}
 				} else {
 					stopTyping(msg);
@@ -188,22 +189,22 @@ export default class TermsOfServiceCommand extends Command {
 					}
 				}
 				message.title = args.text;
-				msg.guild.settings.set(`tosMessage${item}`, message)
-					.then(async () => {
-						tosEmbed
-							.setDescription(stripIndents`
-								**Member:** ${msg.author.tag} (${msg.author.id})
-								**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
-							`)
-							.setFooter('Use the `tos status` command to see the details of this feature')
-							.setTimestamp();
+				try {
+					await msg.guild.settings.set(`tosMessage${item}`, message);
+					tosEmbed
+						.setDescription(stripIndents`
+							**Member:** ${msg.author.tag} (${msg.author.id})
+							**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
+						`)
+						.setFooter('Use the `tos status` command to see the details of this feature')
+						.setTimestamp();
 
-						await msg.guild.settings.set('tosMessageCount', tosMessages.length)
-							.catch((err: Error) => this.catchError(msg, args, err));
+					await msg.guild.settings.set('tosMessageCount', tosMessages.length);
 
-						return this.sendSuccess(msg, tosEmbed);
-					})
-					.catch((err: Error) => this.catchError(msg, args, err));
+					return this.sendSuccess(msg, tosEmbed);
+				} catch (err) {
+					this.catchError(msg, args, err);
+				}
 				break;
 			}
 			case 'body': {
@@ -227,22 +228,22 @@ export default class TermsOfServiceCommand extends Command {
 					}
 				}
 				message.body = args.text;
-				msg.guild.settings.set(`tosMessage${args.item}`, message)
-					.then(async () => {
-						tosEmbed
-							.setDescription(stripIndents`
-								**Member:** ${msg.author.tag} (${msg.author.id})
-								**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
-							`)
-							.setFooter('Use the `tos status` command to see the details of this feature')
-							.setTimestamp();
-						
-						await msg.guild.settings.set('tosMessageCount', tosMessages.length)
-							.catch((err: Error) => this.catchError(msg, args, err));
+				try {
+					await msg.guild.settings.set(`tosMessage${args.item}`, message);
+					tosEmbed
+						.setDescription(stripIndents`
+							**Member:** ${msg.author.tag} (${msg.author.id})
+							**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
+						`)
+						.setFooter('Use the `tos status` command to see the details of this feature')
+						.setTimestamp();
+					
+					await msg.guild.settings.set('tosMessageCount', tosMessages.length);
 
-						return this.sendSuccess(msg, tosEmbed);
-					})
-					.catch((err: Error) => this.catchError(msg, args, err));
+					return this.sendSuccess(msg, tosEmbed);
+				} catch (err) {
+					this.catchError(msg, args, err);
+				}
 				break;
 			}
 			case 'status': {

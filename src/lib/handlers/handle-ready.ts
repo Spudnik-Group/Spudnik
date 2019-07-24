@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import { Guild, PresenceData } from 'discord.js';
 import { CommandoClient } from 'discord.js-commando';
 import { Configuration } from 'src/lib/spudnik';
-import * as rp from 'request-promise';
+import axios from 'axios';
 import { stripIndents } from 'common-tags';
 
 export const handleReady = async(version: string, client: CommandoClient, config: Configuration) => {
@@ -109,14 +109,13 @@ const updateStatus = (client: CommandoClient, statuses: PresenceData[], statusIn
  * Update bot list stats on interval
  */
 const updateBotListStats = (config: Configuration, client: CommandoClient): void => {
-
 	console.log(`- Bot is serving on ${client.guilds.size} servers.`);
+	
 	// DISCORD.BOTS.gg
 	if (config.botsggApiKey) {
-		rp.post(`https://discord.bots.gg/api/v1/bots/${client.user.id}/stats`, {
+		axios.post(`https://discord.bots.gg/api/v1/bots/${client.user.id}/stats`, {
 			body: { guildCount: Number(client.guilds.size) },
-			headers: { Authorization: config.botsggApiKey },
-			json: true
+			headers: { Authorization: config.botsggApiKey }
 		})
 		.then(() => console.log('- Posted statistics successfully: discord.bots.gg'))
 		.catch((err) => console.log(stripIndents`- Failed to post statistics: discord.bots.gg
@@ -126,10 +125,9 @@ const updateBotListStats = (config: Configuration, client: CommandoClient): void
 
 	// BOTS.ONDISCORD.xyz
 	if (config.bodApiKey) {
-		rp.post(`https://bots.ondiscord.xyz/bot-api/bots/${client.user.id}/guilds`, {
+		axios.post(`https://bots.ondiscord.xyz/bot-api/bots/${client.user.id}/guilds`, {
 			body: { guildCount: Number(client.guilds.size) },
-			headers: { Authorization: config.bodApiKey },
-			json: true
+			headers: { Authorization: config.bodApiKey }
 		})
 		.then(() => console.log('- Posted statistics successfully: bots.ondiscord.xyz'))
 		.catch((err) => console.log(stripIndents`- Failed to post statistics: bots.ondiscord.xyz
@@ -139,10 +137,9 @@ const updateBotListStats = (config: Configuration, client: CommandoClient): void
 
 	// DISCORDBOTS.org
 	if (config.dbApiKey) {
-		rp.post(`https://discordbots.org/api/bots/${client.user.id}/stats`, {
+		axios.post(`https://discordbots.org/api/bots/${client.user.id}/stats`, {
 			body: { server_count: Number(client.guilds.size) },
-			headers: { Authorization: config.dbApiKey },
-			json: true
+			headers: { Authorization: config.dbApiKey }
 		})
 		.then(() => console.log('- Posted statistics successfully: discordbots.org'))
 		.catch((err) => console.log(stripIndents`- Failed to post statistics: discordbots.org
@@ -152,10 +149,9 @@ const updateBotListStats = (config: Configuration, client: CommandoClient): void
 
 	// BOTSFORDISCORD.com
 	if (config.bfdApiKey) {
-		rp.post(`https://botsfordiscord.com/api/bot/${client.user.id}`, {
+		axios.post(`https://botsfordiscord.com/api/bot/${client.user.id}`, {
 			body: { server_count: Number(client.guilds.size) },
-			headers: { Authorization: config.bfdApiKey },
-			json: true
+			headers: { Authorization: config.bfdApiKey }
 		})
 		.then(() => console.log('- Posted statistics successfully: botsfordiscord.com'))
 		.catch((err) => console.log(stripIndents`- Failed to post statistics: botsfordiscord.com
@@ -165,10 +161,9 @@ const updateBotListStats = (config: Configuration, client: CommandoClient): void
 
 	// DISCORDBOTLIST.com
 	if (config.dblApiKey) {
-		rp.post(`https://discordbotlist.com/api/bots/${client.user.id}/stats`, {
+		axios.post(`https://discordbotlist.com/api/bots/${client.user.id}/stats`, {
 			body: { guilds: Number(client.guilds.size), users: Number(client.users.size) },
-			headers: { Authorization: `Bot ${config.dblApiKey}` },
-			json: true
+			headers: { Authorization: `Bot ${config.dblApiKey}` }
 		})
 		.then(() => console.log('- Posted statistics successfully: discordbotlist.com'))
 		.catch((err) => console.log(stripIndents`- Failed to post statistics: discordbotlist.com

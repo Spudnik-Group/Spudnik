@@ -58,28 +58,27 @@ export default class UnshortCommand extends Command {
 	public async run(msg: CommandoMessage, args: { query: string }): Promise<Message | Message[]> {
 		startTyping(msg);
 
-		return require('url-unshort')().expand(args.query)
-			.then((url: string) => {
-				if (url) {
-					deleteCommandMessages(msg);
-					stopTyping(msg);
-					
-					// Send the success response
-					return sendSimpleEmbeddedMessage(msg, `Original url is: <${url}>`);
-				}
-
+		try {
+			const url: string = await require('url-unshort')().expand(args.query);
+			if (url) {
 				deleteCommandMessages(msg);
 				stopTyping(msg);
 				
-				return sendSimpleEmbeddedError(msg, 'This url can\'t be expanded. Make sure the protocol exists (Http/Https) and try again.', 3000);
-			})
-			.catch((err: Error) => {
-				msg.client.emit('warn', `Error in command misc:unshort: ${err}`);
+				// Send the success response
+				return sendSimpleEmbeddedMessage(msg, `Original url is: <${url}>`);
+			}
 
-				deleteCommandMessages(msg);
-				stopTyping(msg);
-				
-				return sendSimpleEmbeddedError(msg, 'There was an error with the request. The url may not be valid. Try again?', 3000);
-			});
+			deleteCommandMessages(msg);
+			stopTyping(msg);
+			
+			return sendSimpleEmbeddedError(msg, 'This url can\'t be expanded. Make sure the protocol exists (Http/Https) and try again.', 3000);
+		} catch (err) {
+			msg.client.emit('warn', `Error in command misc:unshort: ${err}`);
+
+			deleteCommandMessages(msg);
+			stopTyping(msg);
+			
+			return sendSimpleEmbeddedError(msg, 'There was an error with the request. The url may not be valid. Try again?', 3000);
+		}
 	}
 }

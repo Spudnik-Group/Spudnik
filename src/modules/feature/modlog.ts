@@ -98,18 +98,19 @@ export default class ModlogCommand extends Command {
 
 						return sendSimpleEmbeddedMessage(msg, 'Modlog feature already enabled!', 3000);
 					} else {
-						msg.guild.settings.set('modlogEnabled', true)
-							.then(() => {
-								// Set up embed message
-								modlogEmbed.setDescription(stripIndents`
-									**Member:** ${msg.author.tag} (${msg.author.id})
-									**Action:** Modlog set to: _Enabled_
-								`);
-								modlogEmbed.setFooter('Use the `modlog status` command to see the details of this feature');
+						try {
+							await msg.guild.settings.set('modlogEnabled', true);
+							// Set up embed message
+							modlogEmbed.setDescription(stripIndents`
+								**Member:** ${msg.author.tag} (${msg.author.id})
+								**Action:** Modlog set to: _Enabled_
+							`);
+							modlogEmbed.setFooter('Use the `modlog status` command to see the details of this feature');
 
-								return this.sendSuccess(msg, modlogEmbed);
-							})
-							.catch((err: Error) => this.catchError(msg, args, err));
+							return this.sendSuccess(msg, modlogEmbed);
+						} catch (err) {
+							this.catchError(msg, args, err);
+						}
 					}
 				} else {
 					stopTyping(msg);
@@ -120,18 +121,19 @@ export default class ModlogCommand extends Command {
 			}
 			case 'disable': {
 				if (modlogEnabled) {
-					msg.guild.settings.set('modlogEnabled', false)
-						.then(() => {
-							// Set up embed message
-							modlogEmbed.setDescription(stripIndents`
-								**Member:** ${msg.author.tag} (${msg.author.id})
-								**Action:** Modlog set to: _Disabled_
-							`);
-							modlogEmbed.setFooter('Use the `modlog status` command to see the details of this feature');
+					try {
+						await msg.guild.settings.set('modlogEnabled', false);
+						// Set up embed message
+						modlogEmbed.setDescription(stripIndents`
+							**Member:** ${msg.author.tag} (${msg.author.id})
+							**Action:** Modlog set to: _Disabled_
+						`);
+						modlogEmbed.setFooter('Use the `modlog status` command to see the details of this feature');
 
-							return this.sendSuccess(msg, modlogEmbed);
-						})
-						.catch((err: Error) => this.catchError(msg, args, err));
+						return this.sendSuccess(msg, modlogEmbed);
+					} catch (err) {
+						this.catchError(msg, args, err);
+					}
 				} else {
 					stopTyping(msg);
 
@@ -148,18 +150,19 @@ export default class ModlogCommand extends Command {
 
 						return sendSimpleEmbeddedMessage(msg, `Modlog channel already set to <#${channelID}>!`, 3000);
 					} else {
-						msg.guild.settings.set('modlogChannel', channelID)
-							.then(() => {
-								// Set up embed message
-								modlogEmbed.setDescription(stripIndents`
-									**Member:** ${msg.author.tag} (${msg.author.id})
-									**Action:** Modlog Channel set to <#${channelID}>
-								`);
-								modlogEmbed.setFooter('Use the `modlog status` command to see the details of this feature');
+						try {
+							await msg.guild.settings.set('modlogChannel', channelID);
+							// Set up embed message
+							modlogEmbed.setDescription(stripIndents`
+								**Member:** ${msg.author.tag} (${msg.author.id})
+								**Action:** Modlog Channel set to <#${channelID}>
+							`);
+							modlogEmbed.setFooter('Use the `modlog status` command to see the details of this feature');
 
-								return this.sendSuccess(msg, modlogEmbed);
-							})
-							.catch((err: Error) => this.catchError(msg, args, err));
+							return this.sendSuccess(msg, modlogEmbed);
+						} catch (err) {
+							this.catchError(msg, args, err);
+						}
 					}
 				} else {
 					stopTyping(msg);

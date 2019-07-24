@@ -3,7 +3,7 @@ import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { startTyping, sendSimpleEmbeddedError, stopTyping } from '../../lib/helpers';
 import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
-import * as rp from 'request-promise';
+import axios from 'axios';
 
 const apiKey = process.env.spud_trackerapi;
 
@@ -137,10 +137,10 @@ export default class ApexLegendsStatsCommand extends Command {
 
 		startTyping(msg);
 
-		return rp(`https://public-api.tracker.gg/apex/v1/standard/profile/${platforms[args.platform]}/${encodeURI(args.username)}`, {
-			headers: { 'TRN-Api-Key': apiKey }
-		}).then((content: string) => {
-			const response: ApexLegendsResponse = JSON.parse(content);
+		try {
+			const response: ApexLegendsResponse = await axios.get(`https://public-api.tracker.gg/apex/v1/standard/profile/${platforms[args.platform]}/${encodeURI(args.username)}`, {
+				headers: { 'TRN-Api-Key': apiKey }
+			});
 			if (response.data.children && response.data.children.length) {
 				apexEmbed.thumbnail.url = response.data.children[0].metadata.icon || ''
 			}
@@ -151,7 +151,7 @@ export default class ApexLegendsStatsCommand extends Command {
 				value: response.data.metadata.platformUserHandle
 			});
 
-			response.data.stats.forEach((stat) => {
+			response.data.stats.forEach((stat: any) => {
 				apexEmbed.fields.push({
 					inline: true,
 					name: stat.metadata.name,
@@ -163,20 +163,20 @@ export default class ApexLegendsStatsCommand extends Command {
 			stopTyping(msg);
 			
 			return msg.embed(apexEmbed);
-		}).catch((response) => {
+		} catch (err) {
 			let error = 'There was an error with the request. Try again?';
 			try {
-				if (!response.error) {
+				if (!err.error) {
 					throw 'No error from the api was given.';
 				}
-				const decodedResponse = JSON.parse(response.error);
+				const decodedResponse = JSON.parse(err.error);
 				error = decodedResponse.errors[0].message;
 			} catch (decodeError) {
-				msg.client.emit('warn', `Error in command gaming:apex-legend-stats: ${response}`);
+				msg.client.emit('warn', `Error in command gaming:apex-legend-stats: ${err}`);
 			}
 			stopTyping(msg);
 
 			return sendSimpleEmbeddedError(msg, error, 3000);
-		});
+		}
 	}
 }

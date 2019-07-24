@@ -103,18 +103,19 @@ export default class WelcomeCommand extends Command {
 
 						return sendSimpleEmbeddedMessage(msg, `Welcome channel already set to <#${channelID}>!`, 3000);
 					} else {
-						msg.guild.settings.set('welcomeChannel', channelID)
-							.then(() => {
-								// Set up embed message
-								welcomeEmbed.setDescription(stripIndents`
-									**Member:** ${msg.author.tag} (${msg.author.id})
-									**Action:** Welcome Channel set to <#${channelID}>
-								`);
-								welcomeEmbed.setFooter('Use the `welcome status` command to see the details of this feature');
+						try {
+							await msg.guild.settings.set('welcomeChannel', channelID);
+							// Set up embed message
+							welcomeEmbed.setDescription(stripIndents`
+								**Member:** ${msg.author.tag} (${msg.author.id})
+								**Action:** Welcome Channel set to <#${channelID}>
+							`);
+							welcomeEmbed.setFooter('Use the `welcome status` command to see the details of this feature');
 
-								return this.sendSuccess(msg, welcomeEmbed);
-							})
-							.catch((err: Error) => this.catchError(msg, args, err));
+							return this.sendSuccess(msg, welcomeEmbed);
+						} catch (err) {
+							this.catchError(msg, args, err);
+						}
 					}
 				} else {
 					stopTyping(msg);
@@ -129,19 +130,20 @@ export default class WelcomeCommand extends Command {
 
 					return sendSimpleEmbeddedMessage(msg, 'You must include the new message along with the `message` command. See `help welcome` for details.', 3000);
 				} else {
-					msg.guild.settings.set('welcomeMessage', args.content)
-						.then(() => {
-							// Set up embed message
-							welcomeEmbed.setDescription(stripIndents`
-								**Member:** ${msg.author.tag} (${msg.author.id})
-								**Action:** Welcome message set to:
-								\`\`\`${args.content}\`\`\`
-							`);
-							welcomeEmbed.setFooter('Use the `welcome status` command to see the details of this feature');
+					try {
+						await msg.guild.settings.set('welcomeMessage', args.content);
+						// Set up embed message
+						welcomeEmbed.setDescription(stripIndents`
+							**Member:** ${msg.author.tag} (${msg.author.id})
+							**Action:** Welcome message set to:
+							\`\`\`${args.content}\`\`\`
+						`);
+						welcomeEmbed.setFooter('Use the `welcome status` command to see the details of this feature');
 
-							return this.sendSuccess(msg, welcomeEmbed);
-						})
-						.catch((err: Error) => this.catchError(msg, args, err));
+						return this.sendSuccess(msg, welcomeEmbed);
+					} catch (err) {
+						this.catchError(msg, args, err);
+					}
 				}
 				break;
 			}
@@ -152,18 +154,19 @@ export default class WelcomeCommand extends Command {
 	
 						return sendSimpleEmbeddedMessage(msg, 'Welcome message already enabled!', 3000);
 					} else {
-						msg.guild.settings.set('welcomeEnabled', true)
-							.then(() => {
-								// Set up embed message
-								welcomeEmbed.setDescription(stripIndents`
-									**Member:** ${msg.author.tag} (${msg.author.id})
-									**Action:** Welcome messages set to: _Enabled_
-								`);
-								welcomeEmbed.setFooter('Use the `welcome status` command to see the details of this feature');
+						try {
+							await msg.guild.settings.set('welcomeEnabled', true);
+							// Set up embed message
+							welcomeEmbed.setDescription(stripIndents`
+								**Member:** ${msg.author.tag} (${msg.author.id})
+								**Action:** Welcome messages set to: _Enabled_
+							`);
+							welcomeEmbed.setFooter('Use the `welcome status` command to see the details of this feature');
 
-								return this.sendSuccess(msg, welcomeEmbed);
-							})
-							.catch((err: Error) => this.catchError(msg, args, err));
+							return this.sendSuccess(msg, welcomeEmbed);
+						} catch (err) {
+							this.catchError(msg, args, err);
+						}
 					}
 				} else {
 					stopTyping(msg);
@@ -174,18 +177,19 @@ export default class WelcomeCommand extends Command {
 			}
 			case 'disable': {
 				if (welcomeEnabled) {
-					msg.guild.settings.set('welcomeEnabled', false)
-						.then(() => {
-							// Set up embed message
-							welcomeEmbed.setDescription(stripIndents`
-								**Member:** ${msg.author.tag} (${msg.author.id})
-								**Action:** Welcome messages set to: _Disabled_
-							`);
-							welcomeEmbed.setFooter('Use the `welcome status` command to see the details of this feature');
+					try {
+						await msg.guild.settings.set('welcomeEnabled', false);
+						// Set up embed message
+						welcomeEmbed.setDescription(stripIndents`
+							**Member:** ${msg.author.tag} (${msg.author.id})
+							**Action:** Welcome messages set to: _Disabled_
+						`);
+						welcomeEmbed.setFooter('Use the `welcome status` command to see the details of this feature');
 
-							return this.sendSuccess(msg, welcomeEmbed);
-						})
-						.catch((err: Error) => this.catchError(msg, args, err));
+						return this.sendSuccess(msg, welcomeEmbed);
+					} catch (err) {
+						this.catchError(msg, args, err);
+					}
 				} else {
 					stopTyping(msg);
 

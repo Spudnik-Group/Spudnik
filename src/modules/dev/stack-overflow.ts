@@ -3,7 +3,7 @@ import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { startTyping, sendSimpleEmbeddedError, stopTyping } from '../../lib/helpers';
 import { getEmbedColor } from '../../lib/custom-helpers';
-import * as rp from 'request-promise';
+import axios from 'axios';
 import * as format from 'date-fns/format';
 
 const apikey = process.env.spud_stackoverflowapi;
@@ -72,38 +72,32 @@ export default class StackOverflowCommand extends Command {
 
 		startTyping(msg);
 
-		return rp.get({
-			gzip: true,
-			json: true,
-			uri: `https://api.stackexchange.com/2.2/search/advanced?${queryParams}`
-		})
-			.then((res: any) => {
-				const data = res;
-				if (!data.items) {
-					stopTyping(msg);
-
-					return sendSimpleEmbeddedError(msg, 'Your query did not return any results', 3000)
-				}
-				const firstRes = data.items[0];
-
-				stackEmbed
-					.setURL(firstRes.link)
-					.setTitle(firstRes.title)
-					.addField('❯ ID', firstRes.question_id, true)
-					.addField('❯ Asker', `[${firstRes.owner.display_name}](${firstRes.owner.link})`, true)
-					.addField('❯ Views', firstRes.view_count, true)
-					.addField('❯ Score', firstRes.score, true)
-					.addField('❯ Creation Date', format(firstRes.creation_date * 1000, 'MM/DD/YYYY h:mm A'), true)
-					.addField('❯ Last Activity', format(firstRes.last_activity_date * 1000, 'MM/DD/YYYY h:mm A'), true);
+		try {
+			const data: any = await axios.get(`https://api.stackexchange.com/2.2/search/advanced?${queryParams}`);
+			if (!data.items) {
 				stopTyping(msg);
-				
-				return msg.embed(stackEmbed)
-			})
-			.catch((response) => {
-				stopTyping(msg);
-				msg.client.emit('warn', `Error in command dev:stack-overflow: ${response}`);
 
-				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
-			});
+				return sendSimpleEmbeddedError(msg, 'Your query did not return any results', 3000)
+			}
+			const firstRes = data.items[0];
+
+			stackEmbed
+				.setURL(firstRes.link)
+				.setTitle(firstRes.title)
+				.addField('❯ ID', firstRes.question_id, true)
+				.addField('❯ Asker', `[${firstRes.owner.display_name}](${firstRes.owner.link})`, true)
+				.addField('❯ Views', firstRes.view_count, true)
+				.addField('❯ Score', firstRes.score, true)
+				.addField('❯ Creation Date', format(firstRes.creation_date * 1000, 'MM/DD/YYYY h:mm A'), true)
+				.addField('❯ Last Activity', format(firstRes.last_activity_date * 1000, 'MM/DD/YYYY h:mm A'), true);
+			stopTyping(msg);
+			
+			return msg.embed(stackEmbed)
+		} catch (err) {
+			stopTyping(msg);
+			msg.client.emit('warn', `Error in command dev:stack-overflow: ${err}`);
+
+			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+		}
 	}
 }
