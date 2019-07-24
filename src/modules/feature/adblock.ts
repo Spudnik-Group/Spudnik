@@ -93,7 +93,7 @@ export default class AdblockCommand extends Command {
 
 					return this.sendSuccess(msg, adblockEmbed);
 				} catch (err) {
-					this.catchError(msg, args, err)
+					return this.catchError(msg, args, err)
 				}
 			}
 		} else if (args.subCommand.toLowerCase() === 'disable') {
@@ -108,7 +108,7 @@ export default class AdblockCommand extends Command {
 
 					return this.sendSuccess(msg, adblockEmbed);
 				} catch (err) {
-					this.catchError(msg, args, err)
+					return this.catchError(msg, args, err)
 				}
 			} else {
 				stopTyping(msg);

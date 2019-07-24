@@ -138,7 +138,7 @@ export default class TermsOfServiceCommand extends Command {
 
 							return this.sendSuccess(msg, tosEmbed);
 						} catch (err) {
-							this.catchError(msg, args, err);
+							return this.catchError(msg, args, err);
 						}
 					}
 				} else {
@@ -146,7 +146,6 @@ export default class TermsOfServiceCommand extends Command {
 
 					return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
 				}
-				break;
 			}
 			case 'list': {
 				if (tosChannel && tosChannel === msg.channel.id) {
@@ -203,9 +202,8 @@ export default class TermsOfServiceCommand extends Command {
 
 					return this.sendSuccess(msg, tosEmbed);
 				} catch (err) {
-					this.catchError(msg, args, err);
+					return this.catchError(msg, args, err);
 				}
-				break;
 			}
 			case 'body': {
 				item = Number(args.item);
@@ -242,9 +240,8 @@ export default class TermsOfServiceCommand extends Command {
 
 					return this.sendSuccess(msg, tosEmbed);
 				} catch (err) {
-					this.catchError(msg, args, err);
+					return this.catchError(msg, args, err);
 				}
-				break;
 			}
 			case 'status': {
 				let tosList = '';
@@ -259,7 +256,6 @@ export default class TermsOfServiceCommand extends Command {
 
 				// Send the success response
 				return msg.embed(tosEmbed);
-				break;
 			}
 		}
 	}

@@ -114,7 +114,7 @@ export default class GoodbyeCommand extends Command {
 
 							return this.sendSuccess(msg, goodbyeEmbed);
 						} catch (err) {
-							this.catchError(msg, args, err)
+							return this.catchError(msg, args, err)
 						}
 					}
 				} else {
@@ -122,7 +122,6 @@ export default class GoodbyeCommand extends Command {
 
 					return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
 				}
-				break;
 			}
 			case 'message': {
 				if (!args.content) {
@@ -142,10 +141,9 @@ export default class GoodbyeCommand extends Command {
 
 						return this.sendSuccess(msg, goodbyeEmbed);
 					} catch (err) {
-						this.catchError(msg, args, err)
+						return this.catchError(msg, args, err)
 					}
 				}
-				break;
 			}
 			case 'enable': {
 				if (goodbyeChannel) {
@@ -165,7 +163,7 @@ export default class GoodbyeCommand extends Command {
 
 							return this.sendSuccess(msg, goodbyeEmbed);
 						} catch (err) {
-							this.catchError(msg, args, err)
+							return this.catchError(msg, args, err)
 						}
 					}
 				} else {
@@ -173,7 +171,6 @@ export default class GoodbyeCommand extends Command {
 
 					return sendSimpleEmbeddedError(msg, 'Please set the channel for the goodbye message before enabling the feature. See `help goodbye` for info.', 3000);
 				}
-				break;
 			}
 			case 'disable': {
 				if (goodbyeEnabled) {
@@ -188,27 +185,27 @@ export default class GoodbyeCommand extends Command {
 
 						return this.sendSuccess(msg, goodbyeEmbed);
 					} catch (err) {
-						this.catchError(msg, args, err)
+						return this.catchError(msg, args, err)
 					}
 				} else {
 					stopTyping(msg);
 
 					return sendSimpleEmbeddedMessage(msg, 'Goodbye message already disabled!', 3000);
 				}
-				break;
 			}
 			case 'status': {
 				// Set up embed message
-				goodbyeEmbed.setDescription(stripIndents`Goodbye feature: ${goodbyeEnabled ? '_Enabled_' : '_Disabled_'}
-				Channel set to: <#${goodbyeChannel}>
-				Message set to:
-				\`\`\`${goodbyeMessage}\`\`\` `)
+				goodbyeEmbed.setDescription(stripIndents`
+					Goodbye feature: ${goodbyeEnabled ? '_Enabled_' : '_Disabled_'}
+					Channel set to: <#${goodbyeChannel}>
+					Message set to:
+					\`\`\`${goodbyeMessage}\`\`\`
+				`);
 				deleteCommandMessages(msg);
 				stopTyping(msg);
 
 				// Send the success response
 				return msg.embed(goodbyeEmbed);
-				break;
 			}
 		}
 	}

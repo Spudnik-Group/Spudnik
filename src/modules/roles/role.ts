@@ -96,19 +96,20 @@ export default class RoleCommand extends Command {
 					return sendSimpleEmbeddedError(msg, 'No role specified!', 3000);
 				}
 
-				msg.guild.roles.create({
-					data: {
-						color: args.color,
-						name: args.name
-					}
-				})
-				.then(() => {
-					roleEmbed.setDescription(stripIndents`
-                        **Member:** ${msg.author.tag} (${msg.author.id})
-                        **Action:** Added role '${args.name}' to the guild.
-                    `);
-				})
-				.catch((err: Error) => this.catchError(msg, args, err));
+				try {
+					await msg.guild.roles.create({
+						data: {
+							color: args.color,
+							name: args.name
+						}
+					});
+				} catch (err) {
+					return this.catchError(msg, args, err);
+				}
+				roleEmbed.setDescription(stripIndents`
+					**Member:** ${msg.author.tag} (${msg.author.id})
+					**Action:** Added role '${args.name}' to the guild.
+				`);
 
 				break;
 			}
@@ -119,26 +120,30 @@ export default class RoleCommand extends Command {
 					return sendSimpleEmbeddedError(msg, 'No role specified!', 3000);
 				}
 
-				if(!msg.guild.roles.has(args.name)) {
+				if (!msg.guild.roles.has(args.name)) {
 					stopTyping(msg);
 
 					return sendSimpleEmbeddedError(msg, 'Invalid role specified!', 3000);
 				}
 
-				if (msg.guild.roles.delete(args.name)) {
-					roleEmbed.setDescription(stripIndents`
-                        **Member:** ${msg.author.tag} (${msg.author.id})
-                        **Action:** Removed role '${args.name}' to the guild.
-					`);
-					
-					return this.sendSuccess(msg, roleEmbed);
-				} else {
-					this.catchError(msg, args, null);
+				try {
+					await msg.guild.roles.delete(args.name);
+				} catch (err) {
+					return this.catchError(msg, args, null);
 				}
-
-				break;
+				roleEmbed.setDescription(stripIndents`
+					**Member:** ${msg.author.tag} (${msg.author.id})
+					**Action:** Removed role \`${args.name}\` from the guild.
+				`);
 			}
 		}
+
+		modLogMessage(msg, roleEmbed);
+		deleteCommandMessages(msg);
+		stopTyping(msg);
+
+		// Send the success response
+		return msg.embed(roleEmbed);
 	}
 
 	private catchError(msg: CommandoMessage, args: { subCommand: string, name: string, color: string }, err: Error) {
@@ -171,14 +176,5 @@ export default class RoleCommand extends Command {
 
 		// Inform the user the command failed
 		return sendSimpleEmbeddedError(msg, roleUserWarn);
-	}
-
-	private sendSuccess(msg: CommandoMessage, embed: MessageEmbed): Promise<Message | Message[]> {
-		modLogMessage(msg, embed);
-		deleteCommandMessages(msg);
-		stopTyping(msg);
-
-		// Send the success response
-		return msg.embed(embed);
 	}
 }

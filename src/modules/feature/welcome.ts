@@ -114,7 +114,7 @@ export default class WelcomeCommand extends Command {
 
 							return this.sendSuccess(msg, welcomeEmbed);
 						} catch (err) {
-							this.catchError(msg, args, err);
+							return this.catchError(msg, args, err);
 						}
 					}
 				} else {
@@ -122,7 +122,6 @@ export default class WelcomeCommand extends Command {
 
 					return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
 				}
-				break;
 			}
 			case 'message': {
 				if (!args.content) {
@@ -142,10 +141,9 @@ export default class WelcomeCommand extends Command {
 
 						return this.sendSuccess(msg, welcomeEmbed);
 					} catch (err) {
-						this.catchError(msg, args, err);
+						return this.catchError(msg, args, err);
 					}
 				}
-				break;
 			}
 			case 'enable': {
 				if (welcomeChannel) {
@@ -165,7 +163,7 @@ export default class WelcomeCommand extends Command {
 
 							return this.sendSuccess(msg, welcomeEmbed);
 						} catch (err) {
-							this.catchError(msg, args, err);
+							return this.catchError(msg, args, err);
 						}
 					}
 				} else {
@@ -173,7 +171,6 @@ export default class WelcomeCommand extends Command {
 
 					return sendSimpleEmbeddedError(msg, 'Please set the channel for the welcome message before enabling the feature. See `help welcome` for info.', 3000);
 				}
-				break;
 			}
 			case 'disable': {
 				if (welcomeEnabled) {
@@ -188,27 +185,27 @@ export default class WelcomeCommand extends Command {
 
 						return this.sendSuccess(msg, welcomeEmbed);
 					} catch (err) {
-						this.catchError(msg, args, err);
+						return this.catchError(msg, args, err);
 					}
 				} else {
 					stopTyping(msg);
 
 					return sendSimpleEmbeddedMessage(msg, 'Welcome message already disabled!', 3000);
 				}
-				break;
 			}
 			case 'status': {
 				// Set up embed message
-				welcomeEmbed.setDescription(stripIndents`Welcome feature: ${welcomeEnabled ? '_Enabled_' : '_Disabled_'}
-				Channel set to: <#${welcomeChannel}>
-				Message set to:
-				\`\`\`${welcomeMessage}\`\`\` `)
+				welcomeEmbed.setDescription(stripIndents`
+					Welcome feature: ${welcomeEnabled ? '_Enabled_' : '_Disabled_'}
+					Channel set to: <#${welcomeChannel}>
+					Message set to:
+					\`\`\`${welcomeMessage}\`\`\`
+				`);
 				deleteCommandMessages(msg);
 				stopTyping(msg);
 
 				// Send the success response
 				return msg.embed(welcomeEmbed);
-				break;
 			}
 		}
 	}

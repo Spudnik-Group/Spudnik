@@ -109,7 +109,7 @@ export default class ModlogCommand extends Command {
 
 							return this.sendSuccess(msg, modlogEmbed);
 						} catch (err) {
-							this.catchError(msg, args, err);
+							return this.catchError(msg, args, err);
 						}
 					}
 				} else {
@@ -117,7 +117,6 @@ export default class ModlogCommand extends Command {
 
 					return sendSimpleEmbeddedError(msg, 'Please set the channel for the modlog before enabling the feature. See `!help modlog` for info.', 3000);
 				}
-				break;
 			}
 			case 'disable': {
 				if (modlogEnabled) {
@@ -132,14 +131,13 @@ export default class ModlogCommand extends Command {
 
 						return this.sendSuccess(msg, modlogEmbed);
 					} catch (err) {
-						this.catchError(msg, args, err);
+						return this.catchError(msg, args, err);
 					}
 				} else {
 					stopTyping(msg);
 
 					return sendSimpleEmbeddedMessage(msg, 'Modlog feature already disabled!', 3000);
 				}
-				break;
 			}
 			case 'channel': {
 				if (args.channel instanceof Channel) {
@@ -161,7 +159,7 @@ export default class ModlogCommand extends Command {
 
 							return this.sendSuccess(msg, modlogEmbed);
 						} catch (err) {
-							this.catchError(msg, args, err);
+							return this.catchError(msg, args, err);
 						}
 					}
 				} else {
@@ -169,7 +167,6 @@ export default class ModlogCommand extends Command {
 
 					return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
 				}
-				break;
 			}
 			case 'status': {
 				// Set up embed message

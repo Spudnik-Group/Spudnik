@@ -92,7 +92,7 @@ export default class EmbedColorCommand extends Command {
 
 				return this.sendSuccess(msg, embedColorEmbed);
 			} catch (err) {
-				this.catchError(msg, args, err)
+				return this.catchError(msg, args, err)
 			}
 		} else {
 			try {
@@ -105,7 +105,7 @@ export default class EmbedColorCommand extends Command {
 
 				return this.sendSuccess(msg, embedColorEmbed);
 			} catch (err) {
-				this.catchError(msg, args, err)
+				return this.catchError(msg, args, err)
 			}
 		}
 	}
