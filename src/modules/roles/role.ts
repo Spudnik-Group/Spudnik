@@ -1,5 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { Message, MessageEmbed, Role, Guild, ColorResolvable } from 'discord.js';
+import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, startTyping, stopTyping } from '../../lib/helpers';
