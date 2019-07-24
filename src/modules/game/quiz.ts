@@ -2,6 +2,7 @@ import { stripIndents } from 'common-tags';
 import { Message } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { list, shuffle } from '../../lib/helpers';
+import axios from 'axios';
 const types: string[] = ['multiple', 'boolean'];
 const difficulties: string[] = ['easy', 'medium', 'hard'];
 const choices: string[] = ['A', 'B', 'C', 'D'];
@@ -66,14 +67,13 @@ export default class QuizCommand extends Command {
 	 */
 	public async run(msg: CommandoMessage, args: { type: string, difficulty: string }): Promise<Message | Message[]> {
 		try {
-			const { body } = await require('node-superfetch')
-				.get('https://opentdb.com/api.php')
-				.query({
+			const { body } = await axios.get('https://opentdb.com/api.php', {
+				params: {
 					amount: 1,
 					difficulty: args.difficulty,
 					encode: 'url3986',
 					type: args.type
-				});
+				}});
 			if (!body.results) { return msg.reply('Oh no, a question could not be fetched. Try again later!'); }
 			const answers = body.results[0].incorrect_answers.map((answer: string) => decodeURIComponent(answer.toLowerCase()));
 			const correct = decodeURIComponent(body.results[0].correct_answer.toLowerCase());

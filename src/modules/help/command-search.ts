@@ -55,7 +55,7 @@ export default class CommandSearchCommand extends Command {
 		const commandsEmbed: MessageEmbed = new MessageEmbed()
 			.setColor(getEmbedColor(msg))
 			.setFooter(`Comrade! I bring ${this.client.registry.commands.size} commands in this version!`);
-		const commands = this.client.registry.commands.array().filter((command: any) => command.name.includes(args.commandName));
+		const commands = this.client.registry.findCommands(args.commandName);
 		
 		if (commands.length > 0) {
 			commandsEmbed

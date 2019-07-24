@@ -3,7 +3,7 @@ import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { startTyping, sendSimpleEmbeddedError, stopTyping } from '../../lib/helpers';
 import { getEmbedColor } from '../../lib/custom-helpers';
-import * as rp from 'request-promise';
+import axios from 'axios';
 
 /**
  * Returns details for a GitHub repository.
@@ -77,44 +77,41 @@ export default class GithubCommand extends Command {
 
 		startTyping(msg);
 
-		return rp.get({
-			headers: {
-				'Accept': 'application/vnd.github.v3+json',
-				'User-Agent': 'Spudnik Bot'
-			},
-			json: true,
-			uri: `https://api.github.com/repos/${args.query}`
-		})
-			.then((res: any) => {
-				const size = res.size <= 1024 ? `${res.size} KB` : Math.floor(res.size / 1024) > 1024 ? `${(res.size / 1024 / 1024).toFixed(2)} GB` : `${(res.size / 1024).toFixed(2)} MB`;
-				const license = res.license && res.license.name && res.license.url ? `[${res.license.name}](${res.license.url})` : res.license && res.license.name || 'None';
-				const footer = [];
-				if(res.fork) footer.push(`❯ **Forked** from [${res.parent.full_name}](${res.parent.html_url})`);
-				if(res.archived) footer.push('❯ This repository is **Archived**');
-				githubEmbed
-					.setTitle(res.full_name)
-					.setURL(res.html_url)
-					.setThumbnail(res.owner.avatar_url)
-					.setDescription(`
-						${res.description || 'No Description.'}
-						
-						❯ **Language:** ${res.language}
-						❯ **Forks:** ${res.forks_count.toLocaleString()}
-						❯ **License:** ${license}
-						❯ **Open Issues:** ${res.open_issues.toLocaleString()}
-						❯ **Watchers:** ${res.subscribers_count.toLocaleString()}
-						❯ **Stars:** ${res.stargazers_count.toLocaleString()}
-						❯ **Clone Size:** ${size}${footer.length ? `${footer.join('\n')}` : ''}
-					`);
-				stopTyping(msg);
-				
-				return msg.embed(githubEmbed)
-			})
-			.catch((response) => {
-				stopTyping(msg);
-				msg.client.emit('warn', `Error in command dev:github: ${response}`);
-
-				return sendSimpleEmbeddedError(msg, 'Could not fetch that repo, are you sure it exists?', 3000);
+		try {
+			const res: any = await axios.get(`https://api.github.com/repos/${args.query}`, {
+				headers: {
+					'Accept': 'application/vnd.github.v3+json',
+					'User-Agent': 'Spudnik Bot'
+				}
 			});
+			const size = res.size <= 1024 ? `${res.size} KB` : Math.floor(res.size / 1024) > 1024 ? `${(res.size / 1024 / 1024).toFixed(2)} GB` : `${(res.size / 1024).toFixed(2)} MB`;
+			const license = res.license && res.license.name && res.license.url ? `[${res.license.name}](${res.license.url})` : res.license && res.license.name || 'None';
+			const footer = [];
+			if(res.fork) footer.push(`❯ **Forked** from [${res.parent.full_name}](${res.parent.html_url})`);
+			if(res.archived) footer.push('❯ This repository is **Archived**');
+			githubEmbed
+				.setTitle(res.full_name)
+				.setURL(res.html_url)
+				.setThumbnail(res.owner.avatar_url)
+				.setDescription(`
+					${res.description || 'No Description.'}
+					
+					❯ **Language:** ${res.language}
+					❯ **Forks:** ${res.forks_count.toLocaleString()}
+					❯ **License:** ${license}
+					❯ **Open Issues:** ${res.open_issues.toLocaleString()}
+					❯ **Watchers:** ${res.subscribers_count.toLocaleString()}
+					❯ **Stars:** ${res.stargazers_count.toLocaleString()}
+					❯ **Clone Size:** ${size}${footer.length ? `${footer.join('\n')}` : ''}
+				`);
+			stopTyping(msg);
+			
+			return msg.embed(githubEmbed)
+		} catch(err) {
+			stopTyping(msg);
+			msg.client.emit('warn', `Error in command dev:github: ${err}`);
+
+			return sendSimpleEmbeddedError(msg, 'Could not fetch that repo, are you sure it exists?', 3000);
+		}
 	}
 }

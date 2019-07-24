@@ -4,6 +4,8 @@ import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, startTyping, stopTyping } from '../../lib/helpers';
 
+const UD = require('urban-dictionary');
+
 /**
  * Post an Urban Dictionary definition.
  *
@@ -60,7 +62,7 @@ export default class UrbanCommand extends Command {
 	 * @memberof UrbanCommand
 	 */
 	public async run(msg: CommandoMessage, args: { query: string }): Promise<Message | Message[]> {
-		const targetWord = args.query === '' ? require('urban-dictionary').random() : require('urban-dictionary').term(args.query);
+		const targetWord = args.query === '' ? UD.random() : UD.term(args.query);
 		const responseEmbed: MessageEmbed = new MessageEmbed({
 			color: getEmbedColor(msg),
 			description: ''
@@ -68,16 +70,17 @@ export default class UrbanCommand extends Command {
 
 		startTyping(msg);
 
-		return targetWord.then((json: any) => {
+		try {
+			const response: any = await targetWord;
 			responseEmbed.setTitle(`Urban Dictionary: ${args.query}`);
 			
-			if (json) {
-				responseEmbed.setTitle(`Urban Dictionary: ${json.entries[0].word}`);
+			if (response) {
+				responseEmbed.setTitle(`Urban Dictionary: ${response.entries[0].word}`);
 				responseEmbed.setDescription(stripIndents`
-					${json.entries[0].definition}\n
-					${json.entries[0].example ? `Example: ${json.entries[0].example}` : ''}\n
+					${response.entries[0].definition}\n
+					${response.entries[0].example ? `Example: ${response.entries[0].example}` : ''}\n
 					\n
-					${json.entries[0].permalink}
+					${response.entries[0].permalink}
 				`);
 			} else {
 				responseEmbed.setDescription('No matches found');
@@ -88,13 +91,12 @@ export default class UrbanCommand extends Command {
 	
 			// Send the success response
 			return msg.embed(responseEmbed);
-		})
-		.catch((err: Error) => {
+		} catch (err) {
 			msg.client.emit('warn', `Error in command ref:urban: ${err}`);
 			
 			stopTyping(msg);
 
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
-		});
+		}
 	}
 }

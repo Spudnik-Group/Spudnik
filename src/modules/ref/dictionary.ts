@@ -72,52 +72,37 @@ export default class DefineCommand extends Command {
 
 		startTyping(msg);
 
-		return dict.lookup(word)
-			.then((result: any) => {
-				dictionaryEmbed.fields = [];
-				if (result[0].functional_label) {
-					dictionaryEmbed.fields.push({
-						name: 'Functional Label:',
-						value: result[0].functional_label
-					});
-				}
-
-				if (result[0].pronunciation[0]) {
-					dictionaryEmbed.fields.push({
-						name: 'Pronunciation:',
-						value: result[0].pronunciation[0]
-					});
-				}
-
-				if (result[0].etymology) {
-					dictionaryEmbed.fields.push({
-						name: 'Etymology:',
-						value: result[0].etymology
-					});
-				}
-
-				if (result[0].popularity) {
-					dictionaryEmbed.fields.push({
-						name: 'Popularity:',
-						value: result[0].popularity
-					});
-				}
-
-				dictionaryEmbed.description = this.renderDefinition(result[0].definition);
-		
-				deleteCommandMessages(msg);
-				stopTyping(msg);
-		
-				// Send the success response
-				return msg.embed(dictionaryEmbed);
-			})
+		const result = await dict.lookup(word)
 			.catch((err: any) => {
 				msg.client.emit('warn', `Error in command ref:define: ${err}`);
 
 				stopTyping(msg);
 
-				return sendSimpleEmbeddedError(msg, 'Word not found.', 3000);
+				sendSimpleEmbeddedError(msg, 'Word not found.', 3000);
 			});
+		if (result[0].functional_label) {
+			dictionaryEmbed.addField('Functional Label:', result[0].functional_label);
+		}
+
+		if (result[0].pronunciation[0]) {
+			dictionaryEmbed.addField('Pronunciation:', result[0].pronunciation[0]);
+		}
+
+		if (result[0].etymology) {
+			dictionaryEmbed.addField('Etymology:', result[0].etymology);
+		}
+
+		if (result[0].popularity) {
+			dictionaryEmbed.addField('Popularity:', result[0].popularity);
+		}
+
+		dictionaryEmbed.description = this.renderDefinition(result[0].definition);
+
+		deleteCommandMessages(msg);
+		stopTyping(msg);
+
+		// Send the success response
+		return msg.embed(dictionaryEmbed);
 	}
 
 	private renderDefinition(sensesIn: any) {

@@ -105,18 +105,19 @@ export default class StarboardCommand extends Command {
 
 						return sendSimpleEmbeddedMessage(msg, `Star Board channel already set to <#${channelID}>!`, 3000);
 					} else {
-						msg.guild.settings.set('starboardChannel', channelID)
-							.then(() => {
-								// Set up embed message
-								starboardEmbed.setDescription(stripIndents`
-									**Member:** ${msg.author.tag} (${msg.author.id})
-									**Action:** Star Board Channel set to <#${channelID}>
-								`);
-								starboardEmbed.setFooter('Use the `starboard status` command to see the details of this feature');
+						try {
+							await msg.guild.settings.set('starboardChannel', channelID);
+							// Set up embed message
+							starboardEmbed.setDescription(stripIndents`
+								**Member:** ${msg.author.tag} (${msg.author.id})
+								**Action:** Star Board Channel set to <#${channelID}>
+							`);
+							starboardEmbed.setFooter('Use the `starboard status` command to see the details of this feature');
 
-								return this.sendSuccess(msg, starboardEmbed);
-							})
-							.catch((err: Error) => this.catchError(msg, args, err));
+							return this.sendSuccess(msg, starboardEmbed);
+						} catch (err) {
+							this.catchError(msg, args, err);
+						}
 					}
 				} else {
 					stopTyping(msg);
@@ -132,18 +133,19 @@ export default class StarboardCommand extends Command {
 
 					return sendSimpleEmbeddedMessage(msg, 'You must include the new emoji trigger along with the \`trigger\` command. See \`help starboard\` for details.', 3000);
 				} else {
-					msg.guild.settings.set('starboardTrigger', args.content)
-						.then(() => {
-							// Set up embed message
-							starboardEmbed.setDescription(stripIndents`
-								**Member:** ${msg.author.tag} (${msg.author.id})
-								**Action:** Star Board trigger set to: ${args.content}
-							`);
-							starboardEmbed.setFooter('Use the `starboard status` command to see the details of this feature');
+					try {
+						await msg.guild.settings.set('starboardTrigger', args.content);
+						// Set up embed message
+						starboardEmbed.setDescription(stripIndents`
+							**Member:** ${msg.author.tag} (${msg.author.id})
+							**Action:** Star Board trigger set to: ${args.content}
+						`);
+						starboardEmbed.setFooter('Use the `starboard status` command to see the details of this feature');
 
-							return this.sendSuccess(msg, starboardEmbed);
-						})
-						.catch((err: Error) => this.catchError(msg, args, err));
+						return this.sendSuccess(msg, starboardEmbed);
+					} catch (err) {
+						this.catchError(msg, args, err);
+					}
 				}
 				break;
 			}
@@ -154,18 +156,19 @@ export default class StarboardCommand extends Command {
 
 						return sendSimpleEmbeddedMessage(msg, 'Star Board already enabled!', 3000);
 					} else {
-						msg.guild.settings.set('starboardEnabled', true)
-							.then(() => {
-								// Set up embed message
-								starboardEmbed.setDescription(stripIndents`
-									**Member:** ${msg.author.tag} (${msg.author.id})
-									**Action:** Star Board set to: _Enabled_
-								`);
-								starboardEmbed.setFooter('Use the `starboard status` command to see the details of this feature');
+						try {
+							await msg.guild.settings.set('starboardEnabled', true);
+							// Set up embed message
+							starboardEmbed.setDescription(stripIndents`
+								**Member:** ${msg.author.tag} (${msg.author.id})
+								**Action:** Star Board set to: _Enabled_
+							`);
+							starboardEmbed.setFooter('Use the `starboard status` command to see the details of this feature');
 
-								return this.sendSuccess(msg, starboardEmbed);
-							})
-							.catch((err: Error) => this.catchError(msg, args, err));
+							return this.sendSuccess(msg, starboardEmbed);
+						} catch (err) {
+							this.catchError(msg, args, err);
+						}
 					}
 				} else {
 					stopTyping(msg);
@@ -176,18 +179,19 @@ export default class StarboardCommand extends Command {
 			}
 			case 'disable': {
 				if (starboardEnabled) {
-					msg.guild.settings.set('starboardEnabled', false)
-						.then(() => {
-							// Set up embed message
-							starboardEmbed.setDescription(stripIndents`
-								**Member:** ${msg.author.tag} (${msg.author.id})
-								**Action:** Star Board set to: _Disabled_
-							`);
-							starboardEmbed.setFooter('Use the `starboard status` command to see the details of this feature');
+					try {
+						await msg.guild.settings.set('starboardEnabled', false);
+						// Set up embed message
+						starboardEmbed.setDescription(stripIndents`
+							**Member:** ${msg.author.tag} (${msg.author.id})
+							**Action:** Star Board set to: _Disabled_
+						`);
+						starboardEmbed.setFooter('Use the `starboard status` command to see the details of this feature');
 
-							return this.sendSuccess(msg, starboardEmbed);
-						})
-						.catch((err: Error) => this.catchError(msg, args, err));
+						return this.sendSuccess(msg, starboardEmbed);
+					} catch (err) {
+						this.catchError(msg, args, err);
+					}
 				} else {
 					stopTyping(msg);
 

@@ -1,6 +1,6 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import * as rp from 'request-promise';
+import axios from 'axios';
 import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, stopTyping, startTyping } from '../../lib/helpers';
 
@@ -49,22 +49,20 @@ export default class CatFactCommand extends Command {
 
 		startTyping(msg);
 
-		return rp('https://catfact.ninja/fact')
-			.then((content) => {
-				const data = JSON.parse(content);
-				responseEmbed.setDescription(data.fact);
+		try {
+			const data: any = await axios.get('https://catfact.ninja/fact');
+			responseEmbed.setDescription(data.fact);
 
-				deleteCommandMessages(msg);
-				stopTyping(msg);
+			deleteCommandMessages(msg);
+			stopTyping(msg);
 
-				// Send the success response
-				return msg.embed(responseEmbed);
-			})
-			.catch((err: Error) => {
-				msg.client.emit('warn', `Error in command random:cat-fact: ${err}`);
-				stopTyping(msg);
-				
-				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
-			});
+			// Send the success response
+			return msg.embed(responseEmbed);
+		} catch (err) {
+			msg.client.emit('warn', `Error in command random:cat-fact: ${err}`);
+			stopTyping(msg);
+			
+			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+		}
 	}
 }

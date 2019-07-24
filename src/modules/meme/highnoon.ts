@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import * as rp from 'request-promise';
+import axios from 'axios';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedImage, startTyping, stopTyping } from '../../lib/helpers';
 import { deleteCommandMessages } from '../../lib/custom-helpers';
 
@@ -43,19 +43,20 @@ export default class HighNoonCommand extends Command {
 	public async run(msg: CommandoMessage): Promise<Message | Message[]> {
 		startTyping(msg);
 		
-		return rp({ followAllRedirects: true, uri: 'http://imgs.xkcd.com/comics/now.png', resolveWithFullResponse: true })
-			.then((content) => {
-				deleteCommandMessages(msg);
-				stopTyping(msg);
-				
-				// Send the success response
-				return sendSimpleEmbeddedImage(msg, content.request.uri.href.toString());
-			})
-			.catch((err: Error) => {
-				msg.client.emit('warn', `Error in command misc:highnoon: ${err}`);
-				stopTyping(msg);
-				
-				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+		try {
+			const content: any = await axios.get('http://imgs.xkcd.com/comics/now.png', {
+				maxRedirects: 5
 			});
+			deleteCommandMessages(msg);
+			stopTyping(msg);
+			
+			// Send the success response
+			return sendSimpleEmbeddedImage(msg, content.request.uri.href.toString());
+		} catch (err) {
+			msg.client.emit('warn', `Error in command misc:highnoon: ${err}`);
+			stopTyping(msg);
+			
+			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+		}
 	}
 }

@@ -82,29 +82,31 @@ export default class EmbedColorCommand extends Command {
 		startTyping(msg);
 
 		if (args.color) {
-			return msg.guild.settings.set('embedColor', args.color)
-				.then(() => {
-					// Set up embed message
-					embedColorEmbed.setDescription(stripIndents`
-						**Member:** ${msg.author.tag} (${msg.author.id})
-						**Action:** Embed Color set to ${args.color}
-					`);
+			try {
+				await msg.guild.settings.set('embedColor', args.color);
+				// Set up embed message
+				embedColorEmbed.setDescription(stripIndents`
+					**Member:** ${msg.author.tag} (${msg.author.id})
+					**Action:** Embed Color set to ${args.color}
+				`);
 
-					return this.sendSuccess(msg, embedColorEmbed);
-				})
-				.catch((err: Error) => this.catchError(msg, args, err));
+				return this.sendSuccess(msg, embedColorEmbed);
+			} catch (err) {
+				this.catchError(msg, args, err)
+			}
 		} else {
-			return msg.guild.settings.remove('embedColor')
-				.then(() => {
-					// Set up embed message
-					embedColorEmbed.setDescription(stripIndents`
-						**Member:** ${msg.author.tag} (${msg.author.id})
-						**Action:** Embed Color Reset
-					`);
+			try {
+				await msg.guild.settings.remove('embedColor');
+				// Set up embed message
+				embedColorEmbed.setDescription(stripIndents`
+					**Member:** ${msg.author.tag} (${msg.author.id})
+					**Action:** Embed Color Reset
+				`);
 
-					return this.sendSuccess(msg, embedColorEmbed);
-				})
-				.catch((err: Error) => this.catchError(msg, args, err));
+				return this.sendSuccess(msg, embedColorEmbed);
+			} catch (err) {
+				this.catchError(msg, args, err)
+			}
 		}
 	}
 
