@@ -87,14 +87,12 @@ export default class WelcomeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const welcomeChannel = await msg.guild.settings.get('welcomeChannel', null);
-		const welcomeMessage = await msg.guild.settings.get('welcomeMessage', '@here, please Welcome {user} to {guild}!');
-		const welcomeEnabled = await msg.guild.settings.get('welcomeEnabled', false);
 
 		startTyping(msg);
 
 		switch (args.subCommand.toLowerCase()) {
 			case 'channel': {
+				const welcomeChannel = await msg.guild.settings.get('welcomeChannel', null);
 				if (args.content instanceof Channel) {
 					const channelID = (args.content as Channel).id;
 
@@ -146,6 +144,8 @@ export default class WelcomeCommand extends Command {
 				}
 			}
 			case 'enable': {
+				const welcomeChannel = await msg.guild.settings.get('welcomeChannel', null);
+				const welcomeEnabled = await msg.guild.settings.get('welcomeEnabled', false);
 				if (welcomeChannel) {
 					if (welcomeEnabled) {
 						stopTyping(msg);
@@ -173,6 +173,7 @@ export default class WelcomeCommand extends Command {
 				}
 			}
 			case 'disable': {
+				const welcomeEnabled = await msg.guild.settings.get('welcomeEnabled', false);
 				if (welcomeEnabled) {
 					try {
 						await msg.guild.settings.set('welcomeEnabled', false);
@@ -194,6 +195,9 @@ export default class WelcomeCommand extends Command {
 				}
 			}
 			case 'status': {
+				const welcomeChannel = await msg.guild.settings.get('welcomeChannel', null);
+				const welcomeMessage = await msg.guild.settings.get('welcomeMessage', '@here, please Welcome {user} to {guild}!');
+				const welcomeEnabled = await msg.guild.settings.get('welcomeEnabled', false);
 				// Set up embed message
 				welcomeEmbed.setDescription(stripIndents`
 					Welcome feature: ${welcomeEnabled ? '_Enabled_' : '_Disabled_'}

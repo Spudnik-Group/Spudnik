@@ -89,14 +89,12 @@ export default class StarboardCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const starboard = await msg.guild.settings.get('starboardChannel', null);
-		const starboardTrigger: string = await msg.guild.settings.get('starboardTrigger', '⭐');
-		const starboardEnabled: boolean = await msg.guild.settings.get('starboardEnabled', false);
 		
 		startTyping(msg);
 
 		switch (args.subCommand.toLowerCase()) {
 			case 'channel': {
+				const starboard = await msg.guild.settings.get('starboardChannel', null);
 				if (args.content instanceof Channel) {
 					const channelID = (args.content as Channel).id;
 
@@ -148,6 +146,8 @@ export default class StarboardCommand extends Command {
 				}
 			}
 			case 'enable': {
+				const starboard = await msg.guild.settings.get('starboardChannel', null);
+				const starboardEnabled: boolean = await msg.guild.settings.get('starboardEnabled', false);
 				if (starboard) {
 					if (starboardEnabled) {
 						stopTyping(msg);
@@ -175,6 +175,7 @@ export default class StarboardCommand extends Command {
 				}
 			}
 			case 'disable': {
+				const starboardEnabled: boolean = await msg.guild.settings.get('starboardEnabled', false);
 				if (starboardEnabled) {
 					try {
 						await msg.guild.settings.set('starboardEnabled', false);
@@ -196,6 +197,9 @@ export default class StarboardCommand extends Command {
 				}
 			}
 			case 'status': {
+				const starboard = await msg.guild.settings.get('starboardChannel', null);
+				const starboardTrigger: string = await msg.guild.settings.get('starboardTrigger', '⭐');
+				const starboardEnabled: boolean = await msg.guild.settings.get('starboardEnabled', false);
 				// Set up embed message
 				starboardEmbed.setDescription(stripIndents`Star Board feature: ${starboardEnabled ? '_Enabled_' : '_Disabled_'}
 										Channel set to: <#${starboard}>

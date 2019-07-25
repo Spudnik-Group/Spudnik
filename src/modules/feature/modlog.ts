@@ -77,8 +77,6 @@ export default class ModlogCommand extends Command {
 	 * @memberof ModlogCommand
 	 */
 	public async run(msg: CommandoMessage, args: { subCommand: string, channel: Channel }): Promise<Message | Message[]> {
-		const modlogChannel = await msg.guild.settings.get('modlogChannel', null);
-		const modlogEnabled = await msg.guild.settings.get('modlogEnabled', false);
 		const modlogEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/memo_1f4dd.png',
@@ -92,6 +90,8 @@ export default class ModlogCommand extends Command {
 
 		switch (args.subCommand.toLowerCase()) {
 			case 'enable': {
+				const modlogChannel = await msg.guild.settings.get('modlogChannel', null);
+				const modlogEnabled = await msg.guild.settings.get('modlogEnabled', false);
 				if (modlogChannel) {
 					if (modlogEnabled) {
 						stopTyping(msg);
@@ -119,6 +119,7 @@ export default class ModlogCommand extends Command {
 				}
 			}
 			case 'disable': {
+				const modlogEnabled = await msg.guild.settings.get('modlogEnabled', false);
 				if (modlogEnabled) {
 					try {
 						await msg.guild.settings.set('modlogEnabled', false);
@@ -140,6 +141,7 @@ export default class ModlogCommand extends Command {
 				}
 			}
 			case 'channel': {
+				const modlogChannel = await msg.guild.settings.get('modlogChannel', null);
 				if (args.channel instanceof Channel) {
 					const channelID = (args.channel as Channel).id;
 
@@ -169,6 +171,8 @@ export default class ModlogCommand extends Command {
 				}
 			}
 			case 'status': {
+				const modlogChannel = await msg.guild.settings.get('modlogChannel', null);
+				const modlogEnabled = await msg.guild.settings.get('modlogEnabled', false);
 				// Set up embed message
 				modlogEmbed.setDescription(stripIndents`Modlog feature: ${modlogEnabled ? '_Enabled_' : '_Disabled_'}
 										Channel set to: <#${modlogChannel}>`);

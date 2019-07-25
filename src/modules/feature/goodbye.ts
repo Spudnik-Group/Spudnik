@@ -87,14 +87,12 @@ export default class GoodbyeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const goodbyeChannel = await msg.guild.settings.get('goodbyeChannel', null);
-		const goodbyeMessage = await msg.guild.settings.get('goodbyeMessage', '{user} has left the server.');
-		const goodbyeEnabled = await msg.guild.settings.get('goodbyeEnabled', false);
 		
 		startTyping(msg);
 
 		switch (args.subCommand.toLowerCase()) {
 			case 'channel': {
+				const goodbyeChannel = await msg.guild.settings.get('goodbyeChannel', null);
 				if (args.content instanceof Channel) {
 					const channelID = (args.content as Channel).id;
 
@@ -146,6 +144,8 @@ export default class GoodbyeCommand extends Command {
 				}
 			}
 			case 'enable': {
+				const goodbyeChannel = await msg.guild.settings.get('goodbyeChannel', null);
+				const goodbyeEnabled = await msg.guild.settings.get('goodbyeEnabled', false);
 				if (goodbyeChannel) {
 					if (goodbyeEnabled) {
 						stopTyping(msg);
@@ -173,6 +173,7 @@ export default class GoodbyeCommand extends Command {
 				}
 			}
 			case 'disable': {
+				const goodbyeEnabled = await msg.guild.settings.get('goodbyeEnabled', false);
 				if (goodbyeEnabled) {
 					try {
 						await msg.guild.settings.set('goodbyeEnabled', false);
@@ -194,6 +195,9 @@ export default class GoodbyeCommand extends Command {
 				}
 			}
 			case 'status': {
+				const goodbyeChannel = await msg.guild.settings.get('goodbyeChannel', null);
+				const goodbyeMessage = await msg.guild.settings.get('goodbyeMessage', '{user} has left the server.');
+				const goodbyeEnabled = await msg.guild.settings.get('goodbyeEnabled', false);
 				// Set up embed message
 				goodbyeEmbed.setDescription(stripIndents`
 					Goodbye feature: ${goodbyeEnabled ? '_Enabled_' : '_Disabled_'}

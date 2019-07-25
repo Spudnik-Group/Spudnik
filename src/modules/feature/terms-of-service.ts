@@ -98,26 +98,12 @@ export default class TermsOfServiceCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		});
-		const tosChannel: string = await msg.guild.settings.get('tosChannel', null);
-		const tosMessageCount: number = await msg.guild.settings.get('tosMessageCount', 0);
-		const tosMessages: ITOSMessage[] = [];
 
 		startTyping(msg);
 
-		for (let i = 1; i < tosMessageCount + 1; i++) {
-			const tosMessage: ITOSMessage = await msg.guild.settings.get(`tosMessage${i}`);
-			if (tosMessage) {
-				tosMessages.push(tosMessage);
-			}
-		}
-
-		let message: ITOSMessage;
-
-		let item: Channel | number = args.item;
-		let tosEmbedUpsertMessage = 'updated';
-
 		switch (args.subCommand.toLowerCase()) {
 			case 'channel': {
+				const tosChannel: string = await msg.guild.settings.get('tosChannel', null);
 				if (args.item instanceof Channel) {
 					const channelID = (args.item as Channel).id;
 					if (tosChannel && tosChannel === channelID) {
@@ -148,6 +134,15 @@ export default class TermsOfServiceCommand extends Command {
 				}
 			}
 			case 'list': {
+				const tosChannel: string = await msg.guild.settings.get('tosChannel', null);
+				const tosMessageCount: number = await msg.guild.settings.get('tosMessageCount', 0);
+				const tosMessages: ITOSMessage[] = [];
+				for (let i = 1; i < tosMessageCount + 1; i++) {
+					const tosMessage: ITOSMessage = await msg.guild.settings.get(`tosMessage${i}`);
+					if (tosMessage) {
+						tosMessages.push(tosMessage);
+					}
+				}
 				if (tosChannel && tosChannel === msg.channel.id) {
 					if (tosMessages && tosMessages.length) {
 						tosMessages.forEach((message) => {
@@ -167,6 +162,17 @@ export default class TermsOfServiceCommand extends Command {
 				break;
 			}
 			case 'title': {
+				const tosMessageCount: number = await msg.guild.settings.get('tosMessageCount', 0);
+				const tosMessages: ITOSMessage[] = [];
+				for (let i = 1; i < tosMessageCount + 1; i++) {
+					const tosMessage: ITOSMessage = await msg.guild.settings.get(`tosMessage${i}`);
+					if (tosMessage) {
+						tosMessages.push(tosMessage);
+					}
+				}
+				let message: ITOSMessage;
+				let item: Channel | number = args.item;
+				let tosEmbedUpsertMessage = 'updated';
 				item = Number(args.item);
 				message = tosMessages[item - 1];
 				if (Number.isInteger(item) && args.text.length) {
@@ -206,6 +212,17 @@ export default class TermsOfServiceCommand extends Command {
 				}
 			}
 			case 'body': {
+				const tosMessageCount: number = await msg.guild.settings.get('tosMessageCount', 0);
+				const tosMessages: ITOSMessage[] = [];
+				for (let i = 1; i < tosMessageCount + 1; i++) {
+					const tosMessage: ITOSMessage = await msg.guild.settings.get(`tosMessage${i}`);
+					if (tosMessage) {
+						tosMessages.push(tosMessage);
+					}
+				}
+				let message: ITOSMessage;
+				let item: Channel | number = args.item;
+				let tosEmbedUpsertMessage = 'updated';
 				item = Number(args.item);
 				message = tosMessages[item - 1];
 				if (Number.isInteger(item) && args.text.length) {
@@ -244,6 +261,15 @@ export default class TermsOfServiceCommand extends Command {
 				}
 			}
 			case 'status': {
+				const tosChannel: string = await msg.guild.settings.get('tosChannel', null);
+				const tosMessageCount: number = await msg.guild.settings.get('tosMessageCount', 0);
+				const tosMessages: ITOSMessage[] = [];
+				for (let i = 1; i < tosMessageCount + 1; i++) {
+					const tosMessage: ITOSMessage = await msg.guild.settings.get(`tosMessage${i}`);
+					if (tosMessage) {
+						tosMessages.push(tosMessage);
+					}
+				}
 				let tosList = '';
 				tosMessages.forEach((message, index) => {
 					tosList += `${index + 1} - ${message.title}\n`;
