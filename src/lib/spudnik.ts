@@ -126,7 +126,7 @@ export class Spudnik {
 		Mongoose.Promise = require('bluebird').Promise;
 
 		this.Discord.setProvider(
-			Mongoose.connect(this.Config.spudCoreDB, { useMongoClient: true }).then(() => new MongoSettingsProvider(Mongoose.connection))
+			Mongoose.connect(this.Config.spudCoreDB, {useNewUrlParser: true}).then(() => new MongoSettingsProvider(Mongoose.connection))
 		).catch((err) => {
 			if (process.env.NODE_ENV !== 'development') this.Discord.emit('error', `Failed to set provider!\nError: ${err}`);
 			process.exit(-1);

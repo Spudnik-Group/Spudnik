@@ -35,6 +35,8 @@ export default class UnknownCommandCommand extends Command {
 	 * @memberof UnknownCommandCommand
 	 */
 	public async run(msg: CommandoMessage): Promise<Message | Message[]> {
+		console.log(`Command Tried: ${msg.command}`);
+		
 		return;
 	}
 }
