@@ -46,7 +46,7 @@
 		"soap": "^0.29.0",
 		"urban-dictionary": "^2.2.1",
 		"url-unshort": "^5.0.0",
-		"wikijs": "^4.11.1",
+		"wikijs": "^5.0.0",
 		"zucc": "^0.1.2"
 	},
 	"devDependencies": {
