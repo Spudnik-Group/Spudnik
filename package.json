@@ -43,7 +43,7 @@
 		"request": "^2.88.0",
 		"request-promise": "^4.2.4",
 		"rollbar": "^2.5.1",
-		"soap": "^0.28.0",
+		"soap": "^0.29.0",
 		"urban-dictionary": "^2.2.1",
 		"url-unshort": "^5.0.0",
 		"wikijs": "^4.11.1",
