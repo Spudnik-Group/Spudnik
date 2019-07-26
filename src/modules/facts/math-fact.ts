@@ -50,7 +50,7 @@ export default class MathFactCommand extends Command {
 		startTyping(msg);
 
 		try {
-			const data: any = await axios.get('http://numbersapi.com/random/math?json');
+			const { data } = await axios.get('http://numbersapi.com/random/math?json');
 			responseEmbed.setDescription(data.text);
 	
 			deleteCommandMessages(msg);

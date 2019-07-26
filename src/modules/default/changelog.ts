@@ -57,13 +57,13 @@ export default class changelogCommand extends Command {
 		startTyping(msg);
 
 		try {
-			const res: any[] = await axios.get('https://api.github.com/repos/Spudnik-Group/Spudnik/releases', {
+			const res: any = await axios.get('https://api.github.com/repos/Spudnik-Group/Spudnik/releases', {
 				headers: {
 					'Accept': 'application/vnd.github.v3+json',
 					'User-Agent': 'Spudnik Bot'
 				}
 			});
-			const changelog = res.slice(0, 3);
+			const changelog = res.data.slice(0, 3);
 			changelog.forEach((release: any) => {
 				stackEmbed.description += `
 
@@ -71,6 +71,10 @@ export default class changelogCommand extends Command {
 					${release.body}
 				`;
 			});
+			stackEmbed.description += `
+
+				Check out the full changelog [here](https://github.com/Spudnik-Group/Spudnik/releases)
+			`;
 			
 			stopTyping(msg);
 			

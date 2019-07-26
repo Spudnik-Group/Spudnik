@@ -73,7 +73,7 @@ export default class StackOverflowCommand extends Command {
 		startTyping(msg);
 
 		try {
-			const data: any = await axios.get(`https://api.stackexchange.com/2.2/search/advanced?${queryParams}`);
+			const { data } = await axios.get(`https://api.stackexchange.com/2.2/search/advanced?${queryParams}`);
 			if (!data.items) {
 				stopTyping(msg);
 

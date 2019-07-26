@@ -72,37 +72,38 @@ export default class DefineCommand extends Command {
 
 		startTyping(msg);
 
-		const result = await dict.lookup(word)
-			.catch((err: any) => {
-				msg.client.emit('warn', `Error in command ref:define: ${err}`);
+		try {
+			const result = await dict.lookup(word)
+			if (result[0].functional_label) {
+				dictionaryEmbed.addField('Functional Label:', result[0].functional_label);
+			}
 
-				stopTyping(msg);
+			if (result[0].pronunciation[0]) {
+				dictionaryEmbed.addField('Pronunciation:', result[0].pronunciation[0]);
+			}
 
-				sendSimpleEmbeddedError(msg, 'Word not found.', 3000);
-			});
-		if (result[0].functional_label) {
-			dictionaryEmbed.addField('Functional Label:', result[0].functional_label);
+			if (result[0].etymology) {
+				dictionaryEmbed.addField('Etymology:', result[0].etymology);
+			}
+
+			if (result[0].popularity) {
+				dictionaryEmbed.addField('Popularity:', result[0].popularity);
+			}
+
+			dictionaryEmbed.description = this.renderDefinition(result[0].definition);
+
+			deleteCommandMessages(msg);
+			stopTyping(msg);
+
+			// Send the success response
+			return msg.embed(dictionaryEmbed);
+		} catch (err) {
+			msg.client.emit('warn', `Error in command ref:define: ${err}`);
+
+			stopTyping(msg);
+
+			return sendSimpleEmbeddedError(msg, 'Word not found.', 3000);
 		}
-
-		if (result[0].pronunciation[0]) {
-			dictionaryEmbed.addField('Pronunciation:', result[0].pronunciation[0]);
-		}
-
-		if (result[0].etymology) {
-			dictionaryEmbed.addField('Etymology:', result[0].etymology);
-		}
-
-		if (result[0].popularity) {
-			dictionaryEmbed.addField('Popularity:', result[0].popularity);
-		}
-
-		dictionaryEmbed.description = this.renderDefinition(result[0].definition);
-
-		deleteCommandMessages(msg);
-		stopTyping(msg);
-
-		// Send the success response
-		return msg.embed(dictionaryEmbed);
 	}
 
 	private renderDefinition(sensesIn: any) {

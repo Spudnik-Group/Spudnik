@@ -70,7 +70,7 @@ export default class MdnReferenceCommand extends Command {
 		startTyping(msg);
 
 		try {
-			const response: any = await axios.get(`https://developer.mozilla.org/en-US/search.json?q=${encodeURIComponent(args.query)}`)
+			const { data: response } = await axios.get(`https://developer.mozilla.org/en-US/search.json?q=${encodeURIComponent(args.query)}`)
 			if (!response.documents.length) {
 				stopTyping(msg);
 	

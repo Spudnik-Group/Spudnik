@@ -50,7 +50,7 @@ export default class DateFactCommand extends Command {
 		startTyping(msg);
 
 		try {
-			const data: any = await axios.get('http://numbersapi.com/random/date?json');
+			const { data } = await axios.get('http://numbersapi.com/random/date?json');
 			responseEmbed.setDescription(data.text);
 	
 			deleteCommandMessages(msg);

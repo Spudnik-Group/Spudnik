@@ -62,7 +62,7 @@ export default class ChooseCommand extends Command {
 		
 		return msg.embed({
 			author: {
-				iconURL: msg.client.user.displayAvatarURL.toString(),
+				iconURL: msg.client.user.displayAvatarURL(),
 				name: `${msg.client.user.username}`
 			},
 			color: getEmbedColor(msg),

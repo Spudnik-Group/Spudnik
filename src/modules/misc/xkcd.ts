@@ -79,7 +79,7 @@ export default class XkcdCommand extends Command {
 		startTyping(msg);
 
 		try {
-			const comic: any = await axios.get(url);
+			const { data: comic } = await axios.get(url);
 			xkcdEmbed.setFooter(comic.alt);
 			xkcdEmbed.setImage(comic.img);
 			xkcdEmbed.setTitle(`XKCD ${comic.num} ${comic.title}`);

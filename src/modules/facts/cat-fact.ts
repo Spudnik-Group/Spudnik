@@ -50,7 +50,7 @@ export default class CatFactCommand extends Command {
 		startTyping(msg);
 
 		try {
-			const data: any = await axios.get('https://catfact.ninja/fact');
+			const { data } = await axios.get('https://catfact.ninja/fact');
 			responseEmbed.setDescription(data.fact);
 
 			deleteCommandMessages(msg);

@@ -50,7 +50,7 @@ export default class DogFactCommand extends Command {
 		startTyping(msg);
 
 		try {
-			const data: any = await axios.get('https://dog-api.kinduff.com/api/facts');
+			const { data } = await axios.get('https://dog-api.kinduff.com/api/facts');
 			responseEmbed.setDescription(data.facts[0]);
 	
 			deleteCommandMessages(msg);

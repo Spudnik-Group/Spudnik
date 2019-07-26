@@ -6,46 +6,11 @@ import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
 import axios from 'axios';
 
 const apiKey = process.env.spud_trackerapi;
-
 const platforms: { [platform: string]: number } = {
 	'pc': 5,
 	'psn': 2,
 	'xbl': 1
 };
-
-interface ApexLegendsResponse {
-	data: ApexLegendsResponseData;
-};
-
-interface ApexLegendsResponseData {
-	children: Array<ApexLegendsResponseCharacterData>;
-	metadata: ApexLegendsResponseMetadata;
-	stats: Array<ApexLegendsResponseStat>;
-}
-
-interface ApexLegendsResponseMetadata {
-	platformUserHandle: string;
-}
-
-interface ApexLegendsResponseCharacterData {
-	id: string;
-	metadata: ApexLegendsResponseCharacterMetadata
-}
-
-interface ApexLegendsResponseCharacterMetadata {
-	icon: string;
-	legend_name: string;
-}
-
-interface ApexLegendsResponseStat {
-	displayValue: string,
-	metadata: ApexLegendsResponseStatMetadata
-}
-
-interface ApexLegendsResponseStatMetadata {
-	name: string
-}
-
 
 /**
  * Returns Apex Legends stats for a user on a specific platform.
@@ -138,7 +103,7 @@ export default class ApexLegendsStatsCommand extends Command {
 		startTyping(msg);
 
 		try {
-			const response: ApexLegendsResponse = await axios.get(`https://public-api.tracker.gg/apex/v1/standard/profile/${platforms[args.platform]}/${encodeURI(args.username)}`, {
+			const { data: response } = await axios.get(`https://public-api.tracker.gg/apex/v1/standard/profile/${platforms[args.platform]}/${encodeURI(args.username)}`, {
 				headers: { 'TRN-Api-Key': apiKey }
 			});
 			if (response.data.children && response.data.children.length) {

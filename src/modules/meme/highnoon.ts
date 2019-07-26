@@ -1,7 +1,6 @@
 import { Message } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import axios from 'axios';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedImage, startTyping, stopTyping } from '../../lib/helpers';
+import { sendSimpleEmbeddedImage, startTyping, stopTyping } from '../../lib/helpers';
 import { deleteCommandMessages } from '../../lib/custom-helpers';
 
 /**
@@ -42,21 +41,10 @@ export default class HighNoonCommand extends Command {
 	 */
 	public async run(msg: CommandoMessage): Promise<Message | Message[]> {
 		startTyping(msg);
+		deleteCommandMessages(msg);
+		stopTyping(msg);
 		
-		try {
-			const content: any = await axios.get('http://imgs.xkcd.com/comics/now.png', {
-				maxRedirects: 5
-			});
-			deleteCommandMessages(msg);
-			stopTyping(msg);
-			
-			// Send the success response
-			return sendSimpleEmbeddedImage(msg, content.request.uri.href.toString());
-		} catch (err) {
-			msg.client.emit('warn', `Error in command misc:highnoon: ${err}`);
-			stopTyping(msg);
-			
-			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
-		}
+		// Send the success response
+		return sendSimpleEmbeddedImage(msg, 'http://imgs.xkcd.com/comics/now.png', 'IT\'S HIGH NOON...');
 	}
 }

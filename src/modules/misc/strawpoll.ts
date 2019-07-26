@@ -32,7 +32,7 @@ export default class StrawpollCommand extends Command {
 				{
 					infinite: true,
 					key: 'options',
-					max: 10,
+					max: 50,
 					prompt: 'What options do you want to be able to pick from? You may have a maximum of 10.',
 					type: 'string'
 				}
@@ -64,12 +64,10 @@ export default class StrawpollCommand extends Command {
 		startTyping(msg);
 
 		try {
-			const res: any = await axios.post('https://www.strawpoll.me/api/v2/polls', {
-				body: {
-					captcha: true,
-					options: args.options,
-					title: args.title
-				}
+			const { data: res } = await axios.post('https://www.strawpoll.me/api/v2/polls', {
+				captcha: true,
+				options: args.options.slice(0, 10),
+				title: args.title
 			});
 			deleteCommandMessages(msg);
 			stopTyping(msg);

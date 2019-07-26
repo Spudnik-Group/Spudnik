@@ -1,7 +1,7 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, startTyping, stopTyping } from '../../lib/helpers';
 
@@ -76,10 +76,10 @@ export default class BrewCommand extends Command {
 		startTyping(msg);
 
 		try {
-			const response: AxiosResponse<any> = await axios(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(args.query)}&key=${breweryDbApiKey}`)
+			const { data: response } = await axios(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(args.query)}&key=${breweryDbApiKey}`)
 
-			if (response.data.data) {
-				const result = response.data.data[0];
+			if (response.data) {
+				const result = response.data[0];
 
 				if (result.description) {
 					const fields: any = [];

@@ -5,72 +5,6 @@ import { startTyping, stopTyping, sendSimpleEmbeddedError } from '../../lib/help
 import { deleteCommandMessages } from '../../lib/custom-helpers';
 import axios from 'axios';
 
-interface Sportsmanship {
-	value: number;
-	rate: number;
-}
-
-interface Shotcaller {
-	value: number;
-	rate: number;
-}
-
-interface Teammate {
-	value: number;
-	rate: number;
-}
-
-interface Endorsement {
-	sportsmanship: Sportsmanship;
-	shotcaller: Shotcaller;
-	teammate: Teammate;
-	level: number;
-	frame: string;
-	icon: string;
-}
-
-interface Quickplay {
-	won: number;
-}
-
-interface Competitive {
-	won: number;
-	lost: number;
-	draw: number;
-	played: number;
-	win_rate: number;
-}
-
-interface Games {
-	quickplay: Quickplay;
-	competitive: Competitive;
-}
-
-interface Playtime {
-	quickplay: string;
-	competitive: string;
-}
-
-interface CompetitiveRank {
-	rank: number;
-	rank_img: string;
-}
-
-interface OverwatchProfile {
-	username: string;
-	level: number;
-	portrait: string;
-	endorsement: Endorsement;
-	private: boolean;
-	games: Games;
-	playtime: Playtime;
-	competitive: CompetitiveRank;
-	levelFrame: string;
-	star: string;
-	message: string;
-}
-
-
 /**
  * Returns Overwatch stats for a user on a specific platform and region.
  *
@@ -152,7 +86,7 @@ export default class OverwatchStatsCommand extends Command {
 		startTyping(msg);
 
 		try {
-			const profile: OverwatchProfile = await axios.get(`https://overwatchy.com/profile/${args.platform}/${args.region}/${encodeURI(args.battletag)}`);
+			const { data: profile } = await axios.get(`https://overwatchy.com/profile/${args.platform}/${args.region}/${encodeURI(args.battletag)}`);
 			if (profile.message) {
 				stopTyping(msg);
 

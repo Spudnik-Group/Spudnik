@@ -67,7 +67,7 @@ export default class QuizCommand extends Command {
 	 */
 	public async run(msg: CommandoMessage, args: { type: string, difficulty: string }): Promise<Message | Message[]> {
 		try {
-			const { body } = await axios.get('https://opentdb.com/api.php', {
+			const { data: body } = await axios.get('https://opentdb.com/api.php', {
 				params: {
 					amount: 1,
 					difficulty: args.difficulty,

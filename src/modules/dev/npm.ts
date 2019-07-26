@@ -71,7 +71,7 @@ export default class NPMCommand extends Command {
 		startTyping(msg);
 
 		try {
-			const res: any = await axios.get(`https://registry.npmjs.com/${args.query}`);
+			const { data: res } = await axios.get(`https://registry.npmjs.com/${args.query}`);
 			const version = res.versions[res['dist-tags'].latest];
 			let deps = version.dependencies ? Object.keys(version.dependencies) : null;
 			let maintainers = res.maintainers.map((user: any) => user.name);

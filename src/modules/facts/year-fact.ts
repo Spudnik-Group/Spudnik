@@ -50,7 +50,7 @@ export default class YearFactCommand extends Command {
 		startTyping(msg);
 
 		try {
-			const data: any = await axios.get('http://numbersapi.com/random/year?json');
+			const { data } = await axios.get('http://numbersapi.com/random/year?json');
 			responseEmbed.setDescription(data.text);
 	
 			deleteCommandMessages(msg);

@@ -1,7 +1,7 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, startTyping, stopTyping } from '../../lib/helpers';
 
@@ -69,8 +69,7 @@ export default class CocktailCommand extends Command {
 		startTyping(msg);
 
 		try {
-			const cocktailResponse: AxiosResponse<any> = await axios(`http://www.thecocktaildb.com/api/json/v1/1/search.php?s=${encodeURIComponent(args.query)}`)
-			const response = cocktailResponse.data;
+			const { data: response } = await axios(`http://www.thecocktaildb.com/api/json/v1/1/search.php?s=${encodeURIComponent(args.query)}`)
 			
 			if (typeof response !== 'undefined' && response.drinks !== null) {
 				const result = response.drinks[0];

@@ -78,7 +78,7 @@ export default class GithubCommand extends Command {
 		startTyping(msg);
 
 		try {
-			const res: any = await axios.get(`https://api.github.com/repos/${args.query}`, {
+			const { data: res } = await axios.get(`https://api.github.com/repos/${args.query}`, {
 				headers: {
 					'Accept': 'application/vnd.github.v3+json',
 					'User-Agent': 'Spudnik Bot'
