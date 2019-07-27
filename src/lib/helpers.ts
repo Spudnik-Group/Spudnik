@@ -33,7 +33,7 @@ export const sendSimpleEmbeddedMessage = (msg: CommandoMessage, text: string, ti
 			}
 		});
 	}
-	
+
 	return promise;
 }
 
@@ -63,7 +63,7 @@ export const sendSimpleEmbeddedMessageWithAuthor = (msg: CommandoMessage, text: 
 			}
 		});
 	}
-	
+
 	return promise;
 }
 
@@ -97,7 +97,7 @@ export const sendSimpleEmbeddedMessageWithTitle = (msg: CommandoMessage, text: s
 			}
 		});
 	}
-	
+
 	return promise;
 }
 
@@ -365,28 +365,28 @@ export const tomorrow = (timeZone: number): Date => {
  * @param  {} {text='joingame', time=30000, dmCheck=false}
  * @returns Promise
  */
-export const awaitPlayers = async(msg: any, max: number, min: number, { text = 'join game', time = 30000, dmCheck = false } = {}): Promise<any> => {
+export const awaitPlayers = async (msg: any, max: number, min: number, { text = 'join game', time = 30000, dmCheck = false } = {}): Promise<any> => {
 	const joined: any[] = [];
 
 	joined.push(msg.author.id);
 
 	const filter = (res: any) => {
 		if (res.author.bot) { return false; }
-		
+
 		if (joined.includes(res.author.id)) { return false; }
-		
+
 		if (res.content.toLowerCase() !== text.toLowerCase()) { return false; }
-		
+
 		joined.push(res.author.id);
 		res.react('✅').catch((): void => null);
-		
+
 		return true;
 	}
 
 	const verify = await msg.channel.awaitMessages(filter, { max: max, time: time });
 
 	verify.set(msg.id, msg);
-	
+
 	if (dmCheck) {
 		for (const message of verify.values()) {
 			try {
@@ -410,10 +410,10 @@ export const awaitPlayers = async(msg: any, max: number, min: number, { text = '
  * @param {number} [time=30000]
  * @returns Promise
  */
-export const verify = async(channel: Channel, user: User, time: number = 30000): Promise<boolean | 0> => {
+export const verify = async (channel: Channel, user: User, time: number = 30000): Promise<boolean | 0> => {
 	const filter = (res: any) => {
 		const value = res.content.toLowerCase();
-		
+
 		return res.author.id === user.id && (yes.includes(value) || no.includes(value));
 	}
 
@@ -468,4 +468,11 @@ export const stopTyping = (msg: CommandoMessage): void => {
  */
 export const startTyping = (msg: CommandoMessage): void => {
 	msg.channel.startTyping(1);
+}
+
+
+export const isNormalInteger = (str: string) => {
+	const n = Math.floor(Number(str));
+	
+	return String(n) === str && n >= 0;
 }

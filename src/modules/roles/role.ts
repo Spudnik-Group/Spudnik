@@ -1,8 +1,8 @@
 import { stripIndents } from 'common-tags';
-import { Message, MessageEmbed } from 'discord.js';
+import { Collection, Message, MessageEmbed, Role } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, startTyping, stopTyping } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, startTyping, stopTyping, isNormalInteger } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 
 /**
@@ -34,11 +34,12 @@ export default class RoleCommand extends Command {
 					}
 				},
 				{
-					key: 'role',
+					key: 'name',
 					prompt: 'What role?\n',
 					type: 'string'
 				},
 				{
+					default: '',
 					key: 'color',
 					prompt: 'What color?\n',
 					type: 'string'
@@ -106,12 +107,17 @@ export default class RoleCommand extends Command {
 				} catch (err) {
 					return this.catchError(msg, args, err);
 				}
+
 				roleEmbed.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
 					**Action:** Added role '${args.name}' to the guild.
 				`);
 
-				break;
+				modLogMessage(msg, roleEmbed);
+				deleteCommandMessages(msg);
+				stopTyping(msg);
+
+				return msg.embed(roleEmbed);
 			}
 			case 'remove': {
 				if (!args.name) {
@@ -120,30 +126,80 @@ export default class RoleCommand extends Command {
 					return sendSimpleEmbeddedError(msg, 'No role specified!', 3000);
 				}
 
-				if (!msg.guild.roles.has(args.name)) {
+				const rolesFound: Collection<string, Role> = msg.guild.roles.filter(role => role.name.toLocaleLowerCase() === args.name.toLocaleLowerCase());
+
+				if (rolesFound.size > 1) {
+					const rolesFoundArray = rolesFound.array();
+
+					roleEmbed.setDescription(stripIndents`
+						More than one role was found matching the provided name.
+						Which role would you like to delete?\n
+						${rolesFoundArray.map((role, i) => `**${i + 1}** - \`${role.id}\` - <@&${role.id}> - ${role.members.size} members`).join('\n')}`);
+
+					await msg.embed(roleEmbed);
+					stopTyping(msg);
+
+					const filter = (res: any) => {
+						return (res.author.id === msg.author.id);
+					}
+
+					msg.channel.awaitMessages(filter, { max: 1 }).then(responses => {
+						const response = responses.first();
+
+
+						if(isNormalInteger(response.content) && (Number(response.content) < rolesFoundArray.length)) {
+							rolesFoundArray[Number(response.content) - 1].delete().then(deletedRole => {
+								roleEmbed.setDescription(`${deletedRole.name} has been removed!`);
+
+								return msg.embed(roleEmbed);
+							}).catch(() => {
+
+								return sendSimpleEmbeddedError(msg, 'There was an issue deleting the specified role...');
+							});
+						} else {
+							return sendSimpleEmbeddedError(msg, 'Please supply a row number corresponding to the role you want to delete.');
+						}
+					}).catch(() => {
+						return sendSimpleEmbeddedError(msg, 'Command cancelled...');
+					});
+
+
+				} else {
+					return null;
+				}
+
+				/*
+
+				console.log(rolesFound.size);
+
+				if (role === undefined) {
 					stopTyping(msg);
 
 					return sendSimpleEmbeddedError(msg, 'Invalid role specified!', 3000);
 				}
 
 				try {
-					await msg.guild.roles.delete(args.name);
+					await role.delete();
 				} catch (err) {
 					return this.catchError(msg, args, null);
 				}
+				
 				roleEmbed.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
 					**Action:** Removed role \`${args.name}\` from the guild.
 				`);
+				*/
+				break;
+			}
+			default: {
+				stopTyping(msg);
+
+				// Send the success response
+				return sendSimpleEmbeddedError(msg, 'Invalid subcommand!');
 			}
 		}
 
-		modLogMessage(msg, roleEmbed);
-		deleteCommandMessages(msg);
-		stopTyping(msg);
-
-		// Send the success response
-		return msg.embed(roleEmbed);
+		
 	}
 
 	private catchError(msg: CommandoMessage, args: { subCommand: string, name: string, color: string }, err: Error) {

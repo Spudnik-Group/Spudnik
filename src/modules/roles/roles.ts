@@ -98,7 +98,7 @@ export default class RolesCommand extends Command {
 		}
 
 		if (Array.isArray(roleEmbed.fields) && roleEmbed.fields.length === 0) {
-			roleEmbed.setDescription('A default role and assignable roles are not set for this guild.');
+			roleEmbed.setDescription('This guild does not have a default role or any self-assignable roles set.');
 		}
 
 		deleteCommandMessages(msg);
