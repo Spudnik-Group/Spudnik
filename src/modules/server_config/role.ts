@@ -35,22 +35,31 @@ export default class RoleCommand extends Command {
 				},
 				{
 					key: 'name',
-					prompt: 'What role?\n',
+					prompt: 'What is the name of the role?\n',
 					type: 'string'
 				},
 				{
 					default: '',
 					key: 'color',
-					prompt: 'What color?\n',
-					type: 'string'
+					prompt: 'What color would you like the role to be?\n',
+					type: 'string',
+					validate: (color: string) => {
+						if (!isNaN(color.match(/^ *[a-f0-9]{6} *$/i) ? parseInt(color, 16) : NaN)) {
+							return true;
+						} else if (color === '') {
+							return true;
+						}
+						
+						return 'You provided an invalid color hex number. Please try again.';
+					}
 				}
 			],
 			clientPermissions: ['MANAGE_ROLES'],
 			description: 'Used to add or remove roles from your server.',
 			details: stripIndents`
-				syntax: \`!sar <add|remove> (@roleMention)\`
+				syntax: \`!sar <add|remove> <@roleMention|newRoleName> (hexcolor)\`
 
-				\`add <@roleMention>\` - adds the role to your guild.
+				\`add <@roleMention> (hexcolor)\` - adds the role to your guild with the supplied color.
 				\`remove <@roleMention>\` - removes the role from your guild.
 
 				MANAGE_ROLES permission required.
@@ -91,19 +100,24 @@ export default class RoleCommand extends Command {
 
 		switch (args.subCommand.toLowerCase()) {
 			case 'add': {
-				if (!args.name) {
-					stopTyping(msg);
-
-					return sendSimpleEmbeddedError(msg, 'No role specified!', 3000);
-				}
-
 				try {
-					await msg.guild.roles.create({
-						data: {
-							color: args.color,
-							name: args.name
-						}
-					});
+					let roleMetaData = {};
+					if (args.color !== '') {
+						roleMetaData = {
+							data: {
+								color: args.color,
+								name: args.name
+							}
+						};
+					} else {
+						roleMetaData = {
+							data: {
+								name: args.name
+							}
+						};
+					}
+					//TODO: add a reason
+					await msg.guild.roles.create(roleMetaData);
 				} catch (err) {
 					return this.catchError(msg, args, err);
 				}
@@ -120,12 +134,6 @@ export default class RoleCommand extends Command {
 				return msg.embed(roleEmbed);
 			}
 			case 'remove': {
-				if (!args.name) {
-					stopTyping(msg);
-
-					return sendSimpleEmbeddedError(msg, 'No role specified!', 3000);
-				}
-
 				const rolesFound: Collection<string, Role> = await msg.guild.roles.filter(role => role.name.toLocaleLowerCase() === args.name.toLocaleLowerCase());
 
 				if (rolesFound.size > 1) {
@@ -149,19 +157,20 @@ export default class RoleCommand extends Command {
 	
 							if (isNormalInteger(response.content) && ((-1 < Number(response.content)) && (Number(response.content) < rolesFoundArray.length))) {
 								try {
+									//TODO: add a reason
 									await rolesFoundArray[Number(response.content) - 1].delete();
-									roleEmbed.setDescription(stripIndents`
-										**Member:** ${msg.author.tag} (${msg.author.id})
-										**Action:** Removed role \`${response}\` from the guild.
-									`);
-									modLogMessage(msg, roleEmbed);
-									deleteCommandMessages(msg);
-									stopTyping(msg);
-	
-									return msg.embed(roleEmbed);
 								} catch (err) {
 									return this.catchError(msg, args, err);
 								}
+								roleEmbed.setDescription(stripIndents`
+									**Member:** ${msg.author.tag} (${msg.author.id})
+									**Action:** Removed role \`${response}\` from the guild.
+								`);
+								modLogMessage(msg, roleEmbed);
+								deleteCommandMessages(msg);
+								stopTyping(msg);
+
+								return msg.embed(roleEmbed);
 							} else {
 								stopTyping(msg);
 	
@@ -176,19 +185,20 @@ export default class RoleCommand extends Command {
 					const roleToDelete = rolesFound.first();
 
 					try {
+						//TODO: add a reason
 						await roleToDelete.delete();
-						roleEmbed.setDescription(stripIndents`
-							**Member:** ${msg.author.tag} (${msg.author.id})
-							**Action:** Removed role \`${roleToDelete.name}\` from the guild.
-						`);
-						modLogMessage(msg, roleEmbed);
-						deleteCommandMessages(msg);
-						stopTyping(msg);
-
-						return msg.embed(roleEmbed);
 					} catch (err) {
 						return this.catchError(msg, args, err);
 					}
+					roleEmbed.setDescription(stripIndents`
+						**Member:** ${msg.author.tag} (${msg.author.id})
+						**Action:** Removed role \`${roleToDelete.name}\` from the guild.
+					`);
+					modLogMessage(msg, roleEmbed);
+					deleteCommandMessages(msg);
+					stopTyping(msg);
+
+					return msg.embed(roleEmbed);
 				}
 			}
 			default: {
@@ -205,7 +215,7 @@ export default class RoleCommand extends Command {
 	private catchError(msg: CommandoMessage, args: { subCommand: string, name: string, color: string }, err: Error) {
 		// Build warning message
 		let roleWarn = stripIndents`
-			Error occurred in \`role-management\` command!
+			Error occurred in \`role\` command!
 			**Server:** ${msg.guild.name} (${msg.guild.id})
 			**Author:** ${msg.author.tag} (${msg.author.id})
 			**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
