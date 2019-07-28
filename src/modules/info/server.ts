@@ -29,7 +29,7 @@ export default class ServerCommand extends Command {
 				'!server',
 				'!server-stats'
 			],
-			group: 'util',
+			group: 'info',
 			guildOnly: true,
 			memberName: 'server',
 			name: 'server',

@@ -48,7 +48,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 				'!delete-command-messages enable',
 				'!delete-command-messages disable'
 			],
-			group: 'feature',
+			group: 'bot_config',
 			guildOnly: true,
 			memberName: 'delete-command-messages',
 			name: 'delete-command-messages',

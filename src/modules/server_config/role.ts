@@ -6,7 +6,7 @@ import { sendSimpleEmbeddedError, startTyping, stopTyping, isNormalInteger } fro
 import * as format from 'date-fns/format';
 
 /**
- * Manage self-assignable roles.
+ * Manage guild roles.
  *
  * @export
  * @class RoleCommand
@@ -46,7 +46,7 @@ export default class RoleCommand extends Command {
 				}
 			],
 			clientPermissions: ['MANAGE_ROLES'],
-			description: 'Used to configure the self-assignable roles feature.',
+			description: 'Used to add or remove roles from your server.',
 			details: stripIndents`
 				syntax: \`!sar <add|remove> (@roleMention)\`
 
@@ -59,7 +59,7 @@ export default class RoleCommand extends Command {
 				'!role add @PUBG',
 				'!role remove @Fortnite'
 			],
-			group: 'feature',
+			group: 'server_config',
 			guildOnly: true,
 			memberName: 'role',
 			name: 'role',
@@ -126,7 +126,7 @@ export default class RoleCommand extends Command {
 					return sendSimpleEmbeddedError(msg, 'No role specified!', 3000);
 				}
 
-				const rolesFound: Collection<string, Role> = msg.guild.roles.filter(role => role.name.toLocaleLowerCase() === args.name.toLocaleLowerCase());
+				const rolesFound: Collection<string, Role> = await msg.guild.roles.filter(role => role.name.toLocaleLowerCase() === args.name.toLocaleLowerCase());
 
 				if (rolesFound.size > 1) {
 					const rolesFoundArray = rolesFound.array();
@@ -139,57 +139,57 @@ export default class RoleCommand extends Command {
 					await msg.embed(roleEmbed);
 					stopTyping(msg);
 
-					const filter = (res: any) => {
+					const filter = (res: Message) => {
 						return (res.author.id === msg.author.id);
 					}
 
-					msg.channel.awaitMessages(filter, { max: 1 }).then(responses => {
+					try {
+						const responses = await msg.channel.awaitMessages(filter, { max: 1 });
 						const response = responses.first();
+	
+							if (isNormalInteger(response.content) && ((-1 < Number(response.content)) && (Number(response.content) < rolesFoundArray.length))) {
+								try {
+									await rolesFoundArray[Number(response.content) - 1].delete();
+									roleEmbed.setDescription(stripIndents`
+										**Member:** ${msg.author.tag} (${msg.author.id})
+										**Action:** Removed role \`${response}\` from the guild.
+									`);
+									modLogMessage(msg, roleEmbed);
+									deleteCommandMessages(msg);
+									stopTyping(msg);
+	
+									return msg.embed(roleEmbed);
+								} catch (err) {
+									return this.catchError(msg, args, err);
+								}
+							} else {
+								stopTyping(msg);
+	
+								return sendSimpleEmbeddedError(msg, 'Please supply a row number corresponding to the role you want to delete.');
+							}
+					} catch (err) {
+						stopTyping(msg);
 
-
-						if(isNormalInteger(response.content) && (Number(response.content) < rolesFoundArray.length)) {
-							rolesFoundArray[Number(response.content) - 1].delete().then(deletedRole => {
-								roleEmbed.setDescription(`${deletedRole.name} has been removed!`);
-
-								return msg.embed(roleEmbed);
-							}).catch(() => {
-
-								return sendSimpleEmbeddedError(msg, 'There was an issue deleting the specified role...');
-							});
-						} else {
-							return sendSimpleEmbeddedError(msg, 'Please supply a row number corresponding to the role you want to delete.');
-						}
-					}).catch(() => {
-						return sendSimpleEmbeddedError(msg, 'Command cancelled...');
-					});
-
-
+						return this.catchError(msg, args, err);
+					}
 				} else {
-					return null;
+					const roleToDelete = rolesFound.first();
+
+					try {
+						await roleToDelete.delete();
+						roleEmbed.setDescription(stripIndents`
+							**Member:** ${msg.author.tag} (${msg.author.id})
+							**Action:** Removed role \`${roleToDelete.name}\` from the guild.
+						`);
+						modLogMessage(msg, roleEmbed);
+						deleteCommandMessages(msg);
+						stopTyping(msg);
+
+						return msg.embed(roleEmbed);
+					} catch (err) {
+						return this.catchError(msg, args, err);
+					}
 				}
-
-				/*
-
-				console.log(rolesFound.size);
-
-				if (role === undefined) {
-					stopTyping(msg);
-
-					return sendSimpleEmbeddedError(msg, 'Invalid role specified!', 3000);
-				}
-
-				try {
-					await role.delete();
-				} catch (err) {
-					return this.catchError(msg, args, null);
-				}
-				
-				roleEmbed.setDescription(stripIndents`
-					**Member:** ${msg.author.tag} (${msg.author.id})
-					**Action:** Removed role \`${args.name}\` from the guild.
-				`);
-				*/
-				break;
 			}
 			default: {
 				stopTyping(msg);

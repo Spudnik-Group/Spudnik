@@ -33,6 +33,7 @@ export default class CommandSearchCommand extends Command {
 				'!command-search bacon'
 			],
 			group: 'help',
+			guarded: true,
 			guildOnly: true,
 			memberName: 'command-search',
 			name: 'command-search',

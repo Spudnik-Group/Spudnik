@@ -49,7 +49,7 @@ export default class UserCommand extends Command {
 				'!user',
 				'!user @nebula'
 			],
-			group: 'util',
+			group: 'info',
 			guildOnly: true,
 			memberName: 'user',
 			name: 'user',
