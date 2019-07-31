@@ -59,14 +59,17 @@ export default class RoleCommand extends Command {
 			details: stripIndents`
 				syntax: \`!sar <add|remove> <@roleMention|newRoleName> (hexcolor)\`
 
-				\`add <@roleMention> (hexcolor)\` - adds the role to your guild with the supplied color.
-				\`remove <@roleMention>\` - removes the role from your guild.
+				\`add "role name" (hexcolor)\` - adds the role to your guild with the supplied color.
+				\`remove "role name"\` - removes the role from your guild.
 
 				MANAGE_ROLES permission required.
 			`,
 			examples: [
-				'!role add @PUBG',
-				'!role remove @Fortnite'
+				'!role add PUBG',
+				'!role add PUBG 0000FF',
+				'!role add "test role"',
+				'!role add "test role" 0000FF',
+				'!role remove Fortnite'
 			],
 			group: 'server_config',
 			guildOnly: true,
