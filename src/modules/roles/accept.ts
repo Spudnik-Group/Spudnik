@@ -21,7 +21,6 @@ export default class AcceptCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			clientPermissions: ['MANAGE_ROLES'],
 			description: 'Accept the Terms of Use for the current guild.',
 			examples: [
 				'!accept'
@@ -60,9 +59,11 @@ export default class AcceptCommand extends Command {
 		if (defaultRoles.length > 0 && msg.channel.id === acceptChannel) {
 			startTyping(msg);
 			const defaultRoleList: Role[] = [];
+
 			defaultRoles.forEach(roleId => {
 				defaultRoleList.push(msg.guild.roles.get(roleId))
 			});
+			
 			defaultRoleList.filter(role => role).forEach(async(role) => {
 				try {
 					await msg.member.roles.add(role);
