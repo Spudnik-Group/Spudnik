@@ -9,22 +9,22 @@ const scoutID: string = process.env.spud_scoutid;
 const scoutSecret: string = process.env.spud_scoutsecret;
 
 /**
- * Returns Call of Duty: WWII stats for a user on a specific platform.
+ * Returns Rainbow 6: Siege stats for a user on a specific platform.
  *
  * @export
- * @class CODWWIIStatsCommand
+ * @class R6StatsCommand
  * @extends {Command}
  */
-export default class CODWWIIStatsCommand extends Command {
+export default class R6StatsCommand extends Command {
 	/**
-	 * Creates an instance of CODWWIIStatsCommand.
+	 * Creates an instance of R6StatsCommand.
 	 *
 	 * @param {CommandoClient} client
-	 * @memberof CODWWIIStatsCommand
+	 * @memberof R6StatsCommand
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			aliases: ['codwwii'],
+			aliases: ['r6', 'rainbow6-stats'],
 			args: [
 				{
 					key: 'platform',
@@ -46,20 +46,20 @@ export default class CODWWIIStatsCommand extends Command {
 					type: 'string'
 				}
 			],
-			description: 'Returns Call of Duty: WWII stats for a user on a specific platform. Uses the TrackerNetwork API.',
+			description: 'Returns Rainbow 6: Siege stats for a user on a specific platform. Uses the TrackerNetwork API.',
 			details: stripIndents`
-				syntax: \`!codwwii-stats <platform> <username>\`
+				syntax: \`!r6-stats <platform> <username>\`
 				
 				Platform must be one of: pc, psn, xbl
 			`,
 			examples: [
-				'!codwwii-stats xbl naterchrdsn',
-				'!codwwii-stats pc nebula-grey'
+				'!r6-stats xbl naterchrdsn',
+				'!r6-stats pc nebula-grey'
 			],
-			group: 'gaming',
+			group: 'player_stats',
 			guildOnly: true,
-			memberName: 'codwwii-stats',
-			name: 'codwwii-stats',
+			memberName: 'r6-stats',
+			name: 'r6-stats',
 			throttling: {
 				duration: 3,
 				usages: 2
@@ -68,19 +68,19 @@ export default class CODWWIIStatsCommand extends Command {
 	}
 
 	/**
-	 * Run the "codwwii-stats" command.
+	 * Run the "r6-stats" command.
 	 *
 	 * @param {CommandoMessage} msg
 	 * @param {{ platform: string, username: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
-	 * @memberof CODWWIIStatsCommand
+	 * @memberof R6StatsCommand
 	 */
 	public async run(msg: CommandoMessage, args: { platform: string, username: string }): Promise<Message | Message[]> {
 		const platform = args.platform === 'pc' ? 'uplay' : args.platform;
-		const codwwiiEmbed: MessageEmbed = new MessageEmbed({
+		const r6Embed: MessageEmbed = new MessageEmbed({
 			author: {
-				icon_url: 'https://i.imgur.com/H7AGNoX.png',
-				name: 'codwwii Stats',
+				icon_url: 'https://i.imgur.com/BsQ6ebY.jpg',
+				name: 'R6 Stats',
 				url: 'https://scoutsdk.com/'
 			},
 			color: getEmbedColor(msg),
@@ -96,26 +96,32 @@ export default class CODWWIIStatsCommand extends Command {
 		});
 
 		startTyping(msg);
-		const search = await Scout.players.search(args.username, platform, null, games.codwwii.id, true, true);
+		const search = await Scout.players.search(args.username, platform, null, games.r6siege.id, true, true);
 		if (search.results.length) {
 			const matches = search.results.filter((result: any) => result.player);
 			if (matches.length) {
 				// TODO: change this to allow selection of a result
-				const firstMatch = matches[0];
-				const playerStats = await Scout.players.get(games.codwwii.id, firstMatch.player.playerId, '*');
-				codwwiiEmbed.setDescription(stripIndents`
-					**${firstMatch.persona.handle}**
+				const firstMatch = matches.find((item: any) => item.player);
+				const playerStats = await Scout.players.get(games.r6siege.id, firstMatch.player.playerId, '*');
+				if (playerStats) {
+					r6Embed.setDescription(stripIndents`
+						**${firstMatch.persona.handle}**
+	
+						${playerStats.metadata[1].name}: ${playerStats.metadata[1].displayValue}
+					`);
+					playerStats.stats.forEach((statObj: any) => {
+						if (!statObj.displayValue) return;
+						r6Embed.addField(statObj.metadata.name, statObj.displayValue, true);
+					});
+					deleteCommandMessages(msg);
+					stopTyping(msg);
+	
+					return msg.embed(r6Embed);
+				} else {
+					stopTyping(msg);
 
-					${playerStats.metadata[1].name}: ${playerStats.metadata[1].displayValue}
-				`);
-				playerStats.stats.forEach((statObj: any) => {
-					if (!statObj.displayValue) return;
-					codwwiiEmbed.addField(statObj.metadata.name, statObj.displayValue, true);
-				});
-				deleteCommandMessages(msg);
-				stopTyping(msg);
-
-				return msg.embed(codwwiiEmbed);
+					return sendSimpleEmbeddedError(msg, 'Couldn\'t retrieve stats for that person, check the spelling and try again.', 3000);
+				}
 			} else {
 				stopTyping(msg);
 	

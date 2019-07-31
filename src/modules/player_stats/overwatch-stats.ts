@@ -63,7 +63,7 @@ export default class OverwatchStatsCommand extends Command {
 				'!overwatch-stats pc Mythos-11321',
 				'!overwatch-stats psn Mythos11321 us'
 			],
-			group: 'gaming',
+			group: 'player_stats',
 			guildOnly: true, 
 			memberName: 'overwatch-stats',
 			name: 'overwatch-stats',

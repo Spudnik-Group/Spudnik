@@ -56,7 +56,7 @@ export default class ModlogCommand extends Command {
 				'!modlog disable',
 				'!modlog channel #modlog'
 			],
-			group: 'feature',
+			group: 'bot_config',
 			guildOnly: true,
 			memberName: 'modlog',
 			name: 'modlog',

@@ -57,7 +57,7 @@ export default class ApexLegendsStatsCommand extends Command {
 				'!apex-legends-stats xbl naterchrdsn',
 				'!apex-legends-stats pc nebula-grey'
 			],
-			group: 'gaming',
+			group: 'player_stats',
 			guildOnly: true,
 			memberName: 'apex-legends-stats',
 			name: 'apex-legends-stats',

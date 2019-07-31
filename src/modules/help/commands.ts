@@ -34,6 +34,7 @@ export default class CommandsCommand extends Command {
 				'!commands gaming'
 			],
 			group: 'help',
+			guarded: true,
 			guildOnly: true,
 			memberName: 'commands',
 			name: 'commands',

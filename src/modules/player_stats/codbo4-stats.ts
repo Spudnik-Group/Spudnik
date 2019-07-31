@@ -9,22 +9,22 @@ const scoutID: string = process.env.spud_scoutid;
 const scoutSecret: string = process.env.spud_scoutsecret;
 
 /**
- * Returns Rainbow 6: Siege stats for a user on a specific platform.
+ * Returns Call of Duty: Black Ops 4 stats for a user on a specific platform.
  *
  * @export
- * @class R6StatsCommand
+ * @class CODBO4StatsCommand
  * @extends {Command}
  */
-export default class R6StatsCommand extends Command {
+export default class CODBO4StatsCommand extends Command {
 	/**
-	 * Creates an instance of R6StatsCommand.
+	 * Creates an instance of CODBO4StatsCommand.
 	 *
 	 * @param {CommandoClient} client
-	 * @memberof R6StatsCommand
+	 * @memberof CODBO4StatsCommand
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			aliases: ['r6', 'rainbow6-stats'],
+			aliases: ['codbo4', 'blops4'],
 			args: [
 				{
 					key: 'platform',
@@ -46,20 +46,20 @@ export default class R6StatsCommand extends Command {
 					type: 'string'
 				}
 			],
-			description: 'Returns Rainbow 6: Siege stats for a user on a specific platform. Uses the TrackerNetwork API.',
+			description: 'Returns Call of Duty: Black Ops 4 stats for a user on a specific platform. Uses the TrackerNetwork API.',
 			details: stripIndents`
-				syntax: \`!r6-stats <platform> <username>\`
+				syntax: \`!codbo4-stats <platform> <username>\`
 				
 				Platform must be one of: pc, psn, xbl
 			`,
 			examples: [
-				'!r6-stats xbl naterchrdsn',
-				'!r6-stats pc nebula-grey'
+				'!codbo4-stats xbl naterchrdsn',
+				'!codbo4-stats pc nebula-grey'
 			],
-			group: 'gaming',
+			group: 'player_stats',
 			guildOnly: true,
-			memberName: 'r6-stats',
-			name: 'r6-stats',
+			memberName: 'codbo4-stats',
+			name: 'codbo4-stats',
 			throttling: {
 				duration: 3,
 				usages: 2
@@ -68,19 +68,19 @@ export default class R6StatsCommand extends Command {
 	}
 
 	/**
-	 * Run the "r6-stats" command.
+	 * Run the "codbo4-stats" command.
 	 *
 	 * @param {CommandoMessage} msg
 	 * @param {{ platform: string, username: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
-	 * @memberof R6StatsCommand
+	 * @memberof CODBO4StatsCommand
 	 */
 	public async run(msg: CommandoMessage, args: { platform: string, username: string }): Promise<Message | Message[]> {
-		const platform = args.platform === 'pc' ? 'uplay' : args.platform;
-		const r6Embed: MessageEmbed = new MessageEmbed({
+		const platform = args.platform === 'pc' ? 'battlenet' : args.platform;
+		const codbo4Embed: MessageEmbed = new MessageEmbed({
 			author: {
-				icon_url: 'https://i.imgur.com/BsQ6ebY.jpg',
-				name: 'R6 Stats',
+				icon_url: 'https://i.imgur.com/90HVaib.png',
+				name: 'COD:BLOPS4 Stats',
 				url: 'https://scoutsdk.com/'
 			},
 			color: getEmbedColor(msg),
@@ -96,32 +96,26 @@ export default class R6StatsCommand extends Command {
 		});
 
 		startTyping(msg);
-		const search = await Scout.players.search(args.username, platform, null, games.r6siege.id, true, true);
+		const search = await Scout.players.search(args.username, platform, null, games.codbo4.id, true, true);
 		if (search.results.length) {
 			const matches = search.results.filter((result: any) => result.player);
 			if (matches.length) {
 				// TODO: change this to allow selection of a result
-				const firstMatch = matches.find((item: any) => item.player);
-				const playerStats = await Scout.players.get(games.r6siege.id, firstMatch.player.playerId, '*');
-				if (playerStats) {
-					r6Embed.setDescription(stripIndents`
-						**${firstMatch.persona.handle}**
-	
-						${playerStats.metadata[1].name}: ${playerStats.metadata[1].displayValue}
-					`);
-					playerStats.stats.forEach((statObj: any) => {
-						if (!statObj.displayValue) return;
-						r6Embed.addField(statObj.metadata.name, statObj.displayValue, true);
-					});
-					deleteCommandMessages(msg);
-					stopTyping(msg);
-	
-					return msg.embed(r6Embed);
-				} else {
-					stopTyping(msg);
+				const firstMatch = matches[0];
+				const playerStats = await Scout.players.get(games.codbo4.id, firstMatch.player.playerId, '*');
+				codbo4Embed.setDescription(stripIndents`
+					**${firstMatch.persona.handle}**
 
-					return sendSimpleEmbeddedError(msg, 'Couldn\'t retrieve stats for that person, check the spelling and try again.', 3000);
-				}
+					${playerStats.metadata[1].name}: ${playerStats.metadata[1].displayValue}
+				`);
+				playerStats.stats.forEach((statObj: any) => {
+					if (!statObj.displayValue) return;
+					codbo4Embed.addField(statObj.metadata.name, statObj.displayValue, true);
+				});
+				deleteCommandMessages(msg);
+				stopTyping(msg);
+
+				return msg.embed(codbo4Embed);
 			} else {
 				stopTyping(msg);
 	
