@@ -41,7 +41,7 @@ export default class NickCommand extends Command {
 				'!nick',
 				'!nick AwesomeBot'
 			],
-			group: 'util',
+			group: 'bot_config',
 			guildOnly: true,
 			memberName: 'nick',
 			name: 'nick',

@@ -8,15 +8,15 @@ import { startTyping, stopTyping } from '../../lib/helpers';
  * Lists default and self-assignable roles.
  *
  * @export
- * @class RoleCommand
+ * @class RolesCommand
  * @extends {Command}
  */
-export default class RoleCommand extends Command {
+export default class RolesCommand extends Command {
 	/**
-	 * Creates an instance of RoleCommand.
+	 * Creates an instance of RolesCommand.
 	 *
 	 * @param {CommandoClient} client
-	 * @memberof RoleCommand
+	 * @memberof RolesCommand
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
@@ -40,7 +40,7 @@ export default class RoleCommand extends Command {
 	 *
 	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
-	 * @memberof RoleCommand
+	 * @memberof RolesCommand
 	 */
 	public async run(msg: CommandoMessage): Promise<Message | Message[]> {
 		const roleEmbed: MessageEmbed = new MessageEmbed({
@@ -98,7 +98,7 @@ export default class RoleCommand extends Command {
 		}
 
 		if (Array.isArray(roleEmbed.fields) && roleEmbed.fields.length === 0) {
-			roleEmbed.setDescription('A default role and assignable roles are not set for this guild.');
+			roleEmbed.setDescription('This guild does not have a default role or any self-assignable roles set.');
 		}
 
 		deleteCommandMessages(msg);

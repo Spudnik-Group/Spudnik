@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Message } from 'discord.js';
-import * as rp from 'request-promise';
+import axios from 'axios';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, stopTyping } from '../../lib/helpers';
 import { deleteCommandMessages } from '../../lib/custom-helpers';
@@ -32,7 +32,7 @@ export default class StrawpollCommand extends Command {
 				{
 					infinite: true,
 					key: 'options',
-					max: 10,
+					max: 50,
 					prompt: 'What options do you want to be able to pick from? You may have a maximum of 10.',
 					type: 'string'
 				}
@@ -63,31 +63,26 @@ export default class StrawpollCommand extends Command {
 	public async run(msg: CommandoMessage, args: { title: string, options: string }): Promise<Message | Message[]> {
 		startTyping(msg);
 
-		return rp.post({
-			body: {
+		try {
+			const { data: res } = await axios.post('https://www.strawpoll.me/api/v2/polls', {
 				captcha: true,
-				options: args.options,
+				options: args.options.slice(0, 10),
 				title: args.title
-			},
-			json: true,
-			uri: 'https://www.strawpoll.me/api/v2/polls'
-		})
-			.then((res: any) => {
-				deleteCommandMessages(msg);
-				stopTyping(msg);
-				
-				return sendSimpleEmbeddedMessage(msg, stripIndents`
-					${res.title}
-					http://www.strawpoll.me/${res.id}
-				`);
-			})
-			.catch((err: Error) => {
-				msg.client.emit('warn', `Error in command misc:strawpoll: ${err}`);
-
-				deleteCommandMessages(msg);
-				stopTyping(msg);
-				
-				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 			});
+			deleteCommandMessages(msg);
+			stopTyping(msg);
+			
+			return sendSimpleEmbeddedMessage(msg, stripIndents`
+				${res.title}
+				http://www.strawpoll.me/${res.id}
+			`);
+		} catch (err) {
+			msg.client.emit('warn', `Error in command misc:strawpoll: ${err}`);
+
+			deleteCommandMessages(msg);
+			stopTyping(msg);
+			
+			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+		}
 	}
 }

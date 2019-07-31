@@ -181,16 +181,16 @@ export class MongoSettingsProvider extends SettingProvider {
 		const val: any = settings[key];
 		settings[key] = undefined;
 
-		this.model.findOneAndUpdate({ guild: guild !== 'global' ? guild : '0' }, { guild: guild !== 'global' ? guild : '0', settings: JSON.stringify(settings) }, { upsert: true })
-			.then(() => {
-				if (guild === 'global') { this.updateOtherShards(key, undefined); }
+		try {
+			await this.model.findOneAndUpdate({ guild: guild !== 'global' ? guild : '0' }, { guild: guild !== 'global' ? guild : '0', settings: JSON.stringify(settings) }, { upsert: true });
+			if (guild === 'global') { this.updateOtherShards(key, undefined); }
 				
-				return new Promise<string>((resolve: (value: string) => void, reject: (value: string) => void) => {
-					resolve(val);
-				});
-			}).catch((err: Error) => {
-				console.error(err);
+			return new Promise<string>((resolve: (value: string) => void, reject: (value: string) => void) => {
+				resolve(val);
 			});
+		} catch (err) {
+			console.error(err);
+		}
 
 		return '';
 	}

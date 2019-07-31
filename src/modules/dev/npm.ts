@@ -3,7 +3,7 @@ import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { startTyping, sendSimpleEmbeddedError, stopTyping } from '../../lib/helpers';
 import { getEmbedColor } from '../../lib/custom-helpers';
-import * as rp from 'request-promise';
+import axios from 'axios';
 import * as format from 'date-fns/format';
 
 /**
@@ -70,48 +70,44 @@ export default class NPMCommand extends Command {
 
 		startTyping(msg);
 
-		return rp.get({
-			json: true,
-			uri: `https://registry.npmjs.com/${args.query}`
-		})
-			.then((res: any) => {
-				const version = res.versions[res['dist-tags'].latest];
-				let deps = version.dependencies ? Object.keys(version.dependencies) : null;
-				let maintainers = res.maintainers.map((user: any) => user.name);
+		try {
+			const { data: res } = await axios.get(`https://registry.npmjs.com/${args.query}`);
+			const version = res.versions[res['dist-tags'].latest];
+			let deps = version.dependencies ? Object.keys(version.dependencies) : null;
+			let maintainers = res.maintainers.map((user: any) => user.name);
+	
+			if(maintainers.length > 10) {
+				const len = maintainers.length - 10;
+				maintainers = maintainers.slice(0, 10);
+				maintainers.push(`...${len} more.`);
+			}
+	
+			if(deps && deps.length > 10) {
+				const len = deps.length - 10;
+				deps = deps.slice(0, 10);
+				deps.push(`...${len} more.`);
+			}
+	
+			npmEmbed
+				.setTitle(`NPM - ${args.query}`)
+				.setURL(`https://npmjs.com/package/${args.query}`)
+				.setDescription(`
+					${res.description || 'No Description.'}
+	
+					❯ **Version:** ${res['dist-tags'].latest}
+					❯ **License:** ${res.license}
+					❯ **Author:** ${res.author ? res.author.name : 'Unknown'}
+					❯ **Modified:** ${format(res.time.modified, 'MM/DD/YYYY h:mm A')}
+					❯ **Dependencies:** ${deps && deps.length ? deps.join(', ') : 'None'}
+				`);
+			stopTyping(msg);
+			
+			return msg.embed(npmEmbed)
+		} catch (err) {
+			stopTyping(msg);
+			msg.client.emit('warn', `Error in command dev:npm: ${err}`);
 
-				if(maintainers.length > 10) {
-					const len = maintainers.length - 10;
-					maintainers = maintainers.slice(0, 10);
-					maintainers.push(`...${len} more.`);
-				}
-
-				if(deps && deps.length > 10) {
-					const len = deps.length - 10;
-					deps = deps.slice(0, 10);
-					deps.push(`...${len} more.`);
-				}
-
-				npmEmbed
-					.setTitle(`NPM - ${args.query}`)
-					.setURL(`https://npmjs.com/package/${args.query}`)
-					.setDescription(`
-						${res.description || 'No Description.'}
-
-						❯ **Version:** ${res['dist-tags'].latest}
-						❯ **License:** ${res.license}
-						❯ **Author:** ${res.author ? res.author.name : 'Unknown'}
-						❯ **Modified:** ${format(res.time.modified, 'MM/DD/YYYY h:mm A')}
-						❯ **Dependencies:** ${deps && deps.length ? deps.join(', ') : 'None'}
-					`);
-				stopTyping(msg);
-				
-				return msg.embed(npmEmbed)
-			})
-			.catch((response) => {
-				stopTyping(msg);
-				msg.client.emit('warn', `Error in command dev:npm: ${response}`);
-
-				return sendSimpleEmbeddedError(msg, 'Could not fetch that package, are you sure it exists?', 3000);
-			});
+			return sendSimpleEmbeddedError(msg, 'Could not fetch that package, are you sure it exists?', 3000);
+		}
 	}
 }

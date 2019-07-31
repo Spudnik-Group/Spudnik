@@ -48,7 +48,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 				'!delete-command-messages enable',
 				'!delete-command-messages disable'
 			],
-			group: 'feature',
+			group: 'bot_config',
 			guildOnly: true,
 			memberName: 'delete-command-messages',
 			name: 'delete-command-messages',
@@ -86,31 +86,33 @@ export default class DeleteCommandMessagesCommand extends Command {
 
 				return sendSimpleEmbeddedMessage(msg, 'DeleteCommandMessages feature already enabled!', 3000);
 			} else {
-				msg.guild.settings.set('deleteCommandMessage', true)
-					.then(() => {
-						// Set up embed message
-						deleteCommandMessagesEmbed.setDescription(stripIndents`
-							**Member:** ${msg.author.tag} (${msg.author.id})
-							**Action:** DeleteCommandMessages _Enabled_
-						`);
+				try {
+					await msg.guild.settings.set('deleteCommandMessage', true);
+					// Set up embed message
+					deleteCommandMessagesEmbed.setDescription(stripIndents`
+						**Member:** ${msg.author.tag} (${msg.author.id})
+						**Action:** DeleteCommandMessages _Enabled_
+					`);
 
-						return this.sendSuccess(msg, deleteCommandMessagesEmbed);
-					})
-					.catch((err: Error) => this.catchError(msg, args, err));
+					return this.sendSuccess(msg, deleteCommandMessagesEmbed);
+				} catch (err) {
+					return this.catchError(msg, args, err)
+				}
 			}
 		} else if (args.subCommand.toLowerCase() === 'disable') {
 			if (deleteCommandMessagesEnabled) {
-				msg.guild.settings.set('deleteCommandMessage', false)
-					.then(() => {
-						// Set up embed message
-						deleteCommandMessagesEmbed.setDescription(stripIndents`
-							**Member:** ${msg.author.tag} (${msg.author.id})
-							**Action:** DeleteCommandMessages _Disabled_
-						`);
+				try {
+					await msg.guild.settings.set('deleteCommandMessage', false);
+					// Set up embed message
+					deleteCommandMessagesEmbed.setDescription(stripIndents`
+						**Member:** ${msg.author.tag} (${msg.author.id})
+						**Action:** DeleteCommandMessages _Disabled_
+					`);
 
-						return this.sendSuccess(msg, deleteCommandMessagesEmbed);
-					})
-					.catch((err: Error) => this.catchError(msg, args, err));
+					return this.sendSuccess(msg, deleteCommandMessagesEmbed);
+				} catch (err) {
+					return this.catchError(msg, args, err)
+				}
 			} else {
 				stopTyping(msg);
 

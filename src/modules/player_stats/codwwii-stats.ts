@@ -9,22 +9,22 @@ const scoutID: string = process.env.spud_scoutid;
 const scoutSecret: string = process.env.spud_scoutsecret;
 
 /**
- * Returns Fortnite stats for a user on a specific platform.
+ * Returns Call of Duty: WWII stats for a user on a specific platform.
  *
  * @export
- * @class FortniteStatsCommand
+ * @class CODWWIIStatsCommand
  * @extends {Command}
  */
-export default class FortniteStatsCommand extends Command {
+export default class CODWWIIStatsCommand extends Command {
 	/**
-	 * Creates an instance of FortniteStatsCommand.
+	 * Creates an instance of CODWWIIStatsCommand.
 	 *
 	 * @param {CommandoClient} client
-	 * @memberof FortniteStatsCommand
+	 * @memberof CODWWIIStatsCommand
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			aliases: ['fortnite'],
+			aliases: ['codwwii'],
 			args: [
 				{
 					key: 'platform',
@@ -46,20 +46,20 @@ export default class FortniteStatsCommand extends Command {
 					type: 'string'
 				}
 			],
-			description: 'Returns Fortnite stats for a user on a specific platform. Uses the TrackerNetwork API.',
+			description: 'Returns Call of Duty: WWII stats for a user on a specific platform. Uses the TrackerNetwork API.',
 			details: stripIndents`
-				syntax: \`!fortnite-stats <platform> <username>\`
+				syntax: \`!codwwii-stats <platform> <username>\`
 				
 				Platform must be one of: pc, psn, xbl
 			`,
 			examples: [
-				'!fortnite-stats xbl naterchrdsn',
-				'!fortnite-stats pc nebula-grey'
+				'!codwwii-stats xbl naterchrdsn',
+				'!codwwii-stats pc nebula-grey'
 			],
-			group: 'gaming',
+			group: 'player_stats',
 			guildOnly: true,
-			memberName: 'fortnite-stats',
-			name: 'fortnite-stats',
+			memberName: 'codwwii-stats',
+			name: 'codwwii-stats',
 			throttling: {
 				duration: 3,
 				usages: 2
@@ -68,19 +68,19 @@ export default class FortniteStatsCommand extends Command {
 	}
 
 	/**
-	 * Run the "fornite-stats" command.
+	 * Run the "codwwii-stats" command.
 	 *
 	 * @param {CommandoMessage} msg
 	 * @param {{ platform: string, username: string }} args
 	 * @returns {(Promise<Message | Message[]>)}
-	 * @memberof FortniteStatsCommand
+	 * @memberof CODWWIIStatsCommand
 	 */
 	public async run(msg: CommandoMessage, args: { platform: string, username: string }): Promise<Message | Message[]> {
-		const platform = args.platform === 'pc' ? 'epic' : args.platform;
-		const fortniteEmbed: MessageEmbed = new MessageEmbed({
+		const platform = args.platform === 'pc' ? 'uplay' : args.platform;
+		const codwwiiEmbed: MessageEmbed = new MessageEmbed({
 			author: {
-				icon_url: 'https://i.imgur.com/HJo2RkT.png',
-				name: 'Fortnite Stats',
+				icon_url: 'https://i.imgur.com/H7AGNoX.png',
+				name: 'codwwii Stats',
 				url: 'https://scoutsdk.com/'
 			},
 			color: getEmbedColor(msg),
@@ -96,26 +96,26 @@ export default class FortniteStatsCommand extends Command {
 		});
 
 		startTyping(msg);
-		const search = await Scout.players.search(args.username, platform, null, games.fortnite.id, true, true);
+		const search = await Scout.players.search(args.username, platform, null, games.codwwii.id, true, true);
 		if (search.results.length) {
 			const matches = search.results.filter((result: any) => result.player);
 			if (matches.length) {
 				// TODO: change this to allow selection of a result
 				const firstMatch = matches[0];
-				const playerStats = await Scout.players.get(games.fortnite.id, firstMatch.player.playerId, '*');
-				fortniteEmbed.setDescription(stripIndents`
+				const playerStats = await Scout.players.get(games.codwwii.id, firstMatch.player.playerId, '*');
+				codwwiiEmbed.setDescription(stripIndents`
 					**${firstMatch.persona.handle}**
 
 					${playerStats.metadata[1].name}: ${playerStats.metadata[1].displayValue}
 				`);
 				playerStats.stats.forEach((statObj: any) => {
 					if (!statObj.displayValue) return;
-					fortniteEmbed.addField(statObj.metadata.name, statObj.displayValue, true);
+					codwwiiEmbed.addField(statObj.metadata.name, statObj.displayValue, true);
 				});
 				deleteCommandMessages(msg);
 				stopTyping(msg);
 
-				return msg.embed(fortniteEmbed);
+				return msg.embed(codwwiiEmbed);
 			} else {
 				stopTyping(msg);
 	

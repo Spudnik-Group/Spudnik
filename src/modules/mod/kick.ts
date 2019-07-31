@@ -83,37 +83,36 @@ export default class KickCommand extends Command {
 			return sendSimpleEmbeddedError(msg, `I can't kick ${memberToKick}. Do they have the same or a higher role than me or you?`, 3000);
 		}
 
-		memberToKick.kick(`Kicked by: ${msg.author} for: ${args.reason}`)
-			.then(() => {
-				// Set up embed message
-				kickEmbed.setDescription(stripIndents`
-					**Moderator:** ${msg.author.tag} (${msg.author.id})
-					**Member:** ${memberToKick.user.tag} (${memberToKick.id})
-					**Action:** Kick
-					**Reason:** ${args.reason}
-				`);
+		try {
+			await memberToKick.kick(`Kicked by: ${msg.author} for: ${args.reason}`);
+			// Set up embed message
+			kickEmbed.setDescription(stripIndents`
+				**Moderator:** ${msg.author.tag} (${msg.author.id})
+				**Member:** ${memberToKick.user.tag} (${memberToKick.id})
+				**Action:** Kick
+				**Reason:** ${args.reason}
+			`);
 
-				modLogMessage(msg, kickEmbed);
-				deleteCommandMessages(msg);
-				stopTyping(msg);
+			modLogMessage(msg, kickEmbed);
+			deleteCommandMessages(msg);
+			stopTyping(msg);
 
-				// Send the success response
-				return msg.embed(kickEmbed);
-			})
-			.catch((err: Error) => {
-				// Emit warn event for debugging
-				msg.client.emit('warn', stripIndents`
-				Error occurred in \`kick\` command!
-				**Server:** ${msg.guild.name} (${msg.guild.id})
-				**Author:** ${msg.author.tag} (${msg.author.id})
-				**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
-				**Input:** \`${args.member.user.tag} (${args.member.id})\` || \`${args.reason}\`
-				**Error Message:** ${err}`);
+			// Send the success response
+			return msg.embed(kickEmbed);
+		} catch (err) {
+			// Emit warn event for debugging
+			msg.client.emit('warn', stripIndents`
+			Error occurred in \`kick\` command!
+			**Server:** ${msg.guild.name} (${msg.guild.id})
+			**Author:** ${msg.author.tag} (${msg.author.id})
+			**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+			**Input:** \`${args.member.user.tag} (${args.member.id})\` || \`${args.reason}\`
+			**Error Message:** ${err}`);
 
-				// Inform the user the command failed
-				stopTyping(msg);
+			// Inform the user the command failed
+			stopTyping(msg);
 
-				return sendSimpleEmbeddedError(msg, `Kicking ${args.member} for ${args.reason} failed!`, 3000);
-			});
+			return sendSimpleEmbeddedError(msg, `Kicking ${args.member} for ${args.reason} failed!`, 3000);
+		}
 	}
 }

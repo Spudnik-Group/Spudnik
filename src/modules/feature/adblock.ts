@@ -83,31 +83,33 @@ export default class AdblockCommand extends Command {
 
 				return sendSimpleEmbeddedMessage(msg, 'Adblock feature already enabled!', 3000);
 			} else {
-				msg.guild.settings.set('adblockEnabled', true)
-					.then(() => {
-						// Set up embed message
-						adblockEmbed.setDescription(stripIndents`
-							**Member:** ${msg.author.tag} (${msg.author.id})
-							**Action:** Adblock _Enabled_
-						`);
+				try {
+					await msg.guild.settings.set('adblockEnabled', true);
+					// Set up embed message
+					adblockEmbed.setDescription(stripIndents`
+						**Member:** ${msg.author.tag} (${msg.author.id})
+						**Action:** Adblock _Enabled_
+					`);
 
-						return this.sendSuccess(msg, adblockEmbed);
-					})
-					.catch((err: Error) => this.catchError(msg, args, err));
+					return this.sendSuccess(msg, adblockEmbed);
+				} catch (err) {
+					return this.catchError(msg, args, err)
+				}
 			}
 		} else if (args.subCommand.toLowerCase() === 'disable') {
 			if (adblockEnabled) {
-				msg.guild.settings.set('adblockEnabled', false)
-					.then(() => {
-						// Set up embed message
-						adblockEmbed.setDescription(stripIndents`
-							**Member:** ${msg.author.tag} (${msg.author.id})
-							**Action:** Adblock _Disabled_
-						`);
+				try {
+					await msg.guild.settings.set('adblockEnabled', false);
+					// Set up embed message
+					adblockEmbed.setDescription(stripIndents`
+						**Member:** ${msg.author.tag} (${msg.author.id})
+						**Action:** Adblock _Disabled_
+					`);
 
-						return this.sendSuccess(msg, adblockEmbed);
-					})
-					.catch((err: Error) => this.catchError(msg, args, err));
+					return this.sendSuccess(msg, adblockEmbed);
+				} catch (err) {
+					return this.catchError(msg, args, err)
+				}
 			} else {
 				stopTyping(msg);
 

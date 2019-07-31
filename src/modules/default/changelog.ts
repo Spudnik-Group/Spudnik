@@ -2,7 +2,7 @@ import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { startTyping, sendSimpleEmbeddedError, stopTyping } from '../../lib/helpers';
 import { getEmbedColor } from '../../lib/custom-helpers';
-import * as rp from 'request-promise';
+import axios from 'axios';
 
 /**
  * Returns GitHub release notes for the 3 most recent releases.
@@ -56,33 +56,34 @@ export default class changelogCommand extends Command {
 
 		startTyping(msg);
 
-		return rp.get({
-			headers: {
-				'Accept': 'application/vnd.github.v3+json',
-				'User-Agent': 'Spudnik Bot'
-			},
-			json: true,
-			uri: 'https://api.github.com/repos/Spudnik-Group/Spudnik/releases'
-		})
-			.then((res: any) => {
-				const changelog = res.slice(0, 3);
-				changelog.forEach((release: any) => {
-					stackEmbed.description += `
-
-						- *${release.name}* -
-						${release.body}
-					`;
-				});
-				
-				stopTyping(msg);
-				
-				return msg.embed(stackEmbed)
-			})
-			.catch((response) => {
-				stopTyping(msg);
-				msg.client.emit('warn', `Error in command dev:changelog: ${response}`);
-
-				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+		try {
+			const res: any = await axios.get('https://api.github.com/repos/Spudnik-Group/Spudnik/releases', {
+				headers: {
+					'Accept': 'application/vnd.github.v3+json',
+					'User-Agent': 'Spudnik Bot'
+				}
 			});
+			const changelog = res.data.slice(0, 3);
+			changelog.forEach((release: any) => {
+				stackEmbed.description += `
+
+					- *${release.name}* -
+					${release.body}
+				`;
+			});
+			stackEmbed.description += `
+
+				Check out the full changelog [here](https://github.com/Spudnik-Group/Spudnik/releases)
+			`;
+			
+			stopTyping(msg);
+			
+			return msg.embed(stackEmbed);
+		} catch (err) {
+			stopTyping(msg);
+			msg.client.emit('warn', `Error in command dev:changelog: ${err}`);
+
+			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+		}
 	}
 }

@@ -23,7 +23,8 @@ export interface Configuration {
 	'dbApiKey': string,
 	'dblApiKey': string;
 	'debug': boolean;
-	'mongoDB': string;
+	'spudStatsDB': string;
+	'spudCoreDB': string;
 	'owner': string | string[];
 	'rollbarApiKey': string;
 	'statusUpdateInterval': number;
@@ -100,20 +101,27 @@ export class Spudnik {
 		this.Discord.registry
 			.registerDefaultTypes()
 			.registerGroups([
+				['bot_config', 'Bot Configuration'],
+				['bot_owner', 'Bot Owner'],
 				['convert', 'Convert'],
 				['default', 'Default'],
 				['dev', 'Developer'],
-				['help', 'Help'],
 				['facts', 'Facts'],
 				['feature', 'Feature'],
 				['game', 'Game'],
+				['game_server_facts', 'Game Server Facts'],
 				['gaming', 'Gaming'],
+				['help', 'Help'],
+				['info', 'Info'],
 				['meme', 'Memes'],
 				['misc', 'Misc'],
 				['mod', 'Moderation'],
+				['player_stats', 'Player Stats'],
 				['random', 'Random'],
 				['ref', 'Reference'],
-				['roles', 'Role'],
+				['roles', 'Self Assignable Role Management'],
+				['server_config', 'Server Configuration'],
+				['server_management', 'Server Management'],
 				['translate', 'Translate'],
 				['util', 'Utility'],
 				['util-required', 'Required Utility']
@@ -125,7 +133,7 @@ export class Spudnik {
 		Mongoose.Promise = require('bluebird').Promise;
 
 		this.Discord.setProvider(
-			Mongoose.connect(this.Config.mongoDB, { useMongoClient: true }).then(() => new MongoSettingsProvider(Mongoose.connection))
+			Mongoose.connect(this.Config.spudCoreDB, {useNewUrlParser: true}).then(() => new MongoSettingsProvider(Mongoose.connection))
 		).catch((err) => {
 			if (process.env.NODE_ENV !== 'development') this.Discord.emit('error', `Failed to set provider!\nError: ${err}`);
 			process.exit(-1);

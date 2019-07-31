@@ -9,10 +9,11 @@ const Config = {
 	'dbApiKey': process.env.spud_dbapi ? process.env.spud_dbapi : '',
 	'dblApiKey': process.env.spud_dblapi ? process.env.spud_dblapi : '',
 	'debug': process.env.spud_debug ? !!process.env.spud_debug : false,
-	'mongoDB': process.env.spud_mongo,
 	'owner': process.env.spud_owner.split(','),
 	'rollbarApiKey': process.env.spud_rollbarapi ? process.env.spud_rollbarapi : '',
-	'statusUpdateInterval': process.env.spud_status_update_interval ? +process.env.spud_status_update_interval : 30000,
+	'spudCoreDB': process.env.SPUD_CORE_DB ? process.env.SPUD_CORE_DB : process.env.spud_mongo,
+	'spudStatsDB': process.env.SPUD_STATS_DB ? process.env.SPUD_STATS_DB : process.env.spud_mongo,
+	'statusUpdateInterval': process.env.spud_status_update_interval ? +process.env.spud_status_update_interval : 600000,
 	'token': process.env.spud_token
 }
 

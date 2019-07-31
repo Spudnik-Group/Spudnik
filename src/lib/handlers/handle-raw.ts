@@ -66,27 +66,29 @@ export const handleRaw = async(event: any, client: CommandoClient) => {
 
 		// You can't star your own messages
 		if (message.author.id === data.user_id && !client.owners.includes(data.user_id)) {
-			return (channel as TextChannel)
-				.send(`⚠ You cannot star your own messages, **<@${data.user_id}>**!`)
-				.then((reply: Message | Message[]) => {
-					if (reply instanceof Message) {
-						if (reply.deletable) {
-							reply.delete({ timeout: 3000 });
-						}
-					}
-				});
+			const reply: Message | Message[] = await (channel as TextChannel).send(`⚠ You cannot star your own messages, **<@${data.user_id}>**!`);
+			if (reply instanceof Message) {
+				if (reply.deletable) {
+					reply.delete({ timeout: 3000 });
+					
+					return;
+				}
+			}
+
+			return;
 		}
 		// You can't star bot messages
 		if (message.author.bot) {
-			return (channel as TextChannel)
-				.send(`⚠ You cannot star bot messages, **<@${data.user_id}>**!`)
-				.then((reply: Message | Message[]) => {
-					if (reply instanceof Message) {
-						if (reply.deletable) {
-							reply.delete({ timeout: 3000 });
-						}
-					}
-				});
+			const reply: Message | Message[] = await (channel as TextChannel).send(`⚠ You cannot star bot messages, **<@${data.user_id}>**!`);
+			if (reply instanceof Message) {
+				if (reply.deletable) {
+					reply.delete({ timeout: 3000 });
+					
+					return;
+				}
+			}
+
+			return;
 		}
 		if (message.content.length > 1) { starboardEmbed.addField('Message', message.content); } // Add message
 		if (message.attachments.size > 0) {
