@@ -22,7 +22,7 @@ const warningsSchema: Schema = new Schema({
 	guild: String,
 	warnings: Array
 });
-const conn = Mongoose.createConnection(process.env.spud_mongo);
+const conn = Mongoose.createConnection(process.env.spudCoreDB ? process.env.spudCoreDB : process.env.spud_mongo);
 const warningModel: Model<IWarningsModel> = conn.model<IWarningsModel>('warning', warningsSchema);
 
 /**

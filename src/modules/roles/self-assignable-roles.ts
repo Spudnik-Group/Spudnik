@@ -6,31 +6,34 @@ import { sendSimpleEmbeddedError, startTyping, stopTyping } from '../../lib/help
 import * as format from 'date-fns/format';
 
 /**
- * Manage roles including self-assigning, listing, and setting a default role.
+ * Manage self-assignable roles.
  *
  * @export
- * @class RoleCommand
+ * @class SelfAssignableRoleCommand
  * @extends {Command}
  */
-export default class RoleCommand extends Command {
+export default class SelfAssignableRolesCommand extends Command {
 	/**
-	 * Creates an instance of RoleCommand.
+	 * Creates an instance of SelfAssignableRolesCommand.
 	 *
 	 * @param {CommandoClient} client
-	 * @memberof RoleCommand
+	 * @memberof SelfAssignableRolesCommand
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
+			aliases: [
+				'sar'
+			],
 			args: [
 				{
 					key: 'subCommand',
-					prompt: 'What sub-command would you like to use?\nOptions are:\n* add\n* remove\n* default',
+					prompt: 'What sub-command would you like to use?\nOptions are:\n* add\n* remove',
 					type: 'string',
 					validate: (subCommand: string) => {
-						const allowedSubcommands = ['add', 'remove', 'default'];
+						const allowedSubcommands = ['add', 'remove'];
 						if (allowedSubcommands.indexOf(subCommand) !== -1) return true;
 						
-						return 'You provided an invalid sub-command.\nOptions are:\n* add\n* remove\n* default';
+						return 'You provided an invalid sub-command.\nOptions are:\n* add\n* remove';
 					}
 				},
 				{
@@ -41,26 +44,23 @@ export default class RoleCommand extends Command {
 				}
 			],
 			clientPermissions: ['MANAGE_ROLES'],
-			description: 'Used to configure the role management feature.',
+			description: 'Used to configure the self-assignable roles feature.',
 			details: stripIndents`
-				syntax: \`!role <add|remove|default> (@roleMention)\`
+				syntax: \`!sar <add|remove> (@roleMention)\`
 
 				\`add <@roleMention>\` - adds the role to the list of self-assignable-roles.
 				\`remove <@roleMention>\` - removes the role from the list of self-assignable-roles.
-				\`default (@roleMention)\` - sets the default role, or clears all if no role is provided.
 
 				MANAGE_ROLES permission required.
 			`,
 			examples: [
-				'!role add @PUBG',
-				'!role remove @Fortnite',
-				'!role default @Pleb',
-				'!role default'
+				'!sar add @PUBG',
+				'!sar remove @Fortnite'
 			],
 			group: 'feature',
 			guildOnly: true,
-			memberName: 'role',
-			name: 'role',
+			memberName: 'self-assignable-roles',
+			name: 'self-assignable-roles',
 			userPermissions: ['MANAGE_ROLES']
 		});
 	}
@@ -71,7 +71,7 @@ export default class RoleCommand extends Command {
 	 * @param {CommandoMessage} msg
 	 * @param {{ subCommand: string, role: Role }} args
 	 * @returns {(Promise<Message | Message[]>)}
-	 * @memberof RoleManagementCommands
+	 * @memberof SelfAssignableRolesCommand
 	 */
 	public async run(msg: CommandoMessage, args: { subCommand: string, role: Role }): Promise<Message | Message[]> {
 		const roleEmbed = new MessageEmbed({
@@ -86,7 +86,6 @@ export default class RoleCommand extends Command {
 		}).setTimestamp();
 
 		let guildAssignableRoles: string[] = await msg.guild.settings.get('assignableRoles', []);
-		let guildDefaultRoles: string[] = await msg.guild.settings.get('defaultRoles', []);
 
 		startTyping(msg);
 
@@ -147,40 +146,6 @@ export default class RoleCommand extends Command {
 				}
 				break;
 			}
-			case 'default': {
-				if (!args.role) {
-					msg.guild.settings.set('defaultRoles', [])
-						.then(() => {
-							// Set up embed message
-							roleEmbed.setDescription(stripIndents`
-								**Member:** ${msg.author.tag} (${msg.author.id})
-								**Action:** Removed default role(s).
-							`);
-
-							return this.sendSuccess(msg, roleEmbed);
-						})
-						.catch((err: Error) => this.catchError(msg, args, err));
-				} else if (!guildDefaultRoles.includes(args.role.id)) {
-					guildDefaultRoles.push(args.role.id);
-
-					msg.guild.settings.set('defaultRoles', guildDefaultRoles)
-						.then(() => {
-							// Set up embed message
-							roleEmbed.setDescription(stripIndents`
-								**Member:** ${msg.author.tag} (${msg.author.id})
-								**Action:** Added role '${args.role.name}' to the list of default roles.
-							`);
-
-							return this.sendSuccess(msg, roleEmbed);
-						})
-						.catch((err: Error) => {
-							msg.client.emit('warn', `Error in command roles:role-add: ${err}`);
-
-							return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
-						});
-				}
-				break;
-			}
 		}
 	}
 	
@@ -195,16 +160,12 @@ export default class RoleCommand extends Command {
 		let roleUserWarn = '';
 
 		switch (args.subCommand.toLowerCase()) {
-			case 'default': {
-				roleUserWarn = 'Setting/Clearing default role failed!\n';
-				break;
-			}
 			case 'add': {
-				roleUserWarn = 'Adding new role failed!\n';
+				roleUserWarn = 'Adding new self assignable role failed!\n';
 				break;
 			}
 			case 'remove': {
-				roleUserWarn = 'Removing role message!\n';
+				roleUserWarn = 'Removing self assignable role failed!\n';
 				break;
 			}
 		}

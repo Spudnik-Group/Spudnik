@@ -87,14 +87,12 @@ export default class GoodbyeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const goodbyeChannel = await msg.guild.settings.get('goodbyeChannel', null);
-		const goodbyeMessage = await msg.guild.settings.get('goodbyeMessage', '{user} has left the server.');
-		const goodbyeEnabled = await msg.guild.settings.get('goodbyeEnabled', false);
 		
 		startTyping(msg);
 
 		switch (args.subCommand.toLowerCase()) {
 			case 'channel': {
+				const goodbyeChannel = await msg.guild.settings.get('goodbyeChannel', null);
 				if (args.content instanceof Channel) {
 					const channelID = (args.content as Channel).id;
 
@@ -103,25 +101,25 @@ export default class GoodbyeCommand extends Command {
 
 						return sendSimpleEmbeddedMessage(msg, `Goodbye channel already set to <#${channelID}>!`, 3000);
 					} else {
-						msg.guild.settings.set('goodbyeChannel', channelID)
-							.then(() => {
-								// Set up embed message
-								goodbyeEmbed.setDescription(stripIndents`
-									**Member:** ${msg.author.tag} (${msg.author.id})
-									**Action:** Goodbye Channel set to <#${channelID}>
-								`);
-								goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
+						try {
+							await msg.guild.settings.set('goodbyeChannel', channelID);
+							// Set up embed message
+							goodbyeEmbed.setDescription(stripIndents`
+								**Member:** ${msg.author.tag} (${msg.author.id})
+								**Action:** Goodbye Channel set to <#${channelID}>
+							`);
+							goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
 
-								return this.sendSuccess(msg, goodbyeEmbed);
-							})
-							.catch((err: Error) => this.catchError(msg, args, err));
+							return this.sendSuccess(msg, goodbyeEmbed);
+						} catch (err) {
+							return this.catchError(msg, args, err)
+						}
 					}
 				} else {
 					stopTyping(msg);
 
 					return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
 				}
-				break;
 			}
 			case 'message': {
 				if (!args.content) {
@@ -129,82 +127,89 @@ export default class GoodbyeCommand extends Command {
 
 					return sendSimpleEmbeddedMessage(msg, 'You must include the new message along with the `message` command. See `help goodbye` for details.', 3000);
 				} else {
-					msg.guild.settings.set('goodbyeMessage', args.content)
-						.then(() => {
-							// Set up embed message
-							goodbyeEmbed.setDescription(stripIndents`
-								**Member:** ${msg.author.tag} (${msg.author.id})
-								**Action:** Goodbye message set to:
-								\`\`\`${args.content}\`\`\`
-							`);
-							goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
+					try {
+						await msg.guild.settings.set('goodbyeMessage', args.content);
+						// Set up embed message
+						goodbyeEmbed.setDescription(stripIndents`
+							**Member:** ${msg.author.tag} (${msg.author.id})
+							**Action:** Goodbye message set to:
+							\`\`\`${args.content}\`\`\`
+						`);
+						goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
 
-							return this.sendSuccess(msg, goodbyeEmbed);
-						})
-						.catch((err: Error) => this.catchError(msg, args, err));
+						return this.sendSuccess(msg, goodbyeEmbed);
+					} catch (err) {
+						return this.catchError(msg, args, err)
+					}
 				}
-				break;
 			}
 			case 'enable': {
+				const goodbyeChannel = await msg.guild.settings.get('goodbyeChannel', null);
+				const goodbyeEnabled = await msg.guild.settings.get('goodbyeEnabled', false);
 				if (goodbyeChannel) {
 					if (goodbyeEnabled) {
 						stopTyping(msg);
 	
 						return sendSimpleEmbeddedMessage(msg, 'Goodbye message already enabled!', 3000);
 					} else {
-						msg.guild.settings.set('goodbyeEnabled', true)
-							.then(() => {
-								// Set up embed message
-								goodbyeEmbed.setDescription(stripIndents`
-									**Member:** ${msg.author.tag} (${msg.author.id})
-									**Action:** Goodbye messages set to: _Enabled_
-								`);
-								goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
-	
-								return this.sendSuccess(msg, goodbyeEmbed);
-							})
-							.catch((err: Error) => this.catchError(msg, args, err));
+						try {
+							await msg.guild.settings.set('goodbyeEnabled', true);
+							// Set up embed message
+							goodbyeEmbed.setDescription(stripIndents`
+								**Member:** ${msg.author.tag} (${msg.author.id})
+								**Action:** Goodbye messages set to: _Enabled_
+							`);
+							goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
+
+							return this.sendSuccess(msg, goodbyeEmbed);
+						} catch (err) {
+							return this.catchError(msg, args, err)
+						}
 					}
 				} else {
 					stopTyping(msg);
 
 					return sendSimpleEmbeddedError(msg, 'Please set the channel for the goodbye message before enabling the feature. See `help goodbye` for info.', 3000);
 				}
-				break;
 			}
 			case 'disable': {
+				const goodbyeEnabled = await msg.guild.settings.get('goodbyeEnabled', false);
 				if (goodbyeEnabled) {
-					msg.guild.settings.set('goodbyeEnabled', false)
-						.then(() => {
-							// Set up embed message
-							goodbyeEmbed.setDescription(stripIndents`
-								**Member:** ${msg.author.tag} (${msg.author.id})
-								**Action:** Goodbye messages set to: _Disabled_
-							`);
-							goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
+					try {
+						await msg.guild.settings.set('goodbyeEnabled', false);
+						// Set up embed message
+						goodbyeEmbed.setDescription(stripIndents`
+							**Member:** ${msg.author.tag} (${msg.author.id})
+							**Action:** Goodbye messages set to: _Disabled_
+						`);
+						goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
 
-							return this.sendSuccess(msg, goodbyeEmbed);
-						})
-						.catch((err: Error) => this.catchError(msg, args, err));
+						return this.sendSuccess(msg, goodbyeEmbed);
+					} catch (err) {
+						return this.catchError(msg, args, err)
+					}
 				} else {
 					stopTyping(msg);
 
 					return sendSimpleEmbeddedMessage(msg, 'Goodbye message already disabled!', 3000);
 				}
-				break;
 			}
 			case 'status': {
+				const goodbyeChannel = await msg.guild.settings.get('goodbyeChannel', null);
+				const goodbyeMessage = await msg.guild.settings.get('goodbyeMessage', '{user} has left the server.');
+				const goodbyeEnabled = await msg.guild.settings.get('goodbyeEnabled', false);
 				// Set up embed message
-				goodbyeEmbed.setDescription(stripIndents`Goodbye feature: ${goodbyeEnabled ? '_Enabled_' : '_Disabled_'}
-				Channel set to: <#${goodbyeChannel}>
-				Message set to:
-				\`\`\`${goodbyeMessage}\`\`\` `)
+				goodbyeEmbed.setDescription(stripIndents`
+					Goodbye feature: ${goodbyeEnabled ? '_Enabled_' : '_Disabled_'}
+					Channel set to: <#${goodbyeChannel}>
+					Message set to:
+					\`\`\`${goodbyeMessage}\`\`\`
+				`);
 				deleteCommandMessages(msg);
 				stopTyping(msg);
 
 				// Send the success response
 				return msg.embed(goodbyeEmbed);
-				break;
 			}
 		}
 	}

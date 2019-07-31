@@ -1,7 +1,7 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import * as rp from 'request-promise';
+import axios from 'axios';
 import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, startTyping, stopTyping } from '../../lib/helpers';
 
@@ -78,24 +78,22 @@ export default class XkcdCommand extends Command {
 
 		startTyping(msg);
 
-		return rp(url)
-			.then((content) => {
-				const comic = JSON.parse(content);
-				xkcdEmbed.setFooter(comic.alt);
-				xkcdEmbed.setImage(comic.img);
-				xkcdEmbed.setTitle(`XKCD ${comic.num} ${comic.title}`);
-		
-				deleteCommandMessages(msg);
-				stopTyping(msg);
-		
-				// Send the success response
-				return msg.embed(xkcdEmbed);
-			})
-			.catch((err: Error) => {
-				msg.client.emit('warn', `Error in command misc:xkcd: ${err}`);
-				stopTyping(msg);
-				
-				return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
-			});
+		try {
+			const { data: comic } = await axios.get(url);
+			xkcdEmbed.setFooter(comic.alt);
+			xkcdEmbed.setImage(comic.img);
+			xkcdEmbed.setTitle(`XKCD ${comic.num} ${comic.title}`);
+	
+			deleteCommandMessages(msg);
+			stopTyping(msg);
+	
+			// Send the success response
+			return msg.embed(xkcdEmbed);
+		} catch (err) {
+			msg.client.emit('warn', `Error in command misc:xkcd: ${err}`);
+			stopTyping(msg);
+			
+			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+		}
 	}
 }

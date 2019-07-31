@@ -41,7 +41,7 @@ export default class PrefixCommand extends Command {
 			`,
 			examples: ['!prefix', '!prefix -', '!prefix omg!', '!prefix default', '!prefix none'],
 			format: '[prefix/"default"/"none"]',
-			group: 'util-required',
+			group: 'bot_config',
 			guarded: true,
 			guildOnly: true,
 			memberName: 'prefix',

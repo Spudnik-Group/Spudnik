@@ -52,7 +52,7 @@ export default class LoadCommandCommand extends Command {
 				Only the bot owner(s) may use this command.
 			`,
 			examples: ['load some-command'],
-			group: 'util-required',
+			group: 'bot_owner',
 			guarded: true,
 			hidden: true,
 			memberName: 'load',

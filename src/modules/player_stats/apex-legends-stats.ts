@@ -3,49 +3,14 @@ import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { startTyping, sendSimpleEmbeddedError, stopTyping } from '../../lib/helpers';
 import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
-import * as rp from 'request-promise';
+import axios from 'axios';
 
 const apiKey = process.env.spud_trackerapi;
-
 const platforms: { [platform: string]: number } = {
 	'pc': 5,
 	'psn': 2,
 	'xbl': 1
 };
-
-interface ApexLegendsResponse {
-	data: ApexLegendsResponseData;
-};
-
-interface ApexLegendsResponseData {
-	children: Array<ApexLegendsResponseCharacterData>;
-	metadata: ApexLegendsResponseMetadata;
-	stats: Array<ApexLegendsResponseStat>;
-}
-
-interface ApexLegendsResponseMetadata {
-	platformUserHandle: string;
-}
-
-interface ApexLegendsResponseCharacterData {
-	id: string;
-	metadata: ApexLegendsResponseCharacterMetadata
-}
-
-interface ApexLegendsResponseCharacterMetadata {
-	icon: string;
-	legend_name: string;
-}
-
-interface ApexLegendsResponseStat {
-	displayValue: string,
-	metadata: ApexLegendsResponseStatMetadata
-}
-
-interface ApexLegendsResponseStatMetadata {
-	name: string
-}
-
 
 /**
  * Returns Apex Legends stats for a user on a specific platform.
@@ -92,7 +57,7 @@ export default class ApexLegendsStatsCommand extends Command {
 				'!apex-legends-stats xbl naterchrdsn',
 				'!apex-legends-stats pc nebula-grey'
 			],
-			group: 'gaming',
+			group: 'player_stats',
 			guildOnly: true,
 			memberName: 'apex-legends-stats',
 			name: 'apex-legends-stats',
@@ -137,10 +102,10 @@ export default class ApexLegendsStatsCommand extends Command {
 
 		startTyping(msg);
 
-		return rp(`https://public-api.tracker.gg/apex/v1/standard/profile/${platforms[args.platform]}/${encodeURI(args.username)}`, {
-			headers: { 'TRN-Api-Key': apiKey }
-		}).then((content: string) => {
-			const response: ApexLegendsResponse = JSON.parse(content);
+		try {
+			const { data: response } = await axios.get(`https://public-api.tracker.gg/apex/v1/standard/profile/${platforms[args.platform]}/${encodeURI(args.username)}`, {
+				headers: { 'TRN-Api-Key': apiKey }
+			});
 			if (response.data.children && response.data.children.length) {
 				apexEmbed.thumbnail.url = response.data.children[0].metadata.icon || ''
 			}
@@ -151,7 +116,7 @@ export default class ApexLegendsStatsCommand extends Command {
 				value: response.data.metadata.platformUserHandle
 			});
 
-			response.data.stats.forEach((stat) => {
+			response.data.stats.forEach((stat: any) => {
 				apexEmbed.fields.push({
 					inline: true,
 					name: stat.metadata.name,
@@ -163,20 +128,20 @@ export default class ApexLegendsStatsCommand extends Command {
 			stopTyping(msg);
 			
 			return msg.embed(apexEmbed);
-		}).catch((response) => {
+		} catch (err) {
 			let error = 'There was an error with the request. Try again?';
 			try {
-				if (!response.error) {
+				if (!err.error) {
 					throw 'No error from the api was given.';
 				}
-				const decodedResponse = JSON.parse(response.error);
+				const decodedResponse = JSON.parse(err.error);
 				error = decodedResponse.errors[0].message;
 			} catch (decodeError) {
-				msg.client.emit('warn', `Error in command gaming:apex-legend-stats: ${response}`);
+				msg.client.emit('warn', `Error in command gaming:apex-legend-stats: ${err}`);
 			}
 			stopTyping(msg);
 
 			return sendSimpleEmbeddedError(msg, error, 3000);
-		});
+		}
 	}
 }

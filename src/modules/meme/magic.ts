@@ -4,27 +4,27 @@ import { sendSimpleEmbeddedImage, startTyping, stopTyping } from '../../lib/help
 import { deleteCommandMessages } from '../../lib/custom-helpers';
 
 /**
- * Show the XKCD "Now" comic.
+ * Display a magical gif of Shia Labeouf.
  *
  * @export
- * @class HighNoonCommand
+ * @class MagicCommand
  * @extends {Command}
  */
-export default class HighNoonCommand extends Command {
+export default class MagicCommand extends Command {
 	/**
-	 * Creates an instance of HighNoonCommand.
+	 * Creates an instance of MagicCommand.
 	 *
 	 * @param {CommandoClient} client
-	 * @memberof HighNoonCommand
+	 * @memberof MagicCommand
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			description: 'Displays the High Noon XKCD comic.',
-			examples: ['!highnoon'],
+			description: 'Displays a magical gif of Shia Labeouf.',
+			examples: ['!magic'],
 			group: 'meme',
 			guildOnly: true,
-			memberName: 'highnoon',
-			name: 'highnoon',
+			memberName: 'magic',
+			name: 'magic',
 			throttling: {
 				duration: 3,
 				usages: 2
@@ -33,11 +33,11 @@ export default class HighNoonCommand extends Command {
 	}
 
 	/**
-	 * Run the "highnoon" command.
+	 * Run the "magic" command.
 	 *
 	 * @param {CommandoMessage} msg
 	 * @returns {(Promise<Message | Message[]>)}
-	 * @memberof HighNoonCommand
+	 * @memberof MagicCommand
 	 */
 	public async run(msg: CommandoMessage): Promise<Message | Message[]> {
 		startTyping(msg);
@@ -45,6 +45,6 @@ export default class HighNoonCommand extends Command {
 		stopTyping(msg);
 		
 		// Send the success response
-		return sendSimpleEmbeddedImage(msg, 'http://imgs.xkcd.com/comics/now.png', 'IT\'S HIGH NOON...');
+		return sendSimpleEmbeddedImage(msg, 'https://media.giphy.com/media/12NUbkX6p4xOO4/giphy.gif');
 	}
 }

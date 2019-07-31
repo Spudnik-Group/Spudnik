@@ -35,7 +35,7 @@ export default class ReloadCommandCommand extends Command {
 				Only the bot owner(s) may use this command.
 			`,
 			examples: ['reload some-command'],
-			group: 'util-required',
+			group: 'bot_owner',
 			guarded: true,
 			hidden: true,
 			memberName: 'reload',

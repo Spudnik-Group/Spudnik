@@ -35,7 +35,7 @@ export default class CSGOStatsCommand extends Command {
 			description: 'Returns Counter Strike: Global Offensive stats for a user. Uses the TrackerNetwork API.',
 			details: 'syntax: \`!csgo-stats <username>\`',
 			examples: ['!csgo-stats phreakslayer'],
-			group: 'gaming',
+			group: 'player_stats',
 			guildOnly: true,
 			memberName: 'csgo-stats',
 			name: 'csgo-stats',
