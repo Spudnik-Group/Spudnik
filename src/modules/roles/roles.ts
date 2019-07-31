@@ -20,7 +20,6 @@ export default class RolesCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
-			clientPermissions: ['MANAGE_ROLES'],
 			description: 'Lists default and self-assignable roles.',
 			details: stripIndents`
 				syntax: \`!roles\`

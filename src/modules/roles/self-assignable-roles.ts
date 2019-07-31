@@ -86,6 +86,10 @@ export default class SelfAssignableRolesCommand extends Command {
 		}).setTimestamp();
 
 		let guildAssignableRoles: string[] = await msg.guild.settings.get('assignableRoles', []);
+		
+		if (!Array.isArray(guildAssignableRoles)) {
+			guildAssignableRoles = [];
+		}
 
 		startTyping(msg);
 

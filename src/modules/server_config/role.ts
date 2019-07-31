@@ -35,7 +35,7 @@ export default class RoleCommand extends Command {
 				},
 				{
 					key: 'name',
-					prompt: 'What is the name of the role?\n',
+					prompt: 'What is the name of the role? Wrap role names with spaces inside of double quotes.\n',
 					type: 'string'
 				},
 				{
