@@ -20,7 +20,7 @@ export default class ListGroupsCommand extends Command {
 		super(client, {
 			aliases: ['list-groups', 'show-groups'],
 			description: 'Lists all command groups.',
-			details: 'ADMINISTRATOR permission required.',
+			details: '\`ADMINISTRATOR\` permission required.',
 			group: 'util-required',
 			guarded: true,
 			guildOnly: true,

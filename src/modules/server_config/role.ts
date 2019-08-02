@@ -60,9 +60,9 @@ export default class RoleCommand extends Command {
 				syntax: \`!sar <add|remove> <@roleMention|newRoleName> (hexcolor)\`
 
 				\`add "role name" (hexcolor)\` - adds the role to your guild with the supplied color.
-				\`remove "role name" "reason"\` - removes the role from your guild.
+				\`remove "role name" ("reason")\` - removes the role from your guild.
 
-				MANAGE_ROLES permission required.
+				\`MANAGE_ROLES\` permission required.
 			`,
 			examples: [
 				'!role add PUBG',

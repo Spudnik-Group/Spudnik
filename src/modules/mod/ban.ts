@@ -44,7 +44,7 @@ export default class BanCommand extends Command {
 			details: stripIndents`
 				syntax: \`!ban <@userMention> <reason> (daysOfMessages)\`
 
-				BAN_MEMBERS permission required.
+				\`BAN_MEMBERS\` permission required.
 			`,
 			examples: [
 				'!ban @user being a pleb',

@@ -51,7 +51,7 @@ export default class SelfAssignableRolesCommand extends Command {
 				\`add <@roleMention>\` - adds the role to the list of self-assignable-roles.
 				\`remove <@roleMention>\` - removes the role from the list of self-assignable-roles.
 
-				MANAGE_ROLES permission required.
+				\`MANAGE_ROLES\` permission required.
 			`,
 			examples: [
 				'!sar add @PUBG',

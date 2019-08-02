@@ -35,7 +35,7 @@ export default class DisableCommandCommand extends Command {
 				
 				The argument must be the name/ID (partial or whole) of a command or command group.
 
-				ADMINISTRATOR permission required.
+				\`ADMINISTRATOR\` permission required.
 			`,
 			examples: ['disable util', 'disable Utility', 'disable prefix'],
 			group: 'util-required',

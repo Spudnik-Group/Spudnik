@@ -38,7 +38,7 @@ export default class UnBanCommand extends Command {
 			details: stripIndents`
 				syntax: \`!unban <@userMention | id> <reason>\`
 
-				BAN_MEMBERS permission required.
+				\`BAN_MEMBERS\` permission required.
 			`,
 			examples: [
 				'!unban @user idk why I banned them'

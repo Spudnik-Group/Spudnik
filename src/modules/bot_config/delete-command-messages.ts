@@ -43,7 +43,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 			details: stripIndents`
 				syntax: \`!delete-command-messages <enable|disable>\`
 
-				MANAGE_MESSAGES permission required.`,
+				\`MANAGE_MESSAGES\` permission required.`,
 			examples: [
 				'!delete-command-messages enable',
 				'!delete-command-messages disable'

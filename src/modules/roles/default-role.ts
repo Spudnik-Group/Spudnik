@@ -39,7 +39,7 @@ export default class DefaultRoleCommand extends Command {
                 
 				\`(@roleMention)\` - sets the default role, or clears all if no role is provided.
 
-				MANAGE_ROLES permission required.
+				\`MANAGE_ROLES\` permission required.
 			`,
 			examples: [
 				'!dr @Pleb',

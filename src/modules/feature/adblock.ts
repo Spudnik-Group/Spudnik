@@ -40,7 +40,7 @@ export default class AdblockCommand extends Command {
 			details: stripIndents`
 				syntax: \`!adblock <enable|disable>\`
 
-				MANAGE_MESSAGES permission required.`,
+				\`MANAGE_MESSAGES\` permission required.`,
 			examples: [
 				'!adblock enable',
 				'!adblock disable'
