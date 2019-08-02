@@ -70,7 +70,7 @@ export default class WarnCommand extends Command {
 			details: stripIndents`
 				syntax: \`!warn <@userMention> <points> (reason)\`
 
-				MANAGE_MESSAGES permission required.
+				\`MANAGE_MESSAGES\` permission required.
 			`,
 			examples: [
 				'!warn @user 5',

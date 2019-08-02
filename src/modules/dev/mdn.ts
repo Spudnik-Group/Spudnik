@@ -2,7 +2,7 @@ import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { startTyping, sendSimpleEmbeddedError, stopTyping } from '../../lib/helpers';
-import { getEmbedColor } from '../../lib/custom-helpers';
+import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
 import axios from 'axios';
 
 /**
@@ -72,6 +72,7 @@ export default class MdnReferenceCommand extends Command {
 		try {
 			const { data: response } = await axios.get(`https://developer.mozilla.org/en-US/search.json?q=${encodeURIComponent(args.query)}`)
 			if (!response.documents.length) {
+				deleteCommandMessages(msg);
 				stopTyping(msg);
 	
 				return sendSimpleEmbeddedError(msg, 'Your query did not return any results', 3000)
@@ -93,13 +94,17 @@ export default class MdnReferenceCommand extends Command {
 					${firstRes.tags.join(', ')}
 				`)
 				.setFooter(`${response.count} documents found for "${args.query}". ${response.count < 1 ? '' : `Showing results 1 to ${response.documents.length < 5 ? response.documents.length : '4'}`} | Article ID: ${response.documents[0].id}`)
+			
+			deleteCommandMessages(msg);
 			stopTyping(msg);
 
 			return msg.embed(mdnEmbed);
 		} catch (err) {
-			stopTyping(msg);
 			msg.client.emit('warn', `Error in command dev:mdn: ${err}`);
-
+			
+			deleteCommandMessages(msg);
+			stopTyping(msg);
+		
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 		}
 	}

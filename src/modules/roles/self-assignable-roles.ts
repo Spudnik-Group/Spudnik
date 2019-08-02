@@ -46,12 +46,12 @@ export default class SelfAssignableRolesCommand extends Command {
 			clientPermissions: ['MANAGE_ROLES'],
 			description: 'Used to configure the self-assignable roles feature.',
 			details: stripIndents`
-				syntax: \`!sar <add|remove> (@roleMention)\`
+				syntax: \`!sar <add|remove> @roleMention\`
 
 				\`add <@roleMention>\` - adds the role to the list of self-assignable-roles.
 				\`remove <@roleMention>\` - removes the role from the list of self-assignable-roles.
 
-				MANAGE_ROLES permission required.
+				\`MANAGE_ROLES\` permission required.
 			`,
 			examples: [
 				'!sar add @PUBG',
@@ -86,13 +86,18 @@ export default class SelfAssignableRolesCommand extends Command {
 		}).setTimestamp();
 
 		let guildAssignableRoles: string[] = await msg.guild.settings.get('assignableRoles', []);
+		
+		if (!Array.isArray(guildAssignableRoles)) {
+			guildAssignableRoles = [];
+		}
 
 		startTyping(msg);
 
 		switch (args.subCommand.toLowerCase()) {
 			case 'add': {
 				if (!args.role) {
-					stopTyping(msg);
+					deleteCommandMessages(msg);
+					stopTyping(msg);	
 
 					return sendSimpleEmbeddedError(msg, 'No role specified!', 3000);
 				}
@@ -112,7 +117,8 @@ export default class SelfAssignableRolesCommand extends Command {
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				} else {
-					stopTyping(msg);
+					deleteCommandMessages(msg);
+					stopTyping(msg);	
 
 					return sendSimpleEmbeddedError(msg, `${args.role.name} is already in the list of assignable roles for this guild.`, 3000);
 				}
@@ -120,7 +126,8 @@ export default class SelfAssignableRolesCommand extends Command {
 			}
 			case 'remove': {
 				if (!args.role) {
-					stopTyping(msg);
+					deleteCommandMessages(msg);
+					stopTyping(msg);	
 					
 					return sendSimpleEmbeddedError(msg, 'No role specified!', 3000);
 				}
@@ -136,11 +143,15 @@ export default class SelfAssignableRolesCommand extends Command {
 								**Action:** Removed role '${args.role.name}' from the list of assignable roles.
 							`);
 
+							deleteCommandMessages(msg);
+							stopTyping(msg);	
+
 							return this.sendSuccess(msg, roleEmbed);
 						})
 						.catch((err: Error) => this.catchError(msg, args, err));
 				} else {
-					stopTyping(msg);
+					deleteCommandMessages(msg);
+					stopTyping(msg);	
 
 					return sendSimpleEmbeddedError(msg, `Could not find role with name ${args.role.name} in the list of assignable roles for this guild.`, 3000);
 				}
@@ -152,11 +163,12 @@ export default class SelfAssignableRolesCommand extends Command {
 	private catchError(msg: CommandoMessage, args: { subCommand: string, role: Role }, err: Error) {
 		// Build warning message
 		let roleWarn = stripIndents`
-			Error occurred in \`role-management\` command!
+			Error occurred in \`self-assignable-roles\` command!
 			**Server:** ${msg.guild.name} (${msg.guild.id})
 			**Author:** ${msg.author.tag} (${msg.author.id})
 			**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
-			**Input:** \`Role ${args.subCommand.toLowerCase()}\` | role name: ${args.role}`;
+			**Input:** \`Role ${args.subCommand.toLowerCase()}\` | role name: \`${args.role}\`
+		`;
 		let roleUserWarn = '';
 
 		switch (args.subCommand.toLowerCase()) {
@@ -172,10 +184,12 @@ export default class SelfAssignableRolesCommand extends Command {
 		
 		roleWarn += `**Error Message:** ${err}`;
 		
+		msg.client.emit('warn', roleWarn);
+
+		deleteCommandMessages(msg);
 		stopTyping(msg);
 		
 		// Emit warn event for debugging
-		msg.client.emit('warn', roleWarn);
 
 		// Inform the user the command failed
 		return sendSimpleEmbeddedError(msg, roleUserWarn);

@@ -52,7 +52,7 @@ export default class StarboardCommand extends Command {
 				\`enable\` - enable the star board feature.
 				\`disable\` - disable the star board feature.
 
-				MANAGE_GUILD permission required.
+				\`MANAGE_GUILD\` permission required.
 			`,
 			examples: [
 				'!starboard status',

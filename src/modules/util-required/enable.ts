@@ -35,7 +35,7 @@ export default class EnableCommandCommand extends Command {
 
 				The argument must be the name/ID (partial or whole) of a command or command group.
 				
-				ADMINISTRATOR permission required.
+				\`ADMINISTRATOR\` permission required.
 			`,
 			examples: ['enable util', 'enable Utility', 'enable prefix'],
 			group: 'util-required',

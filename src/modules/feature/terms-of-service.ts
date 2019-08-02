@@ -62,7 +62,7 @@ export default class TermsOfServiceCommand extends Command {
 				\`list\` - return all the terms of service embedded blocks.
 				\`status\` - return the terms of service feature configuration details.
 
-				MANAGE_GUILD permission required.`,
+				\`MANAGE_GUILD\` permission required.`,
 			examples: [
 				'!tos channel #rules',
 				'!tos title 1 Interesting title',

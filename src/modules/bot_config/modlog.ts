@@ -49,7 +49,7 @@ export default class ModlogCommand extends Command {
 				\`enable\` - enable the mod log feature.
 				\`disable\` - disable the mod log feature.
 				
-				MANAGE_GUILD permission required.`,
+				\`MANAGE_GUILD\` permission required.`,
 			examples: [
 				'!modlog status',
 				'!modlog enable',

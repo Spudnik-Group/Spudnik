@@ -50,7 +50,7 @@ export default class GoodbyeCommand extends Command {
 				\`enable\` - enable the goodbye message feature.
 				\`disable\` - disable the goodbye message feature.
 
-				MANAGE_GUILD permission required.
+				\`MANAGE_GUILD\` permission required.
 			`,
 			examples: [
 				'!goodbye message Everyone mourn the loss of {user}',

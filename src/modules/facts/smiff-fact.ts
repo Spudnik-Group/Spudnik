@@ -1,6 +1,6 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { getRandomInt, startTyping, stopTyping } from '../../lib/helpers';
+import { getRandomInt } from '../../lib/helpers';
 import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
 
 // tslint:disable-next-line:no-var-requires
@@ -49,13 +49,10 @@ export default class SmiffFactCommand extends Command {
 			description: '',
 			title: 'Will Smith Fact'
 		});
-
-		startTyping(msg);
 		
 		responseEmbed.setDescription(smiff[getRandomInt(0, smiff.length) - 1]);
 
 		deleteCommandMessages(msg);
-		stopTyping(msg);
 
 		// Send the success response
 		return msg.embed(responseEmbed);

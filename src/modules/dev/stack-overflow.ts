@@ -2,7 +2,7 @@ import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { startTyping, sendSimpleEmbeddedError, stopTyping } from '../../lib/helpers';
-import { getEmbedColor } from '../../lib/custom-helpers';
+import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
 import axios from 'axios';
 import * as format from 'date-fns/format';
 
@@ -90,12 +90,16 @@ export default class StackOverflowCommand extends Command {
 				.addField('❯ Score', firstRes.score, true)
 				.addField('❯ Creation Date', format(firstRes.creation_date * 1000, 'MM/DD/YYYY h:mm A'), true)
 				.addField('❯ Last Activity', format(firstRes.last_activity_date * 1000, 'MM/DD/YYYY h:mm A'), true);
+			
+			deleteCommandMessages(msg);
 			stopTyping(msg);
 			
 			return msg.embed(stackEmbed)
 		} catch (err) {
-			stopTyping(msg);
 			msg.client.emit('warn', `Error in command dev:stack-overflow: ${err}`);
+			
+			deleteCommandMessages(msg);
+			stopTyping(msg);
 
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 		}

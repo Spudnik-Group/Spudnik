@@ -62,7 +62,7 @@ export default class ClearWarnsCommand extends Command {
 			details: stripIndents`
 				syntax: \`!warn <@userMention> (reason)\`
 
-				MANAGE_MESSAGES permission required.
+				\`MANAGE_MESSAGES\` permission required.
 			`,
 			examples: [
 				'!clear-warns @user he\'s been better',

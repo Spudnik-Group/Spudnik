@@ -2,6 +2,7 @@ import { Message } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedMessageWithAuthor } from '../../lib/helpers';
 import { Convert } from '../../lib/convert';
+import { deleteCommandMessages } from '../../lib/custom-helpers';
 
 /**
  * Convert Binary to Hexadecimal
@@ -54,6 +55,8 @@ export default class Bin2HexCommand extends Command {
 	 * @memberof Bin2HexCommand
 	 */
 	public async run(msg: CommandoMessage, args: { numberToConvert: string }): Promise<Message | Message[]> {
+		deleteCommandMessages(msg);
+		
 		return sendSimpleEmbeddedMessageWithAuthor(msg, `${args.numberToConvert} = 0x${Convert.bin2hex(args.numberToConvert).toUpperCase()}`, {name: 'Binary to Hexadecimal Conversion:'});
 	}
 }

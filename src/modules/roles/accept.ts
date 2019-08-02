@@ -1,7 +1,7 @@
 import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed, Role } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor, modLogMessage } from '../../lib/custom-helpers';
+import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError, stopTyping, startTyping } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 
@@ -78,10 +78,8 @@ export default class AcceptCommand extends Command {
 				**Action:** The default role(s) of \`${defaultRoles.join(', ')}\` for the guild ${msg.guild.name} has been applied.
 			`);
 
-			// Log the event in the mod log
 			modLogMessage(msg, acceptEmbed);
-
-			msg.delete();
+			deleteCommandMessages(msg);
 			stopTyping(msg);
 
 			// Reply to the new member
@@ -97,13 +95,15 @@ export default class AcceptCommand extends Command {
 			**Author:** ${msg.author.tag} (${msg.author.id})
 			**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
 		`;
+
 		acceptWarn += stripIndents`
 			**Error Message:** ${err}`;
-		
-		stopTyping(msg);
 
 		// Emit warn event for debugging
 		msg.client.emit('warn', acceptWarn);
+
+		deleteCommandMessages(msg);
+		stopTyping(msg);
 
 		// Inform the user the command failed
 		return sendSimpleEmbeddedError(msg, 'An error occured, an admin will need to assign the default role');

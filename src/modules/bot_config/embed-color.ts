@@ -44,7 +44,7 @@ export default class EmbedColorCommand extends Command {
 
 				Supplying no hex color resets the embed color to default.
 
-				MANAGE_GUILD permission required.
+				\`MANAGE_GUILD\` permission required.
 			`,
 			examples: [
 				'!embedcolor',

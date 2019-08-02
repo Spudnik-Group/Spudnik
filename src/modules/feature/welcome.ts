@@ -50,7 +50,7 @@ export default class WelcomeCommand extends Command {
 				\`enable\` - enable the welcome message feature.
 				\`disable\` - disable the welcome message feature.
 
-				MANAGE_GUILD permission required.
+				\`MANAGE_GUILD\` permission required.
 			`,
 			examples: [
 				'!welcome message Please welcome {user} to the guild!',
