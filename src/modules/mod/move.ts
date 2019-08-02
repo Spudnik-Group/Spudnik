@@ -43,7 +43,7 @@ export default class MoveCommand extends Command {
 			details: stripIndents`
 				syntax: \`!move <messageId> <#channel> (reason)\`\
 
-				MANAGE_MESSAGES permission required.
+				\`MANAGE_MESSAGES\` permission required.
 			`,
 			examples: [
 				'!move 1234567890 #channel',

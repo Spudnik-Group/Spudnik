@@ -71,7 +71,7 @@ export default class PruneCommand extends Command {
 				\`uploads\`: Messages containing an attachment
 				\`links\`: Messages containing a link\n
 
-				MANAGE_MESSAGES permission required.
+				\`MANAGE_MESSAGES\` permission required.
 			`,
 			examples: [
 				'!prune 50',

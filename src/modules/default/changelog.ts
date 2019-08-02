@@ -1,7 +1,7 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { startTyping, sendSimpleEmbeddedError, stopTyping } from '../../lib/helpers';
-import { getEmbedColor } from '../../lib/custom-helpers';
+import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
 import axios from 'axios';
 
 /**
@@ -63,25 +63,30 @@ export default class changelogCommand extends Command {
 					'User-Agent': 'Spudnik Bot'
 				}
 			});
+
 			const changelog = res.data.slice(0, 3);
+
 			changelog.forEach((release: any) => {
 				stackEmbed.description += `
 
 					- *${release.name}* -
-					${release.body}
-				`;
+					${release.body}`;
 			});
+
 			stackEmbed.description += `
 
 				Check out the full changelog [here](https://github.com/Spudnik-Group/Spudnik/releases)
 			`;
 			
+			deleteCommandMessages(msg);
 			stopTyping(msg);
 			
 			return msg.embed(stackEmbed);
 		} catch (err) {
-			stopTyping(msg);
 			msg.client.emit('warn', `Error in command dev:changelog: ${err}`);
+
+			deleteCommandMessages(msg);
+			stopTyping(msg);
 
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 		}

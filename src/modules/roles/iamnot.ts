@@ -1,6 +1,6 @@
 import { Message, MessageEmbed, Role } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor } from '../../lib/custom-helpers';
+import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
 import { sendSimpleEmbeddedError } from '../../lib/helpers';
 
 /**
@@ -63,11 +63,17 @@ export default class IAmNotCommand extends Command {
 
 				roleEmbed.description = `<@${msg.member.id}>, you no longer have the ${role.name} role.`;
 
+				deleteCommandMessages(msg);
+
 				return msg.embed(roleEmbed);
 			} else {
+				deleteCommandMessages(msg);
+
 				return sendSimpleEmbeddedError(msg, `<@${msg.member.id}>, you do not have the role ${role.name}.`, 3000);
 			}
 		} else {
+			deleteCommandMessages(msg);
+
 			return sendSimpleEmbeddedError(msg, `Cannot find ${args.query} in list of assignable roles.`, 3000);
 		}
 	}

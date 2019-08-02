@@ -2,6 +2,7 @@ import { Message } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedMessageWithAuthor } from '../../lib/helpers';
 import { Convert } from '../../lib/convert';
+import { deleteCommandMessages } from '../../lib/custom-helpers';
 
 /**
  * Converts Decimal to Hexadecimal
@@ -51,6 +52,8 @@ export default class Dec2HexCommand extends Command {
 	 * @memberof Dec2HexCommand
 	 */
 	public async run(msg: CommandoMessage, args: { numberToConvert: string }): Promise<Message | Message[]> {
+		deleteCommandMessages(msg);
+		
 		return sendSimpleEmbeddedMessageWithAuthor(msg, `${args.numberToConvert} = 0x${Convert.dec2hex(args.numberToConvert).toUpperCase()}`, {name: 'Decimal to Hexadecimal Conversion:'});
 	}
 }

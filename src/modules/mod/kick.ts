@@ -38,7 +38,7 @@ export default class KickCommand extends Command {
 			details: stripIndents`
 				syntax: \`!kick <@userMention> <reason>\`
 
-				KICK_MEMBERS permission required.
+				\`KICK_MEMBERS\` permission required.
 			`,
 			examples: [
 				'!kick @user being a pleb'

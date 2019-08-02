@@ -48,7 +48,7 @@ export default class ListWarnsCommand extends Command {
 			],
 			description: 'List warns for the guild.',
 			details: stripIndents`
-				MANAGE_MESSAGES permission required.
+				\`MANAGE_MESSAGES\` permission required.
 			`,
 			examples: [
 				'!list-warns'

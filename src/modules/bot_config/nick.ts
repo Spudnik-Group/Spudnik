@@ -35,7 +35,7 @@ export default class NickCommand extends Command {
 
 				Supplying no nickname resets the nickname to default.
 
-				MANAGE_NICKNAMES permission required.
+				\`MANAGE_NICKNAMES\` permission required.
 			`,
 			examples: [
 				'!nick',

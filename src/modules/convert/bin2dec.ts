@@ -2,6 +2,7 @@ import { Message } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedMessageWithAuthor } from '../../lib/helpers';
 import { Convert } from '../../lib/convert';
+import { deleteCommandMessages } from '../../lib/custom-helpers';
 
 /**
  * Convert Binary to Decimal
@@ -54,6 +55,8 @@ export default class Bin2DecCommand extends Command {
 	 * @memberof Bin2DecCommand
 	 */
 	public async run(msg: CommandoMessage, args: { numberToConvert: string }): Promise<Message | Message[]> {
+		deleteCommandMessages(msg);
+		
 		return sendSimpleEmbeddedMessageWithAuthor(msg, `${args.numberToConvert} = ${Convert.bin2dec(args.numberToConvert)}`, {name: 'Binary to Decimal Conversion:'});
 	}
 }

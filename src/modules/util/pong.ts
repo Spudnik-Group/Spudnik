@@ -49,8 +49,8 @@ export default class PongCommand extends Command {
 
 		await delay(3000);
 		
-		stopTyping(msg);
 		deleteCommandMessages(msg);
+		stopTyping(msg);
 		
 		return (pingMsg as Message).edit(stripIndents`
 			${msg.channel.type !== 'dm' ? `${msg.author},` : ''}
