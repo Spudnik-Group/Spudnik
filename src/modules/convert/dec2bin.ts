@@ -2,7 +2,7 @@ import { Message } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedMessageWithAuthor } from '../../lib/helpers';
 import { Convert } from '../../lib/convert';
-import { deleteCommandMessages } from 'src/lib/custom-helpers';
+import { deleteCommandMessages } from '../../lib/custom-helpers';
 
 /**
  * Converts Decimal to Binary
