@@ -1,7 +1,7 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
-import { startTyping, stopTyping } from '../../lib/helpers';
+import { startTyping, stopTyping, sendSimpleEmbeddedError } from '../../lib/helpers';
 import { stripIndents } from 'common-tags';
 
 /**
@@ -67,10 +67,15 @@ export default class RollCommand extends Command {
 		});
 
 		startTyping(msg);
+		if (!result) {
+			stopTyping(msg);
+
+			return sendSimpleEmbeddedError(msg, 'Invalid roll attempt. Try again with d20 syntax or a valid number.');
+		}
 		diceEmbed.description = stripIndents`
 			Roll: ${args.roll}${args.reason ? `
 
-			For: ${args.reason}` : ''}
+			For: ${args.reason.replace('for ', '')}` : ''}
 
 			--
 			Result: ${result}
@@ -80,6 +85,6 @@ export default class RollCommand extends Command {
 		stopTyping(msg);
 
 		// Send the success response
-		return msg.embed(diceEmbed);
+		return msg.reply(diceEmbed);
 	}
 }
