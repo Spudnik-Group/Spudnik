@@ -182,11 +182,13 @@ export default class RoleCommand extends Command {
 									return this.catchError(msg, args, err);
 								}
 							} else {
+								deleteCommandMessages(msg);
 								stopTyping(msg);
 	
 								return sendSimpleEmbeddedError(msg, 'Please supply a row number corresponding to the role you want to delete.');
 							}
 					} catch (err) {
+						deleteCommandMessages(msg);
 						stopTyping(msg);
 
 						return this.catchError(msg, args, err);
@@ -213,14 +215,10 @@ export default class RoleCommand extends Command {
 						return this.catchError(msg, args, err);
 					}
 				} else {
-					stopTyping(msg);
-
 					return sendSimpleEmbeddedError(msg, `A role with the supplied name \`${args.name}\` was not found on this guild.`);
 				}
 			}
 			default: {
-				stopTyping(msg);
-
 				return sendSimpleEmbeddedError(msg, 'Invalid subcommand!');
 			}
 		}		
@@ -249,6 +247,7 @@ export default class RoleCommand extends Command {
 
 		roleWarn += `**Error Message:** ${err}`;
 
+		deleteCommandMessages(msg);
 		stopTyping(msg);
 
 		// Emit warn event for debugging

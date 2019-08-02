@@ -59,7 +59,9 @@ export default class CatFactCommand extends Command {
 			// Send the success response
 			return msg.embed(responseEmbed);
 		} catch (err) {
-			msg.client.emit('warn', `Error in command random:cat-fact: ${err}`);
+			msg.client.emit('warn', `Error in command facts:cat-fact: ${err}`);
+			
+			deleteCommandMessages(msg);
 			stopTyping(msg);
 			
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);

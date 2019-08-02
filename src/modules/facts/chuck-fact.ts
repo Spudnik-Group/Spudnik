@@ -60,9 +60,11 @@ export default class ChuckFactCommand extends Command {
 			// Send the success response
 			return msg.embed(responseEmbed);
 		} catch (err) {
-			msg.client.emit('warn', `Error in command random:chuck-fact: ${err}`);
-			stopTyping(msg);
+			msg.client.emit('warn', `Error in command facts:chuck-fact: ${err}`);
 			
+			deleteCommandMessages(msg);
+			stopTyping(msg);
+
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 		}
 	}

@@ -1,7 +1,7 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { Convert } from '../../lib/convert';
-import { getEmbedColor } from '../../lib/custom-helpers';
+import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
 
 /**
  * Base64 encodes a string
@@ -72,6 +72,8 @@ export default class Base64EncodeCommand extends Command {
 		});
 
 		returnMessage.fields = fields;
+
+		deleteCommandMessages(msg);
 
 		return msg.embed(returnMessage);
 	}

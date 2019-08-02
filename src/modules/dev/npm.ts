@@ -2,7 +2,7 @@ import { stripIndents } from 'common-tags';
 import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 import { startTyping, sendSimpleEmbeddedError, stopTyping } from '../../lib/helpers';
-import { getEmbedColor } from '../../lib/custom-helpers';
+import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
 import axios from 'axios';
 import * as format from 'date-fns/format';
 
@@ -100,12 +100,16 @@ export default class NPMCommand extends Command {
 					❯ **Modified:** ${format(res.time.modified, 'MM/DD/YYYY h:mm A')}
 					❯ **Dependencies:** ${deps && deps.length ? deps.join(', ') : 'None'}
 				`);
+			
+			deleteCommandMessages(msg);
 			stopTyping(msg);
 			
 			return msg.embed(npmEmbed)
 		} catch (err) {
-			stopTyping(msg);
 			msg.client.emit('warn', `Error in command dev:npm: ${err}`);
+			
+			deleteCommandMessages(msg);
+			stopTyping(msg);
 
 			return sendSimpleEmbeddedError(msg, 'Could not fetch that package, are you sure it exists?', 3000);
 		}

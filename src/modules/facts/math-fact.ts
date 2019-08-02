@@ -59,7 +59,9 @@ export default class MathFactCommand extends Command {
 			// Send the success response
 			return msg.embed(responseEmbed);
 		} catch (err) {
-			msg.client.emit('warn', `Error in command random:math-fact: ${err}`);
+			msg.client.emit('warn', `Error in command facts:math-fact: ${err}`);
+			
+			deleteCommandMessages(msg);
 			stopTyping(msg);
 			
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);

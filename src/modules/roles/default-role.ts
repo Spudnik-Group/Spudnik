@@ -124,10 +124,11 @@ export default class DefaultRoleCommand extends Command {
 		// TODO: this needs updated
 		let roleUserWarn = 'Setting default role failed!';
 
-		stopTyping(msg);
-
 		// Emit warn event for debugging
 		msg.client.emit('warn', roleWarn);
+
+		deleteCommandMessages(msg);
+		stopTyping(msg);		
 
 		// Inform the user the command failed
 		return sendSimpleEmbeddedError(msg, roleUserWarn);
