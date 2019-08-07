@@ -1,7 +1,7 @@
 import { stripIndents } from 'common-tags';
 import { Message } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor } from '../../lib/custom-helpers';
+import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
 import { getRandomInt, sendSimpleEmbeddedError } from '../../lib/helpers';
 
 /**
@@ -60,7 +60,9 @@ export default class ChooseCommand extends Command {
 			return sendSimpleEmbeddedError(msg, 'I can\'t choose for you if you don\'t give me more options!', 3000);
 		}
 		
-		return msg.embed({
+		deleteCommandMessages(msg);
+		
+		return msg.reply({
 			author: {
 				iconURL: msg.client.user.displayAvatarURL(),
 				name: `${msg.client.user.username}`
