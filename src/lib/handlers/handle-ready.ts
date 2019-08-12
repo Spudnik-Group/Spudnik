@@ -113,8 +113,8 @@ const updateBotListStats = (config: Configuration, client: CommandoClient): void
 	
 	// DISCORD.BOTS.gg
 	if (config.botsggApiKey) {
-		axios.post(`https://discord.bots.gg/api/v1/bots/${client.user.id}/stats`, {
-			body: { guildCount: Number(client.guilds.size) },
+		axios.post(`https://discord.bots.gg/api/v1/bots/${client.user.id}/stats`, { guildCount: Number(client.guilds.size) },
+		{
 			headers: { Authorization: config.botsggApiKey }
 		})
 		.then(() => console.log('- Posted statistics successfully: discord.bots.gg'))
@@ -125,8 +125,8 @@ const updateBotListStats = (config: Configuration, client: CommandoClient): void
 
 	// BOTS.ONDISCORD.xyz
 	if (config.bodApiKey) {
-		axios.post(`https://bots.ondiscord.xyz/bot-api/bots/${client.user.id}/guilds`, {
-			body: { guildCount: Number(client.guilds.size) },
+		axios.post(`https://bots.ondiscord.xyz/bot-api/bots/${client.user.id}/guilds`, { guildCount: Number(client.guilds.size) },
+		{
 			headers: { Authorization: config.bodApiKey }
 		})
 		.then(() => console.log('- Posted statistics successfully: bots.ondiscord.xyz'))
@@ -137,8 +137,8 @@ const updateBotListStats = (config: Configuration, client: CommandoClient): void
 
 	// DISCORDBOTS.org
 	if (config.dbApiKey) {
-		axios.post(`https://discordbots.org/api/bots/${client.user.id}/stats`, {
-			body: { server_count: Number(client.guilds.size) },
+		axios.post(`https://discordbots.org/api/bots/${client.user.id}/stats`, { server_count: Number(client.guilds.size) },
+		{
 			headers: { Authorization: config.dbApiKey }
 		})
 		.then(() => console.log('- Posted statistics successfully: discordbots.org'))
@@ -149,8 +149,8 @@ const updateBotListStats = (config: Configuration, client: CommandoClient): void
 
 	// BOTSFORDISCORD.com
 	if (config.bfdApiKey) {
-		axios.post(`https://botsfordiscord.com/api/bot/${client.user.id}`, {
-			body: { server_count: Number(client.guilds.size) },
+		axios.post(`https://botsfordiscord.com/api/bot/${client.user.id}`, { server_count: Number(client.guilds.size) },
+		{
 			headers: { Authorization: config.bfdApiKey }
 		})
 		.then(() => console.log('- Posted statistics successfully: botsfordiscord.com'))
@@ -161,8 +161,8 @@ const updateBotListStats = (config: Configuration, client: CommandoClient): void
 
 	// DISCORDBOTLIST.com
 	if (config.dblApiKey) {
-		axios.post(`https://discordbotlist.com/api/bots/${client.user.id}/stats`, {
-			body: { guilds: Number(client.guilds.size), users: Number(client.users.size) },
+		axios.post(`https://discordbotlist.com/api/bots/${client.user.id}/stats`, { guilds: Number(client.guilds.size), users: Number(client.users.size) },
+		{
 			headers: { Authorization: `Bot ${config.dblApiKey}` }
 		})
 		.then(() => console.log('- Posted statistics successfully: discordbotlist.com'))
