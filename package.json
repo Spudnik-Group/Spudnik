@@ -54,7 +54,7 @@
 		"@types/mongoose": "5.5.12",
 		"@types/node": "10.14.13",
 		"nodemon": "1.19.1",
-		"rimraf": "2.6.3",
+		"rimraf": "2.7.0",
 		"tslint": "5.18.0",
 		"tslint-jsdoc-rules": "0.2.0",
 		"typescript": "3.5.3"
