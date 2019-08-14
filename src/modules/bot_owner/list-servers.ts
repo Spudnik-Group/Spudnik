@@ -55,10 +55,10 @@ export default class ListServersCommand extends Command {
 	public async run(msg: CommandoMessage, args: {page: number}): Promise<Message | Message[]> {
 		let guilds = Array.from(this.client.guilds.values());
 		let totalGuilds = guilds.length;
-		let noOfPages = totalGuilds / 2;
-		let p = (args.page > 0 && args.page < noOfPages + 1) ? args.page : 1;
-		p = p - 1;
-		guilds = guilds.slice(p * 2, (p * 2) + 2);
+		let noOfPages = Math.ceil(totalGuilds / 5);
+		let currentPage = (args.page > 0 && args.page < noOfPages + 1) ? args.page : 1;
+		currentPage -= 1
+		guilds = guilds.slice(currentPage * 5, (currentPage * 5) + 5);
 		let fields: any[] = [];
 		guilds.forEach(guild => {
 			fields.push({
@@ -68,7 +68,11 @@ export default class ListServersCommand extends Command {
 					User Count: ${guild.memberCount}
 					Channel Count: ${guild.channels.size}
 					Bot Invited: ${format(guild.joinedTimestamp, 'MMMM Do YYYY [at] HH:mm')}
-					Owner: ${guild.owner} <${guild.ownerID}>
+					Owner: ${guild.owner.user.tag} (${guild.ownerID})
+					Region: ${guild.region}
+					Prefix: ${msg.client.provider.get(guild.id, 'prefix', '!')}
+
+					--
 				`
 			});
 		});
@@ -81,7 +85,7 @@ export default class ListServersCommand extends Command {
 				description: `Spudnik is connected to **${totalGuilds}** servers${this.client.shard ? `, in Shard ${this.client.shard.id}` : ''}.`,
 				fields: fields,
 				footer: {
-					text: `Page: ${p + 1} of ${noOfPages > noOfPages ? noOfPages + 1 : noOfPages}`
+					text: `Page: ${currentPage + 1} of ${noOfPages > noOfPages ? noOfPages + 1 : noOfPages}`
 				},
 				title: 'Server List'
 			}
