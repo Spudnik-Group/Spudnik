@@ -75,16 +75,15 @@ export default class AcceptCommand extends Command {
 			// Set up embed message
 			acceptEmbed.setDescription(stripIndents`
 				**Member:** ${msg.author.tag} (${msg.author.id})
-				**Action:** The default role(s) of \`${defaultRoles.join(', ')}\` for the guild ${msg.guild.name} has been applied.
+				**Action:** The default role(s) of ${defaultRoleList.map(role => `\`${role.name}\``).join(', ')} for the guild ${msg.guild.name} has been applied.
 			`);
 
 			modLogMessage(msg, acceptEmbed);
 			deleteCommandMessages(msg);
 			stopTyping(msg);
-
-			// Reply to the new member
-			return msg.reply(acceptEmbed);
 		}
+
+		return null;
 	}
 	
 	private catchError(msg: CommandoMessage, err: Error) {
