@@ -55,7 +55,7 @@
 		"@types/node": "10.14.13",
 		"nodemon": "1.19.1",
 		"rimraf": "3.0.0",
-		"tslint": "5.18.0",
+		"tslint": "5.19.0",
 		"tslint-jsdoc-rules": "0.2.0",
 		"typescript": "3.5.3"
 	}
