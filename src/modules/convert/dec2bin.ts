@@ -22,9 +22,8 @@ export default class Dec2BinCommand extends Command {
 		super(client, {
 			args: [
 				{
-					default: '',
 					key: 'numberToConvert',
-					prompt: 'What number do you want to convert?\n',
+					prompt: 'Please enter a valid number to convert.\n',
 					type: 'string',
 					validate: (numberToConvert: string) => {
 						return /^[0-9]+$/.test(numberToConvert);

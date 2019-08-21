@@ -21,7 +21,6 @@ export default class Base64EncodeCommand extends Command {
 		super(client, {
 			args: [
 				{
-					default: '',
 					key: 'stringToEncode',
 					prompt: 'What do you want to encode?\n',
 					type: 'string'
