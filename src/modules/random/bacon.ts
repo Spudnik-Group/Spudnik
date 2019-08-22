@@ -22,6 +22,7 @@ export default class BaconCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
+			clientPermissions: ['ATTACH_FILES'],
 			description: 'Blesses you with a random bacon gif.',
 			examples: ['!bacon'],
 			group: 'random',

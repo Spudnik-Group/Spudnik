@@ -212,6 +212,7 @@ export default class TermsOfServiceCommand extends Command {
 				}
 			}
 			case 'body': {
+				// TODO: disallow message bodies with more than the allowed characters for an embed
 				const tosMessageCount: number = await msg.guild.settings.get('tosMessageCount', 0);
 				const tosMessages: ITOSMessage[] = [];
 				for (let i = 1; i < tosMessageCount + 1; i++) {
@@ -270,12 +271,17 @@ export default class TermsOfServiceCommand extends Command {
 						tosMessages.push(tosMessage);
 					}
 				}
-				let tosList = '';
-				tosMessages.forEach((message, index) => {
-					tosList += `${index + 1} - ${message.title}\n`;
-				});
-				tosEmbed.description = `Channel: <#${tosChannel}>\nMessage List:\n`;
-				tosEmbed.description += `\`\`\`${tosList}\`\`\``;
+				tosEmbed.description = `Channel: ${tosChannel ? `<#${tosChannel}>` : 'None set.'}\nMessage List:\n`;
+				if (tosMessages.length) {
+					let tosList = '';
+					tosMessages.forEach((message, index) => {
+						tosList += `${index + 1} - ${message.title}\n`;
+					});
+					// TODO: change this to better output messages, this could overload the embed character limit
+					tosEmbed.description += `\`\`\`${tosList}\`\`\``;
+				} else {
+					tosEmbed.description += 'No Messages.';
+				}
 
 				deleteCommandMessages(msg);
 				stopTyping(msg);

@@ -19,6 +19,7 @@ export default class MagicCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
+			clientPermissions: ['ATTACH_FILES'],
 			description: 'Displays a magical gif of Shia Labeouf.',
 			examples: ['!magic'],
 			group: 'meme',

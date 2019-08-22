@@ -21,7 +21,7 @@ export default class TopicCommand extends Command {
 		super(client, {
 			description: 'Returns the purpose of the chat channel.',
 			examples: ['!topic'],
-			group: 'server_config',
+			group: 'info',
 			guildOnly: true,
 			memberName: 'topic',
 			name: 'topic',
@@ -58,7 +58,7 @@ export default class TopicCommand extends Command {
 		return msg.embed({
 			color: getEmbedColor(msg),
 			description: `Channel Topic: ${response}`,
-			thumbnail: { url: this.client.user.avatarURL.toString() },
+			thumbnail: { url: msg.guild.iconURL() },
 			title: channel.name
 		});
 	}
