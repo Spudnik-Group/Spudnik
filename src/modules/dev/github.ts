@@ -99,7 +99,7 @@ export default class GithubCommand extends Command {
 					❯ **Language:** ${res.language}
 					❯ **Forks:** ${res.forks_count.toLocaleString()}
 					❯ **License:** ${license}
-					❯ **Open Issues:** ${res.open_issues.toLocaleString()}
+					❯ **Open Issues/PRs:** ${res.open_issues.toLocaleString()}
 					❯ **Watchers:** ${res.subscribers_count.toLocaleString()}
 					❯ **Stars:** ${res.stargazers_count.toLocaleString()}
 					❯ **Clone Size:** ${size}${footer.length ? `${footer.join('\n')}` : ''}

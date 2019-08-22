@@ -22,6 +22,7 @@ export default class CoinFlipCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
+			clientPermissions: ['ATTACH_FILES'],
 			description: 'Flips a coin for you.',
 			examples: ['!coinflip'],
 			group: 'random',

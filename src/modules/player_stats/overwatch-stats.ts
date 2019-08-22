@@ -103,12 +103,12 @@ export default class OverwatchStatsCommand extends Command {
 					{
 						inline: true,
 						name: 'Level',
-						value: profile.level.toString()
+						value: `${profile.level}`
 					},
 					{
 						inline: true,
 						name: 'Rank',
-						value: profile.competitive.rank ? profile.competitive.rank.toString() : 'N/A'
+						value: profile.competitive.rank ? `${profile.competitive.rank}` : 'N/A'
 					},
 					{
 						inline: true,
@@ -128,7 +128,7 @@ export default class OverwatchStatsCommand extends Command {
 					{
 						inline: true,
 						name: 'Quickplay Games Won',
-						value: profile.games.quickplay.won ? profile.games.quickplay.won.toString() : '0'
+						value: profile.games.quickplay.won ? `${profile.games.quickplay.won}` : '0'
 					}
 				],
 				thumbnail: {
@@ -141,7 +141,7 @@ export default class OverwatchStatsCommand extends Command {
 					{
 						inline: true,
 						name: 'Endorsement Level',
-						value: profile.endorsement.level.toString()
+						value: profile.endorsement.level !== null ? `${profile.endorsement.level}` : 'N/A'
 					},
 					{
 						inline: true,

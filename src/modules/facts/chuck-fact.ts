@@ -51,7 +51,7 @@ export default class ChuckFactCommand extends Command {
 		startTyping(msg);
 
 		try {
-			const data: any = axios.get('http://api.icndb.com/jokes/random');
+			const { data } = await axios.get('http://api.icndb.com/jokes/random');
 			responseEmbed.setDescription(data.value.joke);
 	
 			deleteCommandMessages(msg);

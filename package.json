@@ -1,7 +1,7 @@
 {
 	"name": "spudnik",
 	"description": "Spudnik is a free and open source Discord chat bot focused on guild management and adding interesting and useful functionality to your server. It was built on top of some of the most popular and widely used frameworks for extendibility, and written with organization and stability in mind. It also ships with ZERO weeb commands/references!",
-	"version": "0.10.3",
+	"version": "0.10.4",
 	"license": "Apache-2.0",
 	"readme": "README.md",
 	"engines": {
@@ -44,18 +44,18 @@
 		"soap": "^0.29.0",
 		"urban-dictionary": "^2.2.1",
 		"url-unshort": "^5.0.0",
-		"wikijs": "^4.11.1",
+		"wikijs": "^6.0.0",
 		"zucc": "^0.1.2"
 	},
 	"devDependencies": {
 		"@types/chalk": "2.2.0",
 		"@types/common-tags": "1.8.0",
 		"@types/date-fns": "2.6.0",
-		"@types/mongoose": "5.5.12",
+		"@types/mongoose": "5.5.13",
 		"@types/node": "10.14.13",
 		"nodemon": "1.19.1",
-		"rimraf": "2.6.3",
-		"tslint": "5.18.0",
+		"rimraf": "3.0.0",
+		"tslint": "5.19.0",
 		"tslint-jsdoc-rules": "0.2.0",
 		"typescript": "3.5.3"
 	}

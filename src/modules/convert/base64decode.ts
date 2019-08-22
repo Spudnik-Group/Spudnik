@@ -21,9 +21,8 @@ export default class Base64DecodeCommand extends Command {
 		super(client, {
 			args: [
 				{
-					default: '',
 					key: 'stringToDecode',
-					prompt: 'What do you want to decode?\n',
+					prompt: 'Please enter a valid base64 encoded string.\n',
 					type: 'string',
 					validate: (stringToDecode: string) => {
 						return /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(stringToDecode);

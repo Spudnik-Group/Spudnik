@@ -19,6 +19,7 @@ export default class HighNoonCommand extends Command {
 	 */
 	constructor(client: CommandoClient) {
 		super(client, {
+			clientPermissions: ['ATTACH_FILES'],
 			description: 'Displays the High Noon XKCD comic.',
 			examples: ['!highnoon'],
 			group: 'meme',
