@@ -33,7 +33,7 @@ export default class DefaultRoleCommand extends Command {
 				}
 			],
 			clientPermissions: ['MANAGE_ROLES'],
-			description: 'Used to configure the self-assignable roles feature.',
+			description: 'Used to configure the default role for the `accept` command.',
 			details: stripIndents`
                 syntax: \`!dr (@roleMention)\`
                 
