@@ -91,6 +91,5 @@
 			"allow-pascal-case",
 			"allow-leading-underscore"
 		]
-	},
-	"rulesDirectory": ["./node_modules/tslint-jsdoc-rules/lib"]
+	}
 }

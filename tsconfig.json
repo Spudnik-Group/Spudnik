@@ -11,12 +11,12 @@
 		"outDir": "./dist",
 		"removeComments": true,
 		"strict": false,
-		"noImplicitAny": true,
 		"noUnusedLocals": true,
 		"moduleResolution": "node",
 		"baseUrl": ".",
 		"experimentalDecorators": true,
-		"resolveJsonModule": true
+		"resolveJsonModule": true,
+		"forceConsistentCasingInFileNames": true,
 	},
 	"include": [
 		"./launch.ts",
