@@ -1,7 +1,6 @@
-import { Message, MessageEmbed } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { getRandomInt } from '../../lib/helpers';
-import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
+import { MessageEmbed } from 'discord.js';
+import { getRandomInt, getEmbedColor } from '../../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 // tslint:disable-next-line:no-var-requires
 const { smiff }: { smiff: string[] } = require('../../extras/data');
@@ -24,15 +23,7 @@ export default class SmiffFactCommand extends Command {
 		super(client, store, file, directory, {
 			aliases: ['smith-fact', 'willsmith'],
 			description: 'Returns a random Will Smith fact.',
-			examples: ['!smiff-fact'],
-			group: 'facts',
-			guildOnly: true,
-			memberName: 'smiff-fact',
-			name: 'smiff-fact',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			name: 'smiff-fact'
 		});
 	}
 
@@ -52,9 +43,7 @@ export default class SmiffFactCommand extends Command {
 		
 		responseEmbed.setDescription(smiff[getRandomInt(0, smiff.length) - 1]);
 
-		deleteCommandMessages(msg);
-
 		// Send the success response
-		return msg.embed(responseEmbed);
+		return msg.sendEmbed(responseEmbed);
 	}
 }

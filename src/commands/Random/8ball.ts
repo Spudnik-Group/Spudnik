@@ -1,9 +1,7 @@
-import { Message, MessageEmbed } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
-import { getRandomInt, sendSimpleEmbeddedError } from '../../lib/helpers';
+import { MessageEmbed } from 'discord.js';
+import { getEmbedColor, getRandomInt, sendSimpleEmbeddedError } from '../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
-// tslint:disable-next-line:no-var-requires
 const { eightBall }: { eightBall: string[] } = require('../../extras/data');
 
 /**
@@ -22,24 +20,10 @@ export default class EightBallCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			args: [
-				{
-					key: 'query',
-					prompt: 'What would you like to ask the magic 8-ball?',
-					type: 'string'
-				}
-			],
 			description: 'Ask the magic 8 ball a question.',
-			details: 'syntax: `!8ball <query>`',
-			examples: ['!8ball Is my life on the right track?'],
-			group: 'random',
-			guildOnly: true,
-			memberName: '8ball',
+			extendedHelp: 'syntax: `!8ball <query>`',
 			name: '8ball',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			usage: '<query:string>'
 		});
 	}
 
@@ -51,18 +35,16 @@ export default class EightBallCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof EightBallCommand
 	 */
-	public async run(msg: KlasaMessage, args: { query: string }): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
 		let response = 'Error getting answer. Try again later?';
 		if (eightBall && eightBall.length > 0) {
 			response = eightBall[getRandomInt(0, eightBall.length) - 1];
-			
-			deleteCommandMessages(msg);
 
-			return msg.reply(new MessageEmbed({
+			return msg.send(new MessageEmbed({
 				color: getEmbedColor(msg),
 				description: `:8ball: **${response}**`,
-				title: args.query
-			}));
+				title: query
+			}), { reply: msg.author });
 		} else {
 			return sendSimpleEmbeddedError(msg, response, 3000);
 		}

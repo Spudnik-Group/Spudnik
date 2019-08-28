@@ -1,8 +1,7 @@
-import { Message, MessageEmbed } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
+import { MessageEmbed } from 'discord.js';
 import axios from 'axios';
-import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, stopTyping, startTyping } from '../../lib/helpers';
+import { getEmbedColor, sendSimpleEmbeddedError } from '../../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Post a random chuck norris fact.
@@ -22,15 +21,7 @@ export default class ChuckFactCommand extends Command {
 		super(client, store, file, directory, {
 			aliases: ['chucknorris', 'norrisfact', 'chuck-norris'],
 			description: 'Returns a random Chuck Norris fact.',
-			examples: ['!chuck-fact'],
-			group: 'facts',
-			guildOnly: true,
-			memberName: 'chuck-fact',
-			name: 'chuck-fact',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			name: 'chuck-fact'
 		});
 	}
 
@@ -48,22 +39,14 @@ export default class ChuckFactCommand extends Command {
 			title: 'Chuck Norris Fact'
 		});
 
-		startTyping(msg);
-
 		try {
 			const { data } = await axios.get('http://api.icndb.com/jokes/random');
 			responseEmbed.setDescription(data.value.joke);
 	
-			deleteCommandMessages(msg);
-			stopTyping(msg);
-	
 			// Send the success response
-			return msg.embed(responseEmbed);
+			return msg.sendEmbed(responseEmbed);
 		} catch (err) {
 			msg.client.emit('warn', `Error in command facts:chuck-fact: ${err}`);
-			
-			deleteCommandMessages(msg);
-			stopTyping(msg);
 
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 		}

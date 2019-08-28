@@ -1,8 +1,7 @@
-import { Message, MessageEmbed } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
+import { MessageEmbed } from 'discord.js';
 import axios from 'axios';
-import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, startTyping, stopTyping } from '../../lib/helpers';
+import { getEmbedColor, sendSimpleEmbeddedError } from '../../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Post a random fact about the year.
@@ -21,15 +20,7 @@ export default class YearFactCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns a random year fact.',
-			examples: ['!year-fact'],
-			group: 'facts',
-			guildOnly: true,
-			memberName: 'year-fact',
-			name: 'year-fact',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			name: 'year-fact'
 		});
 	}
 
@@ -47,22 +38,14 @@ export default class YearFactCommand extends Command {
 			title: 'Year Fact'
 		});
 
-		startTyping(msg);
-
 		try {
 			const { data } = await axios.get('http://numbersapi.com/random/year?json');
 			responseEmbed.setDescription(data.text);
 	
-			deleteCommandMessages(msg);
-			stopTyping(msg);
-	
 			// Send the success response
-			return msg.embed(responseEmbed);
+			return msg.sendEmbed(responseEmbed);
 		} catch (err) {
 			msg.client.emit('warn', `Error in command facts:year-fact: ${err}`);
-			
-			deleteCommandMessages(msg);
-			stopTyping(msg);
 			
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 		}
