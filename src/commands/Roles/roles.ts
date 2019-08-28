@@ -1,8 +1,6 @@
-import { stripIndents } from 'common-tags';
-import { Message, MessageEmbed, Role } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
-import { startTyping, stopTyping } from '../../lib/helpers';
+import { MessageEmbed, Role } from 'discord.js';
+import { getEmbedColor } from '../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Lists default and self-assignable roles.
@@ -20,18 +18,8 @@ export default class RolesCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			clientPermissions: ['MANAGE_ROLES'],
 			description: 'Lists default and self-assignable roles.',
-			details: stripIndents`
-				syntax: \`!roles\`
-			`,
-			examples: [
-				'!roles'
-			],
-			group: 'roles',
-			guildOnly: true,
-			memberName: 'roles',
-			name: 'roles'
+			name: 'roles',
 		});
 	}
 
@@ -54,10 +42,8 @@ export default class RolesCommand extends Command {
 			}
 		});
 		
-		let guildAssignableRoles: string[] = await msg.client.provider.get(msg.guild.id, 'assignableRoles', []);
-		let guildDefaultRoles: string[] = await msg.client.provider.get(msg.guild.id, 'defaultRoles', []);
-		
-		startTyping(msg);
+		let guildAssignableRoles: string[] = await msg.guild.settings.get('assignableRoles') || [];
+		let guildDefaultRoles: string[] = await msg.guild.settings.get('defaultRoles') || [];
 
 		if (Array.isArray(guildAssignableRoles) && guildAssignableRoles.length > 0) {
 			const roles: Role[] = msg.guild.roles.filter((role) => guildAssignableRoles.includes(role.id)).array();
@@ -100,11 +86,8 @@ export default class RolesCommand extends Command {
 		if (Array.isArray(roleEmbed.fields) && roleEmbed.fields.length === 0) {
 			roleEmbed.setDescription('This guild does not have a default role or any self-assignable roles set.');
 		}
-
-		deleteCommandMessages(msg);
-		stopTyping(msg);
 		
 		// Send the response
-		return msg.embed(roleEmbed);
+		return msg.sendEmbed(roleEmbed);
 	}
 }

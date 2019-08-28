@@ -1,9 +1,8 @@
 import { stripIndents } from 'common-tags';
-import { Message, MessageEmbed, Role } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, startTyping, stopTyping } from '../../lib/helpers';
+import { MessageEmbed, Role } from 'discord.js';
+import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '../../lib/helpers';
 import * as format from 'date-fns/format';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Manage setting a default role.
@@ -24,32 +23,11 @@ export default class DefaultRoleCommand extends Command {
 			aliases: [
 				'dr'
 			],
-			args: [
-				{
-					default: '',
-					key: 'role',
-					prompt: 'What role?\n',
-					type: 'role'
-				}
-			],
-			clientPermissions: ['MANAGE_ROLES'],
+			requiredPermissions: ['MANAGE_ROLES'],
 			description: 'Used to configure the default role for the `accept` command.',
-			details: stripIndents`
-                syntax: \`!dr (@roleMention)\`
-                
-				\`(@roleMention)\` - sets the default role, or clears all if no role is provided.
-
-				\`MANAGE_ROLES\` permission required.
-			`,
-			examples: [
-				'!dr @Pleb',
-				'!dr'
-			],
-			group: 'feature',
-			guildOnly: true,
-			memberName: 'default-role',
 			name: 'default-role',
-			userPermissions: ['MANAGE_ROLES']
+			permissionLevel: 2,
+			usage: '[role:Role]'
 		});
 	}
 
@@ -61,7 +39,7 @@ export default class DefaultRoleCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof RoleManagementCommands
 	 */
-	public async run(msg: KlasaMessage, args: { role: Role }): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [role]): Promise<KlasaMessage | KlasaMessage[]> {
 		const roleEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/110/lock_1f512.png',
@@ -73,13 +51,11 @@ export default class DefaultRoleCommand extends Command {
 			}
 		}).setTimestamp();
 
-		let guildDefaultRoles: string[] = await msg.guild.settings.get('defaultRoles', []);
+		let guildDefaultRoles: string[] = await msg.guild.settings.get('defaultRoles') || [];
 
-		startTyping(msg);
-
-		if (!args.role) {
+		if (!role) {
 			try {
-				await msg.guild.settings.set('defaultRoles', []);
+				await msg.guild.settings.reset('defaultRoles');
 				// Set up embed message
 				roleEmbed.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
@@ -88,17 +64,17 @@ export default class DefaultRoleCommand extends Command {
 
 				return this.sendSuccess(msg, roleEmbed);
 			} catch (err) {
-				this.catchError(msg, args, err);
+				this.catchError(msg, role, err);
 			}
-		} else if (!guildDefaultRoles.includes(args.role.id)) {
-			guildDefaultRoles.push(args.role.id);
+		} else if (!guildDefaultRoles.includes(role.id)) {
+			guildDefaultRoles.push(role.id);
 
 			try {
-				await msg.guild.settings.set('defaultRoles', guildDefaultRoles);
+				await msg.guild.settings.update('defaultRoles', guildDefaultRoles);
 				// Set up embed message
 				roleEmbed.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
-					**Action:** Added role '${args.role.name}' to the list of default roles.
+					**Action:** Added role '${role.name}' to the list of default roles.
 				`);
 
 				return this.sendSuccess(msg, roleEmbed);
@@ -111,24 +87,20 @@ export default class DefaultRoleCommand extends Command {
 		}
 	}
 
-	private catchError(msg: KlasaMessage, args: { role: Role }, err: Error) {
+	private catchError(msg: KlasaMessage, role: Role, err: Error) {
 		// Build warning message
 		const roleWarn = stripIndents`
 			Error occurred in \`role-management\` command!
 			**Server:** ${msg.guild.name} (${msg.guild.id})
 			**Author:** ${msg.author.tag} (${msg.author.id})
 			**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
-			**Input:** \`Role name: ${args.role}
+			**Input:** \`Role name: ${role}
 			**Error Message:** Setting default role failed!\n
 			`;
-		// TODO: this needs updated
 		let roleUserWarn = 'Setting default role failed!';
 
 		// Emit warn event for debugging
 		msg.client.emit('warn', roleWarn);
-
-		deleteCommandMessages(msg);
-		stopTyping(msg);		
 
 		// Inform the user the command failed
 		return sendSimpleEmbeddedError(msg, roleUserWarn);
@@ -136,10 +108,8 @@ export default class DefaultRoleCommand extends Command {
 
 	private sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
 		modLogMessage(msg, embed);
-		deleteCommandMessages(msg);
-		stopTyping(msg);
 
 		// Send the success response
-		return msg.embed(embed);
+		return msg.sendEmbed(embed);
 	}
 }
