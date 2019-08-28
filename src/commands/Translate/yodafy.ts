@@ -1,6 +1,5 @@
 import { MessageEmbed } from 'discord.js';
-import { sendSimpleEmbeddedError, stopTyping, startTyping } from '../../helpers/helpers';
-import { deleteCommandMessages, getEmbedColor } from '../../helpers/custom-helpers';
+import { sendSimpleEmbeddedError, stopTyping, startTyping, deleteCommandMessages, getEmbedColor } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**

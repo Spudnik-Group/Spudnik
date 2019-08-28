@@ -448,29 +448,7 @@ export const escapeMarkdown = (text: string, onlyCodeBlock: boolean = false, onl
 	return text.replace(/\\(\*|_|`|~|\\)/g, '$1').replace(/(\*|_|`|~|\\)/g, '\\$1');
 }
 
-/**
- * Stop the bot's typing status
- * 
- * @export
- * @param {KlasaMessage} msg
- * @returns void
- */
-export const stopTyping = (msg: KlasaMessage): void => {
-	msg.channel.stopTyping(true);
-}
-
-/**
- * Start the bot's typing status
- * 
- * @export
- * @param {KlasaMessage} msg
- * @returns void
- */
-export const startTyping = (msg: KlasaMessage): void => {
-	msg.channel.startTyping(1);
-}
-
-
+// TODO: add jsdoc
 export const isNormalInteger = (str: string) => {
 	const n = Math.floor(Number(str));
 	

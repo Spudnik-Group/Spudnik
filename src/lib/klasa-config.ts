@@ -129,7 +129,8 @@ export const KlasaConfig = {
 			requiredSettings: [],
 			runIn: ['text'],
 			subcommands: false,
-			usage: ''
+			usage: '',
+			usageDelim: ' '
 		},
 		events: {
 			enabled: true,

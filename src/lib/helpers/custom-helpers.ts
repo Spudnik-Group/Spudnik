@@ -46,15 +46,3 @@ export const modLogMessage = (msg: KlasaMessage, embed: MessageEmbed): Promise<K
 		? outChannel.sendEmbed(new MessageEmbed(embed))
 		: null;
 }
-
-/**
- * Delete the calling message for commands, if it's deletable by the bot
- * 
- * @export
- * @param {KlasaMessage} msg
- * @param {CommandoClient} client
- * @returns void
- */
-export const deleteCommandMessages = (msg: KlasaMessage): void => {
-	if (msg.deletable && msg.guild.settings.get('deleteCommandMessage')) msg.delete();
-}
