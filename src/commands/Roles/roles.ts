@@ -1,6 +1,7 @@
 import { MessageEmbed, Role } from 'discord.js';
 import { getEmbedColor } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { stripIndents } from 'common-tags';
 
 /**
  * Lists default and self-assignable roles.
@@ -19,6 +20,9 @@ export default class RolesCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Lists default and self-assignable roles.',
+			extendedHelp: stripIndents`
+				syntax: \`!roles\`
+			`,
 			name: 'roles',
 		});
 	}

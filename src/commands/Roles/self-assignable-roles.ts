@@ -24,6 +24,14 @@ export default class SelfAssignableRolesCommand extends Command {
 				'sar'
 			],
 			description: 'Used to configure the self-assignable roles feature.',
+			extendedHelp: stripIndents`
+				syntax: \`!sar <add|remove> @roleMention\`
+
+				\`add <@roleMention>\` - adds the role to the list of self-assignable-roles.
+				\`remove <@roleMention>\` - removes the role from the list of self-assignable-roles.
+
+				\`MANAGE_ROLES\` permission required.
+			`,
 			name: 'self-assignable-roles',
 			permissionLevel: 2,
 			subcommands: true,

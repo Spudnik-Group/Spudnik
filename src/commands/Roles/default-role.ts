@@ -25,6 +25,13 @@ export default class DefaultRoleCommand extends Command {
 			],
 			requiredPermissions: ['MANAGE_ROLES'],
 			description: 'Used to configure the default role for the `accept` command.',
+			extendedHelp: stripIndents`
+                syntax: \`!dr (@roleMention)\`
+                
+				\`(@roleMention)\` - sets the default role, or clears all if no role is provided.
+
+				\`MANAGE_ROLES\` permission required.
+			`,
 			name: 'default-role',
 			permissionLevel: 2,
 			usage: '[role:Role]'

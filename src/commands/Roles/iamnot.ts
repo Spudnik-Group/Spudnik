@@ -21,6 +21,7 @@ export default class IAmNotCommand extends Command {
 			requiredPermissions: ['MANAGE_ROLES'],
 			requiredSettings: ['selfAssignableRoles'],
 			description: 'Used to remove a self-assignable role from yourself.',
+			extendedHelp: 'syntax: `!iamnot <<role name>>`',
 			name: 'iamnot',
 			usage: '<role:Role>'
 		});

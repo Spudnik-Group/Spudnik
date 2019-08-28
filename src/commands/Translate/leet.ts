@@ -1,6 +1,7 @@
 import { MessageEmbed } from 'discord.js';
-import { startTyping, stopTyping, getEmbedColor, deleteCommandMessages } from '../../lib/helpers';
+import { getEmbedColor } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { stripIndents } from 'common-tags';
 
 /**
  * Convert text to 1337 speak.
@@ -19,6 +20,9 @@ export default class LeetCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Converts boring regular text to 1337.',
+			extendedHelp: stripIndents`
+				syntax: \`!leet <text>\`
+			`,
 			name: 'leet',
 			usage: '<query:string>'
 		});
@@ -41,14 +45,8 @@ export default class LeetCommand extends Command {
 			color: getEmbedColor(msg)
 		});
 
-		startTyping(msg);
-
 		const leetResponse = require('leet').convert(query);
-
 		leetEmbed.setDescription(leetResponse);
-
-		deleteCommandMessages(msg);
-		stopTyping(msg);
 		
 		return msg.sendEmbed(leetEmbed);
 	}

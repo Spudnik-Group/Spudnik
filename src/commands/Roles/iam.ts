@@ -21,6 +21,7 @@ export default class IAmNotCommand extends Command {
 			requiredPermissions: ['MANAGE_ROLES'],
 			requiredSettings: ['selfAssignableRoles'],
 			description: 'Used to add a self-assignable role to yourself.',
+			extendedHelp: 'syntax: `!iam <role name>`',
 			name: 'iam',
 			usage: '<role:Role>'
 		});
