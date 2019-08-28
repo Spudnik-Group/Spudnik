@@ -6,7 +6,7 @@ import { Client } from 'klasa';
  * This file is init with defaults from both Klasa and Discord.js.
  */
 
-exports.config = {
+export const KlasaConfig = {
 	/**
 	 * General Options
 	 */
@@ -206,6 +206,3 @@ exports.config = {
 	 */
 	schedule: { interval: 60000 }
 };
-
-// The token for this bot to login with
-exports.token = process.env.spud_token;

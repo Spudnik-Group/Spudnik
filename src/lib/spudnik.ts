@@ -1,25 +1,9 @@
 import chalk from 'chalk';
 import { Client, KlasaClientOptions } from 'klasa';
+import { Configuration } from './interfaces';
 import * as http from 'http';
-const { token } = require('./config');
 
 const PORT = process.env.PORT || 1337;
-
-export interface Configuration {
-	'bfdApiKey': string,
-	'bodApiKey': string,
-	'botListUpdateInterval': number;
-	'botsggApiKey': string,
-	'dbApiKey': string,
-	'dblApiKey': string;
-	'debug': boolean;
-	'spudStatsDB': string;
-	'spudCoreDB': string;
-	'owner': string;
-	'rollbarApiKey': string;
-	'statusUpdateInterval': number;
-	'token': string;
-}
 
 /**
  * The Spudnik Discord Bot.
@@ -42,11 +26,13 @@ export class Spudnik extends Client {
 	 * @param {Configuration} config
 	 * @memberof Spudnik
 	 */
-	constructor(options: KlasaClientOptions) {
+	constructor(options: KlasaClientOptions, config: Configuration) {
 		super(options);
 
 		console.log(chalk.blue('---Spudnik Stage 2 Engaged.---'));
-		this.login(token);
+
+		this.Config = config;
+		this.login(config.token);
 		this.startHeart();
 
 		console.log(chalk.blue('---Spudnik MECO---'));
