@@ -1,8 +1,7 @@
-import { stripIndents } from 'common-tags';
-import { Message, MessageEmbed } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { startTyping, stopTyping } from '../../lib/helpers';
-import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
+import { MessageEmbed } from 'discord.js';
+import { startTyping, stopTyping } from '../../helpers/helpers';
+import { getEmbedColor, deleteCommandMessages } from '../../helpers/custom-helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Convert text to 1337 speak.
@@ -20,26 +19,9 @@ export default class LeetCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			args: [
-				{
-					key: 'query',
-					prompt: '61v3 m3 4 qu3ry.\n',
-					type: 'string'
-				}
-			],
 			description: 'Converts boring regular text to 1337.',
-			details: stripIndents`
-				syntax: \`!leet <text>\`
-			`,
-			examples: ['!leet Give me better input than this'],
-			group: 'translate',
-			guildOnly: true,
-			memberName: 'leet',
 			name: 'leet',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			usage: '<query:string>'
 		});
 	}
 
@@ -51,7 +33,7 @@ export default class LeetCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof LeetCommand
 	 */
-	public async run(msg: KlasaMessage, args: { query: string }): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [query]: any): Promise<KlasaMessage | KlasaMessage[]> {
 		const leetEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				iconURL: 'https://avatarfiles.alphacoders.com/149/149303.jpg',
@@ -62,13 +44,13 @@ export default class LeetCommand extends Command {
 
 		startTyping(msg);
 
-		const leetResponse = require('leet').convert(args.query);
+		const leetResponse = require('leet').convert(query);
 
 		leetEmbed.setDescription(leetResponse);
 
 		deleteCommandMessages(msg);
 		stopTyping(msg);
 		
-		return msg.embed(leetEmbed);
+		return msg.sendEmbed(leetEmbed);
 	}
 }

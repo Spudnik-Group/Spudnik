@@ -30,7 +30,7 @@ export default class PongCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof PongCommand
 	 */
-	async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const pingMsg = await msg.sendMessage(stripIndents`
 			В Советской России: понг пингует вас!
 			Пинг сердцебиения составляет ${Math.round(msg.client.ws.ping)} мс

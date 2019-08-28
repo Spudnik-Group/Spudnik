@@ -1,9 +1,7 @@
-import { stripIndents } from 'common-tags';
-import { Message, MessageEmbed } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedError, stopTyping, startTyping } from '../../lib/helpers';
-import { deleteCommandMessages } from '../../lib/custom-helpers';
-import { getEmbedColor } from '../../lib/custom-helpers';
+import { MessageEmbed } from 'discord.js';
+import { sendSimpleEmbeddedError, stopTyping, startTyping } from '../../helpers/helpers';
+import { deleteCommandMessages, getEmbedColor } from '../../helpers/custom-helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Convert a statement to be structured as Yoda speaks.
@@ -21,26 +19,9 @@ export default class YodafyCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			args: [
-				{
-					key: 'query',
-					prompt: 'Your statement, I must have.\n',
-					type: 'string'
-				}
-			],
 			description: 'Translates text to Yoda speak.',
-			details: stripIndents`
-				syntax: \`!yodafy <text>\`
-			`,
-			examples: ['!yodafy Give me better input than this'],
-			group: 'translate',
-			guildOnly: true,
-			memberName: 'yodafy',
 			name: 'yodafy',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			usage: '<query:string>'
 		});
 	}
 
@@ -52,7 +33,7 @@ export default class YodafyCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof YodafyCommand
 	 */
-	public async run(msg: KlasaMessage, args: { query: string }): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
 		const yodaEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				iconURL: 'https://avatarfiles.alphacoders.com/112/112847.jpg',
@@ -88,7 +69,7 @@ export default class YodafyCommand extends Command {
 				stopTyping(msg);
 				
 				// Send the success response
-				return msg.embed(yodaEmbed);
+				return msg.sendEmbed(yodaEmbed);
 			});
 		});
 	}

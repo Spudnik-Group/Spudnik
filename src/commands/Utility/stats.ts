@@ -35,7 +35,7 @@ export default class extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof StatsCommand
 	 */
-	async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		let statsEmbed = new MessageEmbed()
 			.setColor(getEmbedColor(msg))
 			.setDescription('**Spudnik Statistics**')
@@ -59,7 +59,7 @@ export default class extends Command {
 		return msg.sendEmbed(statsEmbed);
 	}
 
-	parseDependencies() {
+	private parseDependencies(): string {
 		return Object.entries(dependencies)
 			.map((dep: any) => {
 				if (dep[1].startsWith('github:')) {
