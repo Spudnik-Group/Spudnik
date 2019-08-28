@@ -1,14 +1,12 @@
-// Copyright (c) 2017-2019 dirigeants. All rights reserved. MIT license.
-const { Command } = require('klasa');
-const { MessageEmbed } = require('discord.js');
-const fetch = require('node-fetch');
-// Create a TMDB account on https://www.themoviedb.org/ (if you haven't yet) and go to https://www.themoviedb.org/settings/api to get your API key.
-const tmdbAPIkey = 'API_KEY_HERE';
+import axios from 'axios';
+import { Command, KlasaClient, CommandStore } from 'klasa';
+import { MessageEmbed } from 'discord.js';
+
+const tmdbAPIkey = process.env.spud_moviedbapi;
 
 module.exports = class extends Command {
-
-	constructor(...args) {
-		super(...args, {
+	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
+		super(client, store, file, directory, {
 			aliases: ['tvshows', 'tv', 'tvseries'],
 			description: 'Finds a TV show on TMDB.org',
 			extendedHelp: 'e.g. `s.tvshow universe, 2`',
@@ -18,11 +16,12 @@ module.exports = class extends Command {
 	}
 
 	async run(msg, [query, page = 1]) {
-		const url = new URL('https://api.themoviedb.org/3/search/tv');
-		url.search = new URLSearchParams([['api_key', tmdbAPIkey], ['query', query]]);
-
-		const body = await fetch(url)
-			.then(response => response.json());
+		const { body } = await axios.get('https://api.themoviedb.org/3/search/tv', {
+			params: {
+				api_key: tmdbAPIkey,
+				query: query
+			}
+		});
 		const show = body.results[page - 1];
 		if (!show) throw `I couldn't find a TV show with title **${query}** in page ${page}.`;
 
@@ -42,5 +41,4 @@ module.exports = class extends Command {
 
 		return msg.sendEmbed(embed);
 	}
-
 };

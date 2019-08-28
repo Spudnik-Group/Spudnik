@@ -1,8 +1,7 @@
-import { stripIndents, oneLine } from 'common-tags';
-import { Message, MessageEmbed } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, stopTyping, startTyping } from '../../lib/helpers';
+import { oneLine } from 'common-tags';
+import { MessageEmbed } from 'discord.js';
+import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 const mw = require('mw-dict');
 const dictionaryApiKey: string = process.env.spud_dictionaryapi;
@@ -24,29 +23,9 @@ export default class DefineCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			args: [
-				{
-					key: 'query',
-					prompt: 'What should I look up in the dictionary?\n',
-					type: 'string'
-				}
-			],
 			description: 'Returns the definition of a supplied word. Uses the Merriam-Webster Collegiate Dictionary API.',
-			details: stripIndents`
-				syntax: \`!define <word>\`
-			`,
-			examples: [
-				'!define outstanding',
-				'!define useful'
-			],
-			group: 'ref',
-			guildOnly: true,
-			memberName: 'define',
 			name: 'define',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			usage: '<query:string>'
 		});
 	}
 
@@ -58,8 +37,8 @@ export default class DefineCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof DefineCommand
 	 */
-	public async run(msg: KlasaMessage, args: { query: string }): Promise<KlasaMessage | KlasaMessage[]> {
-		const word = args.query;
+	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
+		const word = query;
 		const dictionaryEmbed: MessageEmbed = new MessageEmbed({
 			color: getEmbedColor(msg),
 			description: '',
@@ -69,8 +48,6 @@ export default class DefineCommand extends Command {
 			},
 			title: `Definition Result: ${word}`
 		});
-
-		startTyping(msg);
 
 		try {
 			const result = await dict.lookup(word)
@@ -92,15 +69,10 @@ export default class DefineCommand extends Command {
 
 			dictionaryEmbed.description = this.renderDefinition(result[0].definition);
 
-			deleteCommandMessages(msg);
-			stopTyping(msg);
-
 			// Send the success response
-			return msg.embed(dictionaryEmbed);
+			return msg.sendEmbed(dictionaryEmbed);
 		} catch (err) {
 			msg.client.emit('warn', `Error in command ref:define: ${err}`);
-
-			stopTyping(msg);
 
 			return sendSimpleEmbeddedError(msg, 'Word not found.', 3000);
 		}

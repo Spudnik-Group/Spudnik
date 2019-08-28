@@ -1,9 +1,7 @@
-import { stripIndents } from 'common-tags';
-import { Message, MessageEmbed } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
+import { MessageEmbed } from 'discord.js';
 import axios from 'axios';
-import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, startTyping, stopTyping } from '../../lib/helpers';
+import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Post information about a cocktail.
@@ -21,29 +19,9 @@ export default class CocktailCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			args: [
-				{
-					key: 'query',
-					prompt: 'What cocktail should I look up?\n',
-					type: 'string'
-				}
-			],
 			description: 'Returns information about a cocktail. Uses the CocktailDB API.',
-			details: stripIndents`
-				syntax: \`!cocktail <cocktail name>\`
-			`,
-			examples: [
-				'!cocktail bloody mary',
-				'!cocktail dark and stormy'
-			],
-			group: 'ref',
-			guildOnly: true,
-			memberName: 'cocktail',
 			name: 'cocktail',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			usage: '<query:string>'
 		});
 	}
 
@@ -55,7 +33,7 @@ export default class CocktailCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof CocktailCommand
 	 */
-	public async run(msg: KlasaMessage, args: { query: string }): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
 		const cocktailEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/240/twitter/103/cocktail-glass_1f378.png',
@@ -66,10 +44,8 @@ export default class CocktailCommand extends Command {
 			description: ''
 		});
 
-		startTyping(msg);
-
 		try {
-			const { data: response } = await axios(`http://www.thecocktaildb.com/api/json/v1/1/search.php?s=${encodeURIComponent(args.query)}`)
+			const { data: response } = await axios(`http://www.thecocktaildb.com/api/json/v1/1/search.php?s=${encodeURIComponent(query)}`)
 			
 			if (typeof response !== 'undefined' && response.drinks !== null) {
 				const result = response.drinks[0];
@@ -127,16 +103,11 @@ export default class CocktailCommand extends Command {
 				cocktailEmbed.setDescription("Damn, I've never heard of that. Where do I need to go to find it?");
 			}
 	
-			deleteCommandMessages(msg);
-			stopTyping(msg);
-	
 			// Send the success response
-			return msg.embed(cocktailEmbed);
+			return msg.sendEmbed(cocktailEmbed);
 
 		} catch(err) {
 			msg.client.emit('warn', `Error in command ref:cocktail: ${err}`);
-
-			stopTyping(msg);
 
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 		};

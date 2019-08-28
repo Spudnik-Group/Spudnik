@@ -1,9 +1,7 @@
-import { stripIndents } from 'common-tags';
-import { Message, MessageEmbed } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
+import { MessageEmbed } from 'discord.js';
 import axios from 'axios';
-import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, startTyping, stopTyping } from '../../lib/helpers';
+import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 const breweryDbApiKey: string = process.env.spud_brewdbapi;
 
@@ -23,30 +21,9 @@ export default class BrewCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			args: [
-				{
-					key: 'query',
-					prompt: 'What brew or brewery should I look up?\n',
-					type: 'string'
-				}
-			],
 			description: 'Returns information about a brewery or brew. Uses the BreweryDB API.',
-			details: stripIndents`
-				syntax: \`!brew <brew|brewery name>\`
-			`,
-			examples: [
-				'!brew guinness blonde',
-				'!brew death by coconut',
-				'!brew Monday Night Brewing'
-			],
-			group: 'ref',
-			guildOnly: true,
-			memberName: 'brew',
 			name: 'brew',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			usage: '<query:string>'
 		});
 	}
 
@@ -58,7 +35,7 @@ export default class BrewCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof BrewCommand
 	 */
-	public async run(msg: KlasaMessage, args: { query: string }): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
 		const brewEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/twitter/103/beer-mug_1f37a.png',
@@ -73,10 +50,8 @@ export default class BrewCommand extends Command {
 			}
 		});
 
-		startTyping(msg);
-
 		try {
-			const { data: response } = await axios(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(args.query)}&key=${breweryDbApiKey}`)
+			const { data: response } = await axios(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(query)}&key=${breweryDbApiKey}`)
 
 			if (response.data) {
 				const result = response.data[0];
@@ -156,15 +131,10 @@ export default class BrewCommand extends Command {
 		} catch(err) {
 			msg.client.emit('warn', `Error in command ref:brew: ${err}`);
 
-			stopTyping(msg);
-
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 		}
 
-		deleteCommandMessages(msg);
-		stopTyping(msg);
-
 		// Send the success response
-		return msg.embed(brewEmbed);
+		return msg.sendEmbed(brewEmbed);
 	}
 }
