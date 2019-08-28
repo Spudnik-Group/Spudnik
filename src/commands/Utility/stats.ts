@@ -39,7 +39,7 @@ export default class extends Command {
 		let statsEmbed = new MessageEmbed()
 			.setColor(getEmbedColor(msg))
 			.setDescription('**Spudnik Statistics**')
-			.addField('❯ Uptime', distanceInWordsToNow(<Date>this.client.readyAt, { includeSeconds: true }), true)
+			.addField('❯ Uptime', distanceInWordsToNow(this.client.readyAt, { includeSeconds: true }), true)
 			.addField('❯ Process Stats', stripIndents`
 						• Memory Usage: ${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB
 						• Node Version: ${process.version}

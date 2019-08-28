@@ -89,6 +89,13 @@ exports.config = {
 		},
 		*/
 		default: 'mongodb',
+		mongodb: {
+			db: 'spud-dev-nate',
+			host: 'ds018248.mlab.com',
+			password: '8Uyl7CEEZjoj',
+			port: '18248',
+			user: 'spud-dev'
+		}
 	},
 
 	/**

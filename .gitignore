@@ -14,3 +14,6 @@ node_modules
 
 #other node stuffs
 package-lock.json
+
+#other annoying things
+**/.DS_Store
