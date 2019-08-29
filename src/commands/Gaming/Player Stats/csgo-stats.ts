@@ -1,8 +1,8 @@
 import { stripIndents } from 'common-tags';
-import { Message, MessageEmbed } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { startTyping, sendSimpleEmbeddedError, stopTyping } from '../../lib/helpers';
-import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
+import { MessageEmbed } from 'discord.js';
+import { sendSimpleEmbeddedError, getEmbedColor } from '../../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+
 const Scout = require('@scoutsdk/server-sdk');
 const games = require('../../extras/scout-games');
 const scoutID: string = process.env.spud_scoutid;
@@ -25,24 +25,10 @@ export default class CSGOStatsCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['csgo'],
-			args: [
-				{
-					key: 'username',
-					prompt: 'What is the profile name I\'m looking up?',
-					type: 'string'
-				}
-			],
 			description: 'Returns Counter Strike: Global Offensive stats for a user. Uses the TrackerNetwork API.',
-			details: 'syntax: \`!csgo-stats <username>\`',
-			examples: ['!csgo-stats phreakslayer'],
-			group: 'player_stats',
-			guildOnly: true,
-			memberName: 'csgo-stats',
+			extendedHelp: 'syntax: \`!csgo-stats <username>\`',
 			name: 'csgo-stats',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			usage: '<username:string>'
 		});
 	}
 
@@ -54,7 +40,7 @@ export default class CSGOStatsCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof CSGOStatsCommand
 	 */
-	public async run(msg: KlasaMessage, args: { username: string }): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [username]): Promise<KlasaMessage | KlasaMessage[]> {
 		const csgoEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://i.imgur.com/UBjioW8.png',
@@ -73,8 +59,7 @@ export default class CSGOStatsCommand extends Command {
 			scope: 'public.read'
 		});
 
-		startTyping(msg);
-		const search = await Scout.players.search(args.username, 'steam', null, games.csgo.id, true, true);
+		const search = await Scout.players.search(username, 'steam', null, games.csgo.id, true, true);
 		if (search.results.length) {
 			const matches = search.results.filter((result: any) => result.player);
 			if (matches.length) {
@@ -90,18 +75,12 @@ export default class CSGOStatsCommand extends Command {
 					if (!statObj.displayValue) return;
 					csgoEmbed.addField(statObj.metadata.name, statObj.displayValue, true);
 				});
-				deleteCommandMessages(msg);
-				stopTyping(msg);
 
-				return msg.embed(csgoEmbed);
+				return msg.sendEmbed(csgoEmbed);
 			} else {
-				stopTyping(msg);
-	
 				return sendSimpleEmbeddedError(msg, 'Unable to find anyone with that player name, check the spelling and try again.', 3000);
 			}
 		} else {
-			stopTyping(msg);
-
 			return sendSimpleEmbeddedError(msg, 'Unable to find anyone with that player name, check the spelling and try again.', 3000);
 		}
 	}

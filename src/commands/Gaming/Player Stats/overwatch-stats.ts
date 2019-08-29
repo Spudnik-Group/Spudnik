@@ -1,9 +1,8 @@
 import { stripIndents } from 'common-tags';
-import { Message, MessageEmbed } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { startTyping, stopTyping, sendSimpleEmbeddedError } from '../../lib/helpers';
-import { deleteCommandMessages } from '../../lib/custom-helpers';
+import { MessageEmbed } from 'discord.js';
+import { sendSimpleEmbeddedError } from '../../../lib/helpers';
 import axios from 'axios';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Returns Overwatch stats for a user on a specific platform and region.
@@ -22,55 +21,12 @@ export default class OverwatchStatsCommand extends Command {
 	
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			args: [
-				{
-					key: 'platform',
-					parse: (platform: string): string => platform.toLowerCase(),
-					prompt: 'What platform should I look on?\nOptions are:\n* xbl\n* pc\n* psn',
-					type: 'string',
-					validate: (platform: string) => {
-						const allowedSubCommands = ['xbl', 'pc', 'psn'];
-						if (allowedSubCommands.indexOf(platform.toLowerCase()) !== -1) return true;
-
-						return 'You provided an invalid platform.';
-					}
-				},
-				{
-					key: 'battletag',
-					parse: (battletag: string): string => battletag.replace('#', '-'),
-					prompt: 'What is the battletag I\'m looking up? (case-sensitive)',
-					type: 'string'
-				},
-				{
-					default: 'us',
-					key: 'region',
-					parse: (region: string): string => region.toLowerCase(),
-					prompt: 'What region should I look in?\nOptions are:\n* us\n* eu\n* kr\n* cn\n* global',
-					type: 'string',
-					validate: (region: string) => {
-						const options: Array<string> = ['us', 'eu', 'kr', 'cn', 'global'];
-						if (options.indexOf(region) !== -1) return true;
-						
-						return 'You provided an invalid region.';
-					}
-				}
-			],
 			description: 'Returns Overwatch stats for a user on a specific platform and region. ',
-			details: stripIndents`
+			extendedHelp: stripIndents`
 				syntax: \`!overwatch-stats <platform: pc|xbl|psn> <battletag> <region: eu|us|kr|cn|global>\`
 			`,
-			examples: [
-				'!overwatch-stats pc Mythos-11321',
-				'!overwatch-stats psn Mythos11321 us'
-			],
-			group: 'player_stats',
-			guildOnly: true, 
-			memberName: 'overwatch-stats',
 			name: 'overwatch-stats',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			usage: '<platform:string> <battletag:string> [region:string]'
 		});
 	}
 
@@ -82,22 +38,18 @@ export default class OverwatchStatsCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof OverwatchStatsCommand
 	 */
-	public async run(msg: KlasaMessage, args: { platform: string, battletag: string, region: string }): Promise<KlasaMessage | KlasaMessage[]> {
-		startTyping(msg);
-
+	public async run(msg: KlasaMessage, [platform, battletag, region = 'global']): Promise<KlasaMessage | KlasaMessage[]> {
 		try {
-			const { data: profile } = await axios.get(`https://overwatchy.com/profile/${args.platform}/${args.region}/${encodeURI(args.battletag)}`);
+			const { data: profile } = await axios.get(`https://overwatchy.com/profile/${platform}/${region}/${encodeURI(battletag)}`);
 			if (profile.message) {
-				stopTyping(msg);
-
 				return sendSimpleEmbeddedError(msg, profile.message, 3000);
 			}
 
 			const overwatchEmbed: MessageEmbed = new MessageEmbed({
 				author: {
 					icon_url: profile.competitive ? profile.competitive.rank_img : null,
-					name: `${args.battletag.replace('-', '#')}'s Overwatch Stats`,
-					url: `https://playoverwatch.com/career/${args.platform}/${encodeURI(args.battletag)}`
+					name: `${battletag.replace('-', '#')}'s Overwatch Stats`,
+					url: `https://playoverwatch.com/career/${platform}/${encodeURI(battletag)}`
 				},
 				fields: [
 					{
@@ -160,13 +112,10 @@ export default class OverwatchStatsCommand extends Command {
 					}
 				);
 			}
-			deleteCommandMessages(msg);
-			stopTyping(msg);
 
-			return msg.embed(overwatchEmbed);
+			return msg.sendEmbed(overwatchEmbed);
 		} catch (err) {
 			msg.client.emit('warn', `Error in command gaming:overwatch-stats: ${err}`);
-			stopTyping(msg);
 
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 		}

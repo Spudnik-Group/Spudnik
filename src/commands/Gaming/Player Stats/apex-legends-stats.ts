@@ -1,9 +1,8 @@
 import { stripIndents } from 'common-tags';
-import { Message, MessageEmbed } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { startTyping, sendSimpleEmbeddedError, stopTyping } from '../../lib/helpers';
-import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
+import { MessageEmbed } from 'discord.js';
+import { sendSimpleEmbeddedError, getEmbedColor } from '../../../lib/helpers';
 import axios from 'axios';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 const apiKey = process.env.spud_trackerapi;
 const platforms: { [platform: string]: number } = {
@@ -29,42 +28,14 @@ export default class ApexLegendsStatsCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['apex', 'apex-stats'],
-			args: [
-				{
-					key: 'platform',
-					parse: (platform: string) => platform.toLowerCase(),
-					prompt: `What platform should I look on?\nOptions are:\n* ${Object.keys(platforms).join('\n* ')}`,
-					type: 'string',
-					validate: (platform: string) => {
-						if (Object.keys(platforms).indexOf(platform.toLowerCase()) !== -1) return true;
-
-						return 'You provided an invalid platform.';
-					}
-				},
-				{
-					key: 'username',
-					prompt: 'What is the profile name I\'m looking up?',
-					type: 'string'
-				}
-			],
 			description: 'Returns Apex Legends stats for a user on a specific platform.',
-			details: stripIndents`
+			extendedHelp: stripIndents`
 				syntax: \`!apex-legends-stats <platform> <username>\`
 				
 				Platform must be one of: ${Object.keys(platforms).join(', ')}
 			`,
-			examples: [
-				'!apex-legends-stats xbl naterchrdsn',
-				'!apex-legends-stats pc nebula-grey'
-			],
-			group: 'player_stats',
-			guildOnly: true,
-			memberName: 'apex-legends-stats',
 			name: 'apex-legends-stats',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			usage: '<platform:string> <username:string>'
 		});
 	}
 
@@ -76,10 +47,8 @@ export default class ApexLegendsStatsCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof ApexLegendsStatsCommand
 	 */
-	public async run(msg: KlasaMessage, args: { platform: string, username: string }): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [platform, username]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (!apiKey) {
-			deleteCommandMessages(msg);
-			
 			return sendSimpleEmbeddedError(msg, 'The apex-legends-stats command is not configured yet.');
 		}
 
@@ -87,7 +56,7 @@ export default class ApexLegendsStatsCommand extends Command {
 			author: {
 				icon_url: 'https://i.imgur.com/lgC4xLZ.png',
 				name: 'Apex Legends Stats',
-				url: `https://apex.tracker.gg/profile/${args.platform}/${encodeURI(args.username)}`
+				url: `https://apex.tracker.gg/profile/${platform}/${encodeURI(username)}`
 			},
 			color: getEmbedColor(msg),
 			description: '',
@@ -100,10 +69,8 @@ export default class ApexLegendsStatsCommand extends Command {
 			}
 		});	
 
-		startTyping(msg);
-
 		try {
-			const { data: response } = await axios.get(`https://public-api.tracker.gg/apex/v1/standard/profile/${platforms[args.platform]}/${encodeURI(args.username)}`, {
+			const { data: response } = await axios.get(`https://public-api.tracker.gg/apex/v1/standard/profile/${platforms[platform]}/${encodeURI(username)}`, {
 				headers: { 'TRN-Api-Key': apiKey }
 			});
 			if (response.data.children && response.data.children.length) {
@@ -124,10 +91,7 @@ export default class ApexLegendsStatsCommand extends Command {
 				});
 			});
 			
-			deleteCommandMessages(msg);
-			stopTyping(msg);
-			
-			return msg.embed(apexEmbed);
+			return msg.sendEmbed(apexEmbed);
 		} catch (err) {
 			let error = 'There was an error with the request. Try again?';
 			try {
@@ -139,7 +103,6 @@ export default class ApexLegendsStatsCommand extends Command {
 			} catch (decodeError) {
 				msg.client.emit('warn', `Error in command gaming:apex-legend-stats: ${err}`);
 			}
-			stopTyping(msg);
 
 			return sendSimpleEmbeddedError(msg, error, 3000);
 		}

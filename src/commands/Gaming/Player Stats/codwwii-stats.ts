@@ -1,8 +1,8 @@
 import { stripIndents } from 'common-tags';
-import { Message, MessageEmbed } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { startTyping, sendSimpleEmbeddedError, stopTyping } from '../../lib/helpers';
-import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
+import { MessageEmbed } from 'discord.js';
+import { sendSimpleEmbeddedError, getEmbedColor } from '../../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+
 const Scout = require('@scoutsdk/server-sdk');
 const games = require('../../extras/scout-games');
 const scoutID: string = process.env.spud_scoutid;
@@ -25,45 +25,14 @@ export default class CODWWIIStatsCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['codwwii'],
-			args: [
-				{
-					key: 'platform',
-					parse: (platform: string) => {
-						return platform.toLowerCase();
-					},
-					prompt: 'What platform should I look on?\nOptions are:\n* xbl\n* pc\n* psn',
-					type: 'string',
-					validate: (platform: string) => {
-						const allowedSubCommands = ['xbl', 'pc', 'psn'];
-						if (allowedSubCommands.indexOf(platform.toLowerCase()) !== -1) return true;
-
-						return 'You provided an invalid platform.';
-					}
-				},
-				{
-					key: 'username',
-					prompt: 'What is the profile name I\'m looking up?',
-					type: 'string'
-				}
-			],
 			description: 'Returns Call of Duty: WWII stats for a user on a specific platform. Uses the TrackerNetwork API.',
-			details: stripIndents`
+			extendedHelp: stripIndents`
 				syntax: \`!codwwii-stats <platform> <username>\`
 				
 				Platform must be one of: pc, psn, xbl
 			`,
-			examples: [
-				'!codwwii-stats xbl naterchrdsn',
-				'!codwwii-stats pc nebula-grey'
-			],
-			group: 'player_stats',
-			guildOnly: true,
-			memberName: 'codwwii-stats',
 			name: 'codwwii-stats',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			usage: '<platform:string> <username:string>'
 		});
 	}
 
@@ -75,8 +44,12 @@ export default class CODWWIIStatsCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof CODWWIIStatsCommand
 	 */
-	public async run(msg: KlasaMessage, args: { platform: string, username: string }): Promise<KlasaMessage | KlasaMessage[]> {
-		const platform = args.platform === 'pc' ? 'uplay' : args.platform;
+	public async run(msg: KlasaMessage, [platform, username]): Promise<KlasaMessage | KlasaMessage[]> {
+		if (!scoutID || !scoutSecret) {
+			return sendSimpleEmbeddedError(msg, 'The codbo4-stats command is not configured yet.');
+		}
+
+		const plat = platform === 'pc' ? 'uplay' : platform;
 		const codwwiiEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://i.imgur.com/H7AGNoX.png',
@@ -95,8 +68,7 @@ export default class CODWWIIStatsCommand extends Command {
 			scope: 'public.read'
 		});
 
-		startTyping(msg);
-		const search = await Scout.players.search(args.username, platform, null, games.codwwii.id, true, true);
+		const search = await Scout.players.search(username, plat, null, games.codwwii.id, true, true);
 		if (search.results.length) {
 			const matches = search.results.filter((result: any) => result.player);
 			if (matches.length) {
@@ -112,18 +84,12 @@ export default class CODWWIIStatsCommand extends Command {
 					if (!statObj.displayValue) return;
 					codwwiiEmbed.addField(statObj.metadata.name, statObj.displayValue, true);
 				});
-				deleteCommandMessages(msg);
-				stopTyping(msg);
 
-				return msg.embed(codwwiiEmbed);
+				return msg.sendEmbed(codwwiiEmbed);
 			} else {
-				stopTyping(msg);
-	
 				return sendSimpleEmbeddedError(msg, 'Unable to find anyone with that player name, check the spelling and try again.', 3000);
 			}
 		} else {
-			stopTyping(msg);
-
 			return sendSimpleEmbeddedError(msg, 'Unable to find anyone with that player name, check the spelling and try again.', 3000);
 		}
 	}

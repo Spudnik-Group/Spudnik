@@ -1,9 +1,8 @@
-import { Message, MessageEmbed } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
+import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
-import { getEmbedColor } from '../../lib/custom-helpers';
+import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
-// tslint:disable-next-line:-no-var-requires
 const steamGames = require('../../extras/steam-games');
 const steamGameNames = Object.keys(steamGames).map(item => {
 	return `* ${item}\n`
@@ -26,39 +25,14 @@ export default class GoCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['play-game', 'lets-play', 'go-play'],
-			args: [
-				{
-					key: 'game',
-					prompt: stripIndents`What game do you want to play?
-						Options are:
-						${steamGameNames}
-					`,
-					type: 'string',
-					validate: (game: string) => {
-						if (Object.keys(steamGames).indexOf(game.toUpperCase()) !== -1) return true;
-
-						return 'Sorry, but only certain games are supported by this command at this time. See the list by running `!help go`';
-					}
-				}
-			],
 			description: 'Displays a link to launch a steam game.',
-			details: stripIndents`
+			extendedHelp: stripIndents`
 				syntax: \`!go gameName\`
 
 				Only a few games have been added at this time, submit a ticket on our GitHub to request specific ones.
 			`,
-			examples: [
-				'!go csgo',
-				'!go pubg'
-			],
-			group: 'gaming',
-			guildOnly: true,
-			memberName: 'go',
 			name: 'go',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			usage: '<game:string>'
 		});
 	}
 
@@ -70,10 +44,13 @@ export default class GoCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof GoCommand
 	 */
-	public async run(msg: KlasaMessage, args: {game: string}): Promise<KlasaMessage | KlasaMessage[]> {
-		const gameID = steamGames[args.game.toUpperCase()];
+	public async run(msg: KlasaMessage, [game]): Promise<KlasaMessage | KlasaMessage[]> {
+		if (Object.keys(steamGames).indexOf(game.toUpperCase()) === -1) {
+			return sendSimpleEmbeddedError(msg, `Sorry, only a few games are supported at this time: \n ${steamGameNames}`, 3000);
+		}
+		const gameID = steamGames[game.toUpperCase()];
 
-		return msg.embed(new MessageEmbed()
+		return msg.sendEmbed(new MessageEmbed()
 			.setColor(getEmbedColor(msg))
 			.setAuthor(`${msg.author.username}`, `${msg.author.displayAvatarURL()}`)
 			.setThumbnail(`${msg.author.displayAvatarURL()}`)
