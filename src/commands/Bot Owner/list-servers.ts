@@ -1,7 +1,17 @@
+/**
+ * Copyright 2019 - Spudnik Group
+ *
+ * @summary Returns a list of servers the bot is in.
+ * @author Spudnik Group <comrades@spudnik.io> (https://spudnik.io)
+ *
+ * Created at     : 2019-08-30 11:44:15 
+ * Last modified  : 2019-08-30 12:23:30
+ */
+
 import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
 import * as format from 'date-fns/format';
-import { getEmbedColor } from '../../helpers/custom-helpers';
+import { getEmbedColor } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage, RichDisplay } from 'klasa';
 
 /**
@@ -12,12 +22,6 @@ import { Command, KlasaClient, CommandStore, KlasaMessage, RichDisplay } from 'k
  * @extends {Command}
  */
 export default class ListServersCommand extends Command {
-	/**
-	 * Creates an instance of ListServersCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof ListServersCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['ls'],
@@ -32,7 +36,6 @@ export default class ListServersCommand extends Command {
 	 * Run the "ListServersCommand" command.
 	 *
 	 * @param {KlasaMessage} msg
-	 * @param {{ page: number }} args
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof ListServersCommand
 	 */
@@ -68,7 +71,7 @@ export default class ListServersCommand extends Command {
                 return template;
 			});
 		}
-		// @ts-ignore
+		// @ts-ignore // RichDisplay doesn't like this syntax in TS, but it works.
 		return display.run(await msg.send('Loading server list...'), { filter: (reaction: any, user: any) => user === msg.author });
 	}
 }

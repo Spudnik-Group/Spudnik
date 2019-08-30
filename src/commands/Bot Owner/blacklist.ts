@@ -1,9 +1,24 @@
-import { KlasaClient, CommandStore, KlasaMessage } from "klasa";
+/**
+ * Copyright 2019 - Spudnik Group
+ *
+ * @summary Add/remove a user/guild to/from the blacklist
+ * @author Spudnik Group <comrades@spudnik.io> (https://spudnik.io)
+ *
+ * Created at     : 2019-08-30 11:40:59 
+ * Last modified  : 2019-08-30 12:30:27
+ */
 
-const { Command } = require('klasa');
-const { User } = require('discord.js');
+import { KlasaClient, CommandStore, KlasaMessage, Command } from "klasa";
+import { User } from "discord.js";
 
-export default class extends Command {
+/**
+ * Add/remove a user/guild to/from the blacklist
+ *
+ * @export
+ * @class BlacklistCommand
+ * @extends {Command}
+ */
+export default class BlacklistCommand extends Command {
 	terms = ['usersAdded', 'usersRemoved', 'guildsAdded', 'guildsRemoved'];
 
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
@@ -16,7 +31,15 @@ export default class extends Command {
 		});
 	}
 
-	async run(message: KlasaMessage, usersAndGuilds: any[]) {
+	/**
+	 * Run the "BlacklistCommand" command.
+	 *
+	 * @param {KlasaMessage} msg
+	 * @param { any[] } usersAndGuilds
+	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
+	 * @memberof BlacklistCommand
+	 */
+	async run(message: KlasaMessage, [...usersAndGuilds]) {
 		const changes: any[][] = [[], [], [], []];
 		const queries: any[][] = [[], []];
 
@@ -35,5 +58,4 @@ export default class extends Command {
 
 		return message.sendLocale('COMMAND_BLACKLIST_SUCCESS', changes);
 	}
-
 };

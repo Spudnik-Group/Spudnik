@@ -16,9 +16,10 @@ Client.defaultPermissionLevels
 	// TODO: add staff feature
 	// .add(5, ({ guild, author }) => guild.settings['staff'].includes(author.id));
 Client.defaultGuildSchema
-	.add('channels', folder => folder
-		.add('botAnnounce', 'TextChannel')
-	)
+	// TODO: add botAnnounce feature
+	// .add('channels', folder => folder
+	// 	.add('botAnnounce', 'TextChannel')
+	// )
 	.add('roles', folder => folder
 		// TODO: add botAdmin feature
 		// .add('botAdmin', 'Role')

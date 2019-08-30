@@ -1,3 +1,13 @@
+/**
+ * Copyright 2019 - Spudnik Group
+ *
+ * @summary Reloads a command.
+ * @author Spudnik Group <comrades@spudnik.io> (https://spudnik.io)
+ *
+ * Created at     : 2019-08-30 11:48:13 
+ * Last modified  : 2019-08-30 12:31:44
+ */
+
 import { Command, KlasaClient, CommandStore, KlasaMessage, Store, Stopwatch } from 'klasa';
 
 /**
@@ -7,13 +17,7 @@ import { Command, KlasaClient, CommandStore, KlasaMessage, Store, Stopwatch } fr
  * @class ReloadCommandCommand
  * @extends {Command}
  */
-export default class extends Command {
-	/**
-	 * Creates an instance of ReloadCommandCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof ReloadCommandCommand
-	 */
+export default class ReloadCommandCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['reload-command', 'r'],
@@ -30,7 +34,7 @@ export default class extends Command {
 	 * Run the "ReloadCommand" command.
 	 *
 	 * @param {KlasaMessage} msg
-	 * @param {{ cmdOrGrp: Command | CommandGroup }} args
+	 * @param {[piece]} piece
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof ReloadCommandCommand
 	 */

@@ -1,3 +1,13 @@
+/**
+ * Copyright 2019 - Spudnik Group
+ *
+ * @summary Loads a command.
+ * @author Spudnik Group <comrades@spudnik.io> (https://spudnik.io)
+ *
+ * Created at     : 2019-08-30 11:46:55 
+ * Last modified  : 2019-08-30 12:29:59
+ */
+
 import { Command, KlasaClient, CommandStore, KlasaMessage, Stopwatch } from 'klasa';
 import { join } from 'path';
 import { pathExists } from 'fs-nextra';
@@ -9,15 +19,9 @@ import { pathExists } from 'fs-nextra';
  * @class LoadCommandCommand
  * @extends {Command}
  */
-export default class extends Command {
+export default class LoadCommandCommand extends Command {
 	regExp = /\\\\?|\//g;
 
-	/**
-	 * Creates an instance of LoadCommandCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof LoadCommandCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['l'],
@@ -33,7 +37,9 @@ export default class extends Command {
 	 * Run the "LoadCommand" command.
 	 *
 	 * @param {KlasaMessage} msg
-	 * @param {{ command: Command }} args
+	 * @param {string} core
+	 * @param {string} store
+	 * @param {string} path
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof LoadCommandCommand
 	 */

@@ -1,3 +1,13 @@
+/**
+ * Copyright 2019 - Spudnik Group
+ *
+ * @summary Unloads a command.
+ * @author Spudnik Group <comrades@spudnik.io> (https://spudnik.io)
+ *
+ * Created at     : 2019-08-30 11:48:41 
+ * Last modified  : 2019-08-30 12:31:54
+ */
+
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
@@ -7,13 +17,7 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @class UnloadCommandCommand
  * @extends {Command}
  */
-export default class extends Command {
-	/**
-	 * Creates an instance of UnloadCommandCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof UnloadCommandCommand
-	 */
+export default class UnloadCommandCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['unload-command', 'u'],
@@ -30,7 +34,7 @@ export default class extends Command {
 	 * Run the "UnloadCommand" command.
 	 *
 	 * @param {KlasaMessage} msg
-	 * @param {{ command: Command }} args
+	 * @param {[piece]} piece
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof UnloadCommandCommand
 	 */
