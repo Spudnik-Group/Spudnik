@@ -1,6 +1,5 @@
-// Copyright (c) 2017-2019 dirigeants. All rights reserved. MIT license.
-const { Task, Colors } = require('klasa');
-const { SnowflakeUtil } = require('discord.js');
+import { Task, Colors, KlasaClient, TaskStore } from "klasa";
+import { SnowflakeUtil } from "discord.js";
 
 // THRESHOLD equals to 30 minutes in milliseconds:
 //     - 1000 milliseconds = 1 second
@@ -8,10 +7,12 @@ const { SnowflakeUtil } = require('discord.js');
 //     - 30 minutes
 const THRESHOLD = 1000 * 60 * 30;
 
-module.exports = class MemorySweeper extends Task {
+export default class MemorySweeper extends Task {
+	private colors;
+	private header;
 
-	constructor(...args) {
-		super(...args);
+	constructor(client: KlasaClient, store: TaskStore, file: string[], directory: string) {
+		super(client, store, file, directory);
 
 		// The colors to stylise the console's logs
 		this.colors = {
@@ -24,9 +25,9 @@ module.exports = class MemorySweeper extends Task {
 		this.header = new Colors({ text: 'lightblue' }).format('[CACHE CLEANUP]');
 	}
 
-	async run() {
+	public async run() {
 		const OLD_SNOWFLAKE = SnowflakeUtil.generate(Date.now() - THRESHOLD);
-		let presences = 0, guildMembers = 0, voiceStates = 0, emojis = 0, lastMessages = 0, users = 0;
+		let presences = 0, guildMembers = 0, emojis = 0, users = 0;
 
 		// Per-Guild sweeper
 		for (const guild of this.client.guilds.values()) {
@@ -38,24 +39,14 @@ module.exports = class MemorySweeper extends Task {
 			const { me } = guild;
 			for (const [id, member] of guild.members) {
 				if (member === me) continue;
-				if (member.voice.channelID) continue;
 				if (member.lastMessageID && member.lastMessageID > OLD_SNOWFLAKE) continue;
 				guildMembers++;
-				voiceStates++;
-				guild.voiceStates.delete(id);
 				guild.members.delete(id);
 			}
 
 			// Clear emojis
 			emojis += guild.emojis.size;
 			guild.emojis.clear();
-		}
-
-		// Per-Channel sweeper
-		for (const channel of this.client.channels.values()) {
-			if (!channel.lastMessageID) continue;
-			channel.lastMessageID = null;
-			lastMessages++;
 		}
 
 		// Per-User sweeper
@@ -70,10 +61,8 @@ module.exports = class MemorySweeper extends Task {
 			`${this.header} ${
 				this.setColor(presences)} [Presence]s | ${
 				this.setColor(guildMembers)} [GuildMember]s | ${
-				this.setColor(voiceStates)} [VoiceState]s | ${
 				this.setColor(users)} [User]s | ${
-				this.setColor(emojis)} [Emoji]s | ${
-				this.setColor(lastMessages)} [Last Message]s.`);
+				this.setColor(emojis)} [Emoji]s.`);
 	}
 
 	/**
@@ -85,7 +74,7 @@ module.exports = class MemorySweeper extends Task {
 	 * @param {number} number The number to colourise
 	 * @returns {string}
 	 */
-	setColor(number) {
+	private setColor(number: number): string {
 		const text = String(number).padStart(5, ' ');
 		// Light Red color
 		if (number > 1000) return this.colors.red.format(text);
@@ -94,5 +83,4 @@ module.exports = class MemorySweeper extends Task {
 		// Green color
 		return this.colors.green.format(text);
 	}
-
 };

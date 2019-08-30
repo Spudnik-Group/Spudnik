@@ -67,7 +67,7 @@ Client.defaultGuildSchema
  * @property {Configuration} Config
  * @property {CommandoClient} Discord
  */
-export class Spudnik extends Client {
+export default class Spudnik extends Client {
 	/**
 	 * @name Spudnik#Config
 	 * @type Configuration
