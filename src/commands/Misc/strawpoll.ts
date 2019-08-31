@@ -1,9 +1,7 @@
 import { stripIndents } from 'common-tags';
-import { Message } from 'discord.js';
 import axios from 'axios';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, stopTyping } from '../../lib/helpers';
-import { deleteCommandMessages } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Generates a Strawpoll with the provided options.
@@ -22,33 +20,9 @@ export default class StrawpollCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['poll'],
-			args: [
-				{
-					key: 'title',
-					max: 200,
-					prompt: 'What would you like the title of the Strawpoll to be?',
-					type: 'string'
-				},
-				{
-					infinite: true,
-					key: 'options',
-					max: 50,
-					prompt: 'What options do you want to be able to pick from? You may have a maximum of 10.',
-					type: 'string'
-				}
-			],
 			description: 'Generates a Strawpoll with the provided options.',
-			examples: [
-				'!strawpoll'
-			],
-			group: 'misc',
-			guildOnly: true,
-			memberName: 'strawpoll',
 			name: 'strawpoll',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			usage: '<title:string> <options:string> [...] [...] [...] [...] [...] [...] [...] [...] [...]'
 		});
 	}
 
@@ -60,17 +34,13 @@ export default class StrawpollCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof StrawpollCommand
 	 */
-	public async run(msg: KlasaMessage, args: { title: string, options: string }): Promise<KlasaMessage | KlasaMessage[]> {
-		startTyping(msg);
-
+	public async run(msg: KlasaMessage, [title, ...options]): Promise<KlasaMessage | KlasaMessage[]> {
 		try {
 			const { data: res } = await axios.post('https://www.strawpoll.me/api/v2/polls', {
 				captcha: true,
-				options: args.options.slice(0, 10),
-				title: args.title
+				options: options.slice(0, 10),
+				title: title
 			});
-			deleteCommandMessages(msg);
-			stopTyping(msg);
 			
 			return sendSimpleEmbeddedMessage(msg, stripIndents`
 				${res.title}
@@ -78,9 +48,6 @@ export default class StrawpollCommand extends Command {
 			`);
 		} catch (err) {
 			msg.client.emit('warn', `Error in command misc:strawpoll: ${err}`);
-
-			deleteCommandMessages(msg);
-			stopTyping(msg);
 			
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 		}

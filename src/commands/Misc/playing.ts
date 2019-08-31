@@ -1,8 +1,7 @@
 import { stripIndents } from 'common-tags';
-import { Message, GuildMember } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
+import { GuildMember } from 'discord.js';
 import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
-import { deleteCommandMessages } from '../../lib/custom-helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Identify anyone playing games in the guild.
@@ -20,32 +19,14 @@ export default class PlayingCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			args: [
-				{
-					default: '',
-					key: 'game',
-					prompt: 'What game are you looking for players for?\n',
-					type: 'string'
-				}
-			],
 			description: 'Returns a list of people playing games. Allows filtering.',
-			details: stripIndents`
+			extendedHelp: stripIndents`
 				syntax: \`!playing [game name]\`
 
 				Supplying no game name provides you with a list of all users who are marked with the "Playing" status type.
 				Supplying a game name provides you with a list of all users with that game name as their status (case insensitive)`,
-			examples: [
-				'!playing',
-				'!playing fortnite'
-			],
-			group: 'misc',
-			guildOnly: true,
-			memberName: 'playing',
 			name: 'playing',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			usage: '<game:string>'
 		});
 	}
 
@@ -57,8 +38,8 @@ export default class PlayingCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof PlayingCommand
 	 */
-	public async run(msg: KlasaMessage, args: { game: string }): Promise<KlasaMessage | KlasaMessage[]> {
-		const gameSearch = args.game.toLowerCase();
+	public async run(msg: KlasaMessage, [game]): Promise<KlasaMessage | KlasaMessage[]> {
+		const gameSearch = game.toLowerCase();
 		const gamePlayers: { [id: string] : Array<GuildMember> } = {};
 		
 		msg.guild.members.forEach((member: GuildMember) => {
@@ -88,7 +69,6 @@ export default class PlayingCommand extends Command {
 					}).map(member => `<@${ member.id }>`)
 					.join('\n');
 			}).join('\n\n');
-		deleteCommandMessages(msg);
 		
 		return sendSimpleEmbeddedMessage(
 			msg, 

@@ -1,7 +1,5 @@
-import { Message } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
-import { deleteCommandMessages } from '../../lib/custom-helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Generates a "Let Me Google That For You" link.
@@ -19,25 +17,10 @@ export default class LmgtfyCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			args: [
-				{
-					key: 'query',
-					parse: (query: string) => require('remove-markdown')(query),
-					prompt: 'What should I Google for that n00b?\n',
-					type: 'string'
-				}
-			],
 			description: 'Returns a Let Me Google That For You link, so you can school a n00b.',
-			details: 'syntax: `!lmgtfy <query>`',
-			examples: ['!lmgtfy port forwarding'],
-			group: 'misc',
-			guildOnly: true,
-			memberName: 'lmgtfy',
+			extendedHelp: 'syntax: `!lmgtfy <query>`',
 			name: 'lmgtfy',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			usage: '<query:string>'
 		});
 	}
 
@@ -49,9 +32,7 @@ export default class LmgtfyCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof LmgtfyCommand
 	 */
-	public async run(msg: KlasaMessage, args: { query: string }): Promise<KlasaMessage | KlasaMessage[]> {
-		deleteCommandMessages(msg);
-		
-		return sendSimpleEmbeddedMessage(msg, `<http://lmgtfy.com/?q=${encodeURI(args.query)}>`);
+	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
+		return sendSimpleEmbeddedMessage(msg, `<http://lmgtfy.com/?q=${encodeURI(query)}>`);
 	}
 }

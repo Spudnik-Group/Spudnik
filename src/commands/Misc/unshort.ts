@@ -1,8 +1,6 @@
 import { stripIndents } from 'common-tags';
-import { Message } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, stopTyping } from '../../lib/helpers';
-import { deleteCommandMessages } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Unshorten a url.
@@ -21,29 +19,12 @@ export default class UnshortCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['unshorten'],
-			args: [
-				{
-					key: 'query',
-					prompt: 'What link should I unshorten?\n',
-					type: 'string'
-				}
-			],
 			description: 'Unshorten a link.',
-			details: stripIndents`
+			extendedHelp: stripIndents`
 				syntax: \`!unshort <short link>\`
 			`,
-			examples: [
-				'!unshort http://bit.ly/Wn2Xdz',
-				'!unshorten http://bit.ly/Wn2Xdz'
-			],
-			group: 'misc',
-			guildOnly: true,
-			memberName: 'unshort',
 			name: 'unshort',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			usage: '<query:string>'
 		});
 	}
 
@@ -55,28 +36,17 @@ export default class UnshortCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof UnshortCommand
 	 */
-	public async run(msg: KlasaMessage, args: { query: string }): Promise<KlasaMessage | KlasaMessage[]> {
-		startTyping(msg);
-
+	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
 		try {
-			const url: string = await require('url-unshort')().expand(args.query);
+			const url: string = await require('url-unshort')().expand(query);
 			if (url) {
-				deleteCommandMessages(msg);
-				stopTyping(msg);
-				
 				// Send the success response
 				return sendSimpleEmbeddedMessage(msg, `Original url is: <${url}>`);
 			}
-
-			deleteCommandMessages(msg);
-			stopTyping(msg);
 			
 			return sendSimpleEmbeddedError(msg, 'This url can\'t be expanded. Make sure the protocol exists (Http/Https) and try again.', 3000);
 		} catch (err) {
 			msg.client.emit('warn', `Error in command misc:unshort: ${err}`);
-
-			deleteCommandMessages(msg);
-			stopTyping(msg);
 			
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. The url may not be valid. Try again?', 3000);
 		}

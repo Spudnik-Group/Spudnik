@@ -1,6 +1,4 @@
-import { Message } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { deleteCommandMessages } from '../../lib/custom-helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from "klasa";
 
 /**
  * States a message as the bot.
@@ -18,20 +16,10 @@ export default class SayCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			args: [
-				{
-					key: 'text',
-					prompt: 'What text would you like me to say?',
-					type: 'string'
-				}
-			],
 			description: 'Returns the text provided.',
-			details: 'syntax: `!say <text>`',
-			examples: ['!say Hi there!'],
-			group: 'misc',
-			guildOnly: true,
-			memberName: 'say',
-			name: 'say'
+			extendedHelp: 'syntax: `!say <text>`',
+			name: 'say',
+			usage: '<text:...string>'
 		});
 	}
 
@@ -43,9 +31,7 @@ export default class SayCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof SayCommand
 	 */
-	public async run(msg: KlasaMessage, args: { text: string }): Promise<KlasaMessage | KlasaMessage[]> {
-		deleteCommandMessages(msg);
-		
-		return msg.say(args.text);
+	public async run(msg: KlasaMessage, [...text]): Promise<KlasaMessage | KlasaMessage[]> {
+		return msg.sendMessage(text);
 	}
 }

@@ -5,7 +5,7 @@
  * @author Spudnik Group <comrades@spudnik.io> (https://spudnik.io)
  *
  * Created at     : 2019-08-30 11:46:55 
- * Last modified  : 2019-08-30 12:29:59
+ * Last modified  : 2019-08-31 01:18:59
  */
 
 import { Command, KlasaClient, CommandStore, KlasaMessage, Stopwatch } from 'klasa';
@@ -43,7 +43,7 @@ export default class LoadCommandCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof LoadCommandCommand
 	 */
-	async run(message: KlasaMessage, [core, store, path]: any) {
+	async run(message: KlasaMessage, [core, store, ...path]: any) {
 		path = (path.endsWith('.js') ? path : `${path}.js`).split(this.regExp);
 		const timer = new Stopwatch();
 		const piece = await (core ? this.tryEach(store, path) : store.load(store.userDirectory, path));

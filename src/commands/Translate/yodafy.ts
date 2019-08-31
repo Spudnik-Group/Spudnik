@@ -24,7 +24,7 @@ export default class YodafyCommand extends Command {
 				syntax: \`!yodafy <text>\`
 			`,
 			name: 'yodafy',
-			usage: '<query:string>'
+			usage: '<query:...string>'
 		});
 	}
 
@@ -36,7 +36,7 @@ export default class YodafyCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof YodafyCommand
 	 */
-	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [...query]): Promise<KlasaMessage | KlasaMessage[]> {
 		const yodaEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				iconURL: 'https://avatarfiles.alphacoders.com/112/112847.jpg',
