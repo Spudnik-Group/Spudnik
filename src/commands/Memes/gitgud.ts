@@ -1,7 +1,6 @@
 import { stripIndents } from 'common-tags';
-import { GuildMember, Message } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { deleteCommandMessages } from '../../lib/custom-helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { sendSimpleEmbeddedImage } from 'src/lib/helpers';
 
 /**
  * Post the "gitgud" image at someone.
@@ -19,27 +18,12 @@ export default class GitGudCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			args: [
-				{
-					default: '',
-					key: 'mention',
-					prompt: 'Who should gitgud?',
-					type: 'member'
-				}
-			],
 			description: 'Informs someone that they should "git gud".',
-			details: stripIndents`
+			extendedHelp: stripIndents`
 				syntax: \`!gitgud (@user mention)\`
 			`,
-			examples: ['!gitgud', '!gitgud @Nebula#1337'],
-			group: 'meme',
-			guildOnly: true,
-			memberName: 'gitgud',
 			name: 'gitgud',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			usage: '<mention:member>'
 		});
 	}
 
@@ -51,19 +35,15 @@ export default class GitGudCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof GitGudCommand
 	 */
-	public async run(msg: KlasaMessage, args: { mention: GuildMember }): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [mention]): Promise<KlasaMessage | KlasaMessage[]> {
 		const gitgudImageURL = 'http://i.imgur.com/NqpPXHu.jpg';
 
-		if (args.mention && args.mention !== null) {
-			deleteCommandMessages(msg);
-
-			return msg.embed({ image: { url: gitgudImageURL } }, '', {
-				reply: args.mention
+		if (mention && mention !== null) {
+			return msg.sendMessage({ image: { url: gitgudImageURL } }, {
+				reply: mention
 			});
 		} else {
-			deleteCommandMessages(msg);
-
-			return msg.embed({ image: { url: gitgudImageURL } });
+			return sendSimpleEmbeddedImage(msg, gitgudImageURL);
 		}
 	}
 }

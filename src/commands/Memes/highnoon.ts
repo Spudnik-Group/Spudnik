@@ -1,7 +1,5 @@
-import { Message } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedImage, startTyping, stopTyping } from '../../lib/helpers';
-import { deleteCommandMessages } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedImage } from '../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Show the XKCD "Now" comic.
@@ -19,17 +17,9 @@ export default class HighNoonCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			clientPermissions: ['ATTACH_FILES'],
 			description: 'Displays the High Noon XKCD comic.',
-			examples: ['!highnoon'],
-			group: 'meme',
-			guildOnly: true,
-			memberName: 'highnoon',
 			name: 'highnoon',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			requiredPermissions: ['ATTACH_FILES']
 		});
 	}
 
@@ -41,11 +31,6 @@ export default class HighNoonCommand extends Command {
 	 * @memberof HighNoonCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		startTyping(msg);
-		deleteCommandMessages(msg);
-		stopTyping(msg);
-		
-		// Send the success response
 		return sendSimpleEmbeddedImage(msg, 'http://imgs.xkcd.com/comics/now.png', 'IT\'S HIGH NOON...');
 	}
 }
