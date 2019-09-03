@@ -1,7 +1,5 @@
-import { Message } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
-import { deleteCommandMessages } from '../../lib/custom-helpers';
+import { KlasaClient, CommandStore, KlasaMessage, Command } from "klasa";
+import { sendSimpleEmbeddedMessage } from "../../../lib/helpers";
 
 /**
  * Provides links to suggest features, submit bugs, or email the devs.
@@ -20,16 +18,8 @@ export default class FeedbackCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Provides links to suggest features, submit bugs, or email the devs.',
-			examples: ['!feedback'],
-			group: 'default',
 			guarded: true,
-			guildOnly: true,
-			memberName: 'feedback',
-			name: 'feedback',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			name: 'feedback'
 		});
 	}
 
@@ -41,8 +31,6 @@ export default class FeedbackCommand extends Command {
 	 * @memberof FeedbackCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		deleteCommandMessages(msg);
-		
 		return sendSimpleEmbeddedMessage(msg, `
 			*Give us Feedback!*
 			

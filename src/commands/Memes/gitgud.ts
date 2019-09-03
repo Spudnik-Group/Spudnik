@@ -23,7 +23,7 @@ export default class GitGudCommand extends Command {
 				syntax: \`!gitgud (@user mention)\`
 			`,
 			name: 'gitgud',
-			usage: '<mention:member>'
+			usage: '[mention:member]'
 		});
 	}
 

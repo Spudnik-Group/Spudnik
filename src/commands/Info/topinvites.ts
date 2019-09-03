@@ -1,10 +1,9 @@
-// Copyright (c) 2017-2019 dirigeants. All rights reserved. MIT license.
-const { Command } = require('klasa');
+import { Command, KlasaClient, CommandStore } from "klasa";
 
 module.exports = class extends Command {
 
-	constructor(...args) {
-		super(...args, {
+	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
+		super(client, store, file, directory, {
 			runIn: ['text'],
 			aliases: ['ti'],
 			requiredPermissions: ['MANAGE_GUILD'],

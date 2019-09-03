@@ -1,8 +1,7 @@
-import { Message, MessageEmbed, Channel } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor } from '../../lib/custom-helpers';
+import { MessageEmbed, Channel } from 'discord.js';
+import { getEmbedColor } from '../../lib/helpers';
 import * as format from 'date-fns/format';
-import { deleteCommandMessages } from '../../lib/custom-helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 const filterLevels = ['Off', 'No Role', 'Everyone'];
 const verificationLevels = ['None', 'Low', 'Medium', '(╯°□°）╯︵ ┻━┻', '┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻'];
@@ -25,18 +24,7 @@ export default class ServerCommand extends Command {
 		super(client, store, file, directory, {
 			aliases: ['server-stats'],
 			description: 'Returns statistics about the server.',
-			examples: [
-				'!server',
-				'!server-stats'
-			],
-			group: 'info',
-			guildOnly: true,
-			memberName: 'server',
-			name: 'server',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			name: 'server'
 		});
 	}
 
@@ -63,8 +51,6 @@ export default class ServerCommand extends Command {
 			.addField('❯ Roles', msg.guild.roles.size, true)
 			.addField('❯ Channels', msg.guild.channels.filter((channel: Channel) => channel.type !== 'category').size, true);
 		
-		deleteCommandMessages(msg);
-		
-		return msg.embed(serverEmbed);
+		return msg.sendEmbed(serverEmbed);
 	}
 }

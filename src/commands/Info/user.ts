@@ -1,16 +1,20 @@
-import { Message, MessageEmbed, User, GuildMember } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor } from '../../lib/custom-helpers';
+import { MessageEmbed, User, GuildMember } from 'discord.js';
 import * as format from 'date-fns/format';
-import { trimArray } from '../../lib/helpers';
-import { deleteCommandMessages } from '../../lib/custom-helpers';
+import { trimArray, getEmbedColor } from '../../lib/helpers';
 import { stripIndents } from 'common-tags';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 const activities = {
 	LISTENING: 'Listening to',
 	PLAYING: 'Playing',
 	STREAMING: 'Streaming',
 	WATCHING: 'Watching'
+};
+const statuses = {
+	online: '💚 Online',
+	idle: '💛 Idle',
+	dnd: '❤ Do Not Disturb',
+	offline: '💔 Offline'
 };
 
 /**
@@ -30,33 +34,15 @@ export default class UserCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['user-stats'],
-			args: [
-				{
-					default: (msg: KlasaMessage) => msg.author,
-					key: 'user',
-					prompt: 'Which user would you like to get information on?',
-					type: 'user'
-				}
-			],
-			clientPermissions: ['EMBED_LINKS'],
 			description: 'Returns statistics about a user.',
-			details: stripIndents`
+			extendedHelp: stripIndents`
 				syntax \`!user (@usermention|snowflake|username)\`
 
 				Supplying no usermention returns details about the calling user.
 			`,
-			examples: [
-				'!user',
-				'!user @nebula'
-			],
-			group: 'info',
-			guildOnly: true,
-			memberName: 'user',
 			name: 'user',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			requiredPermissions: ['EMBED_LINKS'],
+			usage: '[user:user]'
 		});
 	}
 
@@ -67,19 +53,21 @@ export default class UserCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof UserCommand
 	 */
-	public async run(msg: KlasaMessage, args: { user: User }): Promise<KlasaMessage | KlasaMessage[]> {
-		const avatarFormat = args.user.avatar && args.user.avatar.startsWith('a_') ? 'gif' : 'png';
+	public async run(msg: KlasaMessage, [user]): Promise<KlasaMessage | KlasaMessage[]> {
+		const currentUser: User = user ? user : msg.author;
+		const avatarFormat = currentUser.avatar && currentUser.avatar.startsWith('a_') ? 'gif' : 'png';
 		const userEmbed = new MessageEmbed()
-			.setThumbnail(args.user.displayAvatarURL({ format: avatarFormat }))
+			.setThumbnail(currentUser.displayAvatarURL({ format: avatarFormat }))
 			.setColor(getEmbedColor(msg))
-			.addField('❯ Name', args.user.tag, true)
-			.addField('❯ ID', args.user.id, true)
-			.addField('❯ Discord Join Date', format(args.user.createdAt, 'MM/DD/YYYY h:mm A'), true)
-			.addField('❯ Bot?', args.user.bot ? 'Yes' : 'No', true);
+			.addField('❯ Name', currentUser.tag, true)
+			.addField('❯ ID', currentUser.id, true)
+			.addField('❯ Discord Join Date', format(currentUser.createdAt, 'MM/DD/YYYY h:mm A'), true)
+			.addField('❯ Bot?', currentUser.bot ? 'Yes' : 'No', true)
+			.addField('❯ Status', statuses[user.presence.status], true);
 		
 		try {
 			// Check if user is a member of the guild
-			const member: GuildMember = await msg.guild.members.fetch(args.user.id);
+			const member: GuildMember = await msg.guild.members.fetch(currentUser.id);
 			const roles = member.roles
 				.filter(role => role.id !== msg.guild.defaultRole.id)
 				.sort((a, b) => b.position - a.position)
@@ -94,14 +82,12 @@ export default class UserCommand extends Command {
 					member.roles.highest.id === msg.guild.defaultRole.id ? 'None' : member.roles.highest.name, true)
 				.addField('❯ Hoist Role', member.roles.hoist ? member.roles.hoist.name : 'None', true)
 				.addField(`❯ Roles (${roles.length})`, roles.length ? trimArray(roles, 10).join(', ') : 'None');
-			deleteCommandMessages(msg);
 
-			return msg.embed(userEmbed);
+			return msg.sendEmbed(userEmbed);
 		} catch (err) {
 			userEmbed.setFooter('Failed to resolve member, showing basic user information instead.');
-			deleteCommandMessages(msg);
 	
-			return msg.embed(userEmbed);
+			return msg.sendEmbed(userEmbed);
 		}
 	}
 }

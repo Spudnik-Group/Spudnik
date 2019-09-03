@@ -1,7 +1,6 @@
-import { Message, MessageEmbed } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { startTyping, sendSimpleEmbeddedError, stopTyping } from '../../lib/helpers';
-import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
+import { KlasaClient, CommandStore, KlasaMessage, Command } from "klasa";
+import { getEmbedColor, sendSimpleEmbeddedError } from "../../../lib/helpers";
+import { MessageEmbed } from "discord.js";
 import axios from 'axios';
 
 /**
@@ -20,19 +19,9 @@ export default class changelogCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			clientPermissions: ['EMBED_LINKS'],
 			description: 'Returns GitHub release notes for the 3 most recent releases.',
-			examples: [
-				'!changelog'
-			],
-			group: 'default',
-			guildOnly: true,
-			memberName: 'changelog',
 			name: 'changelog',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 
@@ -44,7 +33,7 @@ export default class changelogCommand extends Command {
 	 * @memberof changelogCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const stackEmbed: MessageEmbed = new MessageEmbed({
+		const stackEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/scroll_1f4dc.png',
 				name: 'Change Log',
@@ -53,8 +42,6 @@ export default class changelogCommand extends Command {
 			color: getEmbedColor(msg),
 			description: ''
 		});
-
-		startTyping(msg);
 
 		try {
 			const res: any = await axios.get('https://api.github.com/repos/Spudnik-Group/Spudnik/releases', {
@@ -78,15 +65,9 @@ export default class changelogCommand extends Command {
 				Check out the full changelog [here](https://github.com/Spudnik-Group/Spudnik/releases)
 			`;
 			
-			deleteCommandMessages(msg);
-			stopTyping(msg);
-			
-			return msg.embed(stackEmbed);
+			return msg.sendEmbed(stackEmbed);
 		} catch (err) {
 			msg.client.emit('warn', `Error in command dev:changelog: ${err}`);
-
-			deleteCommandMessages(msg);
-			stopTyping(msg);
 
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 		}
