@@ -1,9 +1,8 @@
 import { stripIndents } from 'common-tags';
-import { Message, MessageEmbed } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { startTyping, sendSimpleEmbeddedError, stopTyping } from '../../lib/helpers';
-import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
+import { MessageEmbed } from 'discord.js';
+import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
 import axios from 'axios';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Returns MDN results for a query.
@@ -22,29 +21,13 @@ export default class MdnReferenceCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['jsdocs'],
-			args: [
-				{
-					key: 'query',
-					prompt: 'What should I look up in the MDN?',
-					type: 'string'
-				}
-			],
-			clientPermissions: ['EMBED_LINKS'],
+			requiredPermissions: ['EMBED_LINKS'],
 			description: 'Returns results for the supplied query from the MDN.',
-			details: stripIndents`
+			extendedHelp: stripIndents`
 				syntax: \`!mdn <query>\`
 			`,
-			examples: [
-				'!mdn object.entries'
-			],
-			group: 'dev',
-			guildOnly: true,
-			memberName: 'mdn',
 			name: 'mdn',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			usage: '<...query:string>'
 		});
 	}
 
@@ -56,7 +39,7 @@ export default class MdnReferenceCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof MdnReferenceCommand
 	 */
-	public async run(msg: KlasaMessage, args: { query: string }): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
 		const mdnEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://i.imgur.com/xwbpIKG.png',
@@ -67,13 +50,9 @@ export default class MdnReferenceCommand extends Command {
 			description: ''
 		});
 
-		startTyping(msg);
-
 		try {
-			const { data: response } = await axios.get(`https://developer.mozilla.org/en-US/search.json?q=${encodeURIComponent(args.query)}`)
+			const { data: response } = await axios.get(`https://developer.mozilla.org/en-US/search.json?q=${encodeURIComponent(query)}`)
 			if (!response.documents.length) {
-				deleteCommandMessages(msg);
-				stopTyping(msg);
 	
 				return sendSimpleEmbeddedError(msg, 'Your query did not return any results', 3000)
 			}
@@ -93,17 +72,11 @@ export default class MdnReferenceCommand extends Command {
 					__Tag${firstRes.tags.length === 1 ? '' : 's'}__:
 					${firstRes.tags.join(', ')}
 				`)
-				.setFooter(`${response.count} documents found for "${args.query}". ${response.count < 1 ? '' : `Showing results 1 to ${response.documents.length < 5 ? response.documents.length : '4'}`} | Article ID: ${response.documents[0].id}`)
-			
-			deleteCommandMessages(msg);
-			stopTyping(msg);
+				.setFooter(`${response.count} documents found for "${query}". ${response.count < 1 ? '' : `Showing results 1 to ${response.documents.length < 5 ? response.documents.length : '4'}`} | Article ID: ${response.documents[0].id}`)
 
-			return msg.embed(mdnEmbed);
+			return msg.sendEmbed(mdnEmbed);
 		} catch (err) {
 			msg.client.emit('warn', `Error in command dev:mdn: ${err}`);
-			
-			deleteCommandMessages(msg);
-			stopTyping(msg);
 		
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 		}

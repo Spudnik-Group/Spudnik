@@ -1,9 +1,8 @@
 import { stripIndents } from 'common-tags';
-import { Message, MessageEmbed } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { startTyping, sendSimpleEmbeddedError, stopTyping } from '../../lib/helpers';
-import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
+import { MessageEmbed } from 'discord.js';
+import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
 import axios from 'axios';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Returns details for a GitHub repository.
@@ -22,37 +21,13 @@ export default class GithubCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['gh'],
-			args: [
-				{
-					key: 'query',
-					prompt: 'What repository would you like details for?',
-					type: 'string',
-					validate: (query: string) => {
-						const [name, repo] = query.split('/');
-						if(name && repo) {
-							return true;
-						}
-
-						return 'Invalid repository, it must be in format `username/repository`';
-					}
-				}
-			],
-			clientPermissions: ['EMBED_LINKS'],
 			description: 'Returns details for a GitHub repository.',
-			details: stripIndents`
+			extendedHelp: stripIndents`
 				syntax: \`!github <repo-name>\`
 			`,
-			examples: [
-				'!github Spudnik-Group/Spudnik'
-			],
-			group: 'dev',
-			guildOnly: true,
-			memberName: 'github',
 			name: 'github',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			requiredPermissions: ['EMBED_LINKS'],
+			usage: '<query:string>'
 		});
 	}
 
@@ -64,7 +39,9 @@ export default class GithubCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof GithubCommand
 	 */
-	public async run(msg: KlasaMessage, args: { query: string }): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
+		if (query.indexOf('/') === -1) return sendSimpleEmbeddedError(msg, 'Invalid repository, it must be in the format: `username/repositoryname`');
+
 		const githubEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png',
@@ -75,10 +52,8 @@ export default class GithubCommand extends Command {
 			description: ''
 		});
 
-		startTyping(msg);
-
 		try {
-			const { data: res } = await axios.get(`https://api.github.com/repos/${args.query}`, {
+			const { data: res } = await axios.get(`https://api.github.com/repos/${query}`, {
 				headers: {
 					'Accept': 'application/vnd.github.v3+json',
 					'User-Agent': 'Spudnik Bot'
@@ -104,15 +79,10 @@ export default class GithubCommand extends Command {
 					❯ **Stars:** ${res.stargazers_count.toLocaleString()}
 					❯ **Clone Size:** ${size}${footer.length ? `${footer.join('\n')}` : ''}
 				`);
-			deleteCommandMessages(msg);
-			stopTyping(msg);
 			
-			return msg.embed(githubEmbed)
+			return msg.sendEmbed(githubEmbed)
 		} catch(err) {
 			msg.client.emit('warn', `Error in command dev:github: ${err}`);
-			
-			deleteCommandMessages(msg);
-			stopTyping(msg);
 
 			return sendSimpleEmbeddedError(msg, 'Could not fetch that repo, are you sure it exists?', 3000);
 		}

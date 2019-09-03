@@ -1,10 +1,9 @@
 import { stripIndents } from 'common-tags';
-import { Message, MessageEmbed } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { startTyping, sendSimpleEmbeddedError, stopTyping } from '../../lib/helpers';
-import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
+import { MessageEmbed } from 'discord.js';
+import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
 import axios from 'axios';
 import * as format from 'date-fns/format';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Returns details for an NPM package.
@@ -23,29 +22,13 @@ export default class NPMCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['npmpackage', 'npmpkg', 'nodepackagemanager'],
-			args: [
-				{
-					key: 'query',
-					prompt: 'What package would you like details for?',
-					type: 'string'
-				}
-			],
-			clientPermissions: ['EMBED_LINKS'],
+			requiredPermissions: ['EMBED_LINKS'],
 			description: 'Returns details for an NPM package.',
-			details: stripIndents`
+			extendedHelp: stripIndents`
 				syntax: \`!npm <package-name>\`
 			`,
-			examples: [
-				'!npm date-fns'
-			],
-			group: 'dev',
-			guildOnly: true,
-			memberName: 'npm',
 			name: 'npm',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			usage: '<...query:string>'
 		});
 	}
 
@@ -57,7 +40,7 @@ export default class NPMCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof NPMCommand
 	 */
-	public async run(msg: KlasaMessage, args: { query: string }): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
 		const npmEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://authy.com/wp-content/uploads/npm-logo.png',
@@ -68,10 +51,8 @@ export default class NPMCommand extends Command {
 			description: ''
 		});
 
-		startTyping(msg);
-
 		try {
-			const { data: res } = await axios.get(`https://registry.npmjs.com/${args.query}`);
+			const { data: res } = await axios.get(`https://registry.npmjs.com/${query}`);
 			const version = res.versions[res['dist-tags'].latest];
 			let deps = version.dependencies ? Object.keys(version.dependencies) : null;
 			let maintainers = res.maintainers.map((user: any) => user.name);
@@ -89,8 +70,8 @@ export default class NPMCommand extends Command {
 			}
 	
 			npmEmbed
-				.setTitle(`NPM - ${args.query}`)
-				.setURL(`https://npmjs.com/package/${args.query}`)
+				.setTitle(`NPM - ${query}`)
+				.setURL(`https://npmjs.com/package/${query}`)
 				.setDescription(`
 					${res.description || 'No Description.'}
 	
@@ -101,15 +82,9 @@ export default class NPMCommand extends Command {
 					❯ **Dependencies:** ${deps && deps.length ? deps.join(', ') : 'None'}
 				`);
 			
-			deleteCommandMessages(msg);
-			stopTyping(msg);
-			
-			return msg.embed(npmEmbed)
+			return msg.sendEmbed(npmEmbed)
 		} catch (err) {
 			msg.client.emit('warn', `Error in command dev:npm: ${err}`);
-			
-			deleteCommandMessages(msg);
-			stopTyping(msg);
 
 			return sendSimpleEmbeddedError(msg, 'Could not fetch that package, are you sure it exists?', 3000);
 		}
