@@ -1,7 +1,5 @@
-import { Message } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
 import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
-import { deleteCommandMessages } from '../../lib/custom-helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Post a link to the Spudnik Command Discord Server.
@@ -20,16 +18,8 @@ export default class SupportCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns a link to my support server!',
-			examples: ['!support'],
-			group: 'help',
 			guarded: true,
-			guildOnly: true,
-			memberName: 'support',
-			name: 'support',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			name: 'support'
 		});
 	}
 
@@ -41,8 +31,6 @@ export default class SupportCommand extends Command {
 	 * @memberof SupportCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		deleteCommandMessages(msg);
-		
 		return sendSimpleEmbeddedMessage(msg, '<https://spudnik.io/support>');
 	}
 }

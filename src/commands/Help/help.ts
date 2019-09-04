@@ -1,8 +1,7 @@
-import { Message, MessageEmbed } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
+import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
-import { disambiguation, sendSimpleEmbeddedMessage } from '../../lib/helpers';
-import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
+import { getEmbedColor } from '../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Returns helpful information on the bot, or detailed information for a specific command.
@@ -20,21 +19,10 @@ export default class HelpCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			args: [
-				{
-					default: '',
-					key: 'command',
-					prompt: 'Which command would you like to view the help for?',
-					type: 'string'
-				}
-			],
 			description: 'Used to return helpful information on the bot, or detailed information for a specified command.',
-			examples: ['!help', '!help prefix'],
-			group: 'help',
 			guarded: true,
-			guildOnly: true,
-			memberName: 'help',
-			name: 'help'
+			name: 'help',
+			usage: '[command:cmd]'
 		});
 	}
 
@@ -46,55 +34,41 @@ export default class HelpCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof HelpCommand
 	 */
-	public async run(msg: KlasaMessage, args: { command: string }): Promise<KlasaMessage | KlasaMessage[]> {
-		const commands = this.client.registry.findCommands(args.command, false, msg);
+	public async run(msg: KlasaMessage, [command]): Promise<KlasaMessage | KlasaMessage[]> {
 		const helpEmbed: MessageEmbed = new MessageEmbed()
 			.setColor(getEmbedColor(msg));
-		if(args.command) {
-			if (commands.length === 1) {
-				helpEmbed
-					.setTitle(`__Command: **${commands[0].name}**__`)
-					.addField('❯ Description', commands[0].description)
-					.addField('❯ Usage', msg.anyUsage(`${commands[0].name}${commands[0].format ? ` ${commands[0].format}` : ''}`))
-					.addField('❯ Details', commands[0].details ? commands[0].details : 'None')
-					.addField('❯ Aliases', commands[0].aliases.length > 0 ? commands[0].aliases.join(', ') : 'None', true)
-					.addField('❯ Group', `${commands[0].group.name} (\`${commands[0].groupID}:${commands[0].memberName}\`)`, true)
-					.addField('❯ Examples', commands[0].examples.join('\n'), true)
-					.addField('❯ BOT Permissions', commands[0].clientPermissions ? commands[0].clientPermissions.join('\n') : 'No extra perms required', true)
-					.addField('❯ User Permissions', commands[0].userPermissions ? commands[0].userPermissions.join('\n') : 'No extra perms required', true)
-					.addField('❯ Other Details', stripIndents`
-						Guild Only: ${commands[0].guildOnly ? '**Yes**' : '**No**'}
-						NSFW Only: ${commands[0].nsfw ? '**Yes**' : '**No**'}
-						Enabled: ${commands[0].isEnabledIn(msg.guild) ? '**Yes**' : '**No**'}
-					`, true);
-				
-				deleteCommandMessages(msg);
-				
-				return msg.embed(helpEmbed);
-			} else if(commands.length > 15) {
-				return sendSimpleEmbeddedMessage(msg, 'Multiple commands found. Please be more specific.', 3000);
-			} else if(commands.length > 1) {
-				return msg.reply(disambiguation(commands, 'commands'));
-			} else {
-				return msg.reply(
-					`Unable to identify command. Use \`${msg.guild.commandPrefix}commands\` to view the list of command groups or \`${msg.guild.commandPrefix}commands <groupName>\` to view the list of commands in a given group.`);
-			}
+		if(command) {
+			helpEmbed
+				.setTitle(`__Command: **${command.name}**__`)
+				.addField('❯ Description', command.description)
+				.addField('❯ Usage', command.usage.fullUsage(msg))
+				.addField('❯ Details', command.details ? command.details : 'None')
+				.addField('❯ Aliases', command.aliases.length > 0 ? command.aliases.join(', ') : 'None', true)
+				.addField('❯ Group', `${command.group.name} (\`${command.groupID}:${command.memberName}\`)`, true)
+				.addField('❯ Examples', command.examples.join('\n'), true)
+				.addField('❯ BOT Permissions', command.clientPermissions ? command.clientPermissions.join('\n') : 'No extra perms required', true)
+				.addField('❯ User Permissions', command.userPermissions ? command.userPermissions.join('\n') : 'No extra perms required', true)
+				.addField('❯ Other Details', stripIndents`
+					Guild Only: ${command.guildOnly ? '**Yes**' : '**No**'}
+					NSFW Only: ${command.nsfw ? '**Yes**' : '**No**'}
+					Enabled: ${command.isEnabledIn(msg.guild) ? '**Yes**' : '**No**'}
+				`, true);
+			
+			return msg.sendEmbed(helpEmbed);
 		} else {
 			helpEmbed
 				.setTitle('**Help**')
 				.setThumbnail(`${this.client.user.avatarURL()}`)
 				.setDescription(stripIndents`
-					To get the list of command groups, type \`${msg.guild.commandPrefix}commands\`.
-					To get the list of commands in a specific group, type \`${msg.guild.commandPrefix}commands <groupName>\`.
-					To get help with a specific command, type \`${msg.guild.commandPrefix}help <commandName>\`.
+					To get the list of command groups, type \`${msg.guild.settings['prefix']}commands\`.
+					To get the list of commands in a specific group, type \`${msg.guild.settings['prefix']}commands <groupName>\`.
+					To get help with a specific command, type \`${msg.guild.settings['prefix']}help <commandName>\`.
 				`)
 				.addField('❯ Spudnik Command', '[Join](https://spudnik.io/support)', true)
 				.addField('❯ Invite to Your Server!', '[Invite](https://spudnik.io/invite)', true)
-				.setFooter(`Server Prefix: ${msg.guild.commandPrefix} • Total Commands: ${this.client.registry.commands.size}`);
-			
-			deleteCommandMessages(msg);
+				.setFooter(`Server Prefix: ${msg.guild.settings['prefix']} • Total Commands: ${this.client.commands.size}`);
 
-			return msg.embed(helpEmbed);
+			return msg.sendEmbed(helpEmbed);
 		}
 	}
 }

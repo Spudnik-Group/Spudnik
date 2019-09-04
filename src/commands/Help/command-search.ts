@@ -1,8 +1,6 @@
-import { Message, MessageEmbed } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor } from '../../lib/custom-helpers';
-import { deleteCommandMessages } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { getEmbedColor, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { MessageEmbed } from 'discord.js';
 
 /**
  * Search for a command with the given text.
@@ -20,27 +18,10 @@ export default class CommandSearchCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			args: [
-				{
-					key: 'commandName',
-					prompt: 'What command text would you like to search for?',
-					type: 'string'
-				}
-			],
 			description: 'Search for a command with the given text.',
-			examples: [
-				'!command-search role',
-				'!command-search bacon'
-			],
-			group: 'help',
 			guarded: true,
-			guildOnly: true,
-			memberName: 'command-search',
 			name: 'command-search',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			usage: '<commandName:string>'
 		});
 	}
 
@@ -52,25 +33,23 @@ export default class CommandSearchCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof CommandSearchCommand
 	 */
-	public async run(msg: KlasaMessage, args: { commandName: string }): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [commandName]): Promise<KlasaMessage | KlasaMessage[]> {
 		const commandsEmbed: MessageEmbed = new MessageEmbed()
 			.setColor(getEmbedColor(msg))
-			.setFooter(`Comrade! I bring ${this.client.registry.commands.size} commands in this version!`);
-		const commands = this.client.registry.findCommands(args.commandName);
+			.setFooter(`Comrade! I bring ${this.client.commands.size} commands in this version!`);
+		const commands = this.client.commands.filter(command => command.name.includes(commandName));
 		
-		if (commands.length > 0) {
+		if (commands.size > 0) {
 			commandsEmbed
 				.setTitle('Command Search')
-				.setDescription(`Found ${commands.length} commands containing *${args.commandName}*.`)
-				.addField('❯ Commands', `\`\`\`css\n${msg.guild.commandPrefix}${commands.map((c: any) => c.name).join(`\n${msg.guild.commandPrefix}`)}\`\`\``)
-				.addField('❯ Need more details?', `Run \`${msg.guild.commandPrefix}help <commandName>\``)
+				.setDescription(`Found ${commands.size} commands containing *${commandName}*.`)
+				.addField('❯ Commands', `\`\`\`css\n${msg.guild.settings['prefix']}${commands.map((c: any) => c.name).join(`\n${msg.guild.settings['prefix']}`)}\`\`\``)
+				.addField('❯ Need more details?', `Run \`${msg.guild.settings['prefix']}help <commandName>\``)
 				.addField('❯ Want the complete list of commands?', 'Visit [the website](https://spudnik.io) and check out the commands page: https://docs.spudnik.io/commands/');
 			
-			deleteCommandMessages(msg);
-			
-			return msg.embed(commandsEmbed);
+			return msg.sendEmbed(commandsEmbed);
 		} else {
-			return sendSimpleEmbeddedMessage(msg, `No commands found containing that text. Use \`${msg.guild.commandPrefix}commands\` to view a list of command groups.`, 3000);
+			return sendSimpleEmbeddedMessage(msg, `No commands found containing that text. Use \`${msg.guild.settings['prefix']}commands\` to view a list of command groups.`, 3000);
 		}
 	}
 }

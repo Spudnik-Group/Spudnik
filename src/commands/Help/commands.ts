@@ -1,8 +1,6 @@
-import { Message, MessageEmbed } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor } from '../../lib/custom-helpers';
-import { deleteCommandMessages } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { MessageEmbed } from 'discord.js';
+import { getEmbedColor, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Returns a list of command groups, or all commands in a given group.
@@ -20,28 +18,10 @@ export default class CommandsCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			args: [
-				{
-					default: '',
-					key: 'groupName',
-					prompt: 'Which group would you like to view the commands for?',
-					type: 'string'
-				}
-			],
 			description: 'Returns a list of command groups, or all commands in a given group.',
-			examples: [
-				'!commands',
-				'!commands gaming'
-			],
-			group: 'help',
 			guarded: true,
-			guildOnly: true,
-			memberName: 'commands',
 			name: 'commands',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			usage: '[groupName:string]'
 		});
 	}
 
@@ -53,41 +33,40 @@ export default class CommandsCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof CommandsCommand
 	 */
-	public async run(msg: KlasaMessage, args: { groupName: string }): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [groupName]): Promise<KlasaMessage | KlasaMessage[]> {
 		const commandsEmbed: MessageEmbed = new MessageEmbed()
 			.setColor(getEmbedColor(msg))
-			.setFooter(`Comrade! I bring ${this.client.registry.commands.size} commands in this version!`);
-		const groups: any[] = this.client.registry.groups.array();
+			.setFooter(`Comrade! I bring ${this.client.commands.size} commands in this version!`);
+		const groups: any[] = this.client.commands.array().map((command: Command) => {
+			if (groups.includes(command.category)) return;
+			return command.category;
+		});
 		
-		if (args.groupName) {
-			const parsedGroup: string = args.groupName.split(' ').join('-').toLowerCase();
+		if (groupName) {
+			const parsedGroup: string = groupName.toLowerCase();
 
 			if (groups.find((g: any) => g.id === parsedGroup)) {
-				const commands = this.client.registry.commands.array().filter((command: any) => command.groupID === parsedGroup);
+				const commands = this.client.commands.array().filter((command: Command) => command.category === parsedGroup);
 				commandsEmbed
-					.setTitle(`List of commands in the ${args.groupName} category`)
+					.setTitle(`List of commands in the ${groupName} category`)
 					.setDescription(`Use the \`commands\` command to get a list of all ${groups.length} command groups.`)
-					.addField(`❯ ${commands.length} ${args.groupName} Commands`, `\`\`\`css\n${commands.map((c: any) => c.name).join('\n')}\`\`\``)
-					.addField('❯ Need more details?', `Run \`${msg.guild.commandPrefix}help <commandName>\``)
+					.addField(`❯ ${commands.length} ${groupName} Commands`, `\`\`\`css\n${commands.map((c: any) => c.name).join('\n')}\`\`\``)
+					.addField('❯ Need more details?', `Run \`${msg.guild.settings['prefix']}help <commandName>\``)
 					.addField('❯ Want the complete list of commands?', 'Visit [the website](https://spudnik.io) and check out the commands page: https://docs.spudnik.io/commands/');
 				
-				deleteCommandMessages(msg);
-				
-				return msg.embed(commandsEmbed);
+				return msg.sendEmbed(commandsEmbed);
 			} else {
-				return sendSimpleEmbeddedMessage(msg, `No groups matching that name. Use \`${msg.guild.commandPrefix}commands\` to view a list of command groups.`, 3000);
+				return sendSimpleEmbeddedMessage(msg, `No groups matching that name. Use \`${msg.guild.settings['prefix']}commands\` to view a list of command groups.`, 3000);
 			}
 		} else {
 			commandsEmbed
 				.setTitle('List of Command Groups')
-				.setDescription(`Run \`${msg.guild.commandPrefix}commands <groupName>\` to view all the commands in the given group.`)
-				.addField('❯ Command Groups', `\`\`\`css\n${groups.map((g: any) => g.name).join('\n')}\`\`\``)
-				.addField('❯ Need more details?', `Run \`${msg.guild.commandPrefix}help <commandName>\``)
+				.setDescription(`Run \`${msg.guild.settings['prefix']}commands <groupName>\` to view all the commands in the given group.`)
+				.addField('❯ Command Groups', `\`\`\`css\n${groups.join('\n')}\`\`\``)
+				.addField('❯ Need more details?', `Run \`${msg.guild.settings['prefix']}help <commandName>\``)
 				.addField('❯ Want the complete list of commands?', 'Visit [the website](https://spudnik.io) and check out the commands page: https://docs.spudnik.io/commands/');
 			
-			deleteCommandMessages(msg);
-			
-			return msg.embed(commandsEmbed);
+			return msg.sendEmbed(commandsEmbed);
 		}
 	}
 }
