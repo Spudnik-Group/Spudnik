@@ -1,8 +1,5 @@
-import { Message } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedMessageWithAuthor } from '../../lib/helpers';
-import { Convert } from '../../lib/convert';
-import { deleteCommandMessages } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedMessageWithAuthor, Convert } from '../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Converts Decimal to Hexadecimal
@@ -20,26 +17,9 @@ export default class Dec2HexCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			args: [
-				{
-					key: 'numberToConvert',
-					prompt: 'Please enter a valid number to convert.\n',
-					type: 'string',
-					validate: (numberToConvert: string) => {
-						return /^[0-9]+$/.test(numberToConvert);
-					}
-				}
-			],
 			description: 'Converts decimal to hexadecimal',
-			examples: ['!dec2hex 42'],
-			group: 'convert',
-			guildOnly: true,
-			memberName: 'dec2hex',
 			name: 'dec2hex',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			usage: '<numberToConvert:int>'
 		});
 	}
 
@@ -50,9 +30,7 @@ export default class Dec2HexCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof Dec2HexCommand
 	 */
-	public async run(msg: KlasaMessage, args: { numberToConvert: string }): Promise<KlasaMessage | KlasaMessage[]> {
-		deleteCommandMessages(msg);
-		
-		return sendSimpleEmbeddedMessageWithAuthor(msg, `${args.numberToConvert} = 0x${Convert.dec2hex(args.numberToConvert).toUpperCase()}`, {name: 'Decimal to Hexadecimal Conversion:'});
+	public async run(msg: KlasaMessage, [numberToConvert]): Promise<KlasaMessage | KlasaMessage[]> {
+		return sendSimpleEmbeddedMessageWithAuthor(msg, `${numberToConvert} = 0x${Convert.dec2hex(numberToConvert).toUpperCase()}`, {name: 'Decimal to Hexadecimal Conversion:'});
 	}
 }

@@ -1,7 +1,6 @@
-import { Message, MessageEmbed } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { Convert } from '../../lib/convert';
-import { getEmbedColor, deleteCommandMessages } from '../../lib/custom-helpers';
+import { MessageEmbed } from 'discord.js';
+import { Convert, getEmbedColor } from '../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Base64 decodes a string
@@ -19,28 +18,9 @@ export default class Base64DecodeCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			args: [
-				{
-					key: 'stringToDecode',
-					prompt: 'Please enter a valid base64 encoded string.\n',
-					type: 'string',
-					validate: (stringToDecode: string) => {
-						return /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(stringToDecode);
-					}
-				}
-			],
 			description: 'Base64 decodes a string',
-			examples: [
-				'!base64decode c29tZXRoaW5n'
-			],
-			group: 'convert',
-			guildOnly: true,
-			memberName: 'base64decode',
 			name: 'base64decode',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			usage: '<stringToDecode:regex/\\/^(?:[A-Za-z0-9+\\/]{4})*(?:[A-Za-z0-9+\\/]{2}==|[A-Za-z0-9+\\/]{3}=)?$\\/\\/>'
 		});
 	}
 
@@ -51,32 +31,24 @@ export default class Base64DecodeCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof Base64DecodeCommand
 	 */
-	public async run(msg: KlasaMessage, args: { stringToDecode: string }): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [stringToDecode]): Promise<KlasaMessage | KlasaMessage[]> {
 		const returnMessage = new MessageEmbed({
 			author: {
 				name: 'Base64 Decoded String:'
 			},
 			color: getEmbedColor(msg)
-		});
-
-		const fields: any = [];
-
-		fields.push({
-			inline: false,
-			name: 'Input:',
-			value: `${args.stringToDecode}`
-		});
-
-		fields.push({
-			inline: false,
-			name: 'Output:',
-			value: `${Convert.base64decode(args.stringToDecode)}`
-		});
-
-		returnMessage.fields = fields;
-
-		deleteCommandMessages(msg);
+		})
+			.addField({
+				inline: false,
+				name: 'Input:',
+				value: `${stringToDecode}`
+			}, false)
+			.addField({
+				inline: false,
+				name: 'Output:',
+				value: `${Convert.base64decode(stringToDecode)}`
+			}, false);
 		
-		return msg.embed(returnMessage);
+		return msg.sendEmbed(returnMessage);
 	}
 }

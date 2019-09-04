@@ -1,8 +1,5 @@
-import { Message } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedMessageWithAuthor } from '../../lib/helpers';
-import { Convert } from '../../lib/convert';
-import { deleteCommandMessages } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedMessageWithAuthor, Convert } from '../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Converts Decimal to Binary
@@ -20,26 +17,9 @@ export default class Dec2BinCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			args: [
-				{
-					key: 'numberToConvert',
-					prompt: 'Please enter a valid number to convert.\n',
-					type: 'string',
-					validate: (numberToConvert: string) => {
-						return /^[0-9]+$/.test(numberToConvert);
-					}
-				}
-			],
 			description: 'Converts hexadecimal to decimal',
-			examples: ['!dec2bin 42'],
-			group: 'convert',
-			guildOnly: true,
-			memberName: 'dec2bin',
 			name: 'dec2bin',
-			throttling: {
-				duration: 3,
-				usages: 2
-			}
+			usage: '<numberToConvert:int>'
 		});
 	}
 
@@ -50,9 +30,7 @@ export default class Dec2BinCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof Dec2BinCommand
 	 */
-	public async run(msg: KlasaMessage, args: { numberToConvert: string }): Promise<KlasaMessage | KlasaMessage[]> {
-		deleteCommandMessages(msg);
-		
-		return sendSimpleEmbeddedMessageWithAuthor(msg, `${args.numberToConvert} = ${Convert.dec2bin(args.numberToConvert)}`, {name: 'Decimal to Binary Conversion:'});
+	public async run(msg: KlasaMessage, [numberToConvert]): Promise<KlasaMessage | KlasaMessage[]> {
+		return sendSimpleEmbeddedMessageWithAuthor(msg, `${numberToConvert} = ${Convert.dec2bin(numberToConvert)}`, {name: 'Decimal to Binary Conversion:'});
 	}
 }
