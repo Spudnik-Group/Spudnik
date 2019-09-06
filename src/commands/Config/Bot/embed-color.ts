@@ -1,9 +1,8 @@
 import { stripIndents } from 'common-tags';
-import { Message, MessageEmbed } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedError, startTyping, stopTyping } from '../../lib/helpers';
-import { modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
+import { MessageEmbed } from 'discord.js';
+import { sendSimpleEmbeddedError } from '../../../lib/helpers';
 import * as format from 'date-fns/format';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Change the default embed color for the server.
@@ -21,44 +20,16 @@ export default class EmbedColorCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			args: [
-				{
-					default: '',
-					key: 'color',
-					prompt: 'What color would you like embeds to be?\n',
-					type: 'string',
-					validate: (color: string) => {
-						if (!isNaN(color.match(/^ *[a-f0-9]{6} *$/i) ? parseInt(color, 16) : NaN)) {
-							return true;
-						} else if (color === '') {
-							return true;
-						}
-						
-						return 'You provided an invalid color hex number. Please try again.';
-					}
-				}
-			],
 			description: 'Used to change the default embed color the bot uses for responses, or reset it.',
-			details: stripIndents`
+			extendedHelp: stripIndents`
 				syntax: \`!embedcolor (hex color)\`
 
 				Supplying no hex color resets the embed color to default.
 
 				\`MANAGE_GUILD\` permission required.
 			`,
-			examples: [
-				'!embedcolor',
-				'!embedcolor 555555'
-			],
-			group: 'bot_config',
-			guildOnly: true,
-			memberName: 'embedcolor',
 			name: 'embedcolor',
-			throttling: {
-				duration: 3,
-				usages: 2
-			},
-			userPermissions: ['MANAGE_GUILD']
+			usage: '[color:regex/\\/^ *[a-f0-9]{6} *$\\/i]'
 		});
 	}
 
@@ -70,7 +41,7 @@ export default class EmbedColorCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof EmbedColorCommand
 	 */
-	public async run(msg: KlasaMessage, args: { color: string }): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [color]): Promise<KlasaMessage | KlasaMessage[]> {
 		const embedColorEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/artist-palette_1f3a8.png',
@@ -79,24 +50,22 @@ export default class EmbedColorCommand extends Command {
 			description: ''
 		}).setTimestamp();
 
-		startTyping(msg);
-
-		if (args.color) {
+		if (color) {
 			try {
-				await msg.guild.settings.set('embedColor', args.color);
+				await msg.guild.settings.update('embedColor', color);
 				// Set up embed message
 				embedColorEmbed.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
-					**Action:** Embed Color set to ${args.color}
+					**Action:** Embed Color set to ${color}
 				`);
 
 				return this.sendSuccess(msg, embedColorEmbed);
 			} catch (err) {
-				return this.catchError(msg, args, err)
+				return this.catchError(msg, {color}, err)
 			}
 		} else {
 			try {
-				await msg.guild.settings.remove('embedColor');
+				await msg.guild.settings.update('embedColor', '55555');
 				// Set up embed message
 				embedColorEmbed.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
@@ -105,7 +74,7 @@ export default class EmbedColorCommand extends Command {
 
 				return this.sendSuccess(msg, embedColorEmbed);
 			} catch (err) {
-				return this.catchError(msg, args, err)
+				return this.catchError(msg, {color: null}, err)
 			}
 		}
 	}
@@ -122,8 +91,6 @@ export default class EmbedColorCommand extends Command {
 		`);
 
 		// Inform the user the command failed
-		stopTyping(msg);
-
 		if (args.color) {
 			return sendSimpleEmbeddedError(msg, `There was an error setting the embed color to ${args.color}`)
 		} else {
@@ -132,11 +99,6 @@ export default class EmbedColorCommand extends Command {
 	}
 
 	private sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
-		modLogMessage(msg, embed);
-		deleteCommandMessages(msg);
-		stopTyping(msg);
-
-		// Send the success response
-		return msg.embed(embed);
+		return msg.sendEmbed(embed);
 	}
 }
