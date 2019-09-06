@@ -1,8 +1,7 @@
-import { Message, MessageEmbed } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
+import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
-import { startTyping, stopTyping, sendSimpleEmbeddedError } from '../../lib/helpers';
-import { getEmbedColor, deleteCommandMessages, modLogMessage } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, getEmbedColor } from '../../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Returns or sets the command prefix.
@@ -20,17 +19,8 @@ export default class PrefixCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			args: [
-				{
-					default: '',
-					key: 'prefix',
-					max: 15,
-					prompt: 'What would you like to set the bot\'s prefix to?',
-					type: 'string'
-				}
-			],
 			description: 'Returns or sets the command prefix.',
-			details: stripIndents`
+			extendedHelp: stripIndents`
 				syntax: \`!prefix (prefix|none|default)\`
 
 				If no prefix is provided, the current prefix will be shown.
@@ -39,13 +29,9 @@ export default class PrefixCommand extends Command {
 
 				\`ADMINISTRATOR\` permission required (to change the prefix).
 			`,
-			examples: ['!prefix', '!prefix -', '!prefix omg!', '!prefix default', '!prefix none'],
-			format: '[prefix/"default"/"none"]',
-			group: 'bot_config',
 			guarded: true,
-			guildOnly: true,
-			memberName: 'prefix',
-			name: 'prefix'
+			name: 'prefix',
+			usage: '[prefix:string]'
 		});
 	}
 
@@ -57,7 +43,7 @@ export default class PrefixCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof PrefixCommand
 	 */
-	public async run(msg: KlasaMessage, args: { prefix: string }): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [prefix]): Promise<KlasaMessage | KlasaMessage[]> {
 		const prefixEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/memo_1f4dd.png',
@@ -66,57 +52,47 @@ export default class PrefixCommand extends Command {
 			color: getEmbedColor(msg),
 			description: ''
 		}).setTimestamp();
-
-		startTyping(msg);
 		
 		// Just output the prefix
-		if(!args.prefix) {
-			const prefix = msg.guild ? msg.guild.commandPrefix : this.client.commandPrefix;
+		if(!prefix) {
+			const currentPrefix = msg.guild ? msg.guild.settings['prefix'] : this.client.options.prefix;
 			prefixEmbed.setDescription(stripIndents`
-				${prefix ? `The command prefix is \`\`${prefix}\`\`.` : 'There is no command prefix.'}
-				To run commands, use ${msg.anyUsage('command')}.
+				${prefix ? `The command prefix is \`\`${currentPrefix}\`\`.` : 'There is no command prefix.'}
+				To run commands, use ${currentPrefix}\`commandName\`.
 			`);
-			stopTyping(msg);
 			
-			return msg.embed(prefixEmbed);
+			return msg.sendEmbed(prefixEmbed);
 		}
 
 		// Check the user's permission before changing anything
 		if(msg.guild) {
-			if(!msg.member.hasPermission('ADMINISTRATOR') && !this.client.isOwner(msg.author)) {
-				stopTyping(msg);
-
+			if(!msg.member.hasPermission('ADMINISTRATOR') && (this.client.owner !== msg.author)) {
 				return sendSimpleEmbeddedError(msg, 'Only administrators may change the command prefix.', 3000);
 			}
-		} else if(!this.client.isOwner(msg.author)) {
-			stopTyping(msg);
-
+		} else if(this.client.owner !== msg.author) {
 			return sendSimpleEmbeddedError(msg, 'Only the bot owner(s) may change the global command prefix.', 3000);
 		}
 
 		// Save the prefix
-		const lowercase = args.prefix.toLowerCase();
-		const prefix = lowercase === 'none' ? '' : args.prefix;
+		const lowercase = prefix.toLowerCase();
+		const newPrefix = lowercase === 'none' ? '' : prefix;
 		let response;
 		if(lowercase === 'default') {
-			if(msg.guild) msg.guild.commandPrefix = null; else this.client.commandPrefix = null;
+			if(msg.guild) msg.guild.settings['prefix'] = null; else this.client.options.prefix = null;
 
-			const current = this.client.commandPrefix ? `\`\`${this.client.commandPrefix}\`\`` : 'no prefix';
+			const current = this.client.options.prefix ? `\`\`${this.client.options.prefix}\`\`` : 'no prefix';
 
 			response = `Reset the command prefix to the default (currently ${current}).`;
 		} else {
-			if(msg.guild) msg.guild.commandPrefix = prefix; else this.client.commandPrefix = prefix;
+			if(msg.guild) msg.guild.settings['prefix'] = newPrefix; else this.client.options.prefix = newPrefix;
 
-			response = prefix ? `Set the command prefix to \`\`${args.prefix}\`\`.` : 'Removed the command prefix entirely.';
+			response = newPrefix ? `Set the command prefix to \`\`${prefix}\`\`.` : 'Removed the command prefix entirely.';
 		}
 
 		prefixEmbed.setDescription(stripIndents`
-			${response} To run commands, use ${msg.anyUsage('command')}.
+			${response} To run commands, use ${newPrefix}\`commandName\`.
 		`);
-		deleteCommandMessages(msg);
-		modLogMessage(msg, prefixEmbed);
-		stopTyping(msg);
 
-		return msg.embed(prefixEmbed);
+		return msg.sendEmbed(prefixEmbed);
 	}
 }
