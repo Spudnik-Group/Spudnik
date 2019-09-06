@@ -5,7 +5,7 @@
  * @author Spudnik Group <comrades@spudnik.io> (https://spudnik.io)
  *
  * Created at     : 2019-08-30 11:40:59 
- * Last modified  : 2019-08-30 12:30:27
+ * Last modified  : 2019-09-06 11:46:38
  */
 
 import { KlasaClient, CommandStore, KlasaMessage, Command } from "klasa";
@@ -23,11 +23,12 @@ export default class BlacklistCommand extends Command {
 
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			permissionLevel: 10,
 			description: (language: any) => language.get('COMMAND_BLACKLIST_DESCRIPTION'),
+			hidden: true,
+			guarded: true,
+			permissionLevel: 10,
 			usage: '<User:user|Guild:guild|guild:str> [...]',
-			usageDelim: ' ',
-			guarded: true
+			usageDelim: ' '
 		});
 	}
 

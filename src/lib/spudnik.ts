@@ -10,6 +10,7 @@ const PORT = process.env.PORT || 1337;
  * 
  */
 Client.defaultPermissionLevels
+	.add(1, ({ guild, member }) => guild && member.permissions.has('MANAGE_MESSAGES'), { fetch: true })
 	.add(2, ({ guild, member }) => guild && member.permissions.has('MANAGE_ROLES'), { fetch: true })
 	.add(3, ({ guild, member }) => guild && member.permissions.has('KICK_MEMBERS'), { fetch: true })
 	.add(4, ({ guild, member }) => guild && member.permissions.has('BAN_MEMBERS'), { fetch: true })

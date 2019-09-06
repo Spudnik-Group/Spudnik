@@ -5,7 +5,7 @@
  * @author Spudnik Group <comrades@spudnik.io> (https://spudnik.io)
  *
  * Created at     : 2019-08-30 11:48:41 
- * Last modified  : 2019-08-30 12:31:54
+ * Last modified  : 2019-09-06 11:47:58
  */
 
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
@@ -22,8 +22,8 @@ export default class UnloadCommandCommand extends Command {
 		super(client, store, file, directory, {
 			aliases: ['unload-command', 'u'],
 			description: 'Unloads a command.',
-			guarded: true,
 			hidden: true,
+			guarded: true,
 			name: 'unload',
 			permissionLevel: 10,
 			usage: '<Piece:piece>'

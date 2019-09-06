@@ -2,8 +2,6 @@
 const { Provider, util: { mergeDefault, mergeObjects, isObject } } = require('klasa');
 const { MongoClient: Mongo } = require('mongodb');
 
-// TODO: fix this
-// tslint:disable: jsdoc-require
 module.exports = class extends Provider {
 	public db: any = undefined;
 

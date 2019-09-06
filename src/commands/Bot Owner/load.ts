@@ -5,7 +5,7 @@
  * @author Spudnik Group <comrades@spudnik.io> (https://spudnik.io)
  *
  * Created at     : 2019-08-30 11:46:55 
- * Last modified  : 2019-08-31 01:18:59
+ * Last modified  : 2019-09-06 11:47:06
  */
 
 import { Command, KlasaClient, CommandStore, KlasaMessage, Stopwatch } from 'klasa';
@@ -25,9 +25,10 @@ export default class LoadCommandCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['l'],
-			permissionLevel: 10,
-			guarded: true,
 			description: language => language.get('COMMAND_LOAD_DESCRIPTION'),
+			hidden: true,
+			guarded: true,
+			permissionLevel: 10,
 			usage: '[core] <Store:store> <path:...string>',
 			usageDelim: ' '
 		});

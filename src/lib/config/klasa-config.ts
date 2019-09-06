@@ -1,4 +1,4 @@
-import { Client } from 'klasa';
+import { Client, KlasaClientOptions } from 'klasa';
 
 /**
  * The following are all client options for Klasa/Discord.js.
@@ -6,12 +6,10 @@ import { Client } from 'klasa';
  * This file is init with defaults from both Klasa and Discord.js.
  */
 
-export const KlasaConfig = {
+export const KlasaConfig: KlasaClientOptions = {
 	/**
 	 * General Options
 	 */
-	// Whether d.js should queue your rest request in 'sequential' or 'burst' mode
-	apiRequestMethod: 'sequential',
 	// Any Websocket Events you don't want to listen to
 	disabledEvents: [
 		'GUILD_INTEGRATIONS_UPDATE',
@@ -30,6 +28,9 @@ export const KlasaConfig = {
 		'VOICE_STATE_UPDATE',
 		'VOICE_SERVER_UPDATE',
 		'WEBHOOKS_UPDATE'
+	],
+	disabledCorePieces: [
+		'commands'
 	],
 	// If your bot should be able to mention @everyone
 	disableEveryone: false,
@@ -103,7 +104,7 @@ export const KlasaConfig = {
 	 */
 	customPromptDefaults: {
 		limit: Infinity,
-		quotedStringSupport: false,
+		quotedStringSupport: true,
 		time: 30000
 	},
 
@@ -138,8 +139,7 @@ export const KlasaConfig = {
 		},
 		extendables: {
 			appliesTo: [],
-			enabled: true,
-			klasa: false
+			enabled: true
 		},
 		finalizers: { enabled: true },
 		inhibitors: {
@@ -154,14 +154,7 @@ export const KlasaConfig = {
 			ignoreOthers: true,
 			ignoreSelf: true,
 			ignoreWebhooks: true
-		},
-		providers: {
-			cache: false,
-			enabled: true,
-			mongodb: true,
-			sql: false
-		},
-		tasks: { enabled: true }
+		}
 	},
 
 	/**

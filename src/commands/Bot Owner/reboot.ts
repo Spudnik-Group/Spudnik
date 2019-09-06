@@ -5,7 +5,7 @@
  * @author Spudnik Group <comrades@spudnik.io> (https://spudnik.io)
  *
  * Created at     : 2019-08-30 11:47:42 
- * Last modified  : 2019-08-30 12:32:38
+ * Last modified  : 2019-09-06 11:47:31
  */
 
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
@@ -20,9 +20,10 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 export default class RebootCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			permissionLevel: 10,
+			description: language => language.get('COMMAND_REBOOT_DESCRIPTION'),
+			hidden: true,
 			guarded: true,
-			description: language => language.get('COMMAND_REBOOT_DESCRIPTION')
+			permissionLevel: 10,
 		});
 	}
 

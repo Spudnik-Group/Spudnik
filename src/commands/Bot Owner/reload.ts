@@ -5,7 +5,7 @@
  * @author Spudnik Group <comrades@spudnik.io> (https://spudnik.io)
  *
  * Created at     : 2019-08-30 11:48:13 
- * Last modified  : 2019-08-30 12:31:44
+ * Last modified  : 2019-09-06 11:47:50
  */
 
 import { Command, KlasaClient, CommandStore, KlasaMessage, Store, Stopwatch } from 'klasa';
@@ -22,10 +22,10 @@ export default class ReloadCommandCommand extends Command {
 		super(client, store, file, directory, {
 			aliases: ['reload-command', 'r'],
 			description: 'Reloads a command or command group.',
-			guarded: true,
 			hidden: true,
-			permissionLevel: 10,
+			guarded: true,
 			name: 'reload',
+			permissionLevel: 10,
 			usage: '<Store:store|Piece:piece|everything:default>'
 		});
 	}

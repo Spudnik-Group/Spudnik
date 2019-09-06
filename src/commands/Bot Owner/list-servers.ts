@@ -5,7 +5,7 @@
  * @author Spudnik Group <comrades@spudnik.io> (https://spudnik.io)
  *
  * Created at     : 2019-08-30 11:44:15 
- * Last modified  : 2019-08-30 12:23:30
+ * Last modified  : 2019-09-06 11:45:52
  */
 
 import { MessageEmbed } from 'discord.js';
@@ -28,7 +28,8 @@ export default class ListServersCommand extends Command {
 			description: 'Returns a list of servers the bot is in.',
 			guarded: true,
 			hidden: true,
-			name: 'list-servers'
+			name: 'list-servers',
+			permissionLevel: 10
 		});
 	}
 
