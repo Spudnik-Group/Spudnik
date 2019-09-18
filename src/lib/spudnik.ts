@@ -2,13 +2,14 @@ import chalk from 'chalk';
 import { Client, KlasaClientOptions } from 'klasa';
 import { Configuration } from './interfaces';
 import * as http from 'http';
+import * as KlasaMemberGateway from 'klasa-member-gateway';
 
 const PORT = process.env.PORT || 1337;
 
-/**
- * Define Default Schemas
- * 
- */
+// Load Plugins
+Client.use(KlasaMemberGateway);
+
+// Define Default Schemas
 Client.defaultPermissionLevels
 	.add(1, ({ guild, member }) => guild && member.permissions.has('MANAGE_MESSAGES'), { fetch: true })
 	.add(2, ({ guild, member }) => guild && member.permissions.has('MANAGE_ROLES'), { fetch: true })
@@ -38,12 +39,12 @@ Client.defaultGuildSchema
 		.add('welcome', folder => folder
 			.add('welcomeEnabled', 'boolean', { default: false })
 			.add('welcomeChannel', 'TextChannel', { default: null })
-			.add('welcomeMessage', 'string', { default: `` })
+			.add('welcomeMessage', 'string', { default: `@here, please Welcome {user} to {guild}!` })
 		)
 		.add('goodbye', folder => folder
 			.add('goodbyeEnabled', 'boolean', { default: false })
 			.add('goodbyeChannel', 'TextChannel', { default: null })
-			.add('goodbyeMessage', 'string', { default: `` })
+			.add('goodbyeMessage', 'string', { default: `{user} has left the server.` })
 		)
 		.add('modlog', folder => folder
 			.add('modlogChannel', 'TextChannel', { default: null })
@@ -51,14 +52,15 @@ Client.defaultGuildSchema
 		)
 		.add('tos', folder => folder
 			.add('tosChannel', 'TextChannel', { default: null })
-			.add('tosMessages', 'any', { array: true })
+			.add('tosMessages', 'tosMessage', { array: true })
 		)
 		.add('embedColor', 'string', { default: '555555' })
 		.add('adblockEnabled', 'boolean', { default: false })
 		.add('deleteCommandMessages', 'boolean', { default: false })
 		.add('hasSendModLogMessage', 'boolean', { default: false })
-		.add('selfAssignableRoles', 'any', { array: true })
+		.add('selfAssignableRoles', 'Role', { array: true })
 	)
+	.add('warnings', 'warning', { array: true });
 
 /**
  * The Spudnik Discord Bot.

@@ -1,29 +1,8 @@
 import { stripIndents } from 'common-tags';
 import { GuildMember, Message, MessageEmbed } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import Mongoose = require('mongoose');
-import { Schema, Document, Model } from 'mongoose';
-import { startTyping, stopTyping, sendSimpleEmbeddedError } from '../../lib/helpers';
-import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
 import * as format from 'date-fns/format';
-
-interface IWarningsObject {
-	id: string;
-	tag: string;
-	points: number;
-}
-interface IWarnings {
-	guild: string;
-	warnings: IWarningsObject[];
-}
-interface IWarningsModel extends IWarnings, Document { }
-
-const warningsSchema: Schema = new Schema({
-	guild: String,
-	warnings: Array
-});
-const conn = Mongoose.createConnection(process.env.spudCoreDB ? process.env.spudCoreDB : process.env.spud_mongo);
-const warningModel: Model<IWarningsModel> = conn.model<IWarningsModel>('warning', warningsSchema);
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Clears warns for a member of the guild.
@@ -45,38 +24,15 @@ export default class ClearWarnsCommand extends Command {
 				'clear-warn',
 				'warn-clear'
 			],
-			args: [
-				{
-					key: 'member',
-					prompt: 'Which member should I clear warnings for?',
-					type: 'member'
-				},
-				{
-					default: '',
-					key: 'reason',
-					prompt: 'What is the reason for clearing the warnings?',
-					type: 'string'
-				}
-			],
 			description: 'Clear warnings for the specified member.',
-			details: stripIndents`
+			extendedHelp: stripIndents`
 				syntax: \`!warn <@userMention> (reason)\`
 
 				\`MANAGE_MESSAGES\` permission required.
 			`,
-			examples: [
-				'!clear-warns @user he\'s been better',
-				'!clear-warns @wrunt'
-			],
-			group: 'mod',
-			guildOnly: true,
-			memberName: 'clear-warns',
 			name: 'clear-warns',
-			throttling: {
-				duration: 3,
-				usages: 2
-			},
-			userPermissions: ['MANAGE_MESSAGES']
+			usage: '<member:member> [...reason:string]',
+			permissionLevel: 13.
 		});
 	}
 
@@ -88,7 +44,7 @@ export default class ClearWarnsCommand extends Command {
 	 * @returns {(Promise<Message | Message[] | any>)}
 	 * @memberof ClearWarnsCommand
 	 */
-	public async run(msg: KlasaMessage, args: { member: GuildMember, reason: string }): Promise<Message | Message[] | any> {
+	public async run(msg: KlasaMessage, [member, ...reason]): Promise<Message | Message[] | any> {
 		const warnEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/warning-sign_26a0.png',
@@ -98,60 +54,54 @@ export default class ClearWarnsCommand extends Command {
 			description: ''
 		}).setTimestamp();
 		let previousPoints = 0;
+		const guildWarnings = await msg.guild.settings.get('warnings');
 
-		startTyping(msg);
+		if (guildWarnings.length) {
+			try {
+				let memberIndex = null;
+				const currentWarnings = guildWarnings.find((warning, index) => {
+					if (warning.id === member.id) {
+						memberIndex = index;
 
-		// Check for guild's warnings
-		warningModel.findOne({ guild: msg.guild.id }, (err: any, res: IWarningsModel) => {
-			if (err) this.catchError(msg, args, err);
-			if (res) {
-				// Warnings present for current guild
-				const warningsForCurrentGuild: IWarningsObject[] = res.warnings;
-				// Check for previous warnings of currentMember
-				const warningForCurrentMember = warningsForCurrentGuild.find((item) => {
-					return item.id === args.member.id;
+						return true
+					}
+
+					return false;
 				});
-				if (warningForCurrentMember) {
-					// Previous warnings present
-					previousPoints = warningForCurrentMember.points;
+				if (currentWarnings) {
+					// Previous warnings present for supplied member
+					previousPoints = currentWarnings.points
 					// Update previous warning points
-					warningModel.update({ 'guild': msg.guild.id, 'warnings.id': args.member.id }, { '$set': { 'warnings.$.points': 0 } }, (err: any) => {
-						if (err) this.catchError(msg, args, err);
-					});
+					guildWarnings[memberIndex] = {
+						id: member.id,
+						points: 0
+					};
+					msg.guild.settings.update('warnings', guildWarnings);
 					// Set up embed message
 					warnEmbed.setDescription(stripIndents`
 						**Moderator:** ${msg.author.tag} (${msg.author.id})
-						**Member:** ${args.member.user.tag} (${args.member.id})
+						**Member:** ${member.user.tag} (${member.id})
 						**Action:** Clear Warns
 						**Previous Warning Points:** ${previousPoints}
 						**Current Warning Points:** 0
-						**Reason:** ${args.reason !== '' ? args.reason : 'No reason has been added by the moderator'}`);
-					
-					modLogMessage(msg, warnEmbed);
-					deleteCommandMessages(msg);
-					stopTyping(msg);
-		
+						**Reason:** ${reason !== [] ? reason : 'No reason has been added by the moderator'}`);
+	
 					// Send the success response
-					return msg.embed(warnEmbed);
+					return msg.sendEmbed(warnEmbed);
 				} else {
 					// No previous warnings present
-					deleteCommandMessages(msg);
-					stopTyping(msg);
-	
 					return sendSimpleEmbeddedError(msg, 'No warnings present for the supplied member.');
 				}
-
-			} else {
-				// No document for current guild
-				deleteCommandMessages(msg);
-				stopTyping(msg);
-	
-				return sendSimpleEmbeddedError(msg, 'No warnings present for the supplied member.');
+			} catch (err) {
+				this.catchError(msg, { member: member, reason: reason }, err);
 			}
-		});
+		} else {
+			// No warnings for current guild
+			return sendSimpleEmbeddedError(msg, 'No warnings for current guild', 3000);
+		}
 	}
 	
-	private catchError(msg: KlasaMessage, args: { member: GuildMember, reason: string }, err: Error) {
+	private catchError(msg: KlasaMessage, args: { member: GuildMember, reason: any[] }, err: Error) {
 		// Emit warn event for debugging
 		msg.client.emit('warn', stripIndents`
 		Error occurred in \`clear-warns\` command!
@@ -162,8 +112,6 @@ export default class ClearWarnsCommand extends Command {
 		**Error Message:** ${err}`);
 
 		// Inform the user the command failed
-		stopTyping(msg);
-		
 		return sendSimpleEmbeddedError(msg, `Clearing warnings for ${args.member} failed!`, 3000);
 	}
 }
