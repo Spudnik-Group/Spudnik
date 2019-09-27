@@ -1,29 +1,8 @@
 import { stripIndents } from 'common-tags';
 import { GuildMember, Message, MessageEmbed } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import Mongoose = require('mongoose');
-import { Schema, Document, Model } from 'mongoose';
-import { startTyping, stopTyping, sendSimpleEmbeddedError } from '../../lib/helpers';
-import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
+import { sendSimpleEmbeddedError, getEmbedColor, modLogMessage  } from '../../lib/helpers';
 import * as format from 'date-fns/format';
-
-interface IWarningsObject {
-	id: string;
-	tag: string;
-	points: number;
-}
-interface IWarnings {
-	guild: string;
-	warnings: IWarningsObject[];
-}
-interface IWarningsModel extends IWarnings, Document { }
-
-const warningsSchema: Schema = new Schema({
-	guild: String,
-	warnings: Array
-});
-const conn = Mongoose.createConnection(process.env.spudCoreDB ? process.env.spudCoreDB : process.env.spud_mongo);
-const warningModel: Model<IWarningsModel> = conn.model<IWarningsModel>('warning', warningsSchema);
+import { KlasaClient, CommandStore, Command, KlasaMessage } from 'klasa';
 
 /**
  * Warn a member of the guild.
@@ -96,7 +75,7 @@ export default class WarnCommand extends Command {
 	 * @returns {(Promise<Message | Message[] | any>)}
 	 * @memberof WarnCommand
 	 */
-	public async run(msg: KlasaMessage, args: { member: GuildMember, points: number, reason: string }): Promise<Message | Message[] | any> {
+	public async run(msg: KlasaMessage, [member, points, ...reason]): Promise<Message | Message[] | any> {
 		const warnEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/warning-sign_26a0.png',
@@ -106,80 +85,68 @@ export default class WarnCommand extends Command {
 			description: ''
 		}).setTimestamp();
 		let previousPoints = 0;
+		const reasonString = reason.length ? reason.join(' ') : null;
+		const guildWarnings = await msg.guild.settings.get('warnings');
 
-		startTyping(msg);
+		if (guildWarnings.length) {
+			// Warnings present for current guild
+			try {
+				let memberIndex = null;
+				// Check for previous warnings of supplied member
+				const currentWarnings = guildWarnings.find((warning, index) => {
+					if (warning.id === member.id) {
+						memberIndex = index;
 
-		// Check for guild's warnings
-		warningModel.findOne({ guild: msg.guild.id }, (err: any, res: IWarningsModel) => {
-			if (err) this.catchError(msg, args, err);
-			if (res) {
-				// Warnings present for current guild
-				const warningsForCurrentGuild: IWarningsObject[] = res.warnings;
-				// Check for previous warnings of currentMember
-				const warningForCurrentMember = warningsForCurrentGuild.find((item) => {
-					return item.id === args.member.id;
+						return true
+					}
+
+					return false;
 				});
-				if (warningForCurrentMember) {
-					// Previous warnings present
-					previousPoints = warningForCurrentMember.points;
+				if (currentWarnings) {
+					// Previous warnings present for supplied member
+					previousPoints = currentWarnings.points;
+					const newPoints = previousPoints + points;
 					// Update previous warning points
-					warningModel.update({ 'guild': msg.guild.id, 'warnings.id': args.member.id }, { '$set': { 'warnings.$.points': args.points + previousPoints } }, (err: any) => {
-						if (err) this.catchError(msg, args, err);
-					});
+					guildWarnings[memberIndex] = {
+						id: member.id,
+						points: newPoints
+					};
+					msg.guild.settings.update('warnings', guildWarnings);
+					// Set up embed message
+					warnEmbed.setDescription(stripIndents`
+						**Moderator:** ${msg.author.tag} (${msg.author.id})
+						**Member:** ${member.user.tag} (${member.id})
+						**Action:** Warn
+						**Previous Warning Points:** ${previousPoints}
+						**Current Warning Points:** ${newPoints}
+						**Reason:** ${reasonString ? reason : 'No reason has been added by the moderator'}`);
+					// Send the success response
+					return msg.sendEmbed(warnEmbed);
 				} else {
 					// No previous warnings present
-					// Update document with new warning
-					warningModel.update({ 'guild': msg.guild.id }, { '$push': { 'warnings': {'id': args.member.id, 'points': args.points, 'tag': args.member.user.tag} } }, (err: any) => {
-						if (err) this.catchError(msg, args, err);
+					guildWarnings.push({
+						id: member.id,
+						points: points
 					});
+					msg.guild.settings.update('warnings', guildWarnings);
+					// Set up embed message
+					warnEmbed.setDescription(stripIndents`
+						**Moderator:** ${msg.author.tag} (${msg.author.id})
+						**Member:** ${member.user.tag} (${member.id})
+						**Action:** Warn
+						**Previous Warning Points:** 0
+						**Current Warning Points:** ${points}
+						**Reason:** ${reasonString ? reason : 'No reason has been added by the moderator'}`);
+					// Send the success response
+					return msg.sendEmbed(warnEmbed);
 				}
-
-				// Set up embed message
-				warnEmbed.setDescription(stripIndents`
-					**Moderator:** ${msg.author.tag} (${msg.author.id})
-					**Member:** ${args.member.user.tag} (${args.member.id})
-					**Action:** Warn
-					**Previous Warning Points:** ${previousPoints}
-					**Current Warning Points:** ${args.points + previousPoints}
-					**Reason:** ${args.reason !== '' ? args.reason : 'No reason has been added by the moderator'}`);
-				
-				modLogMessage(msg, warnEmbed);
-				deleteCommandMessages(msg);
-				stopTyping(msg);
-	
-				// Send the success response
-				return msg.embed(warnEmbed);
-			} else {
-				// No document for current guild
-				let newWarning = new warningModel({
-					guild: msg.guild.id,
-					warnings: [
-						{
-							id: args.member.id,
-							points: args.points,
-							tag: args.member.user.tag
-						}
-					]
-				});
-				newWarning.save((err: any, item: IWarningsModel) => {
-					if (err) this.catchError(msg, args, err);
-				});
-
-				// Set up embed message
-				warnEmbed.setDescription(stripIndents`
-					**Member:** ${args.member.user.tag} (${args.member.id})
-					**Action:** Warn
-					**Current Warning Points:** ${args.points + previousPoints}
-					**Reason:** ${args.reason !== '' ? args.reason : 'No reason has been added by the moderator'}`);
-				
-				modLogMessage(msg, warnEmbed);
-				deleteCommandMessages(msg);
-				stopTyping(msg);
-	
-				// Send the success response
-				return msg.embed(warnEmbed);
+			} catch (err) {
+				this.catchError(msg, { member, points, reason: reasonString }, err);
 			}
-		});
+		} else {
+			// No warnings for current guild
+			
+		}
 	}
 	
 	private catchError(msg: KlasaMessage, args: { member: GuildMember, points: number, reason: string }, err: Error) {
@@ -191,10 +158,7 @@ export default class WarnCommand extends Command {
 		**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
 		**Input:** \`${args.member.user.tag} (${args.member.id})\`|| \`${args.points}\` || \`${args.reason}\`
 		**Error Message:** ${err}`);
-
 		// Inform the user the command failed
-		stopTyping(msg);
-		
 		return sendSimpleEmbeddedError(msg, `Warning ${args.member} failed!`, 3000);
 	}
 }

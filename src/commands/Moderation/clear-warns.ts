@@ -54,11 +54,14 @@ export default class ClearWarnsCommand extends Command {
 			description: ''
 		}).setTimestamp();
 		let previousPoints = 0;
+		const reasonString = reason.length ? reason.join(' ') : null;
 		const guildWarnings = await msg.guild.settings.get('warnings');
 
 		if (guildWarnings.length) {
+			// Warnings present for current guild
 			try {
 				let memberIndex = null;
+				// Check for previous warnings of supplied member
 				const currentWarnings = guildWarnings.find((warning, index) => {
 					if (warning.id === member.id) {
 						memberIndex = index;
@@ -70,7 +73,7 @@ export default class ClearWarnsCommand extends Command {
 				});
 				if (currentWarnings) {
 					// Previous warnings present for supplied member
-					previousPoints = currentWarnings.points
+					previousPoints = currentWarnings.points;
 					// Update previous warning points
 					guildWarnings[memberIndex] = {
 						id: member.id,
@@ -84,7 +87,7 @@ export default class ClearWarnsCommand extends Command {
 						**Action:** Clear Warns
 						**Previous Warning Points:** ${previousPoints}
 						**Current Warning Points:** 0
-						**Reason:** ${reason !== [] ? reason : 'No reason has been added by the moderator'}`);
+						**Reason:** ${reasonString ? reason : 'No reason has been added by the moderator'}`);
 	
 					// Send the success response
 					return msg.sendEmbed(warnEmbed);
@@ -93,7 +96,7 @@ export default class ClearWarnsCommand extends Command {
 					return sendSimpleEmbeddedError(msg, 'No warnings present for the supplied member.');
 				}
 			} catch (err) {
-				this.catchError(msg, { member: member, reason: reason }, err);
+				this.catchError(msg, { member: member, reason: reasonString }, err);
 			}
 		} else {
 			// No warnings for current guild
@@ -101,7 +104,7 @@ export default class ClearWarnsCommand extends Command {
 		}
 	}
 	
-	private catchError(msg: KlasaMessage, args: { member: GuildMember, reason: any[] }, err: Error) {
+	private catchError(msg: KlasaMessage, args: { member: GuildMember, reason: string }, err: Error) {
 		// Emit warn event for debugging
 		msg.client.emit('warn', stripIndents`
 		Error occurred in \`clear-warns\` command!
