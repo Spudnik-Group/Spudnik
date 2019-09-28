@@ -32,7 +32,7 @@ export default class ClearWarnsCommand extends Command {
 			`,
 			name: 'clear-warns',
 			usage: '<member:member> [...reason:string]',
-			permissionLevel: 13.
+			permissionLevel: 3
 		});
 	}
 

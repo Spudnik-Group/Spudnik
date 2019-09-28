@@ -1,8 +1,7 @@
-import { Channel, GuildMember, Message, MessageEmbed, TextChannel } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError } from '../../lib/helpers';
+import { GuildMember, Message, MessageEmbed, TextChannel } from 'discord.js';
+import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '../../lib/helpers';
 import { stripIndents } from 'common-tags';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Moves messages to different channels.
@@ -20,44 +19,16 @@ export default class MoveCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			args: [
-				{
-					key: 'messageId',
-					prompt: 'What is the ID of the message to be moved?',
-					type: 'string'
-				},
-				{
-					key: 'channel',
-					prompt: 'What is the channel that the message should be moved to?',
-					type: 'channel|integer'
-				},
-				{
-					default: '',
-					key: 'reason',
-					prompt: 'What is the reason for moving the message?',
-					type: 'string'
-				}
-			],
-			clientPermissions: ['MANAGE_MESSAGES'],
 			description: 'Moves a message to a different channel.',
-			details: stripIndents`
+			extendedHelp: stripIndents`
 				syntax: \`!move <messageId> <#channel> (reason)\`\
 
 				\`MANAGE_MESSAGES\` permission required.
 			`,
-			examples: [
-				'!move 1234567890 #channel',
-				'!move 1234567890 #channel rule violation'
-			],
-			group: 'mod',
-			guildOnly: true,
-			memberName: 'move',
 			name: 'move',
-			throttling: {
-				duration: 3,
-				usages: 2
-			},
-			userPermissions: ['MANAGE_MESSAGES']
+			permissionLevel: 1,
+			usage: '<message:msg> <channel:channel> [reason:..string]',
+			requiredPermissions: ['MANAGE_MESSAGES']
 		});
 	}
 
@@ -69,13 +40,14 @@ export default class MoveCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof MoveCommand
 	 */
-	public async run(msg: KlasaMessage, args: { messageId: string, channel: Channel, reason: string }): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [message, channel, ...reason]): Promise<KlasaMessage | KlasaMessage[]> {
 		const originalChannel = msg.channel as TextChannel;
-		const originalMessage: Message = await originalChannel.messages.fetch(args.messageId);
+		const originalMessage: Message = await originalChannel.messages.fetch(message);
 		const originalMessageAuthor: GuildMember = await originalChannel.guild.members.fetch(originalMessage.author.id);
+		const reasonString = reason.length ? reason.join(' ') : null;
 
 		if (originalMessage) {
-			const destinationChannel = args.channel;
+			const destinationChannel = channel;
 
 			if (destinationChannel && destinationChannel.type === 'text') {
 				// Set up embed message
@@ -97,11 +69,11 @@ export default class MoveCommand extends Command {
 					value: `<#${originalChannel.id}>\n`
 				});
 
-				if (args.reason) {
+				if (reasonString) {
 					fields.push({
 						inline: true,
 						name: 'Moved for:',
-						value: `${args.reason}\n`
+						value: `${reasonString}\n`
 					});
 				}
 
@@ -142,17 +114,16 @@ export default class MoveCommand extends Command {
 						**Member:** ${originalMessageAuthor.user.tag} (${originalMessageAuthor.id})
 						**Action:** Move
 						**Channels:** _from_ - <#${originalChannel.id}> > _to_ - <#${destinationChannel.id}>
-						**Reason:** ${args.reason}
+						**Reason:** ${reasonString}
 					`
 				}).setTimestamp();
 
 				modLogMessage(msg, moveModMessage);
-				deleteCommandMessages(msg);
 			} else {
 				return sendSimpleEmbeddedError(msg, 'Cannot move a text message to a non-text channel.', 3000);
 			}
 		} else {
-			return sendSimpleEmbeddedError(msg, `Could not find the message with supplied id (${args.messageId}) in this channel.`, 3000);
+			return sendSimpleEmbeddedError(msg, `Could not find the message with supplied id (${message}) in this channel.`, 3000);
 		}
 	}
 }
