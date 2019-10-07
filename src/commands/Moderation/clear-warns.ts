@@ -31,8 +31,8 @@ export default class ClearWarnsCommand extends Command {
 				\`MANAGE_MESSAGES\` permission required.
 			`,
 			name: 'clear-warns',
-			usage: '<member:member> [...reason:string]',
-			permissionLevel: 3
+			usage: '<member:member> [reason:...string]',
+			permissionLevel: 1
 		});
 	}
 
@@ -44,7 +44,7 @@ export default class ClearWarnsCommand extends Command {
 	 * @returns {(Promise<Message | Message[] | any>)}
 	 * @memberof ClearWarnsCommand
 	 */
-	public async run(msg: KlasaMessage, [member, ...reason]): Promise<Message | Message[] | any> {
+	public async run(msg: KlasaMessage, [member, reason]): Promise<Message | Message[] | any> {
 		const warnEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/warning-sign_26a0.png',
@@ -54,7 +54,6 @@ export default class ClearWarnsCommand extends Command {
 			description: ''
 		}).setTimestamp();
 		let previousPoints = 0;
-		const reasonString = reason.length ? reason.join(' ') : null;
 		const guildWarnings = await msg.guild.settings.get('warnings');
 
 		if (guildWarnings.length) {
@@ -87,8 +86,8 @@ export default class ClearWarnsCommand extends Command {
 						**Action:** Clear Warns
 						**Previous Warning Points:** ${previousPoints}
 						**Current Warning Points:** 0
-						**Reason:** ${reasonString ? reason : 'No reason has been added by the moderator'}`);
-	
+						**Reason:** ${reason ? reason : 'No reason has been added by the moderator'}`);
+
 					// Send the success response
 					return msg.sendEmbed(warnEmbed);
 				} else {
@@ -96,14 +95,14 @@ export default class ClearWarnsCommand extends Command {
 					return sendSimpleEmbeddedError(msg, 'No warnings present for the supplied member.');
 				}
 			} catch (err) {
-				this.catchError(msg, { member: member, reason: reasonString }, err);
+				this.catchError(msg, { member, reason }, err);
 			}
 		} else {
 			// No warnings for current guild
 			return sendSimpleEmbeddedError(msg, 'No warnings for current guild', 3000);
 		}
 	}
-	
+
 	private catchError(msg: KlasaMessage, args: { member: GuildMember, reason: string }, err: Error) {
 		// Emit warn event for debugging
 		msg.client.emit('warn', stripIndents`

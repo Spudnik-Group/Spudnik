@@ -27,7 +27,7 @@ export default class MdnReferenceCommand extends Command {
 				syntax: \`!mdn <query>\`
 			`,
 			name: 'mdn',
-			usage: '<...query:string>'
+			usage: '<query:...string>'
 		});
 	}
 
@@ -53,11 +53,11 @@ export default class MdnReferenceCommand extends Command {
 		try {
 			const { data: response } = await axios.get(`https://developer.mozilla.org/en-US/search.json?q=${encodeURIComponent(query)}`)
 			if (!response.documents.length) {
-	
+
 				return sendSimpleEmbeddedError(msg, 'Your query did not return any results', 3000)
 			}
 			const firstRes = response.documents[0];
-	
+
 			mdnEmbed
 				.setTitle(firstRes.title)
 				.setURL(firstRes.url)
@@ -77,7 +77,7 @@ export default class MdnReferenceCommand extends Command {
 			return msg.sendEmbed(mdnEmbed);
 		} catch (err) {
 			msg.client.emit('warn', `Error in command dev:mdn: ${err}`);
-		
+
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 		}
 	}

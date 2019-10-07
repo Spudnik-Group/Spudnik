@@ -1,9 +1,8 @@
 import { stripIndents } from 'common-tags';
-import { Message, MessageEmbed, User } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, startTyping, stopTyping } from '../../lib/helpers';
+import { MessageEmbed, User } from 'discord.js';
+import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '../../lib/helpers';
 import * as format from 'date-fns/format';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Unban a member.
@@ -21,37 +20,16 @@ export default class UnBanCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			args: [
-				{
-					key: 'user',
-					prompt: 'Who begged for forgiveness?',
-					type: 'user'
-				},
-				{
-					key: 'reason',
-					prompt: 'Why do you want to unban this noob?',
-					type: 'string'
-				}
-			],
-			clientPermissions: ['BAN_MEMBERS'],
 			description: 'Un-Bans the user.',
-			details: stripIndents`
+			extendedHelp: stripIndents`
 				syntax: \`!unban <@userMention | id> <reason>\`
 
 				\`BAN_MEMBERS\` permission required.
 			`,
-			examples: [
-				'!unban @user idk why I banned them'
-			],
-			group: 'mod',
-			guildOnly: true,
-			memberName: 'unban',
 			name: 'unban',
-			throttling: {
-				duration: 3,
-				usages: 2
-			},
-			userPermissions: ['BAN_MEMBERS']
+			permissionLevel: 4,
+			usage: '<user:user> [reason:...string]',
+			requiredPermissions: ['BAN_MEMBERS']
 		});
 	}
 
@@ -63,7 +41,7 @@ export default class UnBanCommand extends Command {
 	 * @returns {(Promise<Message | Message[] | any>)}
 	 * @memberof UnBanCommand
 	 */
-	public async run(msg: KlasaMessage, args: { user: User, reason: string }): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [user, reason]): Promise<KlasaMessage | KlasaMessage[]> {
 		const unbanEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/hammer_1f528.png',
@@ -73,24 +51,20 @@ export default class UnBanCommand extends Command {
 			description: ''
 		}).setTimestamp();
 
-		startTyping(msg);
-
-		await msg.guild.members.unban(args.user, `Un-Banned by: ${msg.author} for: ${args.reason}`)
-			.catch((err: Error) => this.catchError(msg, args, err));
+		await msg.guild.members.unban(user, `Un-Banned by: ${msg.author} for: ${reason}`)
+			.catch((err: Error) => this.catchError(msg, { user, reason }, err));
 
 		// Set up embed message
 		unbanEmbed.setDescription(stripIndents`
 			**Moderator:** ${msg.author.tag} (${msg.author.id})
-			**User:** ${args.user.tag} (${args.user.id})
+			**User:** ${user.tag} (${user.id})
 			**Action:** UnBan
-			**Reason:** ${args.reason}`);
-		
+			**Reason:** ${reason}`);
+
 		modLogMessage(msg, unbanEmbed);
-		deleteCommandMessages(msg);
-		stopTyping(msg);
 
 		// Send the success response
-		return msg.embed(unbanEmbed);
+		return msg.sendEmbed(unbanEmbed);
 	}
 
 	private catchError(msg: KlasaMessage, args: { user: User, reason: string }, err: Error) {
@@ -102,10 +76,7 @@ export default class UnBanCommand extends Command {
 		**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
 		**Input:** \`${args.user.tag} (${args.user.id})\` || \`${args.reason}\`
 		**Error Message:** ${err}`);
-
 		// Inform the user the command failed
-		stopTyping(msg);
-
 		return sendSimpleEmbeddedError(msg, `Unbanning ${args.user} for ${args.reason} failed!`, 3000);
 	}
 }

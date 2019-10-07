@@ -41,7 +41,7 @@ export default class BanCommand extends Command {
 	 * @returns {(Promise<Message | Message[] | any>)}
 	 * @memberof BanCommand
 	 */
-	public async run(msg: KlasaMessage, [member, ...reason]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [member, reason]): Promise<KlasaMessage | KlasaMessage[]> {
 		const memberToBan: GuildMember = member;
 		const banEmbed: MessageEmbed = new MessageEmbed({
 			author: {
@@ -51,7 +51,6 @@ export default class BanCommand extends Command {
 			color: getEmbedColor(msg),
 			description: ''
 		}).setTimestamp();
-		const reasonString = reason.length ? reason.join(' ') : null;
 		const highestRoleOfCallingMember: Role = msg.member.roles.highest;
 
 		// Check if user is able to ban the mentioned user
@@ -60,34 +59,34 @@ export default class BanCommand extends Command {
 		}
 
 		// Ban
-		memberToBan.ban({ reason: `Banned by: ${msg.author} for: ${reasonString}` })
-			.catch((err: Error) => this.catchError(msg, {member, reasonString}, err));
+		memberToBan.ban({ reason: `Banned by: ${msg.author} for: ${reason}` })
+			.catch((err: Error) => this.catchError(msg, { member, reason }, err));
 
 		// Set up embed message
 		banEmbed.setDescription(stripIndents`
 			**Moderator:** ${msg.author.tag} (${msg.author.id})
 			**Member:** ${member.user.tag} (${member.id})
 			**Action:** Ban
-			**Reason:** ${reasonString}`);
-		
+			**Reason:** ${reason}`);
+
 		modLogMessage(msg, banEmbed);
 
 		// Send the success response
 		return msg.sendEmbed(banEmbed);
 	}
 
-	private catchError(msg: KlasaMessage, args: { member: GuildMember, reasonString: string }, err: Error) {
+	private catchError(msg: KlasaMessage, args: { member: GuildMember, reason: string }, err: Error) {
 		// Emit warn event for debugging
 		msg.client.emit('warn', stripIndents`
 			Error occurred in \`ban\` command!
 			**Server:** ${msg.guild.name} (${msg.guild.id})
 			**Author:** ${msg.author.tag} (${msg.author.id})
 			**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
-			**Input:** \`${args.member.user.tag} (${args.member.id})\` || \`${args.reasonString}\`
+			**Input:** \`${args.member.user.tag} (${args.member.id})\` || \`${args.reason}\`
 			**Error Message:** ${err}
 		`);
 
 		// Inform the user the command failed
-		return sendSimpleEmbeddedError(msg, `Banning ${args.member} for ${args.reasonString} failed!`, 3000);
+		return sendSimpleEmbeddedError(msg, `Banning ${args.member} for ${args.reason} failed!`, 3000);
 	}
 }

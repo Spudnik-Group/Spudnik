@@ -31,7 +31,7 @@ export default class SayCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof SayCommand
 	 */
-	public async run(msg: KlasaMessage, [...text]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [text]): Promise<KlasaMessage | KlasaMessage[]> {
 		return msg.sendMessage(text);
 	}
 }

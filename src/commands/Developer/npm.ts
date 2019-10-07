@@ -28,7 +28,7 @@ export default class NPMCommand extends Command {
 				syntax: \`!npm <package-name>\`
 			`,
 			name: 'npm',
-			usage: '<...query:string>'
+			usage: '<query:...string>'
 		});
 	}
 
@@ -56,19 +56,19 @@ export default class NPMCommand extends Command {
 			const version = res.versions[res['dist-tags'].latest];
 			let deps = version.dependencies ? Object.keys(version.dependencies) : null;
 			let maintainers = res.maintainers.map((user: any) => user.name);
-	
-			if(maintainers.length > 10) {
+
+			if (maintainers.length > 10) {
 				const len = maintainers.length - 10;
 				maintainers = maintainers.slice(0, 10);
 				maintainers.push(`...${len} more.`);
 			}
-	
-			if(deps && deps.length > 10) {
+
+			if (deps && deps.length > 10) {
 				const len = deps.length - 10;
 				deps = deps.slice(0, 10);
 				deps.push(`...${len} more.`);
 			}
-	
+
 			npmEmbed
 				.setTitle(`NPM - ${query}`)
 				.setURL(`https://npmjs.com/package/${query}`)
@@ -81,7 +81,7 @@ export default class NPMCommand extends Command {
 					❯ **Modified:** ${format(res.time.modified, 'MM/DD/YYYY h:mm A')}
 					❯ **Dependencies:** ${deps && deps.length ? deps.join(', ') : 'None'}
 				`);
-			
+
 			return msg.sendEmbed(npmEmbed)
 		} catch (err) {
 			msg.client.emit('warn', `Error in command dev:npm: ${err}`);

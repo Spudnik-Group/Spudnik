@@ -27,7 +27,7 @@ export default class KickCommand extends Command {
 				\`KICK_MEMBERS\` permission required.
 			`,
 			name: 'kick',
-			usage: '<member:member> [...reason:string]',
+			usage: '<member:member> [reason:...string]',
 			permissionLevel: 3,
 			requiredPermissions: ['KICK_MEMBERS']
 		});
@@ -41,7 +41,7 @@ export default class KickCommand extends Command {
 	 * @returns {(Promise<Message | Message[] | any>)}
 	 * @memberof KickCommand
 	 */
-	public async run (msg: KlasaMessage, [member, ...reason]): Promise<Message | Message[] | any> {
+	public async run(msg: KlasaMessage, [member, reason]): Promise<Message | Message[] | any> {
 		const memberToKick: GuildMember = member;
 		const kickEmbed: MessageEmbed = new MessageEmbed({
 			author: {
@@ -51,21 +51,20 @@ export default class KickCommand extends Command {
 			color: getEmbedColor(msg),
 			description: ''
 		}).setTimestamp();
-		const reasonString = reason.length ? reason.join(' ') : null;
-		
+
 		// Check if user is able to kick the mentioned user
 		if (!memberToKick.kickable || !(msg.member.roles.highest.comparePositionTo(memberToKick.roles.highest) > 0)) {
 			return sendSimpleEmbeddedError(msg, `I can't kick ${memberToKick}. Do they have the same or a higher role than me or you?`, 3000);
 		}
 
 		try {
-			await memberToKick.kick(`Kicked by: ${msg.author} for: ${reasonString}`);
+			await memberToKick.kick(`Kicked by: ${msg.author} for: ${reason}`);
 			// Set up embed message
 			kickEmbed.setDescription(stripIndents`
 				**Moderator:** ${msg.author.tag} (${msg.author.id})
 				**Member:** ${memberToKick.user.tag} (${memberToKick.id})
 				**Action:** Kick
-				**Reason:** ${reasonString}
+				**Reason:** ${reason}
 			`);
 
 			modLogMessage(msg, kickEmbed);
@@ -78,11 +77,11 @@ export default class KickCommand extends Command {
 			**Server:** ${msg.guild.name} (${msg.guild.id})
 			**Author:** ${msg.author.tag} (${msg.author.id})
 			**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
-			**Input:** \`${member.user.tag} (${member.id})\` || \`${reasonString}\`
+			**Input:** \`${member.user.tag} (${member.id})\` || \`${reason}\`
 			**Error Message:** ${err}`);
 
 			// Inform the user the command failed
-			return sendSimpleEmbeddedError(msg, `Kicking ${member} for ${reasonString} failed!`, 3000);
+			return sendSimpleEmbeddedError(msg, `Kicking ${member} for ${reason} failed!`, 3000);
 		}
 	}
 }

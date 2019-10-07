@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { GuildMember, Message, MessageEmbed } from 'discord.js';
-import { sendSimpleEmbeddedError, getEmbedColor, modLogMessage  } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 import { KlasaClient, CommandStore, Command, KlasaMessage } from 'klasa';
 
@@ -20,50 +20,15 @@ export default class WarnCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			args: [
-				{
-					key: 'member',
-					prompt: 'Which member should I give a warning?',
-					type: 'member'
-				},
-				{
-					key: 'points',
-					prompt: 'How many warning points should I give this member?',
-					type: 'integer',
-					validate: (points: number) => {
-						if (points < 1) {
-							return 'You must provide a positive number.';
-						}
-						
-						return true;
-					}
-				},
-				{
-					default: '',
-					key: 'reason',
-					prompt: 'What is the reason for this warning?',
-					type: 'string'
-				}
-			],
 			description: 'Warn a member with a specified amount of points',
-			details: stripIndents`
+			extendedHelp: stripIndents`
 				syntax: \`!warn <@userMention> <points> (reason)\`
 
 				\`MANAGE_MESSAGES\` permission required.
 			`,
-			examples: [
-				'!warn @user 5',
-				'!warn @wrunt 9000 being himself'
-			],
-			group: 'mod',
-			guildOnly: true,
-			memberName: 'warn',
 			name: 'warn',
-			throttling: {
-				duration: 3,
-				usages: 2
-			},
-			userPermissions: ['MANAGE_MESSAGES']
+			permissionLevel: 1,
+			usage: '<member:member> <points:int> [reason:...string]'
 		});
 	}
 
@@ -75,7 +40,7 @@ export default class WarnCommand extends Command {
 	 * @returns {(Promise<Message | Message[] | any>)}
 	 * @memberof WarnCommand
 	 */
-	public async run(msg: KlasaMessage, [member, points, ...reason]): Promise<Message | Message[] | any> {
+	public async run(msg: KlasaMessage, [member, points, reason]): Promise<Message | Message[] | any> {
 		const warnEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/warning-sign_26a0.png',
@@ -85,7 +50,6 @@ export default class WarnCommand extends Command {
 			description: ''
 		}).setTimestamp();
 		let previousPoints = 0;
-		const reasonString = reason.length ? reason.join(' ') : null;
 		const guildWarnings = await msg.guild.settings.get('warnings');
 
 		if (guildWarnings.length) {
@@ -102,7 +66,7 @@ export default class WarnCommand extends Command {
 
 					return false;
 				});
-				if (currentWarnings) {
+				if (currentWarnings && memberIndex) {
 					// Previous warnings present for supplied member
 					previousPoints = currentWarnings.points;
 					const newPoints = previousPoints + points;
@@ -119,7 +83,7 @@ export default class WarnCommand extends Command {
 						**Action:** Warn
 						**Previous Warning Points:** ${previousPoints}
 						**Current Warning Points:** ${newPoints}
-						**Reason:** ${reasonString ? reason : 'No reason has been added by the moderator'}`);
+						**Reason:** ${reason ? reason : 'No reason has been added by the moderator'}`);
 					// Send the success response
 					return msg.sendEmbed(warnEmbed);
 				} else {
@@ -136,19 +100,35 @@ export default class WarnCommand extends Command {
 						**Action:** Warn
 						**Previous Warning Points:** 0
 						**Current Warning Points:** ${points}
-						**Reason:** ${reasonString ? reason : 'No reason has been added by the moderator'}`);
+						**Reason:** ${reason ? reason : 'No reason has been added by the moderator'}`);
 					// Send the success response
 					return msg.sendEmbed(warnEmbed);
 				}
 			} catch (err) {
-				this.catchError(msg, { member, points, reason: reasonString }, err);
+				this.catchError(msg, { member, points, reason }, err);
 			}
 		} else {
 			// No warnings for current guild
-			
+			const newWarnings = [
+				{
+					id: member.id,
+					points: points
+				}
+			];
+			msg.guild.settings.update('warnings', newWarnings);
+			// Set up embed message
+			warnEmbed.setDescription(stripIndents`
+				**Moderator:** ${msg.author.tag} (${msg.author.id})
+				**Member:** ${member.user.tag} (${member.id})
+				**Action:** Warn
+				**Previous Warning Points:** 0
+				**Current Warning Points:** ${points}
+				**Reason:** ${reason ? reason : 'No reason has been added by the moderator'}`);
+			// Send the success response
+			return msg.sendEmbed(warnEmbed);
 		}
 	}
-	
+
 	private catchError(msg: KlasaMessage, args: { member: GuildMember, points: number, reason: string }, err: Error) {
 		// Emit warn event for debugging
 		msg.client.emit('warn', stripIndents`

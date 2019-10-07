@@ -27,7 +27,7 @@ export default class MoveCommand extends Command {
 			`,
 			name: 'move',
 			permissionLevel: 1,
-			usage: '<message:msg> <channel:channel> [reason:..string]',
+			usage: '<message:msg> <channel:channel> [reason:...string]',
 			requiredPermissions: ['MANAGE_MESSAGES']
 		});
 	}
@@ -40,11 +40,10 @@ export default class MoveCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof MoveCommand
 	 */
-	public async run(msg: KlasaMessage, [message, channel, ...reason]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [message, channel, reason]): Promise<KlasaMessage | KlasaMessage[]> {
 		const originalChannel = msg.channel as TextChannel;
 		const originalMessage: Message = await originalChannel.messages.fetch(message);
 		const originalMessageAuthor: GuildMember = await originalChannel.guild.members.fetch(originalMessage.author.id);
-		const reasonString = reason.length ? reason.join(' ') : null;
 
 		if (originalMessage) {
 			const destinationChannel = channel;
@@ -69,11 +68,11 @@ export default class MoveCommand extends Command {
 					value: `<#${originalChannel.id}>\n`
 				});
 
-				if (reasonString) {
+				if (reason) {
 					fields.push({
 						inline: true,
 						name: 'Moved for:',
-						value: `${reasonString}\n`
+						value: `${reason}\n`
 					});
 				}
 
@@ -94,7 +93,7 @@ export default class MoveCommand extends Command {
 					const messages: MessageEmbed[] = new Array();
 					messages.push(moveMessage);
 					messages.concat(originalMessage.embeds);
-					
+
 					// Send the messages to the correct channel
 					await (destinationChannel as TextChannel).send(messages);
 				}
@@ -114,7 +113,7 @@ export default class MoveCommand extends Command {
 						**Member:** ${originalMessageAuthor.user.tag} (${originalMessageAuthor.id})
 						**Action:** Move
 						**Channels:** _from_ - <#${originalChannel.id}> > _to_ - <#${destinationChannel.id}>
-						**Reason:** ${reasonString}
+						**Reason:** ${reason}
 					`
 				}).setTimestamp();
 

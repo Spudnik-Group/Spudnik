@@ -36,7 +36,7 @@ export default class YodafyCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof YodafyCommand
 	 */
-	public async run(msg: KlasaMessage, [...query]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
 		const yodaEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				iconURL: 'https://avatarfiles.alphacoders.com/112/112847.jpg',
@@ -51,17 +51,17 @@ export default class YodafyCommand extends Command {
 		return require('soap').createClient('http://www.yodaspeak.co.uk/webservice/yodatalk.php?wsdl', (err: Error, client: any) => {
 			if (err) {
 				msg.client.emit('warn', `Error in command translate:yodafy: ${err}`);
-				
+
 				return sendSimpleEmbeddedError(msg, 'Lost, I am. Not found, the web service is. Hrmm...', 3000);
 			}
 
 			client.yodaTalk({ inputText: query }, (err: Error, result: any) => {
 				if (err) {
 					msg.client.emit('warn', `Error in command translate:yodafy: ${err}`);
-					
+
 					return sendSimpleEmbeddedError(msg, 'Confused, I am. Disturbance in the force, there is. Hrmm...', 3000);
 				}
-				
+
 				yodaEmbed.setDescription(`${result.return}\n`);
 				// Send the success response
 				return msg.sendEmbed(yodaEmbed);
