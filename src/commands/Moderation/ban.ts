@@ -28,7 +28,7 @@ export default class BanCommand extends Command {
 				\`BAN_MEMBERS\` permission required.
 			`,
 			name: 'ban',
-			permissionLevel: 6,
+			permissionLevel: 4,
 			usage: '<member:user> <reason:...string>'
 		});
 	}
