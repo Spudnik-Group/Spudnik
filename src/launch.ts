@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import * as Discord from 'discord.js';
-import { Spudnik } from './lib/spudnik';
+import Spudnik from './lib/spudnik';
 import { KlasaConfig } from './lib/config/klasa-config';
 import { SpudConfig } from './lib/config/spud-config';
 
