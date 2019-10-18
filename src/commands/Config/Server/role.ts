@@ -1,9 +1,8 @@
 import { stripIndents } from 'common-tags';
 import { Collection, Message, MessageEmbed, Role } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, startTyping, stopTyping, isNormalInteger } from '../../lib/helpers';
+import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, isNormalInteger } from '../../../lib/helpers';
 import * as format from 'date-fns/format';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Manage guild roles.
@@ -21,42 +20,8 @@ export default class RoleCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			args: [
-				{
-					key: 'subCommand',
-					prompt: 'What sub-command would you like to use?\nOptions are:\n* add\n* remove',
-					type: 'string',
-					validate: (subCommand: string) => {
-						const allowedSubcommands = ['add', 'remove'];
-						if (allowedSubcommands.indexOf(subCommand) !== -1) return true;
-
-						return 'You provided an invalid sub-command.\nOptions are:\n* add\n* remove';
-					}
-				},
-				{
-					key: 'name',
-					prompt: 'What is the name of the role? Wrap role names with spaces inside of double quotes.\n',
-					type: 'string'
-				},
-				{
-					default: '',
-					key: 'color',
-					prompt: 'What color would you like the role to be?\n',
-					type: 'string',
-					validate: (color: string) => {
-						if (!isNaN(color.match(/^ *[a-f0-9]{6} *$/i) ? parseInt(color, 16) : NaN)) {
-							return true;
-						} else if (color === '') {
-							return true;
-						}
-						
-						return 'You provided an invalid color hex number. Please try again.';
-					}
-				}
-			],
-			clientPermissions: ['MANAGE_ROLES'],
 			description: 'Used to add or remove roles from your server.',
-			details: stripIndents`
+			extendedHelp: stripIndents`
 				syntax: \`!sar <add|remove> <@roleMention|newRoleName> (hexcolor)\`
 
 				\`add "role name" (hexcolor)\` - adds the role to your guild with the supplied color.
@@ -64,31 +29,24 @@ export default class RoleCommand extends Command {
 
 				\`MANAGE_ROLES\` permission required.
 			`,
-			examples: [
-				'!role add PUBG',
-				'!role add PUBG 0000FF',
-				'!role add "test role"',
-				'!role add "test role" 0000FF',
-				'!role remove Fortnite',
-				'!role remove "test role" "this was just a test"'
-			],
-			group: 'server_config',
-			guildOnly: true,
-			memberName: 'role',
 			name: 'role',
-			userPermissions: ['MANAGE_ROLES']
+			permissionLevel: 2,
+			// TODO: fix the hexcolor param to be its own type. I'm so fucking lazy
+			usage: '<add|remove> <name:Role|string> (color:string)',
+			requiredPermissions: ['MANAGE_ROLES'],
+			subcommands: true
 		});
 	}
 
 	/**
-	 * Run the "role" command.
+	 * Add a new role
 	 *
 	 * @param {KlasaMessage} msg
-	 * @param {{ subCommand: string, role: Role }} args
+	 * @param {[ name: Role | string, color: string ]}
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof RoleManagementCommands
 	 */
-	public async run(msg: KlasaMessage, args: { subCommand: string, name: string, arg3: string }): Promise<KlasaMessage | KlasaMessage[]> {
+	public async add(msg: KlasaMessage, [name, color]): Promise<KlasaMessage | KlasaMessage[]> {
 		const roleEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/110/lock_1f512.png',
@@ -99,132 +57,128 @@ export default class RoleCommand extends Command {
 				text: 'Use the `role` command to add/remove a role from your guild'
 			}
 		}).setTimestamp();
+		try {
+			let roleMetaData = {};
 
-		startTyping(msg);
-
-		switch (args.subCommand.toLowerCase()) {
-			case 'add': {
-				try {
-					let roleMetaData = {};
-
-					if (args.arg3 !== '') {
-						roleMetaData = {
-							data: {
-								color: args.arg3,
-								name: args.name
-							}
-						};
-					} else {
-						roleMetaData = {
-							data: {
-								name: args.name
-							}
-						};
+			if (color !== '') {
+				roleMetaData = {
+					data: {
+						color,
+						name
 					}
-					
-					//TODO: add a reason
-					await msg.guild.roles.create(roleMetaData);
-				} catch (err) {
-					return this.catchError(msg, args, err);
-				}
+				};
+			} else {
+				roleMetaData = {
+					data: {
+						name
+					}
+				};
+			}
 
-				roleEmbed.setDescription(stripIndents`
+			//TODO: add a reason
+			await msg.guild.roles.create(roleMetaData);
+		} catch (err) {
+			return this.catchError(msg, { subCommand: 'add', name, arg3: color }, err);
+		}
+
+		roleEmbed.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
-					**Action:** Added role '${args.name}' to the guild.
+					**Action:** Added role '${name}' to the guild.
 				`);
 
-				modLogMessage(msg, roleEmbed);
-				deleteCommandMessages(msg);
-				stopTyping(msg);
+		modLogMessage(msg, roleEmbed);
 
-				return msg.embed(roleEmbed);
+		return msg.sendEmbed(roleEmbed);
+	}
+
+	/**
+	 * Remove a role
+	 *
+	 * @param {KlasaMessage} msg
+	 * @param {[ name: Role | string, color: string ]}
+	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
+	 * @memberof RoleManagementCommands
+	 */
+	public async remove(msg: KlasaMessage, [name]): Promise<KlasaMessage | KlasaMessage[]> {
+		const roleEmbed = new MessageEmbed({
+			author: {
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/110/lock_1f512.png',
+				name: 'Role Manager'
+			},
+			color: getEmbedColor(msg),
+			footer: {
+				text: 'Use the `role` command to add/remove a role from your guild'
 			}
-			case 'remove': {
-				const rolesFound: Collection<string, Role> = await msg.guild.roles.filter(role => role.name.toLocaleLowerCase() === args.name.toLocaleLowerCase());
+		}).setTimestamp();
+		const rolesFound: Collection<string, Role> = await msg.guild.roles.filter(role => role.name.toLocaleLowerCase() === name.toLocaleLowerCase());
 
-				if (rolesFound.size > 1) {
-					const rolesFoundArray = rolesFound.array();
+		if (rolesFound.size > 1) {
+			const rolesFoundArray = rolesFound.array();
 
-					roleEmbed.setDescription(stripIndents`
+			roleEmbed.setDescription(stripIndents`
 						More than one role was found matching the provided name.
 						Which role would you like to delete?\n
 						${rolesFoundArray.map((role, i) => `**${i + 1}** - \`${role.id}\` - <@&${role.id}> - ${role.members.size} members`).join('\n')}`);
 
-					await msg.embed(roleEmbed);
-					stopTyping(msg);
+			await msg.sendEmbed(roleEmbed);
 
-					const filter = (res: Message) => {
-						return (res.author.id === msg.author.id);
-					}
+			const filter = (res: Message) => {
+				return (res.author.id === msg.author.id);
+			}
 
+			try {
+				const responses = await msg.channel.awaitMessages(filter, { max: 1 });
+				const response = responses.first();
+
+				if (isNormalInteger(response.content) && ((-1 < Number(response.content)) && (Number(response.content) < rolesFoundArray.length))) {
 					try {
-						const responses = await msg.channel.awaitMessages(filter, { max: 1 });
-						const response = responses.first();
-	
-							if (isNormalInteger(response.content) && ((-1 < Number(response.content)) && (Number(response.content) < rolesFoundArray.length))) {
-								try {
-									await rolesFoundArray[Number(response.content) - 1].delete(args.arg3).then(deletedRole => {
-										roleEmbed.setDescription(stripIndents`
+						await rolesFoundArray[Number(response.content) - 1].delete().then(deletedRole => {
+							roleEmbed.setDescription(stripIndents`
 											**Member:** ${msg.author.tag} (${msg.author.id})
 											**Action:** Removed role \`${deletedRole.name}\` from the guild.
 										`);
 
-										modLogMessage(msg, roleEmbed);
-										deleteCommandMessages(msg);
-										stopTyping(msg);
+							modLogMessage(msg, roleEmbed);
 
-										return msg.embed(roleEmbed);
-									}).catch(err => {
-										return this.catchError(msg, args, err);
-									});
-									
-								} catch (err) {
-									return this.catchError(msg, args, err);
-								}
-							} else {
-								deleteCommandMessages(msg);
-								stopTyping(msg);
-	
-								return sendSimpleEmbeddedError(msg, 'Please supply a row number corresponding to the role you want to delete.');
-							}
+							return msg.sendEmbed(roleEmbed);
+						}).catch(err => {
+							return this.catchError(msg, { subCommand: 'remove', name }, err);
+						});
+
 					} catch (err) {
-						deleteCommandMessages(msg);
-						stopTyping(msg);
-
-						return this.catchError(msg, args, err);
+						return this.catchError(msg, { subCommand: 'remove', name }, err);
 					}
-				} else if (rolesFound.size === 1) {
-					const roleToDelete = rolesFound.first();
+				} else {
+					return sendSimpleEmbeddedError(msg, 'Please supply a row number corresponding to the role you want to delete.');
+				}
+			} catch (err) {
+				return this.catchError(msg, { subCommand: 'remove', name }, err);
+			}
+		} else if (rolesFound.size === 1) {
+			const roleToDelete = rolesFound.first();
 
-					try {
-						await roleToDelete.delete(args.arg3).then(deletedRole => {
-							roleEmbed.setDescription(stripIndents`
+			try {
+				await roleToDelete.delete().then(deletedRole => {
+					roleEmbed.setDescription(stripIndents`
 								**Member:** ${msg.author.tag} (${msg.author.id})
 								**Action:** Removed role \`${deletedRole.name}\` from the guild.
 							`);
 
-							modLogMessage(msg, roleEmbed);
-							deleteCommandMessages(msg);
-							stopTyping(msg);
+					modLogMessage(msg, roleEmbed);
 
-							return msg.embed(roleEmbed);
-						}).catch(err => {
-							return this.catchError(msg, args, err);
-						});
-					} catch (err) {
-						return this.catchError(msg, args, err);
-					}
-				} else {
-					return sendSimpleEmbeddedError(msg, `A role with the supplied name \`${args.name}\` was not found on this guild.`);
-				}
+					return msg.sendEmbed(roleEmbed);
+				}).catch(err => {
+					return this.catchError(msg, { subCommand: 'remove', name }, err);
+				});
+			} catch (err) {
+				return this.catchError(msg, { subCommand: 'remove', name }, err);
 			}
-			default: {
-				return sendSimpleEmbeddedError(msg, 'Invalid subcommand!');
-			}
-		}		
+		} else {
+			return sendSimpleEmbeddedError(msg, `A role with the supplied name \`${name}\` was not found on this guild.`);
+		}
 	}
 
-	private catchError(msg: KlasaMessage, args: { subCommand: string, name: string, arg3: string }, err: Error) {
+	private catchError(msg: KlasaMessage, args: { subCommand: string, name: string, arg3?: string }, err: Error) {
 		// Build warning message
 		let roleWarn = stripIndents`
 			Error occurred in \`role\` command!
@@ -246,9 +200,6 @@ export default class RoleCommand extends Command {
 		}
 
 		roleWarn += `**Error Message:** ${err}`;
-
-		deleteCommandMessages(msg);
-		stopTyping(msg);
 
 		// Emit warn event for debugging
 		msg.client.emit('warn', roleWarn);

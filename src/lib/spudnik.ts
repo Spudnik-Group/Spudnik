@@ -2,12 +2,8 @@ import chalk from 'chalk';
 import { Client, KlasaClientOptions } from 'klasa';
 import { Configuration } from './interfaces';
 import * as http from 'http';
-import * as KlasaMemberGateway from 'klasa-member-gateway';
 
 const PORT = process.env.PORT || 1337;
-
-// Load Plugins
-Client.use(KlasaMemberGateway);
 
 // Define Default Schemas
 Client.defaultPermissionLevels
@@ -15,8 +11,8 @@ Client.defaultPermissionLevels
 	.add(2, ({ guild, member }) => guild && member.permissions.has('MANAGE_ROLES'), { fetch: true })
 	.add(3, ({ guild, member }) => guild && member.permissions.has('KICK_MEMBERS'), { fetch: true })
 	.add(4, ({ guild, member }) => guild && member.permissions.has('BAN_MEMBERS'), { fetch: true })
-	// TODO: add staff feature
-	// .add(5, ({ guild, author }) => guild.settings['staff'].includes(author.id));
+// TODO: add staff feature
+// .add(5, ({ guild, author }) => guild.settings['staff'].includes(author.id));
 Client.defaultGuildSchema
 	// TODO: add botAnnounce feature
 	// .add('channels', folder => folder
@@ -53,6 +49,7 @@ Client.defaultGuildSchema
 		.add('tos', folder => folder
 			.add('tosChannel', 'TextChannel', { default: null })
 			.add('tosMessages', 'tosMessage', { array: true })
+			.add('tosMessageCount', 'number', { default: 0 })
 		)
 		.add('embedColor', 'string', { default: '555555' })
 		.add('adblockEnabled', 'boolean', { default: false })

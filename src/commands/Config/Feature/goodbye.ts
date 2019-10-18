@@ -1,9 +1,8 @@
 import { stripIndents } from 'common-tags';
-import { Channel, Message, MessageEmbed } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
-import { sendSimpleEmbeddedError, startTyping, sendSimpleEmbeddedMessage, stopTyping } from '../../lib/helpers';
+import { Channel, MessageEmbed } from 'discord.js';
+import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../../lib/helpers';
 import * as format from 'date-fns/format';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Manage notifications when someone leaves the guild.
@@ -13,6 +12,7 @@ import * as format from 'date-fns/format';
  * @extends {Command}
  */
 export default class GoodbyeCommand extends Command {
+
 	/**
 	 * Creates an instance of GoodbyeCommand.
 	 *
@@ -21,65 +21,33 @@ export default class GoodbyeCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			args: [
-				{
-					key: 'subCommand',
-					prompt: 'What sub-command would you like to use?\nOptions are:\n* status\n* channel\n* message\n* enable\n* disable',
-					type: 'string',
-					validate: (subCommand: string) => {
-						const allowedSubCommands = ['message', 'channel', 'enable', 'disable', 'status'];
-						if (allowedSubCommands.indexOf(subCommand) !== -1) return true;
-						
-						return 'You provided an invalid subcommand.';
-					}
-				},
-				{
-					default: '',
-					key: 'content',
-					prompt: '#channelMention or goodbye text\n',
-					type: 'channel|string'
-				}
-			],
 			description: 'Used to configure the message to be sent when a user leaves your guild.',
-			details: stripIndents`
-				syntax: \`!goodbye <status|message|channel|enable|disable> (text | #channelMention)\`
+			extendedHelp: stripIndents`
+				syntax: \`!goodbye <status|message|channel|on|off> (text | #channelMention)\`
 
 				\`status\` - return the goodbye feature configuration details.
 				\`message (text to say goodbye/heckle)\` - set the goodbye message. Use { guild } for guild name, and { user } to reference the user leaving.
 				\`channel <#channelMention>\` - set the channel for the goodbye message to be displayed.
-				\`enable\` - enable the goodbye message feature.
-				\`disable\` - disable the goodbye message feature.
+				\`on\` - enable the goodbye message feature.
+				\`off\` - disable the goodbye message feature.
 
 				\`MANAGE_GUILD\` permission required.
 			`,
-			examples: [
-				'!goodbye message Everyone mourn the loss of {user}',
-				'!goodbye status',
-				'!goodbye channel #general',
-				'!goodbye enable',
-				'!goodbye disable'
-			],
-			group: 'feature',
-			guildOnly: true,
-			memberName: 'goodbye',
 			name: 'goodbye',
-			throttling: {
-				duration: 3,
-				usages: 2
-			},
-			userPermissions: ['MANAGE_GUILD']
+			permissionLevel: 6,
+			usage: '<message|channel|on|off|status> (content:channel|...string)'
 		});
 	}
 
 	/**
-	 * Run the "goodbye" command.
+	 * Change the message that is sent
 	 *
 	 * @param {KlasaMessage} msg
-	 * @param {{ subCommand: string, content: Channel | string }} args
+	 * @param {string} content
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof GoodbyeCommand
 	 */
-	public async run(msg: KlasaMessage, args: { subCommand: string, content: Channel | string }): Promise<KlasaMessage | KlasaMessage[]> {
+	public async message(msg: KlasaMessage, [content]): Promise<KlasaMessage | KlasaMessage[]> {
 		const goodbyeEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png',
@@ -87,134 +55,182 @@ export default class GoodbyeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		
-		startTyping(msg);
+		if (!content) {
+			return sendSimpleEmbeddedMessage(msg, 'You must include the new message along with the `message` command. See `help goodbye` for details.', 3000);
+		} else {
+			try {
+				await msg.guild.settings.update('goodbyeMessage', content);
+				// Set up embed message
+				goodbyeEmbed.setDescription(stripIndents`
+							**Member:** ${msg.author.tag} (${msg.author.id})
+							**Action:** Goodbye message set to:
+							\`\`\`${content}\`\`\`
+						`);
+				goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
 
-		switch (args.subCommand.toLowerCase()) {
-			case 'channel': {
-				const goodbyeChannel = await msg.guild.settings.get('goodbyeChannel', null);
-				if (args.content instanceof Channel) {
-					const channelID = (args.content as Channel).id;
+				return this.sendSuccess(msg, goodbyeEmbed);
+			} catch (err) {
+				return this.catchError(msg, { subCommand: 'message', content }, err)
+			}
+		}
+	}
 
-					if (goodbyeChannel && goodbyeChannel === channelID) {
-						stopTyping(msg);
+	/**
+	 * Change the channel the goodbye message is sent to
+	 *
+	 * @param {KlasaMessage} msg
+	 * @param {Channel} content
+	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
+	 * @memberof GoodbyeCommand
+	 */
+	public async channel(msg: KlasaMessage, [content]): Promise<KlasaMessage | KlasaMessage[]> {
+		const goodbyeEmbed = new MessageEmbed({
+			author: {
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png',
+				name: 'Server Goodbye Message'
+			},
+			color: getEmbedColor(msg)
+		}).setTimestamp();
+		const goodbyeChannel = await msg.guild.settings.get('goodbyeChannel');
+		if (content instanceof Channel) {
+			const channelID = (content as Channel).id;
 
-						return sendSimpleEmbeddedMessage(msg, `Goodbye channel already set to <#${channelID}>!`, 3000);
-					} else {
-						try {
-							await msg.guild.settings.set('goodbyeChannel', channelID);
-							// Set up embed message
-							goodbyeEmbed.setDescription(stripIndents`
+			if (goodbyeChannel && goodbyeChannel === channelID) {
+				return sendSimpleEmbeddedMessage(msg, `Goodbye channel already set to <#${channelID}>!`, 3000);
+			} else {
+				try {
+					await msg.guild.settings.update('goodbyeChannel', channelID);
+					// Set up embed message
+					goodbyeEmbed.setDescription(stripIndents`
 								**Member:** ${msg.author.tag} (${msg.author.id})
 								**Action:** Goodbye Channel set to <#${channelID}>
 							`);
-							goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
+					goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
 
-							return this.sendSuccess(msg, goodbyeEmbed);
-						} catch (err) {
-							return this.catchError(msg, args, err)
-						}
-					}
-				} else {
-					stopTyping(msg);
-
-					return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
+					return this.sendSuccess(msg, goodbyeEmbed);
+				} catch (err) {
+					return this.catchError(msg, { subCommand: 'channel', content }, err)
 				}
 			}
-			case 'message': {
-				if (!args.content) {
-					stopTyping(msg);
+		} else {
+			return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
+		}
+	}
 
-					return sendSimpleEmbeddedMessage(msg, 'You must include the new message along with the `message` command. See `help goodbye` for details.', 3000);
-				} else {
-					try {
-						await msg.guild.settings.set('goodbyeMessage', args.content);
-						// Set up embed message
-						goodbyeEmbed.setDescription(stripIndents`
-							**Member:** ${msg.author.tag} (${msg.author.id})
-							**Action:** Goodbye message set to:
-							\`\`\`${args.content}\`\`\`
-						`);
-						goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
-
-						return this.sendSuccess(msg, goodbyeEmbed);
-					} catch (err) {
-						return this.catchError(msg, args, err)
-					}
-				}
-			}
-			case 'enable': {
-				const goodbyeChannel = await msg.guild.settings.get('goodbyeChannel', null);
-				const goodbyeEnabled = await msg.guild.settings.get('goodbyeEnabled', false);
-				if (goodbyeChannel) {
-					if (goodbyeEnabled) {
-						stopTyping(msg);
-	
-						return sendSimpleEmbeddedMessage(msg, 'Goodbye message already enabled!', 3000);
-					} else {
-						try {
-							await msg.guild.settings.set('goodbyeEnabled', true);
-							// Set up embed message
-							goodbyeEmbed.setDescription(stripIndents`
+	/**
+	 * Turn the feature on
+	 *
+	 * @param {KlasaMessage} msg
+	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
+	 * @memberof GoodbyeCommand
+	 */
+	public async on(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+		const goodbyeEmbed = new MessageEmbed({
+			author: {
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png',
+				name: 'Server Goodbye Message'
+			},
+			color: getEmbedColor(msg)
+		}).setTimestamp();
+		const goodbyeChannel = await msg.guild.settings.get('goodbyeChannel');
+		const goodbyeEnabled = await msg.guild.settings.get('goodbyeEnabled');
+		if (goodbyeChannel) {
+			if (goodbyeEnabled) {
+				return sendSimpleEmbeddedMessage(msg, 'Goodbye message already enabled!', 3000);
+			} else {
+				try {
+					await msg.guild.settings.update('goodbyeEnabled', true);
+					// Set up embed message
+					goodbyeEmbed.setDescription(stripIndents`
 								**Member:** ${msg.author.tag} (${msg.author.id})
 								**Action:** Goodbye messages set to: _Enabled_
 							`);
-							goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
+					goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
 
-							return this.sendSuccess(msg, goodbyeEmbed);
-						} catch (err) {
-							return this.catchError(msg, args, err)
-						}
-					}
-				} else {
-					stopTyping(msg);
-
-					return sendSimpleEmbeddedError(msg, 'Please set the channel for the goodbye message before enabling the feature. See `help goodbye` for info.', 3000);
+					return this.sendSuccess(msg, goodbyeEmbed);
+				} catch (err) {
+					return this.catchError(msg, { subCommand: 'on' }, err)
 				}
 			}
-			case 'disable': {
-				const goodbyeEnabled = await msg.guild.settings.get('goodbyeEnabled', false);
-				if (goodbyeEnabled) {
-					try {
-						await msg.guild.settings.set('goodbyeEnabled', false);
-						// Set up embed message
-						goodbyeEmbed.setDescription(stripIndents`
+		} else {
+			return sendSimpleEmbeddedError(msg, 'Please set the channel for the goodbye message before enabling the feature. See `help goodbye` for info.', 3000);
+		}
+	}
+
+	/**
+	 * Turn the feature off
+	 *
+	 * @param {KlasaMessage} msg
+	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
+	 * @memberof GoodbyeCommand
+	 */
+	public async off(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+		const goodbyeEmbed = new MessageEmbed({
+			author: {
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png',
+				name: 'Server Goodbye Message'
+			},
+			color: getEmbedColor(msg)
+		}).setTimestamp();
+		const goodbyeEnabled = await msg.guild.settings.get('goodbyeEnabled');
+		if (goodbyeEnabled) {
+			try {
+				await msg.guild.settings.update('goodbyeEnabled', false);
+				// Set up embed message
+				goodbyeEmbed.setDescription(stripIndents`
 							**Member:** ${msg.author.tag} (${msg.author.id})
 							**Action:** Goodbye messages set to: _Disabled_
 						`);
-						goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
+				goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
 
-						return this.sendSuccess(msg, goodbyeEmbed);
-					} catch (err) {
-						return this.catchError(msg, args, err)
-					}
-				} else {
-					stopTyping(msg);
-
-					return sendSimpleEmbeddedMessage(msg, 'Goodbye message already disabled!', 3000);
-				}
+				return this.sendSuccess(msg, goodbyeEmbed);
+			} catch (err) {
+				return this.catchError(msg, { subCommand: 'off' }, err)
 			}
-			case 'status': {
-				const goodbyeChannel = await msg.guild.settings.get('goodbyeChannel', null);
-				const goodbyeMessage = await msg.guild.settings.get('goodbyeMessage', '{user} has left the server.');
-				const goodbyeEnabled = await msg.guild.settings.get('goodbyeEnabled', false);
-				// Set up embed message
-				goodbyeEmbed.setDescription(stripIndents`
+		} else {
+			return sendSimpleEmbeddedMessage(msg, 'Goodbye message already disabled!', 3000);
+		}
+	}
+
+	/**
+	 * Return the status of the feature
+	 *
+	 * @param {KlasaMessage} msg
+	 * @param {Channel | string } content
+	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
+	 * @memberof GoodbyeCommand
+	 */
+	public async status(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+		const goodbyeEmbed = new MessageEmbed({
+			author: {
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png',
+				name: 'Server Goodbye Message'
+			},
+			color: getEmbedColor(msg)
+		}).setTimestamp();
+		const goodbyeChannel = await msg.guild.settings.get('goodbyeChannel');
+		const goodbyeMessage = await msg.guild.settings.get('goodbyeMessage');
+		const goodbyeEnabled = await msg.guild.settings.get('goodbyeEnabled');
+		// Set up embed message
+		goodbyeEmbed.setDescription(stripIndents`
 					Goodbye feature: ${goodbyeEnabled ? '_Enabled_' : '_Disabled_'}
 					Channel set to: <#${goodbyeChannel}>
 					Message set to:
 					\`\`\`${goodbyeMessage}\`\`\`
 				`);
-				deleteCommandMessages(msg);
-				stopTyping(msg);
-
-				// Send the success response
-				return msg.embed(goodbyeEmbed);
-			}
-		}
+		// Send the success response
+		return msg.sendEmbed(goodbyeEmbed);
 	}
-	
-	private catchError(msg: KlasaMessage, args: { subCommand: string, content: Channel | string }, err: Error) {
+
+	/**
+	 * Handle errors in the command's execution
+	 *
+	 * @param {KlasaMessage} msg
+	 * @param {{ subCommand: string, content?: Channel | string }} args
+	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
+	 * @memberof GoodbyeCommand
+	 */
+	private catchError(msg: KlasaMessage, args: { subCommand: string, content?: Channel | string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Build warning message
 		let goodbyeWarn = stripIndents`
 			Error occurred in \`goodbye\` command!
@@ -224,13 +240,13 @@ export default class GoodbyeCommand extends Command {
 			**Input:** \`Goodbye ${args.subCommand.toLowerCase()}\`
 		`;
 		let goodbyeUserWarn = '';
-		
+
 		switch (args.subCommand.toLowerCase()) {
-			case 'enable': {
+			case 'on': {
 				goodbyeUserWarn = 'Enabling goodbye feature failed!';
 				break;
 			}
-			case 'disable': {
+			case 'off': {
 				goodbyeUserWarn = 'Disabling goodbye feature failed!';
 				break;
 			}
@@ -249,8 +265,6 @@ export default class GoodbyeCommand extends Command {
 		}
 		goodbyeWarn += stripIndents`
 			**Error Message:** ${err}`;
-		
-		stopTyping(msg);
 
 		// Emit warn event for debugging
 		msg.client.emit('warn', goodbyeWarn);
@@ -261,10 +275,8 @@ export default class GoodbyeCommand extends Command {
 
 	private sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
 		modLogMessage(msg, embed);
-		deleteCommandMessages(msg);
-		stopTyping(msg);
 
 		// Send the success response
-		return msg.embed(embed);
+		return msg.sendEmbed(embed);
 	}
 }

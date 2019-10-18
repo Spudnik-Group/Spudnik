@@ -1,9 +1,8 @@
 import { stripIndents } from 'common-tags';
-import { Message, MessageEmbed } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, stopTyping } from '../../lib/helpers';
-import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
+import { MessageEmbed } from 'discord.js';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, getEmbedColor, modLogMessage } from '../../../lib/helpers';
 import * as format from 'date-fns/format';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Enable or disable the adblock feature.
@@ -21,42 +20,44 @@ export default class AdblockCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			args: [
-				{
-					key: 'subCommand',
-					prompt: 'Would you like to enable or disable the feature?\n',
-					type: 'string',
-					validate: (subCommand: string) => {
-						const allowedSubCommands = ['enable', 'disable'];
-						
-						if (allowedSubCommands.indexOf(subCommand) !== -1) return true;
-						
-						return 'You provided an invalid subcommand.';
-					}
-				}
-			],
-			clientPermissions: ['MANAGE_MESSAGES'],
 			description: 'Enable or disable the adblock feature.',
-			details: stripIndents`
+			extendedHelp: stripIndents`
 				syntax: \`!adblock <enable|disable>\`
 
 				\`MANAGE_MESSAGES\` permission required.`,
-			examples: [
-				'!adblock enable',
-				'!adblock disable'
-			],
-			group: 'feature',
-			guildOnly: true,
-			memberName: 'adblock',
 			name: 'adblock',
-			throttling: {
-				duration: 3,
-				usages: 2
-			},
-			userPermissions: ['MANAGE_MESSAGES']
+			permissionLevel: 1,
+			usage: '<on|off>',
+			requiredPermissions: ['MANAGE_MESSAGES']
 		});
 	}
 
+	public async off(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+		const adblockEnabled = await msg.guild.settings.get('adblockEnabled');
+		const adblockEmbed: MessageEmbed = new MessageEmbed({
+			author: {
+				name: '🛑 Adblock'
+			},
+			color: getEmbedColor(msg),
+			description: ''
+		}).setTimestamp();
+		if (adblockEnabled) {
+			try {
+				await msg.guild.settings.update('adblockEnabled', false);
+				// Set up embed message
+				adblockEmbed.setDescription(stripIndents`
+						**Member:** ${msg.author.tag} (${msg.author.id})
+						**Action:** Adblock _Disabled_
+					`);
+
+				return this.sendSuccess(msg, adblockEmbed);
+			} catch (err) {
+				return this.catchError(msg, { subCommand: 'disable' }, err)
+			}
+		} else {
+			return sendSimpleEmbeddedMessage(msg, 'Adblock feature already disabled!', 3000);
+		}
+	}
 	/**
 	 * Run the "adblock" command.
 	 *
@@ -65,8 +66,8 @@ export default class AdblockCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof AdblockCommand
 	 */
-	public async run(msg: KlasaMessage, args: { subCommand: string }): Promise<KlasaMessage | KlasaMessage[]> {
-		const adblockEnabled = await msg.guild.settings.get('adblockEnabled', false);
+	public async on(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+		const adblockEnabled = await msg.guild.settings.get('adblockEnabled');
 		const adblockEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				name: '🛑 Adblock'
@@ -74,46 +75,20 @@ export default class AdblockCommand extends Command {
 			color: getEmbedColor(msg),
 			description: ''
 		}).setTimestamp();
-
-		startTyping(msg);
-
-		if (args.subCommand.toLowerCase() === 'enable') {
-			if (adblockEnabled) {
-				stopTyping(msg);
-
-				return sendSimpleEmbeddedMessage(msg, 'Adblock feature already enabled!', 3000);
-			} else {
-				try {
-					await msg.guild.settings.set('adblockEnabled', true);
-					// Set up embed message
-					adblockEmbed.setDescription(stripIndents`
+		if (adblockEnabled) {
+			return sendSimpleEmbeddedMessage(msg, 'Adblock feature already enabled!', 3000);
+		} else {
+			try {
+				await msg.guild.settings.update('adblockEnabled', true);
+				// Set up embed message
+				adblockEmbed.setDescription(stripIndents`
 						**Member:** ${msg.author.tag} (${msg.author.id})
 						**Action:** Adblock _Enabled_
 					`);
 
-					return this.sendSuccess(msg, adblockEmbed);
-				} catch (err) {
-					return this.catchError(msg, args, err)
-				}
-			}
-		} else if (args.subCommand.toLowerCase() === 'disable') {
-			if (adblockEnabled) {
-				try {
-					await msg.guild.settings.set('adblockEnabled', false);
-					// Set up embed message
-					adblockEmbed.setDescription(stripIndents`
-						**Member:** ${msg.author.tag} (${msg.author.id})
-						**Action:** Adblock _Disabled_
-					`);
-
-					return this.sendSuccess(msg, adblockEmbed);
-				} catch (err) {
-					return this.catchError(msg, args, err)
-				}
-			} else {
-				stopTyping(msg);
-
-				return sendSimpleEmbeddedMessage(msg, 'Adblock feature already disabled!', 3000);
+				return this.sendSuccess(msg, adblockEmbed);
+			} catch (err) {
+				return this.catchError(msg, { subCommand: 'enable' }, err)
 			}
 		}
 	}
@@ -130,8 +105,6 @@ export default class AdblockCommand extends Command {
 		`);
 
 		// Inform the user the command failed
-		stopTyping(msg);
-
 		if (args.subCommand.toLowerCase() === 'enable') {
 			return sendSimpleEmbeddedError(msg, 'Enabling adblock feature failed!');
 		} else {
@@ -141,10 +114,7 @@ export default class AdblockCommand extends Command {
 
 	private sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
 		modLogMessage(msg, embed);
-		deleteCommandMessages(msg);
-		stopTyping(msg);
-
 		// Send the success response
-		return msg.embed(embed);
+		return msg.sendEmbed(embed);
 	}
 }

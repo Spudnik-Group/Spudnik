@@ -26,7 +26,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 			requiredPermissions: ['MANAGE_MESSAGES'],
 			description: 'Enable or disable the Delete Command Messages feature.',
 			extendedHelp: stripIndents`
-				syntax: \`!delete-command-messages <enable|disable>\`
+				syntax: \`!delete-command-messages <on|off>\`
 
 				\`MANAGE_MESSAGES\` permission required.`,
 			name: 'delete-command-messages',
@@ -66,7 +66,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 
 				return this.sendSuccess(msg, deleteCommandMessagesEmbed);
 			} catch (err) {
-				return this.catchError(msg, {subCommand: 'enable'}, err)
+				return this.catchError(msg, { subCommand: 'enable' }, err)
 			}
 		}
 	}
@@ -98,7 +98,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 
 				return this.sendSuccess(msg, deleteCommandMessagesEmbed);
 			} catch (err) {
-				return this.catchError(msg, {subCommand: 'disable'}, err)
+				return this.catchError(msg, { subCommand: 'disable' }, err)
 			}
 		} else {
 			return sendSimpleEmbeddedMessage(msg, 'DeleteCommandMessages feature already disabled!', 3000);
@@ -123,7 +123,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 			return sendSimpleEmbeddedError(msg, 'Disabling DeleteCommandMessages feature failed!');
 		}
 	}
-	
+
 	private sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
 		// Send the success response
 		return msg.sendEmbed(embed);

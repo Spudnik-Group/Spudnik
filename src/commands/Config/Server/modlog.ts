@@ -1,9 +1,8 @@
 import { stripIndents } from 'common-tags';
-import { Message, MessageEmbed, Channel } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, startTyping, stopTyping } from '../../lib/helpers';
-import { getEmbedColor, modLogMessage, deleteCommandMessages } from '../../lib/custom-helpers';
+import { MessageEmbed, Channel } from 'discord.js';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, getEmbedColor, modLogMessage } from '../../../lib/helpers';
 import * as format from 'date-fns/format';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Enable or disable the Modlog feature.
@@ -21,51 +20,118 @@ export default class ModlogCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			args: [
-				{
-					key: 'subCommand',
-					prompt: 'What sub-command would you like to use?\nOptions are:\n* status\n* channel\n* enable\n* disable',
-					type: 'string',
-					validate: (subCommand: string) => {
-						const allowedSubCommands = ['status', 'enable', 'disable', 'channel'];
-						if (allowedSubCommands.indexOf(subCommand) !== -1) return true;
-						
-						return 'You provided an invalid subcommand.';
-					}
-				},
-				{
-					default: '',
-					key: 'channel',
-					prompt: '#channelMention',
-					type: 'channel'
-				}
-			],
 			description: 'Enable or disable the modlog feature.',
-			details: stripIndents`
+			extendedHelp: stripIndents`
 				syntax: \`!modlog <status|enable|disable|channel> (#channelMention)\`
 
 				\`status\` - return the mod log configuration details.
 				\`channel <#channelMention>\` - set mod log channel to the channel supplied.
-				\`enable\` - enable the mod log feature.
-				\`disable\` - disable the mod log feature.
+				\`on\` - enable the mod log feature.
+				\`off\` - disable the mod log feature.
 				
 				\`MANAGE_GUILD\` permission required.`,
-			examples: [
-				'!modlog status',
-				'!modlog enable',
-				'!modlog disable',
-				'!modlog channel #modlog'
-			],
-			group: 'bot_config',
-			guildOnly: true,
-			memberName: 'modlog',
 			name: 'modlog',
-			throttling: {
-				duration: 3,
-				usages: 2
-			},
-			userPermissions: ['MANAGE_GUILD']
+			permissionLevel: 6,
+			usage: '<on|off|status|channel> (channel:channel)'
 		});
+	}
+
+	public async on(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+		const modlogEmbed: MessageEmbed = new MessageEmbed({
+			author: {
+				iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/memo_1f4dd.png',
+				name: 'Mod Log'
+			},
+			color: getEmbedColor(msg),
+			description: ''
+		}).setTimestamp();
+		const modlogChannel = await msg.guild.settings.get('modlogChannel');
+		const modlogEnabled = await msg.guild.settings.get('modlogEnabled');
+		if (modlogChannel) {
+			if (modlogEnabled) {
+				return sendSimpleEmbeddedMessage(msg, 'Modlog feature already enabled!', 3000);
+			} else {
+				try {
+					await msg.guild.settings.update('modlogEnabled', true);
+					// Set up embed message
+					modlogEmbed.setDescription(stripIndents`
+								**Member:** ${msg.author.tag} (${msg.author.id})
+								**Action:** Modlog set to: _Enabled_
+							`);
+					modlogEmbed.setFooter('Use the `modlog status` command to see the details of this feature');
+
+					return this.sendSuccess(msg, modlogEmbed);
+				} catch (err) {
+					return this.catchError(msg, { subCommand: 'enable' }, err);
+				}
+			}
+		} else {
+			return sendSimpleEmbeddedError(msg, 'Please set the channel for the modlog before enabling the feature. See `!help modlog` for info.', 3000);
+		}
+	}
+
+	public async off(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+		const modlogEmbed: MessageEmbed = new MessageEmbed({
+			author: {
+				iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/memo_1f4dd.png',
+				name: 'Mod Log'
+			},
+			color: getEmbedColor(msg),
+			description: ''
+		}).setTimestamp();
+		const modlogEnabled = await msg.guild.settings.get('modlogEnabled');
+		if (modlogEnabled) {
+			try {
+				await msg.guild.settings.update('modlogEnabled', false);
+				// Set up embed message
+				modlogEmbed.setDescription(stripIndents`
+							**Member:** ${msg.author.tag} (${msg.author.id})
+							**Action:** Modlog set to: _Disabled_
+						`);
+				modlogEmbed.setFooter('Use the `modlog status` command to see the details of this feature');
+
+				return this.sendSuccess(msg, modlogEmbed);
+			} catch (err) {
+				return this.catchError(msg, { subCommand: 'disable' }, err);
+			}
+		} else {
+			return sendSimpleEmbeddedMessage(msg, 'Modlog feature already disabled!', 3000);
+		}
+	}
+
+	public async channel(msg: KlasaMessage, [channel]): Promise<KlasaMessage | KlasaMessage[]> {
+		const modlogEmbed: MessageEmbed = new MessageEmbed({
+			author: {
+				iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/memo_1f4dd.png',
+				name: 'Mod Log'
+			},
+			color: getEmbedColor(msg),
+			description: ''
+		}).setTimestamp();
+		const modlogChannel = await msg.guild.settings.get('modlogChannel');
+		if (channel instanceof Channel) {
+			const channelID = (channel as Channel).id;
+
+			if (modlogChannel && modlogChannel === channelID) {
+				return sendSimpleEmbeddedMessage(msg, `Modlog channel already set to <#${channelID}>!`, 3000);
+			} else {
+				try {
+					await msg.guild.settings.update('modlogChannel', channelID);
+					// Set up embed message
+					modlogEmbed.setDescription(stripIndents`
+								**Member:** ${msg.author.tag} (${msg.author.id})
+								**Action:** Modlog Channel set to <#${channelID}>
+							`);
+					modlogEmbed.setFooter('Use the `modlog status` command to see the details of this feature');
+
+					return this.sendSuccess(msg, modlogEmbed);
+				} catch (err) {
+					return this.catchError(msg, { subCommand: 'channel', channel }, err);
+				}
+			}
+		} else {
+			return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
+		}
 	}
 
 	/**
@@ -76,7 +142,7 @@ export default class ModlogCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof ModlogCommand
 	 */
-	public async run(msg: KlasaMessage, args: { subCommand: string, channel: Channel }): Promise<KlasaMessage | KlasaMessage[]> {
+	public async status(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const modlogEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/memo_1f4dd.png',
@@ -85,107 +151,17 @@ export default class ModlogCommand extends Command {
 			color: getEmbedColor(msg),
 			description: ''
 		}).setTimestamp();
-
-		startTyping(msg);
-
-		switch (args.subCommand.toLowerCase()) {
-			case 'enable': {
-				const modlogChannel = await msg.guild.settings.get('modlogChannel', null);
-				const modlogEnabled = await msg.guild.settings.get('modlogEnabled', false);
-				if (modlogChannel) {
-					if (modlogEnabled) {
-						stopTyping(msg);
-
-						return sendSimpleEmbeddedMessage(msg, 'Modlog feature already enabled!', 3000);
-					} else {
-						try {
-							await msg.guild.settings.set('modlogEnabled', true);
-							// Set up embed message
-							modlogEmbed.setDescription(stripIndents`
-								**Member:** ${msg.author.tag} (${msg.author.id})
-								**Action:** Modlog set to: _Enabled_
-							`);
-							modlogEmbed.setFooter('Use the `modlog status` command to see the details of this feature');
-
-							return this.sendSuccess(msg, modlogEmbed);
-						} catch (err) {
-							return this.catchError(msg, args, err);
-						}
-					}
-				} else {
-					stopTyping(msg);
-
-					return sendSimpleEmbeddedError(msg, 'Please set the channel for the modlog before enabling the feature. See `!help modlog` for info.', 3000);
-				}
-			}
-			case 'disable': {
-				const modlogEnabled = await msg.guild.settings.get('modlogEnabled', false);
-				if (modlogEnabled) {
-					try {
-						await msg.guild.settings.set('modlogEnabled', false);
-						// Set up embed message
-						modlogEmbed.setDescription(stripIndents`
-							**Member:** ${msg.author.tag} (${msg.author.id})
-							**Action:** Modlog set to: _Disabled_
-						`);
-						modlogEmbed.setFooter('Use the `modlog status` command to see the details of this feature');
-
-						return this.sendSuccess(msg, modlogEmbed);
-					} catch (err) {
-						return this.catchError(msg, args, err);
-					}
-				} else {
-					stopTyping(msg);
-
-					return sendSimpleEmbeddedMessage(msg, 'Modlog feature already disabled!', 3000);
-				}
-			}
-			case 'channel': {
-				const modlogChannel = await msg.guild.settings.get('modlogChannel', null);
-				if (args.channel instanceof Channel) {
-					const channelID = (args.channel as Channel).id;
-
-					if (modlogChannel && modlogChannel === channelID) {
-						stopTyping(msg);
-
-						return sendSimpleEmbeddedMessage(msg, `Modlog channel already set to <#${channelID}>!`, 3000);
-					} else {
-						try {
-							await msg.guild.settings.set('modlogChannel', channelID);
-							// Set up embed message
-							modlogEmbed.setDescription(stripIndents`
-								**Member:** ${msg.author.tag} (${msg.author.id})
-								**Action:** Modlog Channel set to <#${channelID}>
-							`);
-							modlogEmbed.setFooter('Use the `modlog status` command to see the details of this feature');
-
-							return this.sendSuccess(msg, modlogEmbed);
-						} catch (err) {
-							return this.catchError(msg, args, err);
-						}
-					}
-				} else {
-					stopTyping(msg);
-
-					return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
-				}
-			}
-			case 'status': {
-				const modlogChannel = await msg.guild.settings.get('modlogChannel', null);
-				const modlogEnabled = await msg.guild.settings.get('modlogEnabled', false);
-				// Set up embed message
-				modlogEmbed.setDescription(stripIndents`Modlog feature: ${modlogEnabled ? '_Enabled_' : '_Disabled_'}
+		const modlogChannel = await msg.guild.settings.get('modlogChannel');
+		const modlogEnabled = await msg.guild.settings.get('modlogEnabled');
+		// Set up embed message
+		modlogEmbed.setDescription(stripIndents`Modlog feature: ${modlogEnabled ? '_Enabled_' : '_Disabled_'}
 										Channel set to: <#${modlogChannel}>`);
-				deleteCommandMessages(msg);
-				stopTyping(msg);
 
-				// Send the success response
-				return msg.embed(modlogEmbed);
-			}
-		}
+		// Send the success response
+		return msg.sendEmbed(modlogEmbed);
 	}
 
-	private catchError(msg: KlasaMessage, args: { subCommand: string, channel: Channel }, err: Error) {
+	private catchError(msg: KlasaMessage, args: { subCommand: string, channel?: Channel }, err: Error) {
 		// Build warning message
 		let modlogWarn = stripIndents`
 			Error occurred in \`accept\` command!
@@ -214,8 +190,6 @@ export default class ModlogCommand extends Command {
 		}
 		modlogWarn += stripIndents`
 			**Error Message:** ${err}`;
-		
-		stopTyping(msg);
 
 		// Emit warn event for debugging
 		msg.client.emit('warn', modlogWarn);
@@ -226,10 +200,8 @@ export default class ModlogCommand extends Command {
 
 	private sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
 		modLogMessage(msg, embed);
-		deleteCommandMessages(msg);
-		stopTyping(msg);
 
 		// Send the success response
-		return msg.embed(embed);
+		return msg.sendEmbed(embed);
 	}
 }
