@@ -1,7 +1,6 @@
 import { stripIndents } from 'common-tags';
-import { Message } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
 import { list } from '../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage, Possible } from 'klasa';
 //tslint:disable-next-line
 const sentences = require('../../extras/typing-test');
 const difficulties = ['easy', 'medium', 'hard', 'extreme', 'impossible'];
@@ -30,27 +29,19 @@ export default class TypingTestCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['typing-game'],
-			args: [
-				{
-					key: 'difficulty',
-					oneOf: difficulties,
-					parse: (difficulty: string) => difficulty.toLowerCase(),
-					prompt: `What should the difficulty of the game be? Either ${list(difficulties, 'or')}.`,
-					type: 'string'
-				}
-			],
 			description: 'See how fast you can type a sentence in a given time limit.',
-			details: stripIndents`
+			extendedHelp: stripIndents`
 				syntax: \`!typing-test <difficulty\`
 				**Difficulties**: ${difficulties.join(', ')}
 			`,
-			examples: ['!typing-test easy', '!typing-test hard'],
-			group: 'game',
-			guildOnly: true,
-			memberName: 'typing-test',
-			name: 'typing-test'
+			name: 'typing-test',
+			usage: '<difficulty:'
 		});
 
+		this.createCustomResolver('difficulty', (arg: string, possible: Possible, msg: KlasaMessage, [difficulty]) => {
+			if (difficulties.includes(arg.toLowerCase())) return arg;
+			throw `Possible difficulties: ${list(difficulties, 'or')}.`;
+		})
 	}
 
 	/**
@@ -60,9 +51,9 @@ export default class TypingTestCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof TypingTestCommand
 	 */
-	public async run(msg: KlasaMessage, args: { difficulty: string }): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [difficulty]): Promise<KlasaMessage | KlasaMessage[]> {
 		const sentence = sentences[Math.floor(Math.random() * sentences.length)];
-		const time = times[args.difficulty];
+		const time = times[difficulty];
 		await msg.reply(stripIndents`
 			**You have ${time / 1000} seconds to type this sentence.**
 			${sentence}
@@ -72,8 +63,8 @@ export default class TypingTestCommand extends Command {
 			max: 1,
 			time: time
 		});
-		if (!msgs.size || msgs.first().content !== sentence) { return msg.reply('Sorry! You lose!'); }
-		
-		return msg.reply(`Nice job! 10/10! You deserve some cake! (Took ${(Date.now() - now) / 1000} seconds)`);
+		if (!msgs.size || msgs.first().content !== sentence) { return msg.sendMessage('Sorry! You lose!', { reply: msg.author }); }
+
+		return msg.sendMessage(`Nice job! 10/10! You deserve some cake! (Took ${(Date.now() - now) / 1000} seconds)`, { reply: msg.author });
 	}
 }

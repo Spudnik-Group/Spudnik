@@ -1,7 +1,6 @@
 import { stripIndents } from 'common-tags';
-import { Message, User } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
 import { verify } from '../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Starts a game of Tic Tac Toe.
@@ -21,22 +20,12 @@ export default class TicTacToeCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			args: [
-				{
-					key: 'opponent',
-					prompt: 'What user would you like to challenge?',
-					type: 'user'
-				}
-			],
 			description: 'Play a game of tic-tac-toe with another user.',
-			details: stripIndents`
+			extendedHelp: stripIndents`
 				syntax: \`!tic-tac-toe <@userMention>\`
 			`,
-			examples: ['!tic-tac-toe @someone'],
-			group: 'game',
-			guildOnly: true,
-			memberName: 'tic-tac-toe',
-			name: 'tic-tac-toe'
+			name: 'tic-tac-toe',
+			usage: '<opponent:User>'
 		});
 
 	}
@@ -48,20 +37,20 @@ export default class TicTacToeCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof TicTacToeCommand
 	 */
-	public async run(msg: KlasaMessage, args: { opponent: User }): Promise<KlasaMessage | KlasaMessage[]> {
-		if (args.opponent.bot) { return msg.reply('Bots may not be played against.'); }
-		if (args.opponent.id === msg.author.id) { return msg.reply('You may not play against yourself.'); }
-		if (this.playing.has(msg.channel.id)) { return msg.reply('Only one game may be occurring per channel.'); }
+	public async run(msg: KlasaMessage, [opponent]): Promise<KlasaMessage | KlasaMessage[]> {
+		if (opponent.bot) { return msg.sendMessage('Bots may not be played against.', { reply: msg.author }); }
+		if (opponent.id === msg.author.id) { return msg.sendMessage('You may not play against yourself.', { reply: msg.author }); }
+		if (this.playing.has(msg.channel.id)) { return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author }); }
 		this.playing.add(msg.channel.id);
 
 		try {
-			await msg.say(`${args.opponent}, do you accept this challenge?`);
-			const verification = await verify(msg.channel, args.opponent);
+			await msg.sendMessage(`${opponent}, do you accept this challenge?`);
+			const verification = await verify(msg.channel, opponent);
 
 			if (!verification) {
 				this.playing.delete(msg.channel.id);
-				
-				return msg.say('Looks like they declined...');
+
+				return msg.sendMessage('Looks like they declined...');
 			}
 
 			const sides: string[] = ['0', '1', '2', '3', '4', '5', '6', '7', '8'];
@@ -70,10 +59,10 @@ export default class TicTacToeCommand extends Command {
 			let winner = null;
 
 			while (!winner && taken.length < 9) {
-				const user = userTurn ? msg.author : args.opponent;
+				const user = userTurn ? msg.author : opponent;
 				const sign = userTurn ? 'X' : 'O';
 
-				await msg.say(stripIndents`
+				await msg.sendMessage(stripIndents`
 					${user}, which side do you pick?
 					\`\`\`
 					${sides[0]} | ${sides[1]} | ${sides[2]}
@@ -86,7 +75,7 @@ export default class TicTacToeCommand extends Command {
 
 				const filter = (res: any) => {
 					const choice = res.content;
-					
+
 					return res.author.id === user.id && sides.includes(choice) && !taken.includes(choice);
 				}
 
@@ -96,7 +85,7 @@ export default class TicTacToeCommand extends Command {
 				});
 
 				if (!turn.size) {
-					await msg.say('Sorry, time is up!');
+					await msg.sendMessage('Sorry, time is up!');
 					userTurn = !userTurn;
 					continue;
 				}
@@ -115,14 +104,14 @@ export default class TicTacToeCommand extends Command {
 					|| (sides[2] === sides[5] && sides[2] === sides[8])
 					|| (sides[0] === sides[4] && sides[0] === sides[8])
 					|| (sides[2] === sides[4] && sides[2] === sides[6])
-				) { winner = userTurn ? msg.author : args.opponent; }
-				
+				) { winner = userTurn ? msg.author : opponent; }
+
 				userTurn = !userTurn;
 			}
 
 			this.playing.delete(msg.channel.id);
 
-			return msg.say(winner ? `Congrats, ${winner}!` : 'Oh... The cat won.');
+			return msg.sendMessage(winner ? `Congrats, ${winner}!` : 'Oh... The cat won.');
 		} catch (err) {
 			this.playing.delete(msg.channel.id);
 

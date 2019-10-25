@@ -1,5 +1,4 @@
-import { Message } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from "klasa";
 const choices: string[] = ['rock', 'paper', 'scissors'];
 
 /**
@@ -20,23 +19,11 @@ export default class RockPaperScissorsCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['rps'],
-			args: [
-				{
-					key: 'choice',
-					parse: (choice: string) => choice.toLowerCase(),
-					prompt: 'Rock, Paper, or Scissors?',
-					type: 'string'
-				}
-			],
 			description: 'Play Rock-Paper-Scissors.',
-			details: 'syntax: \`!rock-paper-scissors <choice>\`',
-			examples: ['!rock-paper-scissors rock'],
-			group: 'game',
-			guildOnly: true,
-			memberName: 'rock-paper-scissors',
-			name: 'rock-paper-scissors'
+			extendedHelp: 'syntax: \`!rock-paper-scissors <choice>\`',
+			name: 'rock-paper-scissors',
+			usage: '<choice:string>'
 		});
-
 	}
 
 	/**
@@ -46,27 +33,27 @@ export default class RockPaperScissorsCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof RockPaperScissorsCommand
 	 */
-	public async run(msg: KlasaMessage, args: { choice: string }): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [choice]): Promise<KlasaMessage | KlasaMessage[]> {
 		const response = choices[Math.floor(Math.random() * choices.length)];
-		
-		if (args.choice === 'rock') {
-			if (response === 'rock') { return msg.reply('Rock! Aw... A tie...'); }
-			if (response === 'paper') { return msg.reply('Paper! Yes! I win!'); }
-			if (response === 'scissors') { return msg.reply('Scissors! Aw... I lose...'); }
+
+		if (choice.toLowerCase() === 'rock') {
+			if (response === 'rock') { return msg.sendMessage('Rock! Aw... A tie...', { reply: msg.author }); }
+			if (response === 'paper') { return msg.sendMessage('Paper! Yes! I win!', { reply: msg.author }); }
+			if (response === 'scissors') { return msg.sendMessage('Scissors! Aw... I lose...', { reply: msg.author }); }
 		}
-		
-		if (args.choice === 'paper') {
-			if (response === 'rock') { return msg.reply('Rock! Aw... I lose...'); }
-			if (response === 'paper') { return msg.reply('Paper! Aw... A tie...'); }
-			if (response === 'scissors') { return msg.reply('Scissors! Yes! I win!'); }
+
+		if (choice.toLowerCase() === 'paper') {
+			if (response === 'rock') { return msg.sendMessage('Rock! Aw... I lose...', { reply: msg.author }); }
+			if (response === 'paper') { return msg.sendMessage('Paper! Aw... A tie...', { reply: msg.author }); }
+			if (response === 'scissors') { return msg.sendMessage('Scissors! Yes! I win!', { reply: msg.author }); }
 		}
-		
-		if (args.choice === 'scissors') {
-			if (response === 'rock') { return msg.reply('Rock! Yes! I win!'); }
-			if (response === 'paper') { return msg.reply('Paper! Aw... I lose...'); }
-			if (response === 'scissors') { return msg.reply('Scissors! Aw... A tie...'); }
+
+		if (choice.toLowerCase() === 'scissors') {
+			if (response === 'rock') { return msg.sendMessage('Rock! Yes! I win!', { reply: msg.author }); }
+			if (response === 'paper') { return msg.sendMessage('Paper! Aw... I lose...', { reply: msg.author }); }
+			if (response === 'scissors') { return msg.sendMessage('Scissors! Aw... A tie...', { reply: msg.author }); }
 		}
-		
-		return msg.reply('I win by default, you little cheater.');
+
+		return msg.sendMessage('I win by default, you little cheater.', { reply: msg.author });
 	}
 }

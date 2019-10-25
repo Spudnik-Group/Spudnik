@@ -1,4 +1,4 @@
-const { Command, util: { toTitleCase, codeBlock } } = require('klasa');
+import { Command, KlasaClient, CommandStore, util, KlasaMessage } from "klasa";
 
 module.exports = class extends Command {
 
@@ -24,34 +24,34 @@ module.exports = class extends Command {
 			});
 	}
 
-	show(message, [key]) {
+	public show(message, [key]): Promise<KlasaMessage | KlasaMessage[]> {
 		const path = this.client.gateways.guilds.getPath(key, { avoidUnconfigurable: true, errors: false, piece: null });
 		if (!path) return message.sendLocale('COMMAND_CONF_GET_NOEXT', [key]);
 		if (path.piece.type === 'Folder') {
 			return message.sendLocale('COMMAND_CONF_SERVER', [
-				key ? `: ${key.split('.').map(toTitleCase).join('/')}` : '',
-				codeBlock('asciidoc', message.guild.settings.list(message, path.piece))
+				key ? `: ${key.split('.').map(util.toTitleCase).join('/')}` : '',
+				util.codeBlock('asciidoc', message.guild.settings.list(message, path.piece))
 			]);
 		}
 		return message.sendLocale('COMMAND_CONF_GET', [path.piece.path, message.guild.settings.resolveString(message, path.piece)]);
 	}
 
-	async set(message, [key, ...valueToSet]) {
+	public async set(message, [key, ...valueToSet]): Promise<KlasaMessage | KlasaMessage[]> {
 		const status = await message.guild.settings.update(key, valueToSet.join(' '), message.guild, { avoidUnconfigurable: true, action: 'add' });
 		return this.check(message, key, status) || message.sendLocale('COMMAND_CONF_UPDATED', [key, message.guild.settings.resolveString(message, status.updated[0].piece)]);
 	}
 
-	async remove(message, [key, ...valueToRemove]) {
+	public async remove(message, [key, ...valueToRemove]): Promise<KlasaMessage | KlasaMessage[]> {
 		const status = await message.guild.settings.update(key, valueToRemove.join(' '), message.guild, { avoidUnconfigurable: true, action: 'remove' });
 		return this.check(message, key, status) || message.sendLocale('COMMAND_CONF_UPDATED', [key, message.guild.settings.resolveString(message, status.updated[0].piece)]);
 	}
 
-	async reset(message, [key]) {
+	public async reset(message, [key]): Promise<KlasaMessage | KlasaMessage[]> {
 		const status = await message.guild.settings.reset(key, message.guild, true);
 		return this.check(message, key, status) || message.sendLocale('COMMAND_CONF_RESET', [key, message.guild.settings.resolveString(message, status.updated[0].piece)]);
 	}
 
-	check(message, key, { errors, updated }) {
+	private check(message, key, { errors, updated }): Promise<KlasaMessage | KlasaMessage[]> {
 		if (errors.length) return message.sendMessage(String(errors[0]));
 		if (!updated.length) return message.sendLocale('COMMAND_CONF_NOCHANGE', [key]);
 		return null;
