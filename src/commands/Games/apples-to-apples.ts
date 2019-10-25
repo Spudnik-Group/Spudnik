@@ -1,7 +1,7 @@
 import { stripIndents } from 'common-tags';
-import { Collection, Message } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
+import { Collection } from 'discord.js';
 import { awaitPlayers, shuffle } from '../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 // tslint:disable-next-line:no-var-requires
 const data = require('../../extras/apples-to-apples');
 
@@ -23,23 +23,10 @@ export default class ApplesToApplesCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			args: [
-				{
-					key: 'maxPts',
-					label: 'maximum amount of points',
-					max: 20,
-					min: 1,
-					prompt: 'What amount of points should determine the winner?',
-					type: 'integer'
-				}
-			],
 			description: 'Compete to see who can come up with the best card to match an adjective.',
-			details: 'syntax: \`!apples-to-apples <maxpoints>\`',
-			examples: ['!apples-to-apples 15'],
-			group: 'game',
-			guildOnly: true,
-			memberName: 'apples-to-apples',
-			name: 'apples-to-apples'
+			extendedHelp: 'syntax: \`!apples-to-apples <maxpoints>\`',
+			name: 'apples-to-apples',
+			usage: '<maxpoints:integer{1,20}>'
 		});
 
 	}
@@ -51,17 +38,17 @@ export default class ApplesToApplesCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof ApplesToApplesCommand
 	 */
-	public async run(msg: KlasaMessage, args: { maxPts: number }): Promise<KlasaMessage | KlasaMessage[]> {
-		if (this.playing.has(msg.channel.id)) { return msg.reply('Only one game may be occurring per channel.'); }
+	public async run(msg: KlasaMessage, [maxPts]): Promise<KlasaMessage | KlasaMessage[]> {
+		if (this.playing.has(msg.channel.id)) { return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author }); }
 		this.playing.add(msg.channel.id);
 		try {
-			await msg.say('You will need at least 2 more players, at maximum 10. To join, type `join game`.');
+			await msg.sendMessage('You will need at least 2 more players, at maximum 10. To join, type `join game`.');
 			const awaitedPlayers = await awaitPlayers(msg, 10, 3);
-			
+
 			if (!awaitedPlayers) {
 				this.playing.delete(msg.channel.id);
 
-				return msg.say('Game could not be started...');
+				return msg.sendMessage('Game could not be started...');
 			}
 
 			const players = await this.generatePlayers(awaitedPlayers);
@@ -76,7 +63,7 @@ export default class ApplesToApplesCommand extends Command {
 
 				const green = data.greenCards[Math.floor(Math.random() * data.greenCards.length)];
 
-				await msg.say(stripIndents`
+				await msg.sendMessage(stripIndents`
 					The card czar will be ${czar.user}!
 					The Green Card is: **${require('remove-markdown')(green)}**
 
@@ -124,7 +111,7 @@ export default class ApplesToApplesCommand extends Command {
 						max: 1,
 						time: 120000
 					});
-					
+
 					if (!choice.size) {
 						await player.user.send('Skipping your turn...');
 
@@ -149,14 +136,14 @@ export default class ApplesToApplesCommand extends Command {
 				await Promise.all(turns);
 
 				if (!chosenCards.length) {
-					await msg.say('Hmm... No one even tried.');
+					await msg.sendMessage('Hmm... No one even tried.');
 
 					break;
 				}
 
 				const cards = shuffle(chosenCards);
 
-				await msg.say(stripIndents`
+				await msg.sendMessage(stripIndents`
 					${czar.user}, which card do you pick?
 					**Green Card**: ${require('remove-markdown')(green)}
 
@@ -167,7 +154,7 @@ export default class ApplesToApplesCommand extends Command {
 					if (res.author.id !== czar.user.id) { return false; }
 
 					if (!cards[Number.parseInt(res.content, 10) - 1]) { return false; }
-					
+
 					return true;
 				}
 
@@ -177,7 +164,7 @@ export default class ApplesToApplesCommand extends Command {
 				});
 
 				if (!chosen.size) {
-					await msg.say('Hmm... No one wins.');
+					await msg.sendMessage('Hmm... No one wins.');
 					continue;
 				}
 
@@ -185,21 +172,21 @@ export default class ApplesToApplesCommand extends Command {
 
 				++player.points;
 
-				if (player.points >= args.maxPts) {
+				if (player.points >= maxPts) {
 					winner = player.user;
 				} else {
-					await msg.say(`Nice one, ${player.user}! You now have **${player.points}** points!`);
+					await msg.sendMessage(`Nice one, ${player.user}! You now have **${player.points}** points!`);
 				}
 			}
 			this.playing.delete(msg.channel.id);
 
-			if (!winner) { return msg.say('See you next time!'); }
+			if (!winner) { return msg.sendMessage('See you next time!'); }
 
-			return msg.say(`And the winner is... ${winner}! Great job!`);
+			return msg.sendMessage(`And the winner is... ${winner}! Great job!`);
 		} catch (err) {
 			this.playing.delete(msg.channel.id);
 
-			return msg.reply(`Oh no, an error occurred: \`${err.message}\`. Try again later!`);
+			return msg.sendMessage(`Oh no, an error occurred: \`${err.message}\`. Try again later!`, { reply: msg.author });
 		}
 	}
 
@@ -236,7 +223,7 @@ export default class ApplesToApplesCommand extends Command {
 		player.hand.delete('<Blank>');
 
 		if (!blank.size) { return `A blank card ${player.user.tag} forgot to fill out.`; }
-		
+
 		return blank.first().content;
 	}
 }

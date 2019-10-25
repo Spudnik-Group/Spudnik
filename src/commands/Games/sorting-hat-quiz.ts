@@ -1,7 +1,6 @@
 import { stripIndents } from 'common-tags';
-import { Message } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
 import { shuffle } from '../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 const choices = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'];
 //tslint:disable-next-line
 const { questions, houses, descriptions } = require('../../extras/sorting-hat-quiz');
@@ -26,10 +25,6 @@ export default class SortingHatQuizCommand extends Command {
 		super(client, store, file, directory, {
 			aliases: ['sorting-hat', 'pottermore', 'hogwarts'],
 			description: 'Take a quiz to determine your Hogwarts house.',
-			examples: ['!sorting-hat-quiz'],
-			group: 'game',
-			guildOnly: true,
-			memberName: 'sorting-hat-quiz',
 			name: 'sorting-hat-quiz'
 		});
 
@@ -42,8 +37,8 @@ export default class SortingHatQuizCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof SortingHatQuizCommand
 	 */
-	public async run(msg: KlasaMessage, args: { space: string }): Promise<KlasaMessage | KlasaMessage[]> {
-		if (this.playing.has(msg.channel.id)) { return msg.reply('Only one quiz may be occurring per channel.'); }
+	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+		if (this.playing.has(msg.channel.id)) { return msg.sendMessage('Only one quiz may be occurring per channel.', { reply: msg.author }); }
 		this.playing.add(msg.channel.id);
 		try {
 			const points: any = {
@@ -74,7 +69,7 @@ export default class SortingHatQuizCommand extends Command {
 
 				const answers = shuffle(question.answers);
 
-				await msg.say(stripIndents`
+				await msg.sendMessage(stripIndents`
 					**${turn}**. ${question.text}
 					${answers.map((answer, i) => `- **${choices[i]}**. ${answer.text}`).join('\n')}
 				`);
@@ -85,7 +80,7 @@ export default class SortingHatQuizCommand extends Command {
 					time: 120000
 				});
 
-				if (!choice.size) { return msg.say('Oh no, you ran out of time! Too bad.'); }
+				if (!choice.size) { return msg.sendMessage('Oh no, you ran out of time! Too bad.'); }
 
 				const answer = answers[choices.indexOf(choice.first().content.toUpperCase())];
 
@@ -98,13 +93,13 @@ export default class SortingHatQuizCommand extends Command {
 
 			this.playing.delete(msg.channel.id);
 
-			return msg.say(stripIndents`
+			return msg.sendMessage(stripIndents`
 				You are a member of... **${houses[house]}**!
 				_${descriptions[house]}_
 			`);
 		} catch (err) {
 			this.playing.delete(msg.channel.id);
-			
+
 			throw err;
 		}
 	}

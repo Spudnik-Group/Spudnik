@@ -1,7 +1,7 @@
 import { stripIndents } from 'common-tags';
-import { Collection, Message } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
+import { Collection } from 'discord.js';
 import { awaitPlayers, delay, sendSimpleEmbeddedError, shuffle } from '../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 // tslint:disable-next-line:no-var-requires
 const data = require('../../extras/wizard-convention');
 
@@ -25,10 +25,6 @@ export default class WizardConventionCommand extends Command {
 		super(client, store, file, directory, {
 			aliases: ['wiz-convention'],
 			description: 'Who is the Dragon? Who is the healer? Who is the mind reader? Will the Dragon eat them all?',
-			examples: ['!wizard-convention'],
-			group: 'game',
-			guildOnly: true,
-			memberName: 'wizard-convention',
 			name: 'wizard-convention'
 		});
 
@@ -41,19 +37,19 @@ export default class WizardConventionCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof WizardConventionCommand
 	 */
-	public async run(msg: KlasaMessage, args: { maxPts: number }): Promise<KlasaMessage | KlasaMessage[]> {
-		if (this.playing.has(msg.channel.id)) { return msg.reply('Only one game may be occurring per channel.'); }
+	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+		if (this.playing.has(msg.channel.id)) { return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author }); }
 		this.playing.add(msg.channel.id);
-		
+
 		try {
-			await msg.say('You will need at least 2 more players, at maximum 10. To join, type `join game`.');
+			await msg.sendMessage('You will need at least 2 more players, at maximum 10. To join, type `join game`.');
 
 			const awaitedPlayers = await awaitPlayers(msg, 10, 3);
 
 			if (!awaitedPlayers) {
 				this.playing.delete(msg.channel.id);
-				
-				return msg.say('Game could not be started...');
+
+				return msg.sendMessage('Game could not be started...');
 			}
 
 			const players: any = await this.generatePlayers(awaitedPlayers);
@@ -63,12 +59,12 @@ export default class WizardConventionCommand extends Command {
 				let eaten = null;
 				let healed = null;
 
-				await msg.say(`Night ${turn}, sending DMs...`);
-				
+				await msg.sendMessage(`Night ${turn}, sending DMs...`);
+
 				for (const player of players.values()) {
 					if (player.role.includes('pleb')) { continue; }
 
-					await msg.say(`The ${player.role} is making their decision...`);
+					await msg.sendMessage(`The ${player.role} is making their decision...`);
 
 					const valid = players.filterArray((p: any) => p.role !== player.role);
 
@@ -108,24 +104,24 @@ export default class WizardConventionCommand extends Command {
 				if (eaten && eaten !== healed) { players.delete(eaten); }
 
 				if (eaten && eaten === healed) {
-					await msg.say(stripIndents`
+					await msg.sendMessage(stripIndents`
 						Late last night, a dragon emerged and tried to eat ${display}${story}
 						Thankfully, a healer stepped in just in time to save the day.
 						Who is this mysterious dragon? You have one minute to decide.
 					`);
 				} else if (eaten && players.size < 3) {
-					await msg.say(stripIndents`
+					await msg.sendMessage(stripIndents`
 						Late last night, a dragon emerged and devoured poor ${display}${story}
 						Sadly, after the event, the final wizard ran in fear, leaving the dragon to rule forever.
 					`);
 					break;
 				} else if (eaten && eaten !== healed) {
-					await msg.say(stripIndents`
+					await msg.sendMessage(stripIndents`
 						Late last night, a dragon emerged and devoured poor ${display}${story}
 						Who is this mysterious dragon? You have one minute to decide.
 					`);
 				} else {
-					await msg.say(stripIndents`
+					await msg.sendMessage(stripIndents`
 						Late last night, a dragon emerged. Thankfully, however, it didn't try to eat anyone.
 						Who is this mysterious dragon? You have one minute to decide.
 					`);
@@ -135,7 +131,7 @@ export default class WizardConventionCommand extends Command {
 
 				const playersArr = Array.from(players.values());
 
-				await msg.say(stripIndents`
+				await msg.sendMessage(stripIndents`
 					Who do you think is the dragon? Please type the number.
 					${playersArr.map((p: any, i: any) => `**${i + 1}.** ${p.user.tag}`).join('\n')}
 				`);
@@ -146,9 +142,9 @@ export default class WizardConventionCommand extends Command {
 					if (!players.exists((p: any) => p.user.id === res.author.id)) { return false; }
 					if (voted.includes(res.author.id)) { return false; }
 					if (!playersArr[Number.parseInt(res.content, 10) - 1]) { return false; }
-					
+
 					voted.push(res.author.id);
-					
+
 					return true;
 				}
 
@@ -158,13 +154,13 @@ export default class WizardConventionCommand extends Command {
 				});
 
 				if (!votes.size) {
-					await msg.say('No one will be expelled.');
+					await msg.sendMessage('No one will be expelled.');
 					continue;
 				}
 
 				const expelled: any = this.getExpelled(votes, players, playersArr);
 
-				await msg.say(`${expelled.user} will be expelled.`);
+				await msg.sendMessage(`${expelled.user} will be expelled.`);
 
 				players.delete(expelled.id);
 
@@ -175,9 +171,9 @@ export default class WizardConventionCommand extends Command {
 
 			const dragon = players.find((p: any) => p.role === 'dragon');
 
-			if (!dragon) { return msg.say('The dragon has been vanquished! Thanks for playing!'); }
+			if (!dragon) { return msg.sendMessage('The dragon has been vanquished! Thanks for playing!'); }
 
-			return msg.say(`Oh no, the dragon wasn't caught in time... Nice job, ${dragon.user}!`);
+			return msg.sendMessage(`Oh no, the dragon wasn't caught in time... Nice job, ${dragon.user}!`);
 		} catch (err) {
 			this.playing.delete(msg.channel.id);
 

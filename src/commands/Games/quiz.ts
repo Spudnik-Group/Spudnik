@@ -1,8 +1,7 @@
 import { stripIndents } from 'common-tags';
-import { Message } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
 import { list, shuffle } from '../../lib/helpers';
 import axios from 'axios';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 const types: string[] = ['multiple', 'boolean'];
 const difficulties: string[] = ['easy', 'medium', 'hard'];
 const choices: string[] = ['A', 'B', 'C', 'D'];
@@ -73,8 +72,9 @@ export default class QuizCommand extends Command {
 					difficulty: args.difficulty,
 					encode: 'url3986',
 					type: args.type
-				}});
-			if (!body.results) { return msg.reply('Oh no, a question could not be fetched. Try again later!'); }
+				}
+			});
+			if (!body.results) { return msg.sendMessage('Oh no, a question could not be fetched. Try again later!', { reply: msg.author }); }
 			const answers = body.results[0].incorrect_answers.map((answer: string) => decodeURIComponent(answer.toLowerCase()));
 			const correct = decodeURIComponent(body.results[0].correct_answer.toLowerCase());
 			answers.push(correct);
@@ -89,13 +89,13 @@ export default class QuizCommand extends Command {
 				max: 1,
 				time: 15000
 			});
-			if (!msgs.size) { return msg.reply(`Sorry, time is up! It was ${correct}.`); }
+			if (!msgs.size) { return msg.sendMessage(`Sorry, time is up! It was ${correct}.`, { reply: msg.author }); }
 			const win = shuffled[choices.indexOf(msgs.first().content.toUpperCase())] === correct;
-			if (!win) { return msg.reply(`Nope, sorry, it's ${correct}.`); }
-			
-			return msg.reply('Nice job! 10/10! You deserve some cake!');
+			if (!win) { return msg.sendMessage(`Nope, sorry, it's ${correct}.`, { reply: msg.author }); }
+
+			return msg.sendMessage('Nice job! 10/10! You deserve some cake!', { reply: msg.author });
 		} catch (err) {
-			return msg.reply(`Oh no, an error occurred: \`${err.message}\`. Try again later!`);
+			return msg.sendMessage(`Oh no, an error occurred: \`${err.message}\`. Try again later!`, { reply: msg.author });
 		}
 	}
 }
