@@ -1,7 +1,6 @@
 import { stripIndents } from 'common-tags';
-import { Message, User } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
 import { verify } from '../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 const emojis = ['⬆', '↗', '➡', '↘', '⬇', '↙', '⬅', '↖'];
 
 /**
@@ -23,20 +22,10 @@ export default class EmojiEmojiRevolutionCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['eer'],
-			args: [
-				{
-					key: 'opponent',
-					prompt: 'What user would you like to play against?',
-					type: 'user'
-				}
-			],
 			description: 'Can you type arrow emoji faster than anyone else has ever typed them before?',
-			details: 'syntax: \`!emoji-emoji-revolution <@usermention>\`',
-			examples: ['!emoji-emoji-revolution @slowtyper71'],
-			group: 'game',
-			guildOnly: true,
-			memberName: 'emoji-emoji-revolution',
-			name: 'emoji-emoji-revolution'
+			extendedHelp: 'syntax: \`!emoji-emoji-revolution <@usermention>\`',
+			name: 'emoji-emoji-revolution',
+			usage: '<opponent:user>'
 		});
 
 	}
@@ -48,24 +37,22 @@ export default class EmojiEmojiRevolutionCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof EmojiEmojiRevolutionCommand
 	 */
-	public async run(msg: KlasaMessage, args: { opponent: User }): Promise<KlasaMessage | KlasaMessage[]> {
-		if (args.opponent.bot) { return msg.reply('Bots may not be played against.'); }
-		
-		if (args.opponent.id === msg.author.id) { return msg.reply('You may not play against yourself.'); }
-
-		if (this.playing.has(msg.channel.id)) { return msg.reply('Only one fight may be occurring per channel.'); }
+	public async run(msg: KlasaMessage, [opponent]): Promise<KlasaMessage | KlasaMessage[]> {
+		if (opponent.bot) { return msg.sendMessage('Bots may not be played against.', { reply: msg.author }); }
+		if (opponent.id === msg.author.id) { return msg.sendMessage('You may not play against yourself.', { reply: msg.author }); }
+		if (this.playing.has(msg.channel.id)) { return msg.sendMessage('Only one fight may be occurring per channel.', { reply: msg.author }); }
 
 		this.playing.add(msg.channel.id);
 
 		try {
-			await msg.say(`${args.opponent}, do you accept this challenge?`);
+			await msg.sendMessage(`${opponent}, do you accept this challenge?`);
 
-			const verification = await verify(msg.channel, args.opponent);
+			const verification = await verify(msg.channel, opponent);
 
 			if (!verification) {
 				this.playing.delete(msg.channel.id);
 
-				return msg.say('Looks like they declined...');
+				return msg.sendMessage('Looks like they declined...');
 			}
 
 			let turn = 0;
@@ -76,16 +63,16 @@ export default class EmojiEmojiRevolutionCommand extends Command {
 				++turn;
 				const emoji = emojis[Math.floor(Math.random() * emojis.length)];
 
-				await msg.say(emoji);
+				await msg.sendMessage(emoji);
 
-				const filter = (res: any) => [msg.author.id, args.opponent.id].includes(res.author.id) && res.content === emoji;
+				const filter = (res: any) => [msg.author.id, opponent.id].includes(res.author.id) && res.content === emoji;
 				const win: any = await msg.channel.awaitMessages(filter, {
 					max: 1,
 					time: 30000
 				});
 
 				if (!win.size) {
-					await msg.say('Hmm... No one even tried that round.');
+					await msg.sendMessage('Hmm... No one even tried that round.');
 					continue;
 				}
 
@@ -93,20 +80,20 @@ export default class EmojiEmojiRevolutionCommand extends Command {
 
 				if (winner.id === msg.author.id) { ++aPts; } else { ++oPts; }
 
-				await msg.say(stripIndents`
+				await msg.sendMessage(stripIndents`
 					${winner} won this round!
 					**${msg.author.username}**: ${aPts}
-					**${args.opponent.username}**: ${oPts}
+					**${opponent.username}**: ${oPts}
 				`);
 			}
 
 			this.playing.delete(msg.channel.id);
 
-			if (aPts === oPts) { return msg.say('It\'s a tie!'); }
+			if (aPts === oPts) { return msg.sendMessage('It\'s a tie!'); }
 
 			const userWin = aPts > oPts;
 			
-			return msg.say(`You win ${userWin ? msg.author : args.opponent} with ${userWin ? aPts : oPts} points!`);
+			return msg.sendMessage(`You win ${userWin ? msg.author : opponent} with ${userWin ? aPts : oPts} points!`);
 		} catch (err) {
 			this.playing.delete(msg.channel.id);
 

@@ -1,7 +1,6 @@
 import { stripIndents } from 'common-tags';
-import { Message } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
 import { list } from '../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 const difficulties: string[] = ['easy', 'medium', 'hard', 'extreme', 'impossible'];
 const operations = ['+', '-', '*'];
 const maxValues: any = {
@@ -30,27 +29,19 @@ export default class MathQuizCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['math-game'],
-			args: [
-				{
-					key: 'difficulty',
-					oneOf: difficulties,
-					parse: (difficulty: any) => difficulty.toLowerCase(),
-					prompt: `What should the difficulty of the game be? Either ${list(difficulties, 'or')}.`,
-					type: 'string'
-				}
-			],
 			description: 'See how fast you can answer a math problem in a given time limit.',
-			details: stripIndents`
+			extendedHelp: stripIndents`
 				syntax: \`!math- quiz <difficulty>\`
 				**Difficulties**: ${difficulties.join(', ')}
 			`,
-			examples: ['!math-quiz impossible'],
-			group: 'game',
-			guildOnly: true,
-			memberName: 'math-quiz',
-			name: 'math-quiz'
+			name: 'math-quiz',
+			usage: '<difficulty:string>'
 		});
 
+		this.createCustomResolver('difficulty', (arg) => {
+			if (difficulties.includes(arg.toLowerCase())) return arg;
+			throw `What should the difficulty of the game be? Either ${list(difficulties, 'or')}.`;
+		})
 	}
 
 	/**
@@ -60,9 +51,9 @@ export default class MathQuizCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof MathQuizCommand
 	 */
-	public async run(msg: KlasaMessage, args: { difficulty: string }): Promise<KlasaMessage | KlasaMessage[]> {
-		const value1 = Math.floor(Math.random() * maxValues[args.difficulty]) + 1;
-		const value2 = Math.floor(Math.random() * maxValues[args.difficulty]) + 1;
+	public async run(msg: KlasaMessage, [difficulty]): Promise<KlasaMessage | KlasaMessage[]> {
+		const value1 = Math.floor(Math.random() * maxValues[difficulty]) + 1;
+		const value2 = Math.floor(Math.random() * maxValues[difficulty]) + 1;
 		const operation = operations[Math.floor(Math.random() * operations.length)];
 		let answer: any;
 		
@@ -82,10 +73,10 @@ export default class MathQuizCommand extends Command {
 			time: 10000
 		});
 		
-		if (!msgs.size) { return msg.reply(`Sorry, time is up! It was ${answer}.`); }
+		if (!msgs.size) { return msg.sendMessage(`Sorry, time is up! It was ${answer}.`, { reply: msg.author }); }
 		
-		if (msgs.first().content !== answer.toString()) { return msg.reply(`Nope, sorry, it's ${answer}.`); }
+		if (msgs.first().content !== answer.toString()) { return msg.sendMessage(`Nope, sorry, it's ${answer}.`, { reply: msg.author }); }
 		
-		return msg.reply('Nice job! 10/10! You deserve some cake!');
+		return msg.sendMessage('Nice job! 10/10! You deserve some cake!', { reply: msg.author });
 	}
 }

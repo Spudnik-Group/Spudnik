@@ -1,7 +1,7 @@
 import { stripIndents } from 'common-tags';
-import { Collection, Message } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
+import { Collection } from 'discord.js';
 import { awaitPlayers, escapeMarkdown, shuffle } from '../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 // tslint:disable-next-line
 const { blackCards, whiteCards } = require('../../extras/cards-against-humanity');
 
@@ -24,30 +24,10 @@ export default class CardsAgainstHumanityCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['crude-cards', 'pretend-youre-xyzzy', 'cah'],
-			args: [
-				{
-					key: 'maxPts',
-					label: 'maximum amount of points',
-					max: 20,
-					min: 1,
-					prompt: 'What amount of points should determine the winner?',
-					type: 'integer'
-				},
-				{
-					default: false,
-					key: 'noMidJoin',
-					label: 'disable mid-game join',
-					prompt: 'Do you want to disable mid-game joining?',
-					type: 'boolean'
-				}
-			],
 			description: 'Compete to see who can come up with the best card to fill in the blank.',
-			details: 'syntax: \`!cards-against-humanity <maxpoints> (midgamejoin)\`',
-			examples: ['!cards-against-humanity 15', '!cards-against-humanity 20 true'],
-			group: 'game',
-			guildOnly: true,
-			memberName: 'cards-against-humanity',
-			name: 'cards-against-humanity'
+			extendedHelp: 'syntax: \`!cards-against-humanity <maxpoints> (midgamejoin)\`',
+			name: 'cards-against-humanity',
+			usage: '<maxPts:int{1,20}> (noMidJoin:boolean)'
 		});
 
 	}
@@ -59,24 +39,25 @@ export default class CardsAgainstHumanityCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof CardsAgainstHumanityCommand
 	 */
-	public async run(msg: KlasaMessage, args: { maxPts: number, noMidJoin: boolean }): Promise<KlasaMessage | KlasaMessage[]> {
-		if (this.playing.has(msg.channel.id)) { return msg.reply('Only one game may be occurring per channel.'); }
+	public async run(msg: KlasaMessage, [maxPts, noMidJoin]): Promise<KlasaMessage | KlasaMessage[]> {
+		if (this.playing.has(msg.channel.id)) { return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author }); }
+		const midJoinDisabled = noMidJoin ? noMidJoin : false;
 		this.playing.add(msg.channel.id);
 		let joinLeaveCollector = null;
 		let pointViewCollector = null;
 		try {
-			await msg.say('You will need at least 2 more players, at maximum 10. To join, type `join game`.');
+			await msg.sendMessage('You will need at least 2 more players, at maximum 10. To join, type `join game`.');
 			const awaitedPlayers = await awaitPlayers(msg, 10, 3);
 			if (!awaitedPlayers) {
 				this.playing.delete(msg.channel.id);
 				
-				return msg.say('Game could not be started...');
+				return msg.sendMessage('Game could not be started...');
 			}
 			const players: any = new Collection();
 			for (const user of awaitedPlayers) { this.generatePlayer(user, players); }
 			const czars = players.map((player: any) => player.id);
 			let winner = null;
-			if (!args.noMidJoin) { joinLeaveCollector = this.createJoinLeaveCollector(msg.channel, players, czars); }
+			if (!midJoinDisabled) { joinLeaveCollector = this.createJoinLeaveCollector(msg.channel, players, czars); }
 			pointViewCollector = this.createPointViewCollector(msg.channel, players);
 			while (!winner) {
 				for (const player of players) {
@@ -84,7 +65,7 @@ export default class CardsAgainstHumanityCommand extends Command {
 				}
 
 				if (players.size < 3) {
-					await msg.say('Oh... It looks like everyone left...');
+					await msg.sendMessage('Oh... It looks like everyone left...');
 					break;
 				}
 
@@ -95,7 +76,7 @@ export default class CardsAgainstHumanityCommand extends Command {
 
 				const black = blackCards[Math.floor(Math.random() * blackCards.length)];
 
-				await msg.say(stripIndents`
+				await msg.sendMessage(stripIndents`
 					The card czar will be ${czar.user}!
 					The Black Card is: **${escapeMarkdown(black.text)}**
 					Sending DMs...
@@ -106,13 +87,13 @@ export default class CardsAgainstHumanityCommand extends Command {
 				await Promise.all(players.map((player: any) => this.playerTurn(player, czar, black, msg.channel, chosenCards)));
 
 				if (!chosenCards.length) {
-					await msg.say('Hmm... No one even tried.');
+					await msg.sendMessage('Hmm... No one even tried.');
 					continue;
 				}
 
 				const cards = shuffle(chosenCards);
 
-				await msg.say(stripIndents`
+				await msg.sendMessage(stripIndents`
 					${czar.user}, which card${black.pick > 1 ? 's' : ''} do you pick?
 					**Black Card**: ${escapeMarkdown(black.text)}
 					${cards.map((card, i) => `**${i + 1}.** ${card.cards.join(', ')}`).join('\n')}
@@ -134,7 +115,7 @@ export default class CardsAgainstHumanityCommand extends Command {
 				});
 
 				if (!chosen.size) {
-					await msg.say('Hmm... No one wins. Dealing back cards...');
+					await msg.sendMessage('Hmm... No one wins. Dealing back cards...');
 					for (const pick of cards) {
 						for (const card of pick.cards) { (players.get(pick.id) as any).hand.add(card); }
 					}
@@ -145,17 +126,17 @@ export default class CardsAgainstHumanityCommand extends Command {
 				const player = players.get(cards[Number.parseInt(chosen.first()!.content, 10) - 1].id);
 
 				if (!player) {
-					await msg.say('Oh no, I think that player left! No points will be awarded...');
+					await msg.sendMessage('Oh no, I think that player left! No points will be awarded...');
 					continue;
 				}
 
 				++player.points;
 
-				if (player.points >= args.maxPts) {
+				if (player.points >= maxPts) {
 					winner = player.user;
 				} else {
 					const addS = player.points > 1 ? 's' : '';
-					await msg.say(`Nice, ${player.user}! You now have **${player.points}** point${addS}!`);
+					await msg.sendMessage(`Nice, ${player.user}! You now have **${player.points}** point${addS}!`);
 				}
 			}
 
@@ -165,9 +146,9 @@ export default class CardsAgainstHumanityCommand extends Command {
 
 			this.playing.delete(msg.channel.id);
 
-			if (!winner) { return msg.say('See you next time!'); }
+			if (!winner) { return msg.sendMessage('See you next time!'); }
 
-			return msg.say(`And the winner is... ${winner}! Great job!`);
+			return msg.sendMessage(`And the winner is... ${winner}! Great job!`);
 		} catch (err) {
 			this.playing.delete(msg.channel.id);
 
@@ -175,7 +156,7 @@ export default class CardsAgainstHumanityCommand extends Command {
 
 			if (pointViewCollector) { (pointViewCollector as any).stop(); }
 
-			return msg.reply(`Oh no, an error occurred: \`${err.message}\`. Try again later!`);
+			return msg.sendMessage(`Oh no, an error occurred: \`${err.message}\`. Try again later!`, { reply: msg.author });
 		}
 	}
 

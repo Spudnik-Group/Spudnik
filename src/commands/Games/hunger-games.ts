@@ -1,7 +1,6 @@
 import { stripIndents } from 'common-tags';
-import { Message } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
 import { shuffle, verify } from '../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 //tslint:disable-next-line
 const events = require('../../extras/hunger-games');
 
@@ -24,21 +23,9 @@ export default class HungerGamesCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['hunger-games-simulator', 'brant-steele'],
-			args: [
-				{
-					infinite: true,
-					key: 'tributes',
-					max: 20,
-					prompt: 'Who should compete in the games? Up to 24 tributes can participate.',
-					type: 'string'
-				}
-			],
 			description: 'Simulate a Hunger Games match with up to 24 tributes.',
-			examples: ['!hunger games @weakperson @strongperson'],
-			group: 'game',
-			guildOnly: true,
-			memberName: 'hunger-games',
-			name: 'hunger-games'
+			name: 'hunger-games',
+			usage: '<tributes:user> [...] [...] [...] [...] [...] [...] [...] [...] [...] [...] [...] [...] [...] [...] [...] [...] [...] [...] [...] [...] [...] [...] [...]'
 		});
 
 	}
@@ -50,14 +37,14 @@ export default class HungerGamesCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof HungerGamesCommand
 	 */
-	public async run(msg: KlasaMessage, args: { tributes: string[] }): Promise<KlasaMessage | KlasaMessage[]> {
-		if (args.tributes.length < 2) { return msg.say(`...${args.tributes[0]} wins, as they were the only tribute.`); }
+	public async run(msg: KlasaMessage, [...tributes]): Promise<KlasaMessage | KlasaMessage[]> {
+		if (tributes.length < 2) { return msg.sendMessage(`...${tributes[0]} wins, as they were the only tribute.`); }
 		
-		if (args.tributes.length > 24) { return msg.reply('Please do not enter more than 24 tributes.'); }
+		if (tributes.length > 24) { return msg.sendMessage('Please do not enter more than 24 tributes.', { reply: msg.author }); }
 
-		if (new Set(args.tributes).size !== args.tributes.length) { return msg.reply('Please do not enter the same tribute twice.'); }
+		if (new Set(tributes).size !== tributes.length) { return msg.sendMessage('Please do not enter the same tribute twice.', { reply: msg.author }); }
 
-		if (this.playing.has(msg.channel.id)) { return msg.reply('Only one game may be occurring per channel.'); }
+		if (this.playing.has(msg.channel.id)) { return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author }); }
 
 		this.playing.add(msg.channel.id);
 
@@ -65,7 +52,7 @@ export default class HungerGamesCommand extends Command {
 			let sun = true;
 			let turn = 0;
 			let bloodbath = true;
-			const remaining = new Set(shuffle(args.tributes));
+			const remaining = new Set(shuffle(tributes));
 			
 			while (remaining.size > 1) {
 				if (!bloodbath && sun) { ++turn; }
@@ -91,14 +78,14 @@ export default class HungerGamesCommand extends Command {
 				
 				text += '\n\n_Proceed?_';
 				
-				await msg.say(text);
+				await msg.sendMessage(text);
 				
 				const verification = await verify(msg.channel, msg.author, 120000);
 				
 				if (!verification) {
 					this.playing.delete(msg.channel.id);
 					
-					return msg.say('See you next time!');
+					return msg.sendMessage('See you next time!');
 				}
 				
 				if (!bloodbath) { sun = !sun; }
@@ -109,7 +96,7 @@ export default class HungerGamesCommand extends Command {
 			this.playing.delete(msg.channel.id);
 			const remainingArr = Array.from(remaining);
 			
-			return msg.say(`And the winner is... ${remainingArr[0]}!`);
+			return msg.sendMessage(`And the winner is... ${remainingArr[0]}!`);
 		} catch (err) {
 			this.playing.delete(msg.channel.id);
 			

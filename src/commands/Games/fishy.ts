@@ -1,6 +1,5 @@
-import { Message } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
 import { getRandomInt } from '../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 //tslint:disable-next-line
 const fishes = require('../../extras/fish');
 
@@ -22,10 +21,6 @@ export default class SlotsCommand extends Command {
 		super(client, store, file, directory, {
 			aliases: ['fish', 'fishing'],
 			description: 'Go fishing.',
-			examples: ['!fishy'],
-			group: 'game',
-			guildOnly: true,
-			memberName: 'fishy',
 			name: 'fishy'
 		});
 
@@ -55,6 +50,6 @@ export default class SlotsCommand extends Command {
 		const fish = fishes[rarity];
 		const worth = getRandomInt(fish.min, fish.max);
 		
-		return msg.reply(`You caught a ${fish.symbol}. I bet it'd sell for around $${worth}.`);
+		return msg.sendMessage(`You caught a ${fish.symbol}. I bet it'd sell for around $${worth}.`, { reply: msg.author });
 	}
 }
