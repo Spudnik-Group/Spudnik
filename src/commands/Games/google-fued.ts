@@ -1,5 +1,5 @@
-import { Message, MessageEmbed } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from "klasa";
+import { MessageEmbed } from "discord.js";
 //tslint:disable-next-line
 const questions = require('../../extras/google-feud');
 
@@ -21,23 +21,15 @@ export default class GoogleFeudCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			args: [
-				{
-					default: () => questions[Math.floor(Math.random() * questions.length)],
-					key: 'question',
-					prompt: 'What question do you want to use for the game?',
-					type: 'string'
-				}
-			],
 			description: 'Attempt to determine the top suggestions for a Google search.',
-			details: 'syntax: \`!google-feud (question)\`',
-			examples: ['!google-feud', '!google-feud what happens if'],
-			group: 'game',
-			guildOnly: true,
-			memberName: 'google-feud',
-			name: 'google-feud'
+			extendedHelp: 'syntax: \`!google-feud (question)\`',
+			name: 'google-feud',
+			usage: '<question:...string>'
 		});
 
+		this.createCustomResolver('question', (arg) => {
+			return arg ? arg : questions[Math.floor(Math.random() * questions.length)];
+		})
 	}
 
 	/**
@@ -47,14 +39,14 @@ export default class GoogleFeudCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof GoogleFeudCommand
 	 */
-	public async run(msg: KlasaMessage, args: { question: string }): Promise<KlasaMessage | KlasaMessage[]> {
-		if (this.playing.has(msg.channel.id)) { return msg.reply('Only one fight may be occurring per channel.'); }
+	public async run(msg: KlasaMessage, [question]): Promise<KlasaMessage | KlasaMessage[]> {
+		if (this.playing.has(msg.channel.id)) { return msg.sendMessage('Only one fight may be occurring per channel.', { reply: msg.author }); }
 		this.playing.add(msg.channel.id);
 
 		try {
-			const suggestions = await this.fetchSuggestions(args.question);
+			const suggestions = await this.fetchSuggestions(question);
 			
-			if (!suggestions) { return msg.say('Could not find any results.'); }
+			if (!suggestions) { return msg.sendMessage('Could not find any results.'); }
 
 			const display = new Array(suggestions.length).fill('???');
 			let tries = 3;
@@ -62,13 +54,13 @@ export default class GoogleFeudCommand extends Command {
 			while (display.includes('???') && tries) {
 				const embed = new MessageEmbed()
 					.setColor(0x005AF0)
-					.setTitle(`${args.question}...?`)
+					.setTitle(`${question}...?`)
 					.setDescription('Type the choice you think is a suggestion _without_ the question.')
 					.setFooter(`${tries} ${tries === 1 ? 'try' : 'tries'} remaining!`);
 
 				for (let i = 0; i < suggestions.length; i++) { embed.addField(`❯ ${10000 - (i * 1000)}`, display[i], true); }
 
-				await msg.embed(embed);
+				await msg.sendEmbed(embed);
 
 				const msgs: any = await msg.channel.awaitMessages((res) => res.author.id === msg.author.id, {
 					max: 1,
@@ -76,7 +68,7 @@ export default class GoogleFeudCommand extends Command {
 				});
 
 				if (!msgs.size) {
-					await msg.say('Time is up!');
+					await msg.sendMessage('Time is up!');
 					break;
 				}
 
@@ -91,13 +83,13 @@ export default class GoogleFeudCommand extends Command {
 
 			this.playing.delete(msg.channel.id);
 
-			if (!display.includes('???')) { return msg.say('You win! Nice job, master of Google!'); }
+			if (!display.includes('???')) { return msg.sendMessage('You win! Nice job, master of Google!'); }
 			
-			return msg.say('Better luck next time!');
+			return msg.sendMessage('Better luck next time!');
 		} catch (err) {
 			this.playing.delete(msg.channel.id);
 			
-			return msg.reply(`Oh no, an error occurred: \`${err.message}\`. Try again later!`);
+			return msg.sendMessage(`Oh no, an error occurred: \`${err.message}\`. Try again later!`, { reply: msg.author });
 		}
 	}
 

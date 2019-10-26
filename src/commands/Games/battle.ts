@@ -1,7 +1,6 @@
 import { stripIndents } from 'common-tags';
-import { Message, User } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
 import { getRandomInt, verify } from '../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Allows users to battle each other or the bot.
@@ -20,21 +19,10 @@ export default class BattleCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['fight', 'death-battle'],
-			args: [
-				{
-					default: () => client.user,
-					key: 'opponent',
-					prompt: 'What user would you like to battle?',
-					type: 'user'
-				}
-			],
 			description: 'Engage in a turn-based battle against another user or the AI.',
-			details: 'syntax: \`!battle (@usermention)\`',
-			examples: ['!battle', '!battle @dumbperson'],
-			group: 'game',
-			guildOnly: true,
-			memberName: 'battle',
-			name: 'battle'
+			extendedHelp: 'syntax: \`!battle (@usermention)\`',
+			name: 'battle',
+			usage: '(opponent:user)'
 		});
 	}
 
@@ -45,29 +33,30 @@ export default class BattleCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof BattleCommand
 	 */
-	public async run(msg: KlasaMessage, args: { opponent: User }): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [opp]): Promise<KlasaMessage | KlasaMessage[]> {
 		const fighting = new Set();
+		const opponent = opp ? opp : this.client.user
 		
-		if (args.opponent.id === msg.author.id) {
-			return msg.reply('You may not fight yourself.');
+		if (opponent.id === msg.author.id) {
+			return msg.sendMessage('You may not fight yourself.', { reply: msg.author });
 		}
 
 		if (fighting.has(msg.channel.id)) {
-			return msg.reply('Only one fight may be occurring per channel.');
+			return msg.sendMessage('Only one fight may be occurring per channel.', { reply: msg.author });
 		}
 
 		fighting.add(msg.channel.id);
 
 		try {
-			if (!args.opponent.bot) {
-				await msg.say(`${args.opponent}, do you accept this challenge?`);
+			if (!opponent.bot) {
+				await msg.sendMessage(`${opponent}, do you accept this challenge?`);
 
-				const verification = await verify(msg.channel, args.opponent);
+				const verification = await verify(msg.channel, opponent);
 
 				if (!verification) {
 					fighting.delete(msg.channel.id);
 
-					return msg.say('Looks like they declined...');
+					return msg.sendMessage('Looks like they declined...');
 				}
 			}
 			let userHP = 500;
@@ -99,14 +88,14 @@ export default class BattleCommand extends Command {
 			}
 			
 			while (userHP > 0 && oppoHP > 0) {
-				const user = userTurn ? msg.author : args.opponent;
+				const user = userTurn ? msg.author : opponent;
 				let choice;
 
-				if (!args.opponent.bot || (args.opponent.bot && userTurn)) {
-					await msg.say(stripIndents`
+				if (!opponent.bot || (opponent.bot && userTurn)) {
+					await msg.sendMessage(stripIndents`
 						${user}, do you **fight**, **guard**, **special**, or **run**?
 						**${msg.author.username}**: ${userHP}HP
-						**${args.opponent.username}**: ${oppoHP}HP
+						**${opponent.username}**: ${oppoHP}HP
 					`);
 					const filter = (res: any) =>
 						res.author.id === user.id && ['fight', 'guard', 'special', 'run'].includes(res.content.toLowerCase());
@@ -115,7 +104,7 @@ export default class BattleCommand extends Command {
 						time: 30000
 					});
 					if (!turn.size) {
-						await msg.say('Sorry, time is up!');
+						await msg.sendMessage('Sorry, time is up!');
 						reset();
 						continue;
 					}
@@ -127,37 +116,37 @@ export default class BattleCommand extends Command {
 
 				if (choice === 'fight') {
 					const damage = Math.floor(Math.random() * (guard ? 10 : 100)) + 1;
-					await msg.say(`${user} deals **${damage}** damage!`);
+					await msg.sendMessage(`${user} deals **${damage}** damage!`);
 					dealDamage(damage);
 					reset();
 				} else if (choice === 'guard') {
-					await msg.say(`${user} guards!`);
+					await msg.sendMessage(`${user} guards!`);
 					guard = true;
 					reset(false);
 				} else if (choice === 'special') {
 					const miss = Math.floor(Math.random() * 4);
 					if (!miss) {
 						const damage = getRandomInt(100, guard ? 150 : 300);
-						await msg.say(`${user} deals **${damage}** damage!`);
+						await msg.sendMessage(`${user} deals **${damage}** damage!`);
 						dealDamage(damage);
 					} else {
-						await msg.say(`${user}'s attack missed!`);
+						await msg.sendMessage(`${user}'s attack missed!`);
 					}
 					reset();
 				} else if (choice === 'run') {
-					await msg.say(`${user} flees!`);
+					await msg.sendMessage(`${user} flees!`);
 					forfeit();
 					break;
 				} else {
-					await msg.say('I do not understand what you want to do.');
+					await msg.sendMessage('I do not understand what you want to do.');
 				}
 			}
 
 			fighting.delete(msg.channel.id);
 
-			const winner = userHP > oppoHP ? msg.author : args.opponent;
+			const winner = userHP > oppoHP ? msg.author : opponent;
 			
-			return msg.say(`The match is over! Congrats, ${winner}!`);
+			return msg.sendMessage(`The match is over! Congrats, ${winner}!`);
 		} catch (err) {
 			fighting.delete(msg.channel.id);
 			throw err;

@@ -1,7 +1,7 @@
 import { stripIndents } from 'common-tags';
-import { Collection, Message } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
+import { Collection } from 'discord.js';
 import { awaitPlayers, delay, shuffle } from '../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 //tslint:disable-next-line
 const { questions, stories } = require('../../extras/mafia');
 
@@ -25,10 +25,6 @@ export default class MafiaCommand extends Command {
 		super(client, store, file, directory, {
 			aliases: ['town-of-salem', 'werewolf'],
 			description: 'Who is the Mafia? Who is the doctor? Who is the detective? Will the Mafia kill them all?',
-			examples: ['!mafia'],
-			group: 'game',
-			guildOnly: true,
-			memberName: 'mafia',
 			name: 'mafia'
 		});
 
@@ -41,16 +37,16 @@ export default class MafiaCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof MafiaCommand
 	 */
-	public async run(msg: KlasaMessage, args: { space: string }): Promise<KlasaMessage | KlasaMessage[]> {
-		if (this.playing.has(msg.channel.id)) { return msg.reply('Only one game may be occurring per channel.'); }
+	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+		if (this.playing.has(msg.channel.id)) { return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author }); }
 		this.playing.add(msg.channel.id);
 		try {
-			await msg.say('You will need at least 2 more players, at maximum 10. To join, type `join game`.');
+			await msg.sendMessage('You will need at least 2 more players, at maximum 10. To join, type `join game`.');
 			const awaitedPlayers = await awaitPlayers(msg, 10, 3, { dmCheck: true });
 			if (!awaitedPlayers) {
 				this.playing.delete(msg.channel.id);
 				
-				return msg.say('Game could not be started...');
+				return msg.sendMessage('Game could not be started...');
 			}
 			const players: any = await this.generatePlayers(awaitedPlayers);
 			let turn = 1;
@@ -58,12 +54,12 @@ export default class MafiaCommand extends Command {
 				let killed = null;
 				let saved = null;
 
-				await msg.say(`Night ${turn}, sending DMs...`);
+				await msg.sendMessage(`Night ${turn}, sending DMs...`);
 
 				for (const player of players.values()) {
 					if (player.role.includes('pleb')) { continue; }
 					
-					await msg.say(`The ${player.role} is making their decision...`);
+					await msg.sendMessage(`The ${player.role} is making their decision...`);
 
 					const valid = players.filterArray((p: any) => p.role !== player.role);
 
@@ -104,24 +100,24 @@ export default class MafiaCommand extends Command {
 				if (killed && killed !== saved) { players.delete(killed); }
 
 				if (killed && killed === saved) {
-					await msg.say(stripIndents`
+					await msg.sendMessage(stripIndents`
 						Late last night, a Mafia member emerged from the dark and tried to kill ${display}${story}
 						Thankfully, a doctor stepped in just in time to save the day.
 						Who is this mysterious Mafia member? You have one minute to decide.
 					`);
 				} else if (killed && players.size < 3) {
-					await msg.say(stripIndents`
+					await msg.sendMessage(stripIndents`
 						Late last night, a Mafia member emerged from the dark and killed poor ${display}${story}
 						Sadly, after the event, the final citizen left the town in fear, leaving the Mafia to rule forever.
 					`);
 					break;
 				} else if (killed && killed !== saved) {
-					await msg.say(stripIndents`
+					await msg.sendMessage(stripIndents`
 						Late last night, a Mafia member emerged from the dark and killed poor ${display}${story}
 						Who is this mysterious Mafia member? You have one minute to decide.
 					`);
 				} else {
-					await msg.say(stripIndents`
+					await msg.sendMessage(stripIndents`
 						Late last night, a Mafia member emerged from the dark. Thankfully, however, they didn't try to kill anyone.
 						Who is this mysterious Mafia member? You have one minute to decide.
 					`);
@@ -131,7 +127,7 @@ export default class MafiaCommand extends Command {
 
 				const playersArr = Array.from(players.values());
 
-				await msg.say(stripIndents`
+				await msg.sendMessage(stripIndents`
 					Who do you think is the Mafia member? Please type the number.
 					${playersArr.map((p: any, i: any) => `**${i + 1}.** ${p.user.tag}`).join('\n')}
 				`);
@@ -155,23 +151,23 @@ export default class MafiaCommand extends Command {
 					time: 120000
 				});
 				if (!votes.size) {
-					await msg.say('No one will be hanged.');
+					await msg.sendMessage('No one will be hanged.');
 					continue;
 				}
 				const hanged = this.getHanged(votes, players, playersArr);
-				await msg.say(`${hanged.user} will be hanged.`);
+				await msg.sendMessage(`${hanged.user} will be hanged.`);
 				players.delete(hanged.id);
 				++turn;
 			}
 			this.playing.delete(msg.channel.id);
 			const mafia = players.find((p: any) => p.role === 'mafia');
-			if (!mafia) { return msg.say('The Mafia has been hanged! Thanks for playing!'); }
+			if (!mafia) { return msg.sendMessage('The Mafia has been hanged! Thanks for playing!'); }
 			
-			return msg.say(`Oh no, the Mafia wasn't caught in time... Nice job, ${mafia.user}!`);
+			return msg.sendMessage(`Oh no, the Mafia wasn't caught in time... Nice job, ${mafia.user}!`);
 		} catch (err) {
 			this.playing.delete(msg.channel.id);
 			
-			return msg.reply(`Oh no, an error occurred: \`${err.message}\`. Try again later!`);
+			return msg.sendMessage(`Oh no, an error occurred: \`${err.message}\`. Try again later!`, { reply: msg.author });
 		}
 	}
 

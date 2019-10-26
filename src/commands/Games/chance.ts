@@ -1,5 +1,4 @@
-import { Message } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from "klasa";
 
 /**
  * Starts a game of Chance.
@@ -18,21 +17,10 @@ export default class ChanceCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['1-in', 'one-in', 'lottery-classic'],
-			args: [
-				{
-					default: 1000,
-					key: 'chance',
-					prompt: 'What is the chance of winning? 1 in what?',
-					type: 'string'
-				}
-			],
 			description: 'Attempt to win with a 1 in 1000 (or your choice) chance of winning.',
-			details: 'syntax: \`!chance <chance of winning>\`',
-			examples: ['!chance 100', '!chance'],
-			group: 'game',
-			guildOnly: true,
-			memberName: 'chance',
-			name: 'chance'
+			extendedHelp: 'syntax: \`!chance <chance of winning>\`',
+			name: 'chance',
+			usage: '(chance:int{1})'
 		});
 
 	}
@@ -44,10 +32,10 @@ export default class ChanceCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof ChanceCommand
 	 */
-	public async run(msg: KlasaMessage, args: { chance: string }): Promise<KlasaMessage | KlasaMessage[]> {
-		const loss = Math.floor(Math.random() * +args.chance);
-		if (!loss) { return msg.reply('Nice job! 10/10! You deserve some cake!'); }
+	public async run(msg: KlasaMessage, [chance]): Promise<KlasaMessage | KlasaMessage[]> {
+		const loss = Math.floor(Math.random() * (chance ? +chance : 1000));
+		if (!loss) { return msg.sendMessage('Nice job! 10/10! You deserve some cake!', { reply: msg.author }); }
 		
-		return msg.reply('Nope, sorry, you lost.');
+		return msg.sendMessage('Nope, sorry, you lost.', { reply: msg.author });
 	}
 }

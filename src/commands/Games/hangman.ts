@@ -1,6 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { Message } from 'discord.js';
-import { Command, KlasaMessage, CommandoClient } from 'discord.js-commando';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 //tslint:disable-next-line
 const words = require('../../extras/hangman');
 
@@ -23,10 +22,6 @@ export default class HangmanCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Prevent a man from being hanged by guessing a word as fast as you can.',
-			examples: ['!hangman'],
-			group: 'game',
-			guildOnly: true,
-			memberName: 'hangman',
 			name: 'hangman'
 		});
 
@@ -39,9 +34,9 @@ export default class HangmanCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof HangmanCommand
 	 */
-	public async run(msg: KlasaMessage, args: { space: string }): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		if (this.playing.has(msg.channel.id)) {
-			return msg.reply('Only one game may be occurring per channel.');
+			return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author });
 		}
 		
 		this.playing.add(msg.channel.id);
@@ -56,7 +51,7 @@ export default class HangmanCommand extends Command {
 			const display = new Array(word.length).fill('_');
 			
 			while (word.length !== confirmation.length && points < 6) {
-				await msg.say(stripIndents`
+				await msg.sendMessage(stripIndents`
 					${displayText === null ? 'Here we go!' : displayText ? 'Good job!' : 'Nope!'}
 					\`${display.join(' ')}\`. Which letter do you choose?
 					Incorrect Tries: ${incorrect.join(', ') || 'None'}
@@ -81,7 +76,7 @@ export default class HangmanCommand extends Command {
 				});
 
 				if (!guess.size) {
-					await msg.say('Sorry, time is up!');
+					await msg.sendMessage('Sorry, time is up!');
 					
 					break;
 				}
@@ -108,13 +103,13 @@ export default class HangmanCommand extends Command {
 				}
 			}
 			this.playing.delete(msg.channel.id);
-			if (word.length === confirmation.length || guessed) { return msg.say(`You won, it was ${word}!`); }
+			if (word.length === confirmation.length || guessed) { return msg.sendMessage(`You won, it was ${word}!`); }
 
-			return msg.say(`Too bad... It was ${word}...`);
+			return msg.sendMessage(`Too bad... It was ${word}...`);
 		} catch (err) {
 			this.playing.delete(msg.channel.id);
 			
-			return msg.reply(`Oh no, an error occurred: \`${err.message}\`. Try again later!`);
+			return msg.sendMessage(`Oh no, an error occurred: \`${err.message}\`. Try again later!`, { reply: msg.author });
 		}
 	}
 }
