@@ -1,7 +1,7 @@
-const { Event } = require('klasa');
+import { Event } from 'klasa';
 const gateways = ['users', 'clientStorage'];
 
-module.exports = class extends Event {
+export default class extends Event {
 
 	run(settings) {
 		if (gateways.includes(settings.gateway.type)) {

@@ -1,6 +1,6 @@
-const { Event } = require('klasa');
+import { Event } from 'klasa';
 
-module.exports = class extends Event {
+export default class extends Event {
 
 	run(messages) {
 		for (const message of messages.values()) {

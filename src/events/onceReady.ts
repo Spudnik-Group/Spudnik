@@ -1,6 +1,6 @@
-const { Event, util } = require('klasa');
+import { Event, util } from 'klasa';
 
-module.exports = class extends Event {
+export default class extends Event {
 
 	constructor(...args) {
 		super(...args, {
@@ -29,6 +29,9 @@ module.exports = class extends Event {
 		if (this.client.options.readyMessage !== null) {
 			this.client.emit('log', util.isFunction(this.client.options.readyMessage) ? this.client.options.readyMessage(this.client) : this.client.options.readyMessage);
 		}
+
+		console.log(chalk.magenta(`Logged into Discord! Serving in ${this.client.guilds.array().length} Discord servers`));
+		console.log(chalk.blue('---Spudnik Launch Success---'));
 
 		this.client.emit('klasaReady');
 	}
