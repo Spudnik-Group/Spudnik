@@ -4,18 +4,18 @@ import { SpudConfig } from '../lib/config/spud-config';
 
 export default class extends Event {
 
-	run(err) {
-		if (process.env.NODE_ENV !== 'development') {
+	run(warning) {
+		if (!SpudConfig.debug && process.env.NODE_ENV !== 'development') {
 			const rollbar = new Rollbar({
 				accessToken: SpudConfig.rollbarApiKey,
 				captureUncaught: true,
 				captureUnhandledRejections: true,
 				environment: process.env.NODE_ENV
 			});
-			rollbar.error(err);
+			rollbar.warn(warning);
 		}
 
-		this.client.console.error(err);
+		this.client.console.warn(warning);
 	}
 
 };

@@ -1,6 +1,7 @@
 export const SpudConfig = {
 	'bfdApiKey': process.env.spud_bfdapi ? process.env.spud_bfdapi : '',
 	'bodApiKey': process.env.spud_bodapi ? process.env.spud_bodapi : '',
+	'botListGuilds': process.env.spud_botlist_guilds ? process.env.spud_botlist_guilds.split(',') : [],
 	'botListUpdateInterval': process.env.spud_botlist_update_interval ? +process.env.spud_botlist_update_interval : 600000,
 	'botsggApiKey': process.env.spud_botsggapi ? process.env.spud_botsggapi : '',
 	'dbApiKey': process.env.spud_dbapi ? process.env.spud_dbapi : '',

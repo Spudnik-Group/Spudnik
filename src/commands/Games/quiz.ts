@@ -24,37 +24,25 @@ export default class QuizCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['jeopardy'],
-			args: [
-				{
-					default: 'multiple',
-					key: 'type',
-					oneOf: types,
-					parse: (type: any) => type.toLowerCase(),
-					prompt: `Which type of question would you like to have? Either ${list(types, 'or')}.`,
-					type: 'string'
-				},
-				{
-					default: '',
-					key: 'difficulty',
-					oneOf: difficulties,
-					parse: (difficulty: any) => difficulty.toLowerCase(),
-					prompt: `What should the difficulty of the game be? Either ${list(difficulties, 'or')}.`,
-					type: 'string'
-				}
-			],
 			description: 'Answer a quiz question.',
-			details: stripIndents`
+			extendedHelp: stripIndents`
 				syntax: \`!quiz (quizType) (difficulty)\`
 				**Types**: ${types.join(', ')}
 				**Difficulties**: ${difficulties.join(', ')}
 			`,
-			examples: ['!quiz boolean easy', '!quiz'],
-			group: 'game',
-			guildOnly: true,
-			memberName: 'quiz',
-			name: 'quiz'
+			name: 'quiz',
+			usage: '(type:string) (difficulty:string)'
 		});
 
+		this
+			.createCustomResolver('type', (arg) => {
+				if (types.includes(arg.toLowerCase())) return arg;
+				throw `Which type of question would you like to have? Either ${list(types, 'or')}.`;
+			})
+			.createCustomResolver('difficulty', (arg) => {
+				if (difficulties.includes(arg.toLowerCase())) return arg;
+				throw `What should the difficulty of the game be? Either ${list(difficulties, 'or')}.`;
+			})
 	}
 
 	/**
@@ -64,14 +52,14 @@ export default class QuizCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof QuizCommand
 	 */
-	public async run(msg: KlasaMessage, args: { type: string, difficulty: string }): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [type, difficulty]): Promise<KlasaMessage | KlasaMessage[]> {
 		try {
 			const { data: body } = await axios.get('https://opentdb.com/api.php', {
 				params: {
 					amount: 1,
-					difficulty: args.difficulty,
+					difficulty: difficulty,
 					encode: 'url3986',
-					type: args.type
+					type: type
 				}
 			});
 			if (!body.results) { return msg.sendMessage('Oh no, a question could not be fetched. Try again later!', { reply: msg.author }); }

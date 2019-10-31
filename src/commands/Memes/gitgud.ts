@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
-import { sendSimpleEmbeddedImage } from 'src/lib/helpers';
+import { sendSimpleEmbeddedImage } from '../../lib/helpers';
 
 /**
  * Post the "gitgud" image at someone.

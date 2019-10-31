@@ -1,6 +1,6 @@
 import { Command, KlasaClient, CommandStore, KlasaMessage } from "klasa";
 import { GuildMember, MessageEmbed } from "discord.js";
-import { sendSimpleEmbeddedError, modLogMessage, getEmbedColor } from "src/lib/helpers";
+import { sendSimpleEmbeddedError, modLogMessage, getEmbedColor } from "../../lib/helpers";
 import { stripIndents } from "common-tags";
 import { format } from "date-fns";
 

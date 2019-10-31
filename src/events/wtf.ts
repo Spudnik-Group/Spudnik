@@ -1,8 +1,19 @@
 import { Event } from 'klasa';
+import * as Rollbar from 'rollbar';
+import { SpudConfig } from '../lib/config/spud-config';
 
 export default class extends Event {
 
-	run(event, args, error) {
+	run(failure) {
+		if (process.env.NODE_ENV !== 'development') {
+			const rollbar = new Rollbar({
+				accessToken: SpudConfig.rollbarApiKey,
+				captureUncaught: true,
+				captureUnhandledRejections: true,
+				environment: process.env.NODE_ENV
+			});
+			rollbar.critical(failure);
+		}
 		// TODO: change this
 		// const message = stripIndents`
 		// Caught **General Warning**!
@@ -14,8 +25,7 @@ export default class extends Event {
 		// 	channel.send(message);
 		// }
 
-		this.client.emit('wtf', `[EVENT] ${event.path}\n${error ?
-			error.stack ? error.stack : error : 'Unknown error'}`);
+		this.client.console.wtf(failure);
 	}
 
 };

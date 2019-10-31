@@ -2,7 +2,7 @@ import { Event } from 'klasa';
 
 export default class extends Event {
 
-	run(event, args, error) {
+	run(scheduledTask, task, error) {
 		// TODO: change this
 		// const message = stripIndents`
 		// Caught **General Warning**!
@@ -14,7 +14,7 @@ export default class extends Event {
 		// 	channel.send(message);
 		// }
 
-		this.client.emit('wtf', `[EVENT] ${event.path}\n${error ?
+		this.client.emit('wtf', `[TASK] ${task.path}\n${error ?
 			error.stack ? error.stack : error : 'Unknown error'}`);
 	}
 

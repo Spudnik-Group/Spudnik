@@ -1,8 +1,13 @@
-import { Event } from 'klasa';
+import { Event, KlasaClient, EventStore } from 'klasa';
 
 export default class extends Event {
 
-	run(event, args, error) {
+	constructor(client: KlasaClient, store: EventStore, file: string[], directory: string) {
+		super(client, store, file, directory, { emitter: process });
+		if (this.client.options.production) this.unload();
+	}
+
+	run(err) {
 		// TODO: change this
 		// const message = stripIndents`
 		// Caught **General Warning**!
@@ -14,8 +19,8 @@ export default class extends Event {
 		// 	channel.send(message);
 		// }
 
-		this.client.emit('wtf', `[EVENT] ${event.path}\n${error ?
-			error.stack ? error.stack : error : 'Unknown error'}`);
+		if (!err) return;
+		this.client.emit('error', `Uncaught Promise Error: \n${err.stack || err}`);
 	}
 
 };

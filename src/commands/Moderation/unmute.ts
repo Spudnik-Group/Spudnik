@@ -1,6 +1,6 @@
 import { Command, KlasaClient, CommandStore } from "klasa";
 import { MessageEmbed } from "discord.js";
-import { getEmbedColor, sendSimpleEmbeddedError, modLogMessage } from "src/lib/helpers";
+import { getEmbedColor, sendSimpleEmbeddedError, modLogMessage } from "../../lib/helpers";
 import { stripIndents } from "common-tags";
 import format = require("date-fns/format");
 

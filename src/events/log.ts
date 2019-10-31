@@ -6,8 +6,4 @@ export default class extends Event {
 		this.client.console.log(data);
 	}
 
-	init() {
-		if (!this.client.options.consoleEvents.log) this.disable();
-	}
-
 };
