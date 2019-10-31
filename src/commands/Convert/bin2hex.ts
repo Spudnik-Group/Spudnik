@@ -19,7 +19,7 @@ export default class Bin2HexCommand extends Command {
 		super(client, store, file, directory, {
 			description: 'Converts binary to decimal',
 			name: 'bin2hex',
-			usage: '<numberToConvert:regex/\\/^[0-1]+$\\/>'
+			usage: '<numberToConvert:regex/\\/^[0-1]+$/>'
 		});
 	}
 
@@ -31,6 +31,6 @@ export default class Bin2HexCommand extends Command {
 	 * @memberof Bin2HexCommand
 	 */
 	public async run(msg: KlasaMessage, [numberToConvert]): Promise<KlasaMessage | KlasaMessage[]> {
-		return sendSimpleEmbeddedMessageWithAuthor(msg, `${numberToConvert} = 0x${Convert.bin2hex(numberToConvert).toUpperCase()}`, {name: 'Binary to Hexadecimal Conversion:'});
+		return sendSimpleEmbeddedMessageWithAuthor(msg, `${numberToConvert} = 0x${Convert.bin2hex(numberToConvert).toUpperCase()}`, { name: 'Binary to Hexadecimal Conversion:' });
 	}
 }

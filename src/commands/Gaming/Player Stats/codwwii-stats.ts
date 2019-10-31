@@ -4,7 +4,7 @@ import { sendSimpleEmbeddedError, getEmbedColor } from '../../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 const Scout = require('@scoutsdk/server-sdk');
-const games = require('../../extras/scout-games');
+const games = require('../../../extras/scout-games.json');
 const scoutID: string = process.env.spud_scoutid;
 const scoutSecret: string = process.env.spud_scoutsecret;
 

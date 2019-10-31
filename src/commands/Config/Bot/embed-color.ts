@@ -29,7 +29,7 @@ export default class EmbedColorCommand extends Command {
 				\`MANAGE_GUILD\` permission required.
 			`,
 			name: 'embedcolor',
-			usage: '[color:regex/\\/^ *[a-f0-9]{6} *$\\/i]'
+			usage: '[color:regex/^ *[a-f0-9]{6} *$/i]'
 		});
 	}
 
@@ -61,7 +61,7 @@ export default class EmbedColorCommand extends Command {
 
 				return this.sendSuccess(msg, embedColorEmbed);
 			} catch (err) {
-				return this.catchError(msg, {color}, err)
+				return this.catchError(msg, { color }, err)
 			}
 		} else {
 			try {
@@ -74,7 +74,7 @@ export default class EmbedColorCommand extends Command {
 
 				return this.sendSuccess(msg, embedColorEmbed);
 			} catch (err) {
-				return this.catchError(msg, {color: null}, err)
+				return this.catchError(msg, { color: null }, err)
 			}
 		}
 	}

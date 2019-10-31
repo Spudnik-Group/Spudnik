@@ -26,7 +26,7 @@ export default class ChooseCommand extends Command {
 				The command takes an infinite number of space-separated arguements.
 			`,
 			name: 'choose',
-			usage: '<choice:string> <choice:string> [...] [...] [...] [...] [...] [...] [...] [...] [...]',
+			usage: '<choice:string> <choice:string> [...]',
 			usageDelim: ', '
 		});
 	}
@@ -44,7 +44,7 @@ export default class ChooseCommand extends Command {
 		if (options.length < 2) {
 			return sendSimpleEmbeddedError(msg, 'I can\'t choose for you if you don\'t give me more options!', 3000);
 		}
-		
+
 		return msg.send(new MessageEmbed({
 			author: {
 				iconURL: msg.client.user.displayAvatarURL(),

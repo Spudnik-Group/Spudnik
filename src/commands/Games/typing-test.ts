@@ -35,7 +35,7 @@ export default class TypingTestCommand extends Command {
 				**Difficulties**: ${difficulties.join(', ')}
 			`,
 			name: 'typing-test',
-			usage: '<difficulty:'
+			usage: '<difficulty:string>'
 		});
 
 		this.createCustomResolver('difficulty', (arg: string, possible: Possible, msg: KlasaMessage, [difficulty]) => {

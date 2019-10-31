@@ -19,7 +19,7 @@ export default class Hex2BinCommand extends Command {
 		super(client, store, file, directory, {
 			description: 'Converts hexadecimal to decimal',
 			name: 'hex2bin',
-			usage: '<numberToConvert:regex/\\/^(0[x|X])?[0-9A-Fa-f]+$\\/>'
+			usage: '<numberToConvert:regex/^(0[x|X])?[0-9A-Fa-f]+$/>'
 		});
 	}
 
@@ -32,7 +32,7 @@ export default class Hex2BinCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage, [numberToConvert]): Promise<KlasaMessage | KlasaMessage[]> {
 		numberToConvert = !numberToConvert.toLowerCase().startsWith('0x') ? `0x${numberToConvert.toUpperCase()}` : `0x${numberToConvert.toLowerCase().replace('0x', '').toUpperCase()}`;
-		
-		return sendSimpleEmbeddedMessageWithAuthor(msg, `${numberToConvert} = ${Convert.hex2bin(numberToConvert)}`, {name: 'Hexadecimal to Binary Conversion:'});
+
+		return sendSimpleEmbeddedMessageWithAuthor(msg, `${numberToConvert} = ${Convert.hex2bin(numberToConvert)}`, { name: 'Hexadecimal to Binary Conversion:' });
 	}
 }

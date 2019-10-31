@@ -3,7 +3,7 @@ import { getRandomInt, getEmbedColor } from '../../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 // tslint:disable-next-line:no-var-requires
-const { smiff }: { smiff: string[] } = require('../../extras/data');
+const { smiff }: { smiff: string[] } = require('../../../extras/data.json');
 
 /**
  * Post a random Will Smith fact.
@@ -40,7 +40,7 @@ export default class SmiffFactCommand extends Command {
 			description: '',
 			title: 'Will Smith Fact'
 		});
-		
+
 		responseEmbed.setDescription(smiff[getRandomInt(0, smiff.length) - 1]);
 
 		// Send the success response

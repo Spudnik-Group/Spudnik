@@ -4,7 +4,7 @@ import { sendSimpleEmbeddedError, getEmbedColor } from '../../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 const Scout = require('@scoutsdk/server-sdk');
-const games = require('../../extras/scout-games');
+const games = require('../../../extras/scout-games.json');
 const scoutID: string = process.env.spud_scoutid;
 const scoutSecret: string = process.env.spud_scoutsecret;
 
@@ -48,7 +48,7 @@ export default class CODBO4StatsCommand extends Command {
 		if (!scoutID || !scoutSecret) {
 			return sendSimpleEmbeddedError(msg, 'The codbo4-stats command is not configured yet.');
 		}
-		
+
 		const plat = platform === 'pc' ? 'battlenet' : platform;
 		const codbo4Embed: MessageEmbed = new MessageEmbed({
 			author: {

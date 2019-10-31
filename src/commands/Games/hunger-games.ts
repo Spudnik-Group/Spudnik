@@ -25,7 +25,7 @@ export default class HungerGamesCommand extends Command {
 			aliases: ['hunger-games-simulator', 'brant-steele'],
 			description: 'Simulate a Hunger Games match with up to 24 tributes.',
 			name: 'hunger-games',
-			usage: '<tributes:user> [...] [...] [...] [...] [...] [...] [...] [...] [...] [...] [...] [...] [...] [...] [...] [...] [...] [...] [...] [...] [...] [...] [...]'
+			usage: '<tributes:user> [...]'
 		});
 
 	}
@@ -39,7 +39,7 @@ export default class HungerGamesCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage, [...tributes]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (tributes.length < 2) { return msg.sendMessage(`...${tributes[0]} wins, as they were the only tribute.`); }
-		
+
 		if (tributes.length > 24) { return msg.sendMessage('Please do not enter more than 24 tributes.', { reply: msg.author }); }
 
 		if (new Set(tributes).size !== tributes.length) { return msg.sendMessage('Please do not enter the same tribute twice.', { reply: msg.author }); }
@@ -53,21 +53,21 @@ export default class HungerGamesCommand extends Command {
 			let turn = 0;
 			let bloodbath = true;
 			const remaining = new Set(shuffle(tributes));
-			
+
 			while (remaining.size > 1) {
 				if (!bloodbath && sun) { ++turn; }
-				
+
 				const sunEvents = bloodbath ? events.bloodbath : sun ? events.day : events.night;
 				const results: any[] = [];
 				const deaths: any[] = [];
-				
+
 				this.makeEvents(remaining, sunEvents, deaths, results);
-				
+
 				let text = stripIndents`
 					__**${bloodbath ? 'Bloodbath' : sun ? `Day ${turn}` : `Night ${turn}`}**__:
 					${results.join('\n')}
 				`;
-				
+
 				if (deaths.length) {
 					text += '\n\n';
 					text += stripIndents`
@@ -75,31 +75,31 @@ export default class HungerGamesCommand extends Command {
 						${deaths.join('\n')}
 					`;
 				}
-				
+
 				text += '\n\n_Proceed?_';
-				
+
 				await msg.sendMessage(text);
-				
+
 				const verification = await verify(msg.channel, msg.author, 120000);
-				
+
 				if (!verification) {
 					this.playing.delete(msg.channel.id);
-					
+
 					return msg.sendMessage('See you next time!');
 				}
-				
+
 				if (!bloodbath) { sun = !sun; }
-				
+
 				if (bloodbath) { bloodbath = false; }
 			}
-			
+
 			this.playing.delete(msg.channel.id);
 			const remainingArr = Array.from(remaining);
-			
+
 			return msg.sendMessage(`And the winner is... ${remainingArr[0]}!`);
 		} catch (err) {
 			this.playing.delete(msg.channel.id);
-			
+
 			throw err;
 		}
 	}

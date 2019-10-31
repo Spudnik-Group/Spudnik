@@ -20,7 +20,7 @@ export default class Base64DecodeCommand extends Command {
 		super(client, store, file, directory, {
 			description: 'Base64 decodes a string',
 			name: 'base64decode',
-			usage: '<stringToDecode:regex/\\/^(?:[A-Za-z0-9+\\/]{4})*(?:[A-Za-z0-9+\\/]{2}==|[A-Za-z0-9+\\/]{3}=)?$\\/\\/>'
+			usage: '<stringToDecode:regex/^(?:[A-Za-z0-9+\\/]{4})*(?:[A-Za-z0-9+\\/]{2}==|[A-Za-z0-9+\\/]{3}=)?$/>'
 		});
 	}
 
@@ -48,7 +48,7 @@ export default class Base64DecodeCommand extends Command {
 				name: 'Output:',
 				value: `${Convert.base64decode(stringToDecode)}`
 			}, false);
-		
+
 		return msg.sendEmbed(returnMessage);
 	}
 }

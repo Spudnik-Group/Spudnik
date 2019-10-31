@@ -22,7 +22,7 @@ export default class LotteryCommand extends Command {
 			description: 'Attempt to win the lottery with 6 numbers.',
 			extendedHelp: 'syntax: \`!lottery <choices>\`',
 			name: 'lottery',
-			usage: '<choice:int{1,70}> [...] [...] [...] [...] [...]'
+			usage: '<choice:int{1,70}> [...]'
 		});
 	}
 
@@ -36,7 +36,7 @@ export default class LotteryCommand extends Command {
 	public async run(msg: KlasaMessage, [...choices]): Promise<KlasaMessage | KlasaMessage[]> {
 		const lotto = Array.from({ length: 6 }, () => Math.floor(Math.random() * 70) + 1);
 		const similarities = lotto.filter((num, i) => choices[i] === num).length;
-		
+
 		return msg.sendMessage(stripIndents`
 			${lotto.join(', ')}
 			You matched **${similarities}** numbers, which gives you **${prizes[similarities]}**! Congrats!

@@ -4,7 +4,7 @@ import { sendSimpleEmbeddedError, getEmbedColor } from '../../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 const Scout = require('@scoutsdk/server-sdk');
-const games = require('../../extras/scout-games');
+const games = require('../../../extras/scout-games.json');
 const scoutID: string = process.env.spud_scoutid;
 const scoutSecret: string = process.env.spud_scoutsecret;
 
@@ -81,7 +81,7 @@ export default class R6StatsCommand extends Command {
 						if (!statObj.displayValue) return;
 						r6Embed.addField(statObj.metadata.name, statObj.displayValue, true);
 					});
-	
+
 					return msg.sendEmbed(r6Embed);
 				} else {
 					return sendSimpleEmbeddedError(msg, 'Couldn\'t retrieve stats for that person, check the spelling and try again.', 3000);

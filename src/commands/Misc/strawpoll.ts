@@ -22,7 +22,7 @@ export default class StrawpollCommand extends Command {
 			aliases: ['poll'],
 			description: 'Generates a Strawpoll with the provided options.',
 			name: 'strawpoll',
-			usage: '<title:string> <options:string> [...] [...] [...] [...] [...] [...] [...] [...] [...]'
+			usage: '<title:string> <options:string> [...]'
 		});
 	}
 
@@ -41,14 +41,14 @@ export default class StrawpollCommand extends Command {
 				options: options.slice(0, 10),
 				title: title
 			});
-			
+
 			return sendSimpleEmbeddedMessage(msg, stripIndents`
 				${res.title}
 				http://www.strawpoll.me/${res.id}
 			`);
 		} catch (err) {
 			msg.client.emit('warn', `Error in command misc:strawpoll: ${err}`);
-			
+
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 		}
 	}
