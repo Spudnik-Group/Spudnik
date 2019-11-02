@@ -27,7 +27,6 @@
 		"start:docs": "cd ./docs && bundle exec jekyll serve"
 	},
 	"dependencies": {
-		"@discordjs/uws": "^11.149.1",
 		"@scoutsdk/server-sdk": "^0.7.0",
 		"axios": "^0.19.0",
 		"chalk": "^2.4.2",
