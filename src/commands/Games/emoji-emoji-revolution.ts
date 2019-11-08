@@ -92,7 +92,7 @@ export default class EmojiEmojiRevolutionCommand extends Command {
 			if (aPts === oPts) { return msg.sendMessage('It\'s a tie!'); }
 
 			const userWin = aPts > oPts;
-			
+
 			return msg.sendMessage(`You win ${userWin ? msg.author : opponent} with ${userWin ? aPts : oPts} points!`);
 		} catch (err) {
 			this.playing.delete(msg.channel.id);

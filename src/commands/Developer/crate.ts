@@ -13,7 +13,7 @@ export default class extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Shows the install/publish size of a cargo crate.',
-			usage: '<name:str>'
+			usage: '<name:string>'
 		});
 	}
 

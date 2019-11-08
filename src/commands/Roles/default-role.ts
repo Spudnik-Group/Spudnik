@@ -36,6 +36,8 @@ export default class DefaultRoleCommand extends Command {
 			permissionLevel: 2,
 			usage: '[role:Role]'
 		});
+
+		this.customizeResponse('role', 'Please supply a valid role to set as the default.');
 	}
 
 	/**

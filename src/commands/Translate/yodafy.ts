@@ -26,6 +26,8 @@ export default class YodafyCommand extends Command {
 			name: 'yodafy',
 			usage: '<query:...string>'
 		});
+
+		this.customizeResponse('query', 'Your statement, I must have.');
 	}
 
 	/**

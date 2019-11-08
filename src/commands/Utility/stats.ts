@@ -13,7 +13,7 @@ const { version, dependencies } = require('../../../package');
  * @class StatsCommand
  * @extends {Command}
  */
-export default class extends Command {
+export default class StatsCommand extends Command {
 	/**
 	 * Creates an instance of StatsCommand.
 	 *
@@ -48,14 +48,14 @@ export default class extends Command {
 						• Guilds: ${this.client.guilds.size}
 						• Channels: ${this.client.channels.size}
 						• Users: ${this.client.guilds.map((guild) => guild.memberCount)
-							.reduce((a, b) => a + b)}
+					.reduce((a, b) => a + b)}
 						• Commands: ${this.client.commands.size}`, true)
 			.addField('❯ Spudnik Command', '[Join](https://spudnik.io/support)', true)
 			.addField('❯ Source Code', '[View](https://github.com/Spudnik-Group/Spudnik)', true)
 			.addField('❯ Invite to Your Server!', '[Invite](https://spudnik.io/invite)', true)
 			.addField('❯ Dependencies', this.parseDependencies())
 			.setThumbnail(`${this.client.user ? this.client.user.avatarURL() : ''}`);
-		
+
 		return msg.sendEmbed(statsEmbed);
 	}
 
@@ -67,7 +67,7 @@ export default class extends Command {
 
 					return `[${dep[0]}](https://github.com/${repo[0]}/${repo[1].replace(/#.+/, '')})`;
 				}
-				
+
 				return `[${dep[0]}](https://npmjs.com/${dep[0]})`;
 			})
 			.join(', ');

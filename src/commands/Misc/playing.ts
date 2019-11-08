@@ -40,13 +40,13 @@ export default class PlayingCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage, [game]): Promise<KlasaMessage | KlasaMessage[]> {
 		const gameSearch = game.toLowerCase();
-		const gamePlayers: { [id: string] : Array<GuildMember> } = {};
-		
+		const gamePlayers: { [id: string]: Array<GuildMember> } = {};
+
 		msg.guild.members.forEach((member: GuildMember) => {
 			if (member.user.bot || !member.presence.activity) {
 				return;
 			}
-			
+
 			const game = member.presence.activity.name.toLowerCase();
 			if (game.indexOf(gameSearch) === -1) {
 				return;
@@ -60,18 +60,18 @@ export default class PlayingCommand extends Command {
 
 		const sortedMessage = Object.keys(gamePlayers).sort()
 			.map((game) => {
-				return `**${ gamePlayers[game][0].presence.activity.name }**\n` + 
+				return `**${gamePlayers[game][0].presence.activity.name}**\n` +
 					gamePlayers[game].sort((a, b) => {
 						const aName = a.displayName.toLowerCase();
 						const bName = b.displayName.toLowerCase();
 
 						return aName < bName ? -1 : aName > bName ? 1 : 0;
-					}).map(member => `<@${ member.id }>`)
-					.join('\n');
+					}).map(member => `<@${member.id}>`)
+						.join('\n');
 			}).join('\n\n');
-		
+
 		return sendSimpleEmbeddedMessage(
-			msg, 
+			msg,
 			sortedMessage || (gameSearch ? `Looks like nobody is playing anything like \`${gameSearch}\`.` : 'Nobody is playing anything right now.')
 		);
 	}

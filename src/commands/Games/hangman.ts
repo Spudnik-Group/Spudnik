@@ -38,7 +38,7 @@ export default class HangmanCommand extends Command {
 		if (this.playing.has(msg.channel.id)) {
 			return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author });
 		}
-		
+
 		this.playing.add(msg.channel.id);
 
 		try {
@@ -49,7 +49,7 @@ export default class HangmanCommand extends Command {
 			const confirmation: string[] = [];
 			const incorrect: string[] = [];
 			const display = new Array(word.length).fill('_');
-			
+
 			while (word.length !== confirmation.length && points < 6) {
 				await msg.sendMessage(stripIndents`
 					${displayText === null ? 'Here we go!' : displayText ? 'Good job!' : 'Nope!'}
@@ -66,7 +66,7 @@ export default class HangmanCommand extends Command {
 				`);
 				const filter = (res: any) => {
 					const choice = res.content.toLowerCase();
-					
+
 					return res.author.id === msg.author.id && !confirmation.includes(choice) && !incorrect.includes(choice);
 				}
 
@@ -77,7 +77,7 @@ export default class HangmanCommand extends Command {
 
 				if (!guess.size) {
 					await msg.sendMessage('Sorry, time is up!');
-					
+
 					break;
 				}
 
@@ -87,7 +87,7 @@ export default class HangmanCommand extends Command {
 
 				if (choice.length > 1 && choice === word) {
 					guessed = true;
-					
+
 					break;
 				} else if (word.includes(choice)) {
 					displayText = true;
@@ -108,7 +108,7 @@ export default class HangmanCommand extends Command {
 			return msg.sendMessage(`Too bad... It was ${word}...`);
 		} catch (err) {
 			this.playing.delete(msg.channel.id);
-			
+
 			return msg.sendMessage(`Oh no, an error occurred: \`${err.message}\`. Try again later!`, { reply: msg.author });
 		}
 	}

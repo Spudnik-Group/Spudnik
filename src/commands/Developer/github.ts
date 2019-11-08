@@ -62,8 +62,8 @@ export default class GithubCommand extends Command {
 			const size = res.size <= 1024 ? `${res.size} KB` : Math.floor(res.size / 1024) > 1024 ? `${(res.size / 1024 / 1024).toFixed(2)} GB` : `${(res.size / 1024).toFixed(2)} MB`;
 			const license = res.license && res.license.name && res.license.url ? `[${res.license.name}](${res.license.url})` : res.license && res.license.name || 'None';
 			const footer = [];
-			if(res.fork) footer.push(`❯ **Forked** from [${res.parent.full_name}](${res.parent.html_url})`);
-			if(res.archived) footer.push('❯ This repository is **Archived**');
+			if (res.fork) footer.push(`❯ **Forked** from [${res.parent.full_name}](${res.parent.html_url})`);
+			if (res.archived) footer.push('❯ This repository is **Archived**');
 			githubEmbed
 				.setTitle(res.full_name)
 				.setURL(res.html_url)
@@ -79,9 +79,9 @@ export default class GithubCommand extends Command {
 					❯ **Stars:** ${res.stargazers_count.toLocaleString()}
 					❯ **Clone Size:** ${size}${footer.length ? `${footer.join('\n')}` : ''}
 				`);
-			
+
 			return msg.sendEmbed(githubEmbed)
-		} catch(err) {
+		} catch (err) {
 			msg.client.emit('warn', `Error in command dev:github: ${err}`);
 
 			return sendSimpleEmbeddedError(msg, 'Could not fetch that repo, are you sure it exists?', 3000);

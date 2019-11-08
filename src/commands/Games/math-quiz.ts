@@ -56,27 +56,27 @@ export default class MathQuizCommand extends Command {
 		const value2 = Math.floor(Math.random() * maxValues[difficulty]) + 1;
 		const operation = operations[Math.floor(Math.random() * operations.length)];
 		let answer: any;
-		
+
 		switch (operation) {
 			case '+': answer = value1 + value2; break;
 			case '-': answer = value1 - value2; break;
 			case '*': answer = value1 * value2; break;
 		}
-		
+
 		await msg.reply(stripIndents`
 			**You have 10 seconds to answer this question.**
 			${value1} ${operation} ${value2}
 		`);
-		
+
 		const msgs: any = await msg.channel.awaitMessages((res) => res.author.id === msg.author.id, {
 			max: 1,
 			time: 10000
 		});
-		
+
 		if (!msgs.size) { return msg.sendMessage(`Sorry, time is up! It was ${answer}.`, { reply: msg.author }); }
-		
+
 		if (msgs.first().content !== answer.toString()) { return msg.sendMessage(`Nope, sorry, it's ${answer}.`, { reply: msg.author }); }
-		
+
 		return msg.sendMessage('Nice job! 10/10! You deserve some cake!', { reply: msg.author });
 	}
 }

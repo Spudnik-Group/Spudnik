@@ -1,14 +1,18 @@
 import axios from 'axios';
 import { Command, KlasaClient, CommandStore } from 'klasa';
+import { stripIndents } from 'common-tags';
 
 const wolframAppID = process.env.spud_wolframapi;
 
-export default class extends Command {
+export default class WolframCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Query Wolfram Alpha with any mathematical question.',
 			name: 'wolfram',
-			usage: '<query:str>'
+			extendedHelp: stripIndents`
+				syntax: \`!wolfram <query>\`
+			`,
+			usage: '<query:string>'
 		});
 	}
 

@@ -23,6 +23,11 @@ export default class UrbanCommand extends Command {
 		super(client, store, file, directory, {
 			description: 'Returns the Urban Dictionary result of the supplied query. If no query is supplied, returns a random thing.',
 			name: 'urban',
+			extendedHelp: stripIndents`
+				syntax: \`!urban (query)\`
+				Supplying no query will return a random result.
+				Urban Dictionary results are NSFW.
+			`,
 			nsfw: true,
 			usage: '<query:string>'
 		});
@@ -46,7 +51,7 @@ export default class UrbanCommand extends Command {
 		try {
 			const response: any = await targetWord;
 			responseEmbed.setTitle(`Urban Dictionary: ${query}`);
-			
+
 			if (response) {
 				responseEmbed.setTitle(`Urban Dictionary: ${response.entries[0].word}`);
 				responseEmbed.setDescription(stripIndents`
@@ -58,7 +63,7 @@ export default class UrbanCommand extends Command {
 			} else {
 				responseEmbed.setDescription('No matches found');
 			}
-	
+
 			// Send the success response
 			return msg.sendEmbed(responseEmbed);
 		} catch (err) {

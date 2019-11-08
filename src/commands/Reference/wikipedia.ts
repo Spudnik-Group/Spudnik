@@ -2,6 +2,7 @@ import { MessageEmbed } from 'discord.js';
 import { getEmbedColor, sendSimpleEmbeddedError, shorten } from '../../lib/helpers';
 import * as WikiJS from 'wikijs';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { stripIndents } from 'common-tags';
 
 /**
  * Post a summary from Wikipedia.
@@ -21,6 +22,9 @@ export default class WikiCommand extends Command {
 		super(client, store, file, directory, {
 			description: 'Returns the summary of the first matching search result from Wikipedia.',
 			name: 'wiki',
+			extendedHelp: stripIndents`
+				syntax: \`!wiki <query>\`
+			`,
 			usage: '<query:string>'
 		});
 	}
@@ -51,7 +55,7 @@ export default class WikiCommand extends Command {
 				// IPA phonetics are not returned in the summary but the parenthesis that they are encapsulated in are...
 				paragraph = paragraph.replace(' ()', '').replace('()', '');
 				paragraph = `${shorten(paragraph)}...`;
-				
+
 				messageOut.setThumbnail((page.thumbnail && page.thumbnail.source) || 'https://i.imgur.com/fnhlGh5.png')
 				messageOut.setDescription(`${paragraph}\n\n${page.raw.fullurl}`);
 				messageOut.setTitle(page.raw.title);

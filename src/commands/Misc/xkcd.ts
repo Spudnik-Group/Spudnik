@@ -57,12 +57,12 @@ export default class XkcdCommand extends Command {
 			xkcdEmbed.setFooter(comic.alt);
 			xkcdEmbed.setImage(comic.img);
 			xkcdEmbed.setTitle(`XKCD ${comic.num} ${comic.title}`);
-	
+
 			// Send the success response
 			return msg.sendEmbed(xkcdEmbed);
 		} catch (err) {
 			msg.client.emit('warn', `Error in command misc:xkcd: ${err}`);
-			
+
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 		}
 	}

@@ -2,6 +2,7 @@ import { MessageEmbed } from 'discord.js';
 import axios from 'axios';
 import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { stripIndents } from 'common-tags';
 
 const breweryDbApiKey: string = process.env.spud_brewdbapi;
 
@@ -22,6 +23,9 @@ export default class BrewCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns information about a brewery or brew. Uses the BreweryDB API.',
+			extendedHelp: stripIndents`
+				syntax: \`!brew <brew|brewery name>\`
+			`,
 			name: 'brew',
 			usage: '<query:string>'
 		});
@@ -128,7 +132,7 @@ export default class BrewCommand extends Command {
 			} else {
 				brewEmbed.setDescription("Damn, I've never heard of that. Where do I need to go to find it?");
 			}
-		} catch(err) {
+		} catch (err) {
 			msg.client.emit('warn', `Error in command ref:brew: ${err}`);
 
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);

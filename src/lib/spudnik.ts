@@ -23,7 +23,7 @@ Client.defaultGuildSchema
 		// .add('botAdmin', 'Role')
 		// TODO: add staff feature
 		// .add('staff', 'Role')
-		.add('defaultRole', 'Role')
+		.add('defaultRoles', 'Role', { array: true })
 		.add('muted', 'Role')
 	)
 	.add('features', folder => folder

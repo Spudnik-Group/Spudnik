@@ -6,7 +6,7 @@ export default class extends Command {
 		super(client, store, file, directory, {
 			aliases: ['hb'],
 			description: 'Upload code or text to hastebin.',
-			usage: '<code:str>'
+			usage: '<code:string>'
 		});
 	}
 

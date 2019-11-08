@@ -1,17 +1,19 @@
 import axios from 'axios';
 import { Command, KlasaClient, CommandStore } from 'klasa';
 import { MessageEmbed } from 'discord.js';
+import { stripIndents } from 'common-tags';
 
 const tmdbAPIkey = process.env.spud_moviedbapi;
 
-module.exports = class extends Command {
+export default class TVShowCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['tvshows', 'tv', 'tvseries'],
 			description: 'Finds a TV show on TMDB.org',
-			extendedHelp: 'e.g. `s.tvshow universe, 2`',
-			usage: '<Query:str> [Page:number]',
-			usageDelim: ','
+			extendedHelp: stripIndents`
+				syntax: \`!movie <query> [page]\`
+			`,
+			usage: '<query:string> [page:number]'
 		});
 	}
 

@@ -64,7 +64,7 @@ export default class UserCommand extends Command {
 			.addField('❯ Discord Join Date', format(currentUser.createdAt, 'MM/DD/YYYY h:mm A'), true)
 			.addField('❯ Bot?', currentUser.bot ? 'Yes' : 'No', true)
 			.addField('❯ Status', statuses[user.presence.status], true);
-		
+
 		try {
 			// Check if user is a member of the guild
 			const member: GuildMember = await msg.guild.members.fetch(currentUser.id);
@@ -86,7 +86,7 @@ export default class UserCommand extends Command {
 			return msg.sendEmbed(userEmbed);
 		} catch (err) {
 			userEmbed.setFooter('Failed to resolve member, showing basic user information instead.');
-	
+
 			return msg.sendEmbed(userEmbed);
 		}
 	}

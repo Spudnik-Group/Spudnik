@@ -2,6 +2,7 @@ import { MessageEmbed } from 'discord.js';
 import axios from 'axios';
 import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { stripIndents } from 'common-tags';
 
 /**
  * Post information about a cocktail.
@@ -20,6 +21,9 @@ export default class CocktailCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns information about a cocktail. Uses the CocktailDB API.',
+			extendedHelp: stripIndents`
+				syntax: \`!cocktail <cocktail name>\`
+			`,
 			name: 'cocktail',
 			usage: '<query:string>'
 		});
@@ -46,7 +50,7 @@ export default class CocktailCommand extends Command {
 
 		try {
 			const { data: response } = await axios(`http://www.thecocktaildb.com/api/json/v1/1/search.php?s=${encodeURIComponent(query)}`)
-			
+
 			if (typeof response !== 'undefined' && response.drinks !== null) {
 				const result = response.drinks[0];
 				const ingredients = this.findSimilarProps(result, 'strIngredient');
@@ -102,11 +106,11 @@ export default class CocktailCommand extends Command {
 			} else {
 				cocktailEmbed.setDescription("Damn, I've never heard of that. Where do I need to go to find it?");
 			}
-	
+
 			// Send the success response
 			return msg.sendEmbed(cocktailEmbed);
 
-		} catch(err) {
+		} catch (err) {
 			msg.client.emit('warn', `Error in command ref:cocktail: ${err}`);
 
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);

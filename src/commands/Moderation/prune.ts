@@ -27,7 +27,7 @@ export default class PruneCommand extends Command {
 			],
 			description: 'Deletes messages.',
 			extendedHelp: stripIndents`
-				syntax: \`!prune <number> (filter) (@userMention)\`
+				syntax: \`!prune <number> (filter)\`
 
 				List of filters:
 				\`invites\`: Messages containing an invite

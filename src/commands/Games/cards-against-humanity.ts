@@ -50,7 +50,7 @@ export default class CardsAgainstHumanityCommand extends Command {
 			const awaitedPlayers = await awaitPlayers(msg, 10, 3);
 			if (!awaitedPlayers) {
 				this.playing.delete(msg.channel.id);
-				
+
 				return msg.sendMessage('Game could not be started...');
 			}
 			const players: any = new Collection();
@@ -211,7 +211,7 @@ export default class CardsAgainstHumanityCommand extends Command {
 
 				return true;
 			}
-			
+
 			const choices = await player.user.dmChannel.awaitMessages(filter, {
 				max: black.pick,
 				time: 60000
@@ -265,7 +265,7 @@ export default class CardsAgainstHumanityCommand extends Command {
 		player.hand.delete('<Blank>');
 
 		if (!blank.size) { return `A blank card ${player.user.tag} forgot to fill out.`; }
-		
+
 		return blank.first().content;
 	}
 
@@ -275,7 +275,7 @@ export default class CardsAgainstHumanityCommand extends Command {
 			if (players.has(res.author.id) && res.content.toLowerCase() !== 'leave game') { return false; }
 			if (czars[0] === res.author.id || players.size >= 10) {
 				res.react('❌').catch((): void => null);
-				
+
 				return false;
 			}
 
@@ -307,15 +307,15 @@ export default class CardsAgainstHumanityCommand extends Command {
 			if (!players.has(res.author.id)) { return false; }
 
 			if (res.content.toLowerCase() !== 'view points') { return false; }
-			
+
 			return true;
 		});
-		
+
 		collector.on('collect', (msg: any) => {
 			const player = players.get(msg.author.id);
 			msg.reply(`You have **${player.points}** point${player.points > 1 ? 's' : ''}.`).catch((): void => null);
 		});
-		
+
 		return collector;
 	}
 

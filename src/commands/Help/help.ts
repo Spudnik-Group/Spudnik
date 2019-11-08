@@ -37,23 +37,22 @@ export default class HelpCommand extends Command {
 	public async run(msg: KlasaMessage, [command]): Promise<KlasaMessage | KlasaMessage[]> {
 		const helpEmbed: MessageEmbed = new MessageEmbed()
 			.setColor(getEmbedColor(msg));
-		if(command) {
+		console.dir(command.requiredPermissions)
+		if (command) {
 			helpEmbed
 				.setTitle(`__Command: **${command.name}**__`)
 				.addField('❯ Description', command.description)
 				.addField('❯ Usage', command.usage.fullUsage(msg))
-				.addField('❯ Details', command.details ? command.details : 'None')
+				.addField('❯ Details', command.extendedHelp())
 				.addField('❯ Aliases', command.aliases.length > 0 ? command.aliases.join(', ') : 'None', true)
-				.addField('❯ Group', `${command.group.name} (\`${command.groupID}:${command.memberName}\`)`, true)
-				.addField('❯ Examples', command.examples.join('\n'), true)
-				.addField('❯ BOT Permissions', command.clientPermissions ? command.clientPermissions.join('\n') : 'No extra perms required', true)
-				.addField('❯ User Permissions', command.userPermissions ? command.userPermissions.join('\n') : 'No extra perms required', true)
-				.addField('❯ Other Details', stripIndents`
-					Guild Only: ${command.guildOnly ? '**Yes**' : '**No**'}
-					NSFW Only: ${command.nsfw ? '**Yes**' : '**No**'}
-					Enabled: ${command.isEnabledIn(msg.guild) ? '**Yes**' : '**No**'}
-				`, true);
-			
+				.addField('❯ Group', `${command.category}`, true)
+				.addField('❯ BOT Permissions', command.requiredPermissions ? command.requiredPermissions : 'No extra perms required', true)
+				.addField('❯ User Permission Level', command.permissionLevel ? command.permissionLevel : 'No special user perms required', true)
+			// .addField('❯ Other Details', stripIndents`
+			// 	NSFW Only: ${command.nsfw ? '**Yes**' : '**No**'}
+			// 	Enabled: ${command.isEnabledIn(msg.guild) ? '**Yes**' : '**No**'}
+			// `, true);
+
 			return msg.sendEmbed(helpEmbed);
 		} else {
 			helpEmbed

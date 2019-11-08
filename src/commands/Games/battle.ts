@@ -36,7 +36,7 @@ export default class BattleCommand extends Command {
 	public async run(msg: KlasaMessage, [opp]): Promise<KlasaMessage | KlasaMessage[]> {
 		const fighting = new Set();
 		const opponent = opp ? opp : this.client.user
-		
+
 		if (opponent.id === msg.author.id) {
 			return msg.sendMessage('You may not fight yourself.', { reply: msg.author });
 		}
@@ -86,7 +86,7 @@ export default class BattleCommand extends Command {
 					oppoHP = 0;
 				}
 			}
-			
+
 			while (userHP > 0 && oppoHP > 0) {
 				const user = userTurn ? msg.author : opponent;
 				let choice;
@@ -145,7 +145,7 @@ export default class BattleCommand extends Command {
 			fighting.delete(msg.channel.id);
 
 			const winner = userHP > oppoHP ? msg.author : opponent;
-			
+
 			return msg.sendMessage(`The match is over! Congrats, ${winner}!`);
 		} catch (err) {
 			fighting.delete(msg.channel.id);

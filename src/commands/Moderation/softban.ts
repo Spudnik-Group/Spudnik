@@ -16,7 +16,7 @@ module.exports = class extends Command {
 
 				\`BAN_MEMBERS\` permission required.
 			`,
-			usage: '<member:user> <reason:...string>'
+			usage: '<member:member> <reason:...string>'
 		});
 	}
 

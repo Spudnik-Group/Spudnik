@@ -26,6 +26,8 @@ export default class LeetCommand extends Command {
 			name: 'leet',
 			usage: '<query:string>'
 		});
+
+		this.customizeResponse('query', '61v3 m3 4 qu3ry.');
 	}
 
 	/**
@@ -47,7 +49,7 @@ export default class LeetCommand extends Command {
 
 		const leetResponse = require('leet').convert(query);
 		leetEmbed.setDescription(leetResponse);
-		
+
 		return msg.sendEmbed(leetEmbed);
 	}
 }

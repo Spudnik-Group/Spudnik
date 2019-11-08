@@ -45,7 +45,7 @@ export default class MafiaCommand extends Command {
 			const awaitedPlayers = await awaitPlayers(msg, 10, 3, { dmCheck: true });
 			if (!awaitedPlayers) {
 				this.playing.delete(msg.channel.id);
-				
+
 				return msg.sendMessage('Game could not be started...');
 			}
 			const players: any = await this.generatePlayers(awaitedPlayers);
@@ -58,7 +58,7 @@ export default class MafiaCommand extends Command {
 
 				for (const player of players.values()) {
 					if (player.role.includes('pleb')) { continue; }
-					
+
 					await msg.sendMessage(`The ${player.role} is making their decision...`);
 
 					const valid = players.filterArray((p: any) => p.role !== player.role);
@@ -136,13 +136,13 @@ export default class MafiaCommand extends Command {
 
 				const filter = (res: any) => {
 					if (!players.exists((p: any) => p.user.id === res.author.id)) { return false; }
-					
+
 					if (voted.includes(res.author.id)) { return false; }
-					
+
 					if (!playersArr[Number.parseInt(res.content, 10) - 1]) { return false; }
-					
+
 					voted.push(res.author.id);
-					
+
 					return true;
 				}
 
@@ -162,11 +162,11 @@ export default class MafiaCommand extends Command {
 			this.playing.delete(msg.channel.id);
 			const mafia = players.find((p: any) => p.role === 'mafia');
 			if (!mafia) { return msg.sendMessage('The Mafia has been hanged! Thanks for playing!'); }
-			
+
 			return msg.sendMessage(`Oh no, the Mafia wasn't caught in time... Nice job, ${mafia.user}!`);
 		} catch (err) {
 			this.playing.delete(msg.channel.id);
-			
+
 			return msg.sendMessage(`Oh no, an error occurred: \`${err.message}\`. Try again later!`, { reply: msg.author });
 		}
 	}
@@ -206,7 +206,7 @@ export default class MafiaCommand extends Command {
 				});
 			}
 		}
-		
+
 		return counts.sort((a: any, b: any) => b.votes - a.votes).first();
 	}
 }

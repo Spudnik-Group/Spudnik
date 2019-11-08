@@ -1,17 +1,19 @@
 import axios from 'axios';
 import { Command, KlasaClient, CommandStore } from 'klasa';
 import { MessageEmbed } from 'discord.js';
+import { stripIndents } from 'common-tags';
 
 const tmdbAPIkey = process.env.spud_moviedbapi;
 
-export default class extends Command {
+export default class MovieCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['movies', 'film', 'films'],
 			description: 'Finds a movie on TMDB.org',
-			extendedHelp: 'e.g. `s.movie infinity war, 2`',
-			usage: '<Query:str> [Page:number]',
-			usageDelim: ', '
+			extendedHelp: stripIndents`
+				syntax: \`!movie <query> [page]\`
+			`,
+			usage: '<query:string> [page:number]'
 		});
 	}
 

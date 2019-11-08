@@ -43,11 +43,11 @@ export default class UnshortCommand extends Command {
 				// Send the success response
 				return sendSimpleEmbeddedMessage(msg, `Original url is: <${url}>`);
 			}
-			
+
 			return sendSimpleEmbeddedError(msg, 'This url can\'t be expanded. Make sure the protocol exists (Http/Https) and try again.', 3000);
 		} catch (err) {
 			msg.client.emit('warn', `Error in command misc:unshort: ${err}`);
-			
+
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. The url may not be valid. Try again?', 3000);
 		}
 	}

@@ -42,7 +42,7 @@ export default class MoveCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage, [message, channel, reason]): Promise<KlasaMessage | KlasaMessage[]> {
 		const originalChannel = msg.channel as TextChannel;
-		const originalMessage: Message = await originalChannel.messages.fetch(message);
+		const originalMessage: Message = await originalChannel.messages.fetch(message.id);
 		const originalMessageAuthor: GuildMember = await originalChannel.guild.members.fetch(originalMessage.author.id);
 
 		if (originalMessage) {

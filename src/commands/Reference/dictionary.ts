@@ -1,4 +1,4 @@
-import { oneLine } from 'common-tags';
+import { oneLine, stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
 import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
@@ -24,6 +24,9 @@ export default class DefineCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns the definition of a supplied word. Uses the Merriam-Webster Collegiate Dictionary API.',
+			extendedHelp: stripIndents`
+				syntax: \`!define <word>\`
+			`,
 			name: 'define',
 			usage: '<query:string>'
 		});

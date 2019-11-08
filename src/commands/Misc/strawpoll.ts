@@ -1,4 +1,4 @@
-import { stripIndents } from 'common-tags';
+import { stripIndents } from 'common-tags';  
 import axios from 'axios';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
