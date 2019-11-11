@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
-import { getEmbedColor } from '../../lib/helpers';
+import { getEmbedColor, getPermissionsFromBitfield, getPermissionsFromLevel, isCommandEnabledInGuild } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
@@ -37,21 +37,20 @@ export default class HelpCommand extends Command {
 	public async run(msg: KlasaMessage, [command]): Promise<KlasaMessage | KlasaMessage[]> {
 		const helpEmbed: MessageEmbed = new MessageEmbed()
 			.setColor(getEmbedColor(msg));
-		console.dir(command.requiredPermissions)
 		if (command) {
 			helpEmbed
 				.setTitle(`__Command: **${command.name}**__`)
 				.addField('❯ Description', command.description)
 				.addField('❯ Usage', command.usage.fullUsage(msg))
-				.addField('❯ Details', command.extendedHelp())
+				.addField('❯ Details', typeof command.extendedHelp === 'function' ? command.extendedHelp() : command.extendedHelp)
 				.addField('❯ Aliases', command.aliases.length > 0 ? command.aliases.join(', ') : 'None', true)
 				.addField('❯ Group', `${command.category}`, true)
-				.addField('❯ BOT Permissions', command.requiredPermissions ? command.requiredPermissions : 'No extra perms required', true)
-				.addField('❯ User Permission Level', command.permissionLevel ? command.permissionLevel : 'No special user perms required', true)
-			// .addField('❯ Other Details', stripIndents`
-			// 	NSFW Only: ${command.nsfw ? '**Yes**' : '**No**'}
-			// 	Enabled: ${command.isEnabledIn(msg.guild) ? '**Yes**' : '**No**'}
-			// `, true);
+				.addField('❯ BOT Permissions', command.requiredPermissions ? getPermissionsFromBitfield(command.requiredPermissions).join('\n') : 'No extra perms required', true)
+				.addField('❯ User Permission Level', command.permissionLevel ? `${command.permissionLevel}: ${getPermissionsFromLevel(command.permissionLevel)}` : 'No special user perms required', true)
+				.addField('❯ Other Details', stripIndents`
+					NSFW Only: ${command.nsfw ? '**Yes**' : '**No**'}
+					Enabled: ${isCommandEnabledInGuild(msg, command.name) ? '**Yes**' : '**No**'}
+				`, true);
 
 			return msg.sendEmbed(helpEmbed);
 		} else {

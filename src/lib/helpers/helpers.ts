@@ -1,4 +1,4 @@
-import { Message, MessageEmbed, Channel, TextChannel, User } from 'discord.js';
+import { Message, MessageEmbed, Channel, TextChannel, User, PermissionString } from 'discord.js';
 import { KlasaMessage } from 'klasa';
 import { getEmbedColor } from './custom-helpers';
 
@@ -451,6 +451,42 @@ export const escapeMarkdown = (text: string, onlyCodeBlock: boolean = false, onl
 // TODO: add jsdoc
 export const isNormalInteger = (str: string) => {
 	const n = Math.floor(Number(str));
-	
+
 	return String(n) === str && n >= 0;
+}
+
+export const getPermissionsFromBitfield = (permissions): Array<PermissionString> => {
+	const permissionsList = [];
+	if (permissions.has('ADMINISTRATOR')) permissionsList.push('ADMINISTRATOR')
+	if (permissions.has('CREATE_INSTANT_INVITE')) permissionsList.push('CREATE_INSTANT_INVITE')
+	if (permissions.has('KICK_MEMBERS')) permissionsList.push('KICK_MEMBERS')
+	if (permissions.has('BAN_MEMBERS')) permissionsList.push('BAN_MEMBERS')
+	if (permissions.has('MANAGE_CHANNELS')) permissionsList.push('MANAGE_CHANNELS')
+	if (permissions.has('MANAGE_GUILD')) permissionsList.push('MANAGE_GUILD')
+	if (permissions.has('ADD_REACTIONS')) permissionsList.push('ADD_REACTIONS')
+	if (permissions.has('VIEW_AUDIT_LOG')) permissionsList.push('VIEW_AUDIT_LOG')
+	if (permissions.has('PRIORITY_SPEAKER')) permissionsList.push('PRIORITY_SPEAKER')
+	if (permissions.has('STREAM')) permissionsList.push('STREAM')
+	if (permissions.has('VIEW_CHANNEL')) permissionsList.push('VIEW_CHANNEL')
+	if (permissions.has('SEND_MESSAGES')) permissionsList.push('SEND_MESSAGES')
+	if (permissions.has('SEND_TTS_MESSAGES')) permissionsList.push('SEND_TTS_MESSAGES')
+	if (permissions.has('MANAGE_MESSAGES')) permissionsList.push('MANAGE_MESSAGES')
+	if (permissions.has('EMBED_LINKS')) permissionsList.push('EMBED_LINKS')
+	if (permissions.has('ATTACH_FILES')) permissionsList.push('ATTACH_FILES')
+	if (permissions.has('READ_MESSAGE_HISTORY')) permissionsList.push('READ_MESSAGE_HISTORY')
+	if (permissions.has('MENTION_EVERYONE')) permissionsList.push('MENTION_EVERYONE')
+	if (permissions.has('USE_EXTERNAL_EMOJIS')) permissionsList.push('USE_EXTERNAL_EMOJIS')
+	if (permissions.has('CONNECT')) permissionsList.push('CONNECT')
+	if (permissions.has('SPEAK')) permissionsList.push('SPEAK')
+	if (permissions.has('MUTE_MEMBERS')) permissionsList.push('MUTE_MEMBERS')
+	if (permissions.has('DEAFEN_MEMBERS')) permissionsList.push('DEAFEN_MEMBERS')
+	if (permissions.has('MOVE_MEMBERS')) permissionsList.push('MOVE_MEMBERS')
+	if (permissions.has('USE_VAD')) permissionsList.push('USE_VAD')
+	if (permissions.has('CHANGE_NICKNAME')) permissionsList.push('CHANGE_NICKNAME')
+	if (permissions.has('MANAGE_NICKNAMES')) permissionsList.push('MANAGE_NICKNAMES')
+	if (permissions.has('MANAGE_ROLES')) permissionsList.push('MANAGE_ROLES')
+	if (permissions.has('MANAGE_WEBHOOKS')) permissionsList.push('MANAGE_WEBHOOKS')
+	if (permissions.has('MANAGE_EMOJIS')) permissionsList.push('MANAGE_EMOJIS')
+
+	return permissionsList;
 }

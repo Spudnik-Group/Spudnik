@@ -27,8 +27,8 @@ export default class StarboardCommand extends Command {
 				\`status\` - returns the star board configuration details.
 				\`channel <#channelMention>\` - sets star board channel to the channel supplied.
 				\`trigger <emoji>\` - sets emoji to save to star board.
-				\`enable\` - enable the star board feature.
-				\`disable\` - disable the star board feature.
+				\`on\` - enable the star board feature.
+				\`off\` - disable the star board feature.
 
 				\`MANAGE_GUILD\` permission required.
 			`,

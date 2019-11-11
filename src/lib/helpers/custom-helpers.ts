@@ -1,7 +1,7 @@
 
 import { TextChannel, MessageEmbed } from 'discord.js';
 import { oneLine } from 'common-tags';
-import { KlasaMessage } from 'klasa';
+import { KlasaMessage, Command } from 'klasa';
 
 /**
  * Get Embed Color.
@@ -45,4 +45,26 @@ export const modLogMessage = (msg: KlasaMessage, embed: MessageEmbed): Promise<K
 	return outChannelID && guild.settings.get('modlogEnabled')
 		? outChannel.sendEmbed(new MessageEmbed(embed))
 		: null;
+}
+
+export const getPermissionsFromLevel = (permissionsLevel: number): string => {
+	const permissionLevels = [
+		'OPEN',
+		'MANAGE_MESSAGES',
+		'MANAGE_ROLES',
+		'KICK_MEMBERS',
+		'BAN_MEMBERS',
+		'',
+		'MANAGE_GUILD',
+		'GUILD OWNER',
+		'',
+		'BOT OWNER',
+		'BOT OWNER',
+	];
+
+	return permissionLevels[permissionsLevel];
+}
+
+export const isCommandEnabledInGuild = (msg: KlasaMessage, command: Command): boolean => {
+	return true;
 }

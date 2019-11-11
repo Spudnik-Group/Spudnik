@@ -57,7 +57,9 @@ Client.defaultGuildSchema
 		.add('hasSendModLogMessage', 'boolean', { default: false })
 		.add('selfAssignableRoles', 'Role', { array: true })
 	)
-	.add('warnings', 'warning', { array: true });
+	.add('warnings', 'warning', { array: true })
+	.add('disabledCommands', 'string', { array: true })
+	.add('disabledCommandCategories', 'string', { array: true });
 
 /**
  * The Spudnik Discord Bot.
