@@ -1,190 +1,8 @@
-import { Message, MessageEmbed, Channel, TextChannel, User, PermissionString } from 'discord.js';
+import { Channel, TextChannel, User, PermissionString, Message } from 'discord.js';
 import { KlasaMessage } from 'klasa';
-import { getEmbedColor } from './custom-helpers';
 
 const yes = ['yes', 'y', 'ye', 'yeah', 'yup', 'yea'];
 const no = ['no', 'n', 'nah', 'nope'];
-
-/**
- * Post a simple embedded message.
- *
- * @export
- * @param {KlasaMessage} msg
- * @param {string} text
- * @param {number} [timeout]
- * @returns Promise<KlasaMessage | KlasaMessage[]>
- */
-export const sendSimpleEmbeddedMessage = (msg: KlasaMessage, text: string, timeout?: number): Promise<KlasaMessage | KlasaMessage[]> => {
-	const promise: Promise<KlasaMessage | KlasaMessage[]> = msg.sendEmbed(new MessageEmbed({
-		author: {
-			iconURL: msg.client.user.displayAvatarURL(),
-			name: `${msg.client.user.username}`
-		},
-		color: getEmbedColor(msg),
-		description: `${text}`
-	}));
-
-	if (timeout) {
-		promise.then((reply: Message | Message[]) => {
-			if (reply instanceof Message) {
-				reply.delete({ timeout: timeout }).catch(() => undefined);
-			} else if (reply instanceof Array) {
-				msg.channel.bulkDelete(reply);
-			}
-		});
-	}
-
-	return promise;
-}
-
-/**
- * Post a simple embedded message, with supplied author details.
- *
- * @export
- * @param {KlasaMessage} msg
- * @param {string} text
- * @param {MessageEmbed['author']} author
- * @param {number} [timeout]
- * @returns Promise<KlasaMessage | KlasaMessage[]>
- */
-export const sendSimpleEmbeddedMessageWithAuthor = (msg: KlasaMessage, text: string, author: MessageEmbed['author'], timeout?: number): Promise<KlasaMessage | KlasaMessage[]> => {
-	const promise: Promise<KlasaMessage | KlasaMessage[]> = msg.sendEmbed(new MessageEmbed({
-		author: author,
-		color: getEmbedColor(msg),
-		description: `${text}`
-	}));
-
-	if (timeout) {
-		promise.then((reply: Message | Message[]) => {
-			if (reply instanceof Message) {
-				reply.delete({ timeout: timeout }).catch(() => undefined);
-			} else if (reply instanceof Array) {
-				msg.channel.bulkDelete(reply);
-			}
-		});
-	}
-
-	return promise;
-}
-
-/**
- * Post a simple embedded message, with supplied title.
- *
- * @export
- * @param {KlasaMessage} msg
- * @param {string} text
- * @param {string} title
- * @param {number} [timeout]
- * @returns Promise<KlasaMessage | KlasaMessage[]>
- */
-export const sendSimpleEmbeddedMessageWithTitle = (msg: KlasaMessage, text: string, title: string, timeout?: number): Promise<KlasaMessage | KlasaMessage[]> => {
-	const promise: Promise<KlasaMessage | KlasaMessage[]> = msg.sendEmbed(new MessageEmbed({
-		author: {
-			iconURL: msg.client.user.displayAvatarURL(),
-			name: `${msg.client.user.username}`
-		},
-		color: getEmbedColor(msg),
-		description: `${text}`,
-		title: `${title}`
-	}));
-
-	if (timeout) {
-		promise.then((reply: Message | Message[]) => {
-			if (reply instanceof Message) {
-				reply.delete({ timeout: timeout }).catch(() => undefined);
-			} else if (reply instanceof Array) {
-				msg.channel.bulkDelete(reply);
-			}
-		});
-	}
-
-	return promise;
-}
-
-/**
- * Post a simple embedded error message.
- *
- * @export
- * @param {KlasaMessage} msg
- * @param {string} text
- * @param {number} [timeout]
- * @returns Promise<KlasaMessage | KlasaMessage[]>
- */
-export const sendSimpleEmbeddedError = (msg: KlasaMessage, text: string, timeout?: number): Promise<KlasaMessage | KlasaMessage[]> => {
-	const promise: Promise<KlasaMessage | KlasaMessage[]> = msg.sendEmbed(new MessageEmbed({
-		author: {
-			iconURL: msg.client.user.displayAvatarURL(),
-			name: `${msg.client.user.username}`
-		},
-		color: 16711680,
-		description: `${text}`
-	}));
-
-	if (timeout) {
-		promise.then((reply: Message | Message[]) => {
-			if (reply instanceof Message) {
-				reply.delete({ timeout: timeout }).catch(() => undefined);
-			} else if (reply instanceof Array) {
-				msg.channel.bulkDelete(reply);
-			}
-		});
-	}
-
-	return promise;
-}
-
-/**
- * Send a simple embedded success message.
- *
- * @export
- * @param {KlasaMessage} msg
- * @param {string} text
- * @param {number} [timeout]
- * @returns Promise<KlasaMessage | KlasaMessage[]>
- */
-export const sendSimpleEmbeddedSuccess = (msg: KlasaMessage, text: string, timeout?: number): Promise<KlasaMessage | KlasaMessage[]> => {
-	const promise: Promise<KlasaMessage | KlasaMessage[]> = msg.sendEmbed(new MessageEmbed({
-		author: {
-			iconURL: msg.client.user.displayAvatarURL(),
-			name: `${msg.client.user.username}`
-		},
-		color: 3447003,
-		description: `${text}`
-	}));
-
-	if (timeout) {
-		promise.then((reply: Message | Message[]) => {
-			if (reply instanceof Message) {
-				reply.delete({ timeout: timeout }).catch(() => undefined);
-			} else if (reply instanceof Array) {
-				msg.channel.bulkDelete(reply);
-			}
-		});
-	}
-
-	return promise;
-}
-
-/**
- * Post a simple embedded image.
- *
- * @export
- * @param {KlasaMessage} msg
- * @param {string} url
- * @param {string} [description]
- * @returns Promise<KlasaMessage | KlasaMessage[]>
- */
-export const sendSimpleEmbeddedImage = (msg: KlasaMessage, url: string, description?: string): Promise<KlasaMessage | KlasaMessage[]> => {
-	return msg.sendEmbed(new MessageEmbed({
-		author: {
-			iconURL: msg.client.user.displayAvatarURL(),
-			name: `${msg.client.user.username}`
-		},
-		color: 3447003,
-		description: description,
-		image: { url: url }
-	}));
-}
 
 /**
  * Generate a random integer, from supplied min and max values.
@@ -304,10 +122,10 @@ export const trimArray = (arr: any[], maxLen = 10): any[] => {
  * Returns a cryptographic hash of the supplied text.
  * 
  * @param {string} text 
- * @param {any} algorithm
+ * @param {string} algorithm
  * @returns string
  */
-export const hash = (text: string, algorithm: any): string => {
+export const hash = (text: string, algorithm: string): string => {
 	return require('crypto').createHash(algorithm).update(text).digest('hex');
 }
 
@@ -333,12 +151,12 @@ export const today = (timeZone: number): Date => {
 }
 
 /**
- * @param  {any} items
- * @param  {any} label
+ * @param  {any[]} items
+ * @param  {string} label
  * @param  {} property='name'
  * @returns string
  */
-export const disambiguation = (items: any, label: any, property = 'name'): string => {
+export const disambiguation = (items: any[], label: string, property = 'name'): string => {
 	const itemList = items.map((item: any) => `"${(property ? item[property] : item).replace(/ /g, '\xa0')}"`).join(',   ');
 
 	return `Multiple ${label} found, please be more specific: ${itemList}`;
@@ -359,18 +177,18 @@ export const tomorrow = (timeZone: number): Date => {
 /**
  * Waits for players for the current instance of a text-based game.
  * 
- * @param  {any} msg
+ * @param  {KlasaMessage} msg
  * @param  {number} max
  * @param  {number} min
  * @param  {} {text='joingame', time=30000, dmCheck=false}
  * @returns Promise
  */
-export const awaitPlayers = async (msg: any, max: number, min: number, { text = 'join game', time = 30000, dmCheck = false } = {}): Promise<any> => {
-	const joined: any[] = [];
+export const awaitPlayers = async (msg: KlasaMessage, max: number, min: number, { text = 'join game', time = 30000, dmCheck = false } = {}): Promise<any> => {
+	const joined: string[] = [];
 
 	joined.push(msg.author.id);
 
-	const filter = (res: any) => {
+	const verify = await msg.channel.awaitMessages((res: Message) => {
 		if (res.author.bot) { return false; }
 
 		if (joined.includes(res.author.id)) { return false; }
@@ -381,9 +199,7 @@ export const awaitPlayers = async (msg: any, max: number, min: number, { text = 
 		res.react('✅').catch((): void => null);
 
 		return true;
-	}
-
-	const verify = await msg.channel.awaitMessages(filter, { max: max, time: time });
+	}, { max: max, time: time });
 
 	verify.set(msg.id, msg);
 
@@ -399,7 +215,7 @@ export const awaitPlayers = async (msg: any, max: number, min: number, { text = 
 
 	if (verify.size < min) { return false; }
 
-	return verify.map((message: any) => message.author);
+	return verify.map((message: KlasaMessage) => message.author);
 }
 /**
  * Verify's a potential player entering an instance of a text-based game.
@@ -411,13 +227,11 @@ export const awaitPlayers = async (msg: any, max: number, min: number, { text = 
  * @returns Promise
  */
 export const verify = async (channel: Channel, user: User, time: number = 30000): Promise<boolean | 0> => {
-	const filter = (res: any) => {
+	const verify = await (channel as TextChannel).awaitMessages((res: Message) => {
 		const value = res.content.toLowerCase();
 
 		return res.author.id === user.id && (yes.includes(value) || no.includes(value));
-	}
-
-	const verify = await (channel as TextChannel).awaitMessages(filter, {
+	}, {
 		max: 1,
 		time: time
 	});
