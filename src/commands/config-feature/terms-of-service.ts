@@ -3,6 +3,7 @@ import { Channel, MessageEmbed } from 'discord.js';
 import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import * as markdownescape from 'markdown-escape';
 
 interface ITOSMessage {
 	id: number;
@@ -28,18 +29,19 @@ export default class TermsOfServiceCommand extends Command {
 		super(client, store, file, directory, {
 			description: 'Used to configure the Terms of Service for a guild.',
 			extendedHelp: stripIndents`
-				syntax: \`!tos (channel|title|body|list|status) (#channelMention | message number) (text)\`
+				syntax: \`!tos (channel|title|body|get|list|status) (#channelMention | message number) (text | raw)\`
 
 				\`channel <#channelMention>\` - set the channel to display the terms of service in.
 				\`title <info block number> <text>\` - edit the title of a terms of service info block.
 				\`body <info block number> <text>\` - edit the body of a terms of service info block.
+				\`get <info block number> (raw)\` - returns the requested block number
 				\`list\` - return all the terms of service embedded blocks.
 				\`status\` - return the terms of service feature configuration details.
 
 				\`MANAGE_GUILD\` permission required.`,
 			name: 'tos',
 			permissionLevel: 6,
-			usage: '<channel|title|body|list|status> (item:channel|integer) (text:...string)'
+			usage: '<channel|title|body|get|list|status> (item:channel|integer) (text:...string|raw:boolean)'
 		});
 	}
 
@@ -188,6 +190,42 @@ export default class TermsOfServiceCommand extends Command {
 		}
 	}
 
+	public async get(msg: KlasaMessage, [item, raw]): Promise<KlasaMessage | KlasaMessage[]> {
+		const tosEmbed: MessageEmbed = new MessageEmbed({
+			author: {
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/ballot-box-with-check_2611.png',
+				name: 'Terms of Service'
+			},
+			color: getEmbedColor(msg)
+		});
+
+		const tosMessageCount: number = await msg.guild.settings.get('tosMessageCount');
+		const tosMessages: ITOSMessage[] = [];
+		for (let i = 1; i < tosMessageCount + 1; i++) {
+			const tosMessage: ITOSMessage = await msg.guild.settings.get(`tosMessage${i}`);
+			if (tosMessage) {
+				tosMessages.push(tosMessage);
+			}
+		}
+		let message: ITOSMessage;		
+		try {
+			item = Number(item);
+			message = tosMessages[item - 1];
+			tosEmbed
+				.setDescription(stripIndents`
+							**ID:** ${message.id}
+							**Title:** ${message.title}
+							**Body:** ${raw.toLowerCase() === 'true' ? markdownescape(message.body) : message.body}
+						`)
+				.setFooter('Use the `tos status` command to see the details of this feature')
+				.setTimestamp();
+
+			return this.sendSuccess(msg, tosEmbed);
+		} catch (err) {
+			return this.catchError(msg, { subCommand: 'get', item, raw }, err);
+		}
+	}
+
 	public async list(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const tosEmbed: MessageEmbed = new MessageEmbed({
 			author: {
@@ -261,7 +299,7 @@ export default class TermsOfServiceCommand extends Command {
 		return msg.sendEmbed(tosEmbed);
 	}
 
-	private catchError(msg: KlasaMessage, args: { subCommand: string, item: Channel | number, text?: string }, err: Error) {
+	private catchError(msg: KlasaMessage, args: { subCommand: string, item: Channel | number, text?: string, raw?: string }, err: Error) {
 		// Build warning message
 		let tosWarn = stripIndents`
 			Error occurred in \`tos\` command!
@@ -273,6 +311,10 @@ export default class TermsOfServiceCommand extends Command {
 		let tosUserWarn = '';
 
 		switch (args.subCommand.toLowerCase()) {
+			case 'get': {
+				tosUserWarn = `Failed getting tos message #${args.item}`
+				break;
+			}
 			case 'channel': {
 				tosUserWarn = `Failed setting new tos channel to <#${args.item}>!`;
 				break;
