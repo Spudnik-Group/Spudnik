@@ -66,9 +66,9 @@ export const getPermissionsFromLevel = (permissionsLevel: number): string => {
 }
 
 export const isCommandCategoryEnabled = (msg: KlasaMessage, commandCategory: string): boolean => {
-	return !msg.guild.settings['disabledCommandCategories'].includes(commandCategory.toLowerCase());
+	return !msg.guild.settings.get('disabledCommandCategories').includes(commandCategory.toLowerCase());
 }
 
 export const isCommandEnabled = (msg: KlasaMessage, command: Command): boolean => {
-	return !msg.guild.settings['disabledCommands'].includes(command.name.toLowerCase())
+	return !msg.guild.settings.get('disabledCommands').includes(command.name.toLowerCase())
 }
