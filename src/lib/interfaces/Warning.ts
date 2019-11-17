@@ -1,4 +1,4 @@
 export interface IWarning {
-	'id': string;
-	'points': number;
+	id: string;
+	points: number;
 }

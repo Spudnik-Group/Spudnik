@@ -4,12 +4,7 @@ import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, sendSimpleEmbedd
 import * as format from 'date-fns/format';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 import * as markdownescape from 'markdown-escape';
-
-interface ITOSMessage {
-	id: number;
-	title: string;
-	body: string;
-}
+import { ITOSMessage } from '../../lib/interfaces';
 
 /**
  * Sets/Shows the terms of service for a guild.
@@ -207,7 +202,7 @@ export default class TermsOfServiceCommand extends Command {
 				tosMessages.push(tosMessage);
 			}
 		}
-		let message: ITOSMessage;		
+		let message: ITOSMessage;
 		try {
 			item = Number(item);
 			message = tosMessages[item - 1];
