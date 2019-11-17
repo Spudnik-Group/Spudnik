@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
-import { getEmbedColor, getPermissionsFromBitfield, getPermissionsFromLevel, isCommandEnabledInGuild } from '../../lib/helpers';
+import { getEmbedColor, getPermissionsFromBitfield, getPermissionsFromLevel } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
@@ -44,13 +44,13 @@ export default class HelpCommand extends Command {
 				.addField('❯ Usage', command.usage.fullUsage(msg))
 				.addField('❯ Details', typeof command.extendedHelp === 'function' ? command.extendedHelp() : command.extendedHelp)
 				.addField('❯ Aliases', command.aliases.length > 0 ? command.aliases.join(', ') : 'None', true)
-				.addField('❯ Group', `${command.category}`, true)
+				.addField('❯ Category', `${command.category}`, true)
 				.addField('❯ BOT Permissions', command.requiredPermissions ? getPermissionsFromBitfield(command.requiredPermissions).join('\n') : 'No extra perms required', true)
 				.addField('❯ User Permission Level', command.permissionLevel ? `${command.permissionLevel}: ${getPermissionsFromLevel(command.permissionLevel)}` : 'No special user perms required', true)
-				.addField('❯ Other Details', stripIndents`
-					NSFW Only: ${command.nsfw ? '**Yes**' : '**No**'}
-					Enabled: ${isCommandEnabledInGuild(msg, command.name) ? '**Yes**' : '**No**'}
-				`, true);
+			// .addField('❯ Other Details', stripIndents`
+			// 	NSFW Only: ${command.nsfw ? '**Yes**' : '**No**'}
+			// 	Enabled: ${isCommandEnabledInGuild(msg, command.name) ? '**Yes**' : '**No**'}
+			// `, true);
 
 			return msg.sendEmbed(helpEmbed);
 		} else {
@@ -58,8 +58,8 @@ export default class HelpCommand extends Command {
 				.setTitle('**Help**')
 				.setThumbnail(`${this.client.user.avatarURL()}`)
 				.setDescription(stripIndents`
-					To get the list of command groups, type \`${msg.guild.settings['prefix']}commands\`.
-					To get the list of commands in a specific group, type \`${msg.guild.settings['prefix']}commands <groupName>\`.
+					To get the list of command categories, type \`${msg.guild.settings['prefix']}commands\`.
+					To get the list of commands in a specific category, type \`${msg.guild.settings['prefix']}commands <categoryName>\`.
 					To get help with a specific command, type \`${msg.guild.settings['prefix']}help <commandName>\`.
 				`)
 				.addField('❯ Spudnik Command', '[Join](https://spudnik.io/support)', true)
