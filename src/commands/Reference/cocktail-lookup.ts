@@ -25,7 +25,7 @@ export default class CocktailCommand extends Command {
 				syntax: \`!cocktail <cocktail name>\`
 			`,
 			name: 'cocktail',
-			usage: '<query:string>'
+			usage: '<query:...string>'
 		});
 	}
 
@@ -109,7 +109,6 @@ export default class CocktailCommand extends Command {
 
 			// Send the success response
 			return msg.sendEmbed(cocktailEmbed);
-
 		} catch (err) {
 			msg.client.emit('warn', `Error in command ref:cocktail: ${err}`);
 

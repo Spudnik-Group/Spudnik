@@ -40,11 +40,11 @@ export default class EightBallCommand extends Command {
 		if (eightBall && eightBall.length > 0) {
 			response = eightBall[getRandomInt(0, eightBall.length) - 1];
 
-			return msg.send(new MessageEmbed({
+			return msg.sendEmbed(new MessageEmbed({
 				color: getEmbedColor(msg),
 				description: `:8ball: **${response}**`,
 				title: query
-			}), { reply: msg.author });
+			}), '', { reply: msg.author });
 		} else {
 			return sendSimpleEmbeddedError(msg, response, 3000);
 		}

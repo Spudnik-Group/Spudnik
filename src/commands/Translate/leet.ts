@@ -24,7 +24,7 @@ export default class LeetCommand extends Command {
 				syntax: \`!leet <text>\`
 			`,
 			name: 'leet',
-			usage: '<query:string>'
+			usage: '<query:...string>'
 		});
 
 		this.customizeResponse('query', '61v3 m3 4 qu3ry.');
@@ -38,7 +38,7 @@ export default class LeetCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof LeetCommand
 	 */
-	public async run(msg: KlasaMessage, [query]: any): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
 		const leetEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				iconURL: 'https://avatarfiles.alphacoders.com/149/149303.jpg',

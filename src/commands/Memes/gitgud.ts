@@ -1,6 +1,7 @@
 import { stripIndents } from 'common-tags';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 import { sendSimpleEmbeddedImage } from '../../lib/helpers';
+import { MessageEmbed } from 'discord.js';
 
 /**
  * Post the "gitgud" image at someone.
@@ -39,7 +40,7 @@ export default class GitGudCommand extends Command {
 		const gitgudImageURL = 'http://i.imgur.com/NqpPXHu.jpg';
 
 		if (mention && mention !== null) {
-			return msg.sendMessage({ image: { url: gitgudImageURL } }, {
+			return msg.sendEmbed(new MessageEmbed({ image: { url: gitgudImageURL } }), '', {
 				reply: mention
 			});
 		} else {

@@ -29,7 +29,7 @@ export default class UrbanCommand extends Command {
 				Urban Dictionary results are NSFW.
 			`,
 			nsfw: true,
-			usage: '<query:string>'
+			usage: '<query:...string>'
 		});
 	}
 
@@ -42,13 +42,13 @@ export default class UrbanCommand extends Command {
 	 * @memberof UrbanCommand
 	 */
 	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
-		const targetWord = query === '' ? UD.random() : UD.term(query);
 		const responseEmbed: MessageEmbed = new MessageEmbed({
 			color: getEmbedColor(msg),
 			description: ''
 		});
 
 		try {
+			const targetWord = query === '' ? UD.random() : UD.term(query);
 			const response: any = await targetWord;
 			responseEmbed.setTitle(`Urban Dictionary: ${query}`);
 

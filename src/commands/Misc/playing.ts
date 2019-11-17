@@ -26,7 +26,7 @@ export default class PlayingCommand extends Command {
 				Supplying no game name provides you with a list of all users who are marked with the "Playing" status type.
 				Supplying a game name provides you with a list of all users with that game name as their status (case insensitive)`,
 			name: 'playing',
-			usage: '<game:string>'
+			usage: '[game:...string]'
 		});
 	}
 
@@ -39,7 +39,7 @@ export default class PlayingCommand extends Command {
 	 * @memberof PlayingCommand
 	 */
 	public async run(msg: KlasaMessage, [game]): Promise<KlasaMessage | KlasaMessage[]> {
-		const gameSearch = game.toLowerCase();
+		const gameSearch = game ? game.toLowerCase() : '';
 		const gamePlayers: { [id: string]: Array<GuildMember> } = {};
 
 		msg.guild.members.forEach((member: GuildMember) => {

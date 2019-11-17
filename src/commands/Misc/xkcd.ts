@@ -26,7 +26,7 @@ export default class XkcdCommand extends Command {
 
 				Supplying no comic number returns the latest comic.`,
 			name: 'xkcd',
-			usage: '<comicNumber:number>'
+			usage: '[comicNumber:number]'
 		});
 	}
 
@@ -46,7 +46,7 @@ export default class XkcdCommand extends Command {
 
 		let url: string = 'http://xkcd.com/';
 
-		if (comicNumber !== '') {
+		if (comicNumber) {
 			url += `${comicNumber}/`;
 		}
 

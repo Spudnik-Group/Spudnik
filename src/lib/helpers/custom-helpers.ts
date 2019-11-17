@@ -72,3 +72,10 @@ export const isCommandCategoryEnabled = (msg: KlasaMessage, commandCategory: str
 export const isCommandEnabled = (msg: KlasaMessage, command: Command): boolean => {
 	return !msg.guild.settings.get('disabledCommands').includes(command.name.toLowerCase())
 }
+
+export const canCommandBeUsed = (msg: KlasaMessage, command: Command): boolean => {
+	if (!isCommandCategoryEnabled(msg, command.category)) return false;
+	if (!isCommandEnabled(msg, command)) return false;
+
+	return true;
+}

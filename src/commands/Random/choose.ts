@@ -39,13 +39,13 @@ export default class ChooseCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof ChooseCommand
 	 */
-	public async run(msg: KlasaMessage, [choice]): Promise<KlasaMessage | KlasaMessage[]> {
-		const options: string[] = choice;
+	public async run(msg: KlasaMessage, [...choices]): Promise<KlasaMessage | KlasaMessage[]> {
+		const options: string[] = choices;
 		if (options.length < 2) {
 			return sendSimpleEmbeddedError(msg, 'I can\'t choose for you if you don\'t give me more options!', 3000);
 		}
 
-		return msg.send(new MessageEmbed({
+		return msg.sendEmbed(new MessageEmbed({
 			author: {
 				iconURL: msg.client.user.displayAvatarURL(),
 				name: `${msg.client.user.username}`
@@ -53,6 +53,6 @@ export default class ChooseCommand extends Command {
 			color: getEmbedColor(msg),
 			description: `I choose ${options[getRandomInt(0, options.length)]}`,
 			title: ':thinking:'
-		}), { reply: msg.author });
+		}), '', { reply: msg.author });
 	}
 }

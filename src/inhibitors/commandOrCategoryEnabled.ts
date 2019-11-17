@@ -1,5 +1,5 @@
 import { Inhibitor, KlasaMessage, Command } from 'klasa';
-import { isCommandCategoryEnabled, isCommandEnabled } from 'src/lib/helpers';
+import { isCommandCategoryEnabled, isCommandEnabled } from '../lib/helpers';
 
 export default class CommandOrCategoryEnabled extends Inhibitor {
 

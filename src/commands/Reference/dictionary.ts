@@ -28,7 +28,7 @@ export default class DefineCommand extends Command {
 				syntax: \`!define <word>\`
 			`,
 			name: 'define',
-			usage: '<query:string>'
+			usage: '<query:...string>'
 		});
 	}
 

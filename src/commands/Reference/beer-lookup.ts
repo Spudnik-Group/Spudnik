@@ -27,7 +27,7 @@ export default class BrewCommand extends Command {
 				syntax: \`!brew <brew|brewery name>\`
 			`,
 			name: 'brew',
-			usage: '<query:string>'
+			usage: '<query:...string>'
 		});
 	}
 

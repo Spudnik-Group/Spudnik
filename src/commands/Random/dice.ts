@@ -20,9 +20,9 @@ export default class RollCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Roll one die with x sides + any modifiers, with an optional reason.',
-			extendedHelp: 'syntax: `!roll [# of sides | [# of dice]d[# of sides]+modifiers] [reason] >`',
+			extendedHelp: 'syntax: `!roll "[# of sides | [# of dice]d[# of sides]+modifiers]" [reason] >`',
 			name: 'roll',
-			usage: '<roll:string> [reason:string]'
+			usage: '[roll:string] [reason:...string]'
 		});
 	}
 
@@ -34,7 +34,7 @@ export default class RollCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof RollCommand
 	 */
-	public async run(msg: KlasaMessage, [roll, reason]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [roll = 6, reason]): Promise<KlasaMessage | KlasaMessage[]> {
 		const result = require('d20').roll(roll);
 		const diceEmbed: MessageEmbed = new MessageEmbed({
 			color: getEmbedColor(msg),
@@ -55,6 +55,6 @@ export default class RollCommand extends Command {
 		`;
 
 		// Send the success response
-		return msg.send(diceEmbed, { reply: msg.author });
+		return msg.sendEmbed(diceEmbed, '', { reply: msg.author });
 	}
 }

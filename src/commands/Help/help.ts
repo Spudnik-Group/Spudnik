@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
-import { getEmbedColor, getPermissionsFromBitfield, getPermissionsFromLevel } from '../../lib/helpers';
+import { getEmbedColor, getPermissionsFromBitfield, getPermissionsFromLevel, canCommandBeUsed } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
@@ -42,15 +42,15 @@ export default class HelpCommand extends Command {
 				.setTitle(`__Command: **${command.name}**__`)
 				.addField('❯ Description', command.description)
 				.addField('❯ Usage', command.usage.fullUsage(msg))
-				.addField('❯ Details', typeof command.extendedHelp === 'function' ? command.extendedHelp() : command.extendedHelp)
+				.addField('❯ Details', command.extendedHelp ? (typeof command.extendedHelp === 'function' ? command.extendedHelp() : command.extendedHelp) : 'No extended help details.')
 				.addField('❯ Aliases', command.aliases.length > 0 ? command.aliases.join(', ') : 'None', true)
 				.addField('❯ Category', `${command.category}`, true)
-				.addField('❯ BOT Permissions', command.requiredPermissions ? getPermissionsFromBitfield(command.requiredPermissions).join('\n') : 'No extra perms required', true)
+				.addField('❯ BOT Permissions', command.requiredPermissions.bitfield ? `${getPermissionsFromBitfield(command.requiredPermissions).join('\n')}` : 'No extra perms required', true)
 				.addField('❯ User Permission Level', command.permissionLevel ? `${command.permissionLevel}: ${getPermissionsFromLevel(command.permissionLevel)}` : 'No special user perms required', true)
-			// .addField('❯ Other Details', stripIndents`
-			// 	NSFW Only: ${command.nsfw ? '**Yes**' : '**No**'}
-			// 	Enabled: ${isCommandEnabledInGuild(msg, command.name) ? '**Yes**' : '**No**'}
-			// `, true);
+				.addField('❯ Other Details', stripIndents`
+					NSFW Only: ${command.nsfw ? '**Yes**' : '**No**'}
+					Enabled: ${canCommandBeUsed(msg, command) ? '**Yes**' : '**No**'}
+				`, true);
 
 			return msg.sendEmbed(helpEmbed);
 		} else {
