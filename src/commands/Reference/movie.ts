@@ -3,8 +3,9 @@ import { Command, KlasaClient, CommandStore } from 'klasa';
 import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
 import { sendSimpleEmbeddedError } from '../../lib/helpers';
+import { SpudConfig } from '../../lib/config';
 
-const tmdbAPIkey = process.env.spud_moviedbapi;
+const tmdbAPIkey = SpudConfig.tmdbAPIkey;
 
 export default class MovieCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
@@ -20,6 +21,7 @@ export default class MovieCommand extends Command {
 	}
 
 	async run(msg, [query, page = 1]) {
+		if (!tmdbAPIkey) return sendSimpleEmbeddedError(msg, 'No API Key has been set up. This feature is unusable', 3000);
 		const { data: body } = await axios.get('https://api.themoviedb.org/3/search/movie', {
 			params: {
 				api_key: tmdbAPIkey,

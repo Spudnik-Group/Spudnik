@@ -2,8 +2,9 @@ import chalk from 'chalk';
 import { Client, KlasaClientOptions } from 'klasa';
 import { Configuration } from './interfaces';
 import * as http from 'http';
+import { SpudConfig } from './config/spud-config';
 
-const PORT = process.env.PORT || 1337;
+const PORT = SpudConfig.port || 1337;
 
 // Define Default Schemas
 Client.defaultPermissionLevels

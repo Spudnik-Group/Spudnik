@@ -1,4 +1,5 @@
 import { Client, KlasaClientOptions } from 'klasa';
+import { SpudConfig } from './spud-config';
 
 /**
  * The following are all client options for Klasa/Discord.js.
@@ -43,7 +44,7 @@ export const KlasaConfig: KlasaClientOptions = {
 	// If custom settings should be preserved when a guild removes your bot
 	preserveSettings: true,
 	// Disables/Enables a process.on('unhandledRejection'...) handler
-	production: false,
+	production: !!SpudConfig.debug,
 	// A once ready message for your console
 	readyMessage: (client: Client) => `Successfully initialized. Ready to serve ${client.guilds.size} guild${client.guilds.size === 1 ? '' : 's'}.`,
 	// The time in ms to add to ratelimits, to ensure you wont hit a 429 response
@@ -161,7 +162,7 @@ export const KlasaConfig: KlasaClientOptions = {
 	 * Console Event Handlers (enabled/disabled)
 	 */
 	consoleEvents: {
-		debug: process.env.spud_debug ? !!process.env.spud_debug : false,
+		debug: SpudConfig.debug,
 		error: true,
 		log: true,
 		verbose: false,

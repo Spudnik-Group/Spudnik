@@ -2,11 +2,12 @@ import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
 import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { SpudConfig } from '../../lib/config';
 
 const Scout = require('@scoutsdk/server-sdk');
 const games = require('../../extras/scout-games.json');
-const scoutID: string = process.env.spud_scoutid;
-const scoutSecret: string = process.env.spud_scoutsecret;
+const scoutID: string = SpudConfig.scoutId;
+const scoutSecret: string = SpudConfig.scoutSecret;
 
 /**
  * Returns Fortnite stats for a user on a specific platform.
@@ -45,6 +46,7 @@ export default class FortniteStatsCommand extends Command {
 	 * @memberof FortniteStatsCommand
 	 */
 	public async run(msg: KlasaMessage, [platform, username]): Promise<KlasaMessage | KlasaMessage[]> {
+		if (!scoutID || !scoutSecret) return sendSimpleEmbeddedError(msg, 'No API Key has been set up. This feature is unusable', 3000);
 		const plat = platform === 'pc' ? 'epic' : platform;
 		const fortniteEmbed: MessageEmbed = new MessageEmbed({
 			author: {

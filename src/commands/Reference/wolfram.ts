@@ -3,8 +3,9 @@ import { Command, KlasaClient, CommandStore } from 'klasa';
 import { stripIndents } from 'common-tags';
 import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
 import { MessageEmbed } from 'discord.js';
+import { SpudConfig } from '../../lib/config';
 
-const wolframAppID = process.env.spud_wolframapi;
+const wolframAppID = SpudConfig.wolframApiKey;
 
 export default class WolframCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
@@ -19,6 +20,7 @@ export default class WolframCommand extends Command {
 	}
 
 	async run(msg, [query]) {
+		if (!wolframAppID) return sendSimpleEmbeddedError(msg, 'No API Key has been set up. This feature is unusable', 3000);
 		const responseEmbed: MessageEmbed = new MessageEmbed({
 			color: getEmbedColor(msg),
 			description: '',

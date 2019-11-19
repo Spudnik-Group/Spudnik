@@ -3,8 +3,9 @@ import axios from 'axios';
 import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 import { stripIndents } from 'common-tags';
+import { SpudConfig } from '../../lib/config';
 
-const breweryDbApiKey: string = process.env.spud_brewdbapi;
+const breweryDbApiKey: string = SpudConfig.breweryDbApiKey;
 
 /**
  * Post information about an alcoholic brew.

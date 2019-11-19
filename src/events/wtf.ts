@@ -1,6 +1,9 @@
 import { Event } from 'klasa';
 import * as Rollbar from 'rollbar';
 import { SpudConfig } from '../lib/config/spud-config';
+import { stripIndents } from 'common-tags';
+import { format } from 'date-fns';
+import { TextChannel } from 'discord.js';
 
 export default class extends Event {
 
@@ -14,16 +17,16 @@ export default class extends Event {
 			});
 			rollbar.critical(failure);
 		}
-		// TODO: change this
-		// const message = stripIndents`
-		// Caught **General Warning**!
-		// **Time:** ${format(new Date(), 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
-		// **Warning Message:** ${err}`;
 
-		// if (process.env.spud_issuelog) {
-		// 	const channel = client.channels.get(process.env.spud_issuelog) as TextChannel;
-		// 	channel.send(message);
-		// }
+		const message = stripIndents`
+		Caught **BIG FAILURE**!
+		**Time:** ${format(new Date(), 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+		**Error Message:** ${failure}`;
+
+		if (SpudConfig.issueLogChannel) {
+			const channel = this.client.channels.get(SpudConfig.issueLogChannel) as TextChannel;
+			channel.send(message);
+		}
 
 		this.client.console.wtf(failure);
 	}

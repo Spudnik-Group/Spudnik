@@ -4,8 +4,9 @@ import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
 import axios from 'axios';
 import * as format from 'date-fns/format';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { SpudConfig } from '../../lib/config';
 
-const apikey = process.env.spud_stackoverflowapi;
+const apikey = SpudConfig.stackoverflowApiKey;
 
 /**
  * Returns Stack Overflow results for a query.
@@ -42,6 +43,7 @@ export default class StackOverflowCommand extends Command {
 	 * @memberof StackOverflowCommand
 	 */
 	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
+		if (!apikey) return sendSimpleEmbeddedError(msg, 'No API Key has been set up. This feature is unusable', 3000);
 		const stackEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://i.imgur.com/b4Hhl8y.png',

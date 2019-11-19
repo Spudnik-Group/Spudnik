@@ -3,8 +3,9 @@ import { MessageEmbed } from 'discord.js';
 import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
 import axios from 'axios';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { SpudConfig } from '../../lib/config';
 
-const apiKey = process.env.spud_trackerapi;
+const apiKey = SpudConfig.trackerApiKey;
 const platforms: { [platform: string]: number } = {
 	'pc': 5,
 	'psn': 2,
@@ -48,10 +49,7 @@ export default class ApexLegendsStatsCommand extends Command {
 	 * @memberof ApexLegendsStatsCommand
 	 */
 	public async run(msg: KlasaMessage, [platform, username]): Promise<KlasaMessage | KlasaMessage[]> {
-		if (!apiKey) {
-			return sendSimpleEmbeddedError(msg, 'The apex-legends-stats command is not configured yet.');
-		}
-
+		if (!apiKey) return sendSimpleEmbeddedError(msg, 'No API Key has been set up. This feature is unusable', 3000);
 		const apexEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://i.imgur.com/lgC4xLZ.png',

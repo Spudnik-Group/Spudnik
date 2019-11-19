@@ -2,9 +2,10 @@ import { oneLine, stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
 import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { SpudConfig } from '../../lib/config';
 
 const mw = require('mw-dict');
-const dictionaryApiKey: string = process.env.spud_dictionaryapi;
+const dictionaryApiKey: string = SpudConfig.dictionaryApiKey;
 const dict = new mw.CollegiateDictionary(dictionaryApiKey);
 
 /**
@@ -41,6 +42,7 @@ export default class DefineCommand extends Command {
 	 * @memberof DefineCommand
 	 */
 	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
+		if (!dictionaryApiKey) return sendSimpleEmbeddedError(msg, 'No API Key has been set up. This feature is unusable', 3000);
 		const word = query;
 		const dictionaryEmbed: MessageEmbed = new MessageEmbed({
 			color: getEmbedColor(msg),
