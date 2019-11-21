@@ -31,7 +31,8 @@ export const KlasaConfig: KlasaClientOptions = {
 		'WEBHOOKS_UPDATE'
 	],
 	disabledCorePieces: [
-		'commands'
+		'commands',
+		'providers'
 	],
 	// If your bot should be able to mention @everyone
 	disableEveryone: false,
@@ -190,11 +191,11 @@ export const KlasaConfig: KlasaClientOptions = {
 	/**
 	 * Custom Setting Gateway Options
 	 */
-	gateways: {
-		clientStorage: {},
-		guilds: {},
-		users: {}
-	},
+	// gateways: {
+	// 	clientStorage: {},
+	// 	guilds: {},
+	// 	users: {}
+	// },
 
 	/**
 	 * Klasa Schedule Options

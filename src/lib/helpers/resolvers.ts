@@ -1,5 +1,7 @@
 import { Command } from "klasa";
 import * as fs from 'fs';
+import { standardPlatforms } from "../constants/game-platforms";
+import { list } from "./helpers";
 
 export const hexColor = (color) => {
     if (!color) return;
@@ -27,4 +29,10 @@ export const battletag = (tag) => {
     if (tag.match(/(\w{3,12})#(\d{4,5})/i)) return tag;
 
     throw 'Please provide a valid battletag in the format: `username#0000`';
+}
+
+export const platform = (platform) => {
+    if (standardPlatforms.includes(platform)) return platform;
+
+    throw `Please provide a valid platform. Options are: ${list(standardPlatforms, 'or')}.`;
 }

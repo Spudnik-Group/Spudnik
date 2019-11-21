@@ -2,8 +2,7 @@ import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
 import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
-
-const UD = require('urban-dictionary');
+import * as UD from 'urban-dictionary';
 
 /**
  * Post an Urban Dictionary definition.
@@ -31,6 +30,8 @@ export default class UrbanCommand extends Command {
 			nsfw: true,
 			usage: '<query:...string>'
 		});
+
+		this.customizeResponse('query', 'Please supply a query');
 	}
 
 	/**

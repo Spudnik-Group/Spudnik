@@ -23,7 +23,6 @@ export default class SlotsCommand extends Command {
 			description: 'Go fishing.',
 			name: 'fishy'
 		});
-
 	}
 
 	/**

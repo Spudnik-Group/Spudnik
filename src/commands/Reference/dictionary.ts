@@ -3,8 +3,8 @@ import { MessageEmbed } from 'discord.js';
 import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 import { SpudConfig } from '../../lib/config';
+import * as mw from 'mw-dict';
 
-const mw = require('mw-dict');
 const dictionaryApiKey: string = SpudConfig.dictionaryApiKey;
 const dict = new mw.CollegiateDictionary(dictionaryApiKey);
 
@@ -31,6 +31,8 @@ export default class DefineCommand extends Command {
 			name: 'define',
 			usage: '<query:...string>'
 		});
+
+		this.customizeResponse('query', 'Please supply a query');
 	}
 
 	/**

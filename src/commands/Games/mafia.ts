@@ -27,7 +27,6 @@ export default class MafiaCommand extends Command {
 			description: 'Who is the Mafia? Who is the doctor? Who is the detective? Will the Mafia kill them all?',
 			name: 'mafia'
 		});
-
 	}
 
 	/**
@@ -58,29 +57,22 @@ export default class MafiaCommand extends Command {
 
 				for (const player of players.values()) {
 					if (player.role.includes('pleb')) { continue; }
-
 					await msg.sendMessage(`The ${player.role} is making their decision...`);
-
 					const valid = players.filterArray((p: any) => p.role !== player.role);
-
 					await player.user.send(stripIndents`
 						${questions[player.role]} Please type the number.
 						${valid.map((p: any, i: any) => `**${i + 1}.** ${p.user.tag}`).join('\n')}
 					`);
-
 					const filter = (res: any) => valid[Number.parseInt(res.content, 10) - 1];
 					const decision = await player.user.dmChannel.awaitMessages(filter, {
 						max: 1,
 						time: 120000
 					});
-
 					if (!decision.size) {
 						await player.user.send('Sorry, time is up!');
 						continue;
 					}
-
 					const choice = Number.parseInt(decision.first().content, 10);
-
 					if (player.role === 'mafia') {
 						const chosen = players.get(choice);
 						killed = chosen.id;
@@ -124,7 +116,6 @@ export default class MafiaCommand extends Command {
 				}
 
 				await delay(60000);
-
 				const playersArr = Array.from(players.values());
 
 				await msg.sendMessage(stripIndents`
@@ -133,7 +124,6 @@ export default class MafiaCommand extends Command {
 				`);
 
 				const voted: any = [];
-
 				const filter = (res: any) => {
 					if (!players.exists((p: any) => p.user.id === res.author.id)) { return false; }
 
@@ -173,9 +163,7 @@ export default class MafiaCommand extends Command {
 
 	private async generatePlayers(list: any) {
 		let roles = ['mafia', 'doctor', 'detective'];
-
 		for (let i = 0; i < (list.length - 2); i++) { roles.push(`pleb ${i + 1}`); }
-
 		roles = shuffle(roles);
 		const players = new Collection();
 		let i = 0;

@@ -1,8 +1,8 @@
 import { stripIndents } from 'common-tags';
 import { shuffle } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
-const choices = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'];
 
+const choices = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'];
 const { questions, houses, descriptions } = require('../../extras/sorting-hat-quiz');
 
 /**
@@ -27,7 +27,6 @@ export default class SortingHatQuizCommand extends Command {
 			description: 'Take a quiz to determine your Hogwarts house.',
 			name: 'sorting-hat-quiz'
 		});
-
 	}
 
 	/**
