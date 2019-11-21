@@ -27,6 +27,8 @@ export default class WikiCommand extends Command {
 			`,
 			usage: '<query:string>'
 		});
+
+		this.customizeResponse('query', 'Please supply a query');
 	}
 
 	/**

@@ -17,6 +17,8 @@ export default class WolframCommand extends Command {
 			`,
 			usage: '<query:string>'
 		});
+
+		this.customizeResponse('query', 'Please supply a query');
 	}
 
 	async run(msg, [query]) {

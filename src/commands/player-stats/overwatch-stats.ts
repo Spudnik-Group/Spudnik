@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { sendSimpleEmbeddedError } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, battletag, platform, list } from '../../lib/helpers';
 import axios from 'axios';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
@@ -28,6 +28,18 @@ export default class OverwatchStatsCommand extends Command {
 			name: 'overwatch-stats',
 			usage: '<platform:string> <battletag:string> [region:string]'
 		});
+
+		this
+			.createCustomResolver('battletag', battletag)
+			.createCustomResolver('platform', platform)
+			.createCustomResolver('region', (arg: string) => {
+				if (!arg) return 'global';
+				const regionList = ['eu', 'us', 'kr', 'cn', 'global'];
+				if (regionList.includes(arg.toLowerCase())) return arg;
+
+				throw `Please provide a valid region. Options are: ${list(regionList, 'or')}.`
+			})
+
 	}
 
 	/**
@@ -38,7 +50,7 @@ export default class OverwatchStatsCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof OverwatchStatsCommand
 	 */
-	public async run(msg: KlasaMessage, [platform, battletag, region = 'global']): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [platform, battletag, region]): Promise<KlasaMessage | KlasaMessage[]> {
 		try {
 			const { data: profile } = await axios.get(`https://overwatchy.com/profile/${platform}/${region}/${encodeURI(battletag)}`);
 			if (profile.message) {

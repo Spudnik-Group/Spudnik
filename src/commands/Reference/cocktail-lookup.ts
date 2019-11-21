@@ -27,6 +27,8 @@ export default class CocktailCommand extends Command {
 			name: 'cocktail',
 			usage: '<query:...string>'
 		});
+
+		this.customizeResponse('query', 'Please supply a query');
 	}
 
 	/**

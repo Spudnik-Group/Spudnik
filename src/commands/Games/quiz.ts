@@ -37,11 +37,11 @@ export default class QuizCommand extends Command {
 		this
 			.createCustomResolver('type', (arg) => {
 				if (types.includes(arg.toLowerCase())) return arg;
-				throw `Which type of question would you like to have? Either ${list(types, 'or')}.`;
+				throw `Please provide a valid quiz type. Options are: ${list(types, 'or')}.`;
 			})
 			.createCustomResolver('difficulty', (arg) => {
 				if (difficulties.includes(arg.toLowerCase())) return arg;
-				throw `What should the difficulty of the game be? Either ${list(difficulties, 'or')}.`;
+				throw `Please provide a valid difficulty level. Options are: ${list(difficulties, 'or')}.`;
 			})
 	}
 

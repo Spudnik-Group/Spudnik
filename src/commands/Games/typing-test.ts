@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { list } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage, Possible } from 'klasa';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 const sentences = require('../../extras/typing-test');
 const difficulties = ['easy', 'medium', 'hard', 'extreme', 'impossible'];
@@ -38,9 +38,9 @@ export default class TypingTestCommand extends Command {
 			usage: '<difficulty:string>'
 		});
 
-		this.createCustomResolver('difficulty', (arg: string, possible: Possible, msg: KlasaMessage, [difficulty]) => {
+		this.createCustomResolver('difficulty', (arg: string) => {
 			if (difficulties.includes(arg.toLowerCase())) return arg;
-			throw `Possible difficulties: ${list(difficulties, 'or')}.`;
+			throw `Please provide a valid difficulty level. Options are: ${list(difficulties, 'or')}.`;
 		})
 	}
 

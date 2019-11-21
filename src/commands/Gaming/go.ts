@@ -2,9 +2,9 @@ import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
 import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { SteamGames } from '../../lib/constants';
 
-const steamGames = require('../../extras/steam-games');
-const steamGameNames = Object.keys(steamGames).map(item => {
+const steamGameNames = Object.entries(SteamGames).map(item => {
 	return `* ${item}\n`
 });
 
@@ -45,10 +45,10 @@ export default class GoCommand extends Command {
 	 * @memberof GoCommand
 	 */
 	public async run(msg: KlasaMessage, [game]): Promise<KlasaMessage | KlasaMessage[]> {
-		if (Object.keys(steamGames).indexOf(game.toUpperCase()) === -1) {
+		if (Object.entries(SteamGames).indexOf(game.toUpperCase()) === -1) {
 			return sendSimpleEmbeddedError(msg, `Sorry, only a few games are supported at this time: \n ${steamGameNames}`, 3000);
 		}
-		const gameID = steamGames[game.toUpperCase()];
+		const gameID = SteamGames[game.toUpperCase()];
 
 		return msg.sendEmbed(new MessageEmbed()
 			.setColor(getEmbedColor(msg))

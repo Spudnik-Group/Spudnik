@@ -1,6 +1,7 @@
 import { stripIndents } from 'common-tags';
 import { list } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+
 const difficulties: string[] = ['easy', 'medium', 'hard', 'extreme', 'impossible'];
 const operations = ['+', '-', '*'];
 const maxValues: any = {
@@ -35,12 +36,12 @@ export default class MathQuizCommand extends Command {
 				**Difficulties**: ${difficulties.join(', ')}
 			`,
 			name: 'math-quiz',
-			usage: '<difficulty:string>'
+			usage: '[difficulty:string]'
 		});
 
-		this.createCustomResolver('difficulty', (arg) => {
+		this.createCustomResolver('difficulty', (arg: string) => {
 			if (difficulties.includes(arg.toLowerCase())) return arg;
-			throw `What should the difficulty of the game be? Either ${list(difficulties, 'or')}.`;
+			throw `Please provide a valid difficulty level. Options are: ${list(difficulties, 'or')}.`;
 		})
 	}
 
@@ -74,7 +75,6 @@ export default class MathQuizCommand extends Command {
 		});
 
 		if (!msgs.size) { return msg.sendMessage(`Sorry, time is up! It was ${answer}.`, { reply: msg.author }); }
-
 		if (msgs.first().content !== answer.toString()) { return msg.sendMessage(`Nope, sorry, it's ${answer}.`, { reply: msg.author }); }
 
 		return msg.sendMessage('Nice job! 10/10! You deserve some cake!', { reply: msg.author });

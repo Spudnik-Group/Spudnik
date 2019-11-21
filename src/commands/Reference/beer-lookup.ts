@@ -30,6 +30,8 @@ export default class BrewCommand extends Command {
 			name: 'brew',
 			usage: '<query:...string>'
 		});
+
+		this.customizeResponse('query', 'Please supply a query');
 	}
 
 	/**

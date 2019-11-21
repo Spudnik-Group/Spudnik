@@ -18,6 +18,8 @@ export default class MovieCommand extends Command {
 			usage: '<query:string> [page:number]',
 			name: 'movie'
 		});
+
+		this.customizeResponse('query', 'Please supply a query');
 	}
 
 	async run(msg, [query, page = 1]) {
