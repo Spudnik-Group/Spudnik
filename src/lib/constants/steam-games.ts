@@ -1,4 +1,4 @@
-{
+export const SteamGames = {
     "DOTA 2": 570,
     "CSGO": 730,
     "GMOD": 4000,

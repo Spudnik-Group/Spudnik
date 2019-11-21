@@ -1,7 +1,7 @@
 import { stripIndents } from 'common-tags';
 import { shuffle, verify } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
-//tslint:disable-next-line
+
 const events = require('../../extras/hunger-games');
 
 /**

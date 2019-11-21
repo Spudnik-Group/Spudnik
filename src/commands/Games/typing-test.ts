@@ -1,7 +1,7 @@
 import { stripIndents } from 'common-tags';
 import { list } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage, Possible } from 'klasa';
-//tslint:disable-next-line
+
 const sentences = require('../../extras/typing-test');
 const difficulties = ['easy', 'medium', 'hard', 'extreme', 'impossible'];
 const times: any = {

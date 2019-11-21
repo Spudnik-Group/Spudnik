@@ -1,6 +1,6 @@
 import { Command, KlasaClient, CommandStore, KlasaMessage } from "klasa";
 import { MessageEmbed } from "discord.js";
-//tslint:disable-next-line
+
 const questions = require('../../extras/google-feud');
 
 /**
@@ -45,7 +45,7 @@ export default class GoogleFeudCommand extends Command {
 
 		try {
 			const suggestions = await this.fetchSuggestions(question);
-			
+
 			if (!suggestions) { return msg.sendMessage('Could not find any results.'); }
 
 			const display = new Array(suggestions.length).fill('???');
@@ -73,7 +73,7 @@ export default class GoogleFeudCommand extends Command {
 				}
 
 				const choice = msgs.first().content.toLowerCase();
-				
+
 				if (suggestions.includes(choice)) {
 					display[suggestions.indexOf(choice)] = choice;
 				} else {
@@ -84,11 +84,11 @@ export default class GoogleFeudCommand extends Command {
 			this.playing.delete(msg.channel.id);
 
 			if (!display.includes('???')) { return msg.sendMessage('You win! Nice job, master of Google!'); }
-			
+
 			return msg.sendMessage('Better luck next time!');
 		} catch (err) {
 			this.playing.delete(msg.channel.id);
-			
+
 			return msg.sendMessage(`Oh no, an error occurred: \`${err.message}\`. Try again later!`, { reply: msg.author });
 		}
 	}
@@ -103,7 +103,7 @@ export default class GoogleFeudCommand extends Command {
 		const suggestions = JSON.parse(text)[1].filter((suggestion: any) => suggestion.toLowerCase() !== question.toLowerCase());
 
 		if (!suggestions.length) { return null; }
-		
+
 		return suggestions.map((suggestion: any) => suggestion.toLowerCase().replace(question.toLowerCase(), '').trim());
 	}
 }

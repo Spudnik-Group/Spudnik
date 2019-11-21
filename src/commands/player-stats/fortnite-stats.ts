@@ -3,9 +3,9 @@ import { MessageEmbed } from 'discord.js';
 import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 import { SpudConfig } from '../../lib/config';
+import * as Scout from '@scoutsdk/server-sdk';
+import { ScoutGames } from '../../lib/constants';
 
-const Scout = require('@scoutsdk/server-sdk');
-const games = require('../../extras/scout-games.json');
 const scoutID: string = SpudConfig.scoutId;
 const scoutSecret: string = SpudConfig.scoutSecret;
 
@@ -66,13 +66,13 @@ export default class FortniteStatsCommand extends Command {
 			scope: 'public.read'
 		});
 
-		const search = await Scout.players.search(username, plat, null, games.fortnite.id, true, true);
+		const search = await Scout.players.search(username, plat, null, ScoutGames.fortnite.id, true, true);
 		if (search.results.length) {
 			const matches = search.results.filter((result: any) => result.player);
 			if (matches.length) {
 				// TODO: change this to allow selection of a result
 				const firstMatch = matches[0];
-				const playerStats = await Scout.players.get(games.fortnite.id, firstMatch.player.playerId, '*');
+				const playerStats = await Scout.players.get(ScoutGames.fortnite.id, firstMatch.player.playerId, '*');
 				fortniteEmbed.setDescription(stripIndents`
 					**${firstMatch.persona.handle}**
 

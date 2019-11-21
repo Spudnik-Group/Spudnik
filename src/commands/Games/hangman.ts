@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
-//tslint:disable-next-line
+
 const words = require('../../extras/hangman');
 
 /**

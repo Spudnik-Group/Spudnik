@@ -2,7 +2,7 @@ import { stripIndents } from 'common-tags';
 import { Collection } from 'discord.js';
 import { awaitPlayers, delay, shuffle } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
-//tslint:disable-next-line
+
 const { questions, stories } = require('../../extras/mafia');
 
 /**

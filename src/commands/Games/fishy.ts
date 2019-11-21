@@ -1,6 +1,6 @@
 import { getRandomInt } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
-//tslint:disable-next-line
+
 const fishes = require('../../extras/fish');
 
 /**
@@ -36,7 +36,7 @@ export default class SlotsCommand extends Command {
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const fishID = Math.floor(Math.random() * 10) + 1;
 		let rarity;
-		
+
 		if (fishID < 5) {
 			rarity = 'junk';
 		} else if (fishID < 8) {
@@ -49,7 +49,7 @@ export default class SlotsCommand extends Command {
 
 		const fish = fishes[rarity];
 		const worth = getRandomInt(fish.min, fish.max);
-		
+
 		return msg.sendMessage(`You caught a ${fish.symbol}. I bet it'd sell for around $${worth}.`, { reply: msg.author });
 	}
 }

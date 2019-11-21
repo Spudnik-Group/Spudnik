@@ -2,13 +2,12 @@ import { Command } from "klasa";
 import * as fs from 'fs';
 
 export const hexColor = (color) => {
+    if (!color) return;
     if (!isNaN(color.match(/^ *[a-f0-9]{6} *$/i) ? parseInt(color, 16) : NaN)) {
-        return true;
-    } else if (color === '') {
-        return true;
+        return color;
     }
 
-    return 'Please provide a valid color hex number.';
+    throw 'Please provide a valid color hex number.';
 }
 
 export const commandOrCategory = (cmdOrCategory) => {
@@ -22,4 +21,10 @@ export const commandOrCategory = (cmdOrCategory) => {
     if (category) return cmdOrCategory; // valid category name
 
     throw 'Please provide a valid command or command category name';
+}
+
+export const battletag = (tag) => {
+    if (tag.match(/(\w{3,12})#(\d{4,5})/i)) return tag;
+
+    throw 'Please provide a valid battletag in the format: `username#0000`';
 }

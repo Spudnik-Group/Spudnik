@@ -3,9 +3,9 @@ import { MessageEmbed } from 'discord.js';
 import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 import { SpudConfig } from '../../lib/config';
+import * as Scout from '@scoutsdk/server-sdk';
+import { ScoutGames } from '../../lib/constants';
 
-const Scout = require('@scoutsdk/server-sdk');
-const games = require('../../extras/scout-games.json');
 const scoutID: string = SpudConfig.scoutId;
 const scoutSecret: string = SpudConfig.scoutSecret;
 
@@ -66,13 +66,13 @@ export default class R6StatsCommand extends Command {
 			scope: 'public.read'
 		});
 
-		const search = await Scout.players.search(username, plat, null, games.r6siege.id, true, true);
+		const search = await Scout.players.search(username, plat, null, ScoutGames.r6siege.id, true, true);
 		if (search.results.length) {
 			const matches = search.results.filter((result: any) => result.player);
 			if (matches.length) {
 				// TODO: change this to allow selection of a result
 				const firstMatch = matches.find((item: any) => item.player);
-				const playerStats = await Scout.players.get(games.r6siege.id, firstMatch.player.playerId, '*');
+				const playerStats = await Scout.players.get(ScoutGames.r6siege.id, firstMatch.player.playerId, '*');
 				if (playerStats) {
 					r6Embed.setDescription(stripIndents`
 						**${firstMatch.persona.handle}**

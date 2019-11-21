@@ -2,7 +2,7 @@ import { stripIndents } from 'common-tags';
 import { shuffle } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 const choices = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'];
-//tslint:disable-next-line
+
 const { questions, houses, descriptions } = require('../../extras/sorting-hat-quiz');
 
 /**
