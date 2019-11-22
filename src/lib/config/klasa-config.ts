@@ -1,5 +1,6 @@
 import { Client, KlasaClientOptions } from 'klasa';
 import { SpudConfig } from './spud-config';
+import { permissionLevels } from '../schemas/permissionLevels';
 
 /**
  * The following are all client options for Klasa/Discord.js.
@@ -153,11 +154,11 @@ export const KlasaConfig: KlasaClientOptions = {
 			enabled: true,
 			ignoreBots: true,
 			ignoreEdits: true,
-			ignoreOthers: true,
 			ignoreSelf: true,
 			ignoreWebhooks: true
 		}
 	},
+	permissionLevels,
 
 	/**
 	 * Console Event Handlers (enabled/disabled)
