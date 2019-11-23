@@ -7,60 +7,43 @@ import { SpudConfig } from './config/spud-config';
 const PORT = SpudConfig.port || 1337;
 
 // Define Default Schemas
-Client.defaultPermissionLevels
-	.add(1, ({ guild, member }) => guild && member.permissions.has('MANAGE_MESSAGES'), { fetch: true })
-	.add(2, ({ guild, member }) => guild && member.permissions.has('MANAGE_ROLES'), { fetch: true })
-	.add(3, ({ guild, member }) => guild && member.permissions.has('KICK_MEMBERS'), { fetch: true })
-	.add(4, ({ guild, member }) => guild && member.permissions.has('BAN_MEMBERS'), { fetch: true });
-// TODO: add staff feature
-// .add(5, ({ guild, author }) => guild.settings['staff'].includes(author.id));
 Client.defaultGuildSchema
-	// TODO: add botAnnounce feature
-	// .add('channels', folder => folder
-	// 	.add('botAnnounce', 'TextChannel')
-	// )
-	.add('roles', folder => folder
-		// TODO: add botAdmin feature
-		// .add('botAdmin', 'Role')
-		// TODO: add staff feature
-		// .add('staff', 'Role')
-		.add('defaultRoles', 'Role', { array: true })
-		.add('muted', 'Role')
-	)
-	.add('features', folder => folder
-		.add('starboard', folder => folder
-			.add('starboardEnabled', 'boolean', { default: false })
-			.add('starboardChannel', 'TextChannel', { default: null })
-			.add('starboardTrigger', 'string', { default: '⭐' })
-		)
-		.add('welcome', folder => folder
-			.add('welcomeEnabled', 'boolean', { default: false })
-			.add('welcomeChannel', 'TextChannel', { default: null })
-			.add('welcomeMessage', 'string', { default: `@here, please Welcome {user} to {guild}!` })
-		)
-		.add('goodbye', folder => folder
-			.add('goodbyeEnabled', 'boolean', { default: false })
-			.add('goodbyeChannel', 'TextChannel', { default: null })
-			.add('goodbyeMessage', 'string', { default: `{user} has left the server.` })
-		)
-		.add('modlog', folder => folder
-			.add('modlogChannel', 'TextChannel', { default: null })
-			.add('modlogEnabled', 'boolean', { default: false })
-		)
-		.add('tos', folder => folder
-			.add('tosChannel', 'TextChannel', { default: null })
-			.add('tosMessages', 'tosMessage', { array: true })
-			.add('tosMessageCount', 'number', { default: 0 })
-		)
-		.add('embedColor', 'string', { default: '555555' })
-		.add('adblockEnabled', 'boolean', { default: false })
-		.add('deleteCommandMessages', 'boolean', { default: false })
-		.add('hasSendModLogMessage', 'boolean', { default: false })
-		.add('selfAssignableRoles', 'Role', { array: true })
-	)
 	.add('warnings', 'warning', { array: true })
 	.add('disabledCommands', 'string', { array: true })
-	.add('disabledCommandCategories', 'string', { array: true });
+	.add('disabledCommandCategories', 'string', { array: true })
+	.add('roles', folder => folder
+		.add('defaultRoles', 'Role', { array: true })
+		.add('muted', 'Role')
+		.add('selfAssignableRoles', 'Role', { array: true })
+	)
+	.add('starboard', folder => folder
+		.add('starboardEnabled', 'boolean', { default: false })
+		.add('starboardChannel', 'TextChannel', { default: null })
+		.add('starboardTrigger', 'string', { default: '⭐' })
+	)
+	.add('welcome', folder => folder
+		.add('welcomeEnabled', 'boolean', { default: false })
+		.add('welcomeChannel', 'TextChannel', { default: null })
+		.add('welcomeMessage', 'string', { default: `@here, please Welcome {user} to {guild}!` })
+	)
+	.add('goodbye', folder => folder
+		.add('goodbyeEnabled', 'boolean', { default: false })
+		.add('goodbyeChannel', 'TextChannel', { default: null })
+		.add('goodbyeMessage', 'string', { default: `{user} has left the server.` })
+	)
+	.add('modlog', folder => folder
+		.add('modlogChannel', 'TextChannel', { default: null })
+		.add('modlogEnabled', 'boolean', { default: false })
+	)
+	.add('tos', folder => folder
+		.add('tosChannel', 'TextChannel', { default: null })
+		.add('tosMessages', 'tosMessage', { array: true })
+		.add('tosMessageCount', 'number', { default: 0 })
+	)
+	.add('embedColor', 'string', { default: '555555' })
+	.add('adblockEnabled', 'boolean', { default: false })
+	.add('deleteCommandMessages', 'boolean', { default: false })
+	.add('hasSendModLogMessage', 'boolean', { default: false });
 
 /**
  * The Spudnik Discord Bot.
@@ -68,7 +51,6 @@ Client.defaultGuildSchema
  * @export
  * @class Spudnik
  * @property {Configuration} Config
- * @property {CommandoClient} Discord
  */
 export default class Spudnik extends Client {
 	/**
