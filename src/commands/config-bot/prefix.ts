@@ -57,7 +57,7 @@ export default class PrefixCommand extends Command {
 		if (!prefix) {
 			const currentPrefix = msg.guild ? msg.guild.settings['prefix'] : this.client.options.prefix;
 			prefixEmbed.setDescription(stripIndents`
-				${prefix ? `The command prefix is \`\`${currentPrefix}\`\`.` : 'There is no command prefix.'}
+				${currentPrefix ? `The command prefix is \`\`${currentPrefix}\`\`.` : 'There is no command prefix.'}
 				To run commands, use ${currentPrefix}\`commandName\`.
 			`);
 
