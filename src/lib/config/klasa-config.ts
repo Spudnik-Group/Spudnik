@@ -170,7 +170,7 @@ export const KlasaConfig: KlasaClientOptions = {
 		debug: SpudConfig.debug,
 		error: true,
 		log: true,
-		verbose: false,
+		verbose: SpudConfig.debug,
 		warn: true,
 		wtf: true
 	},

@@ -75,7 +75,7 @@ export default class WarnCommand extends Command {
 						id: member.id,
 						points: newPoints
 					};
-					msg.guild.settings.update('warnings', guildWarnings);
+					msg.guild.settings.update('warnings', guildWarnings, msg.guild);
 					// Set up embed message
 					warnEmbed.setDescription(stripIndents`
 						**Moderator:** ${msg.author.tag} (${msg.author.id})
@@ -92,7 +92,7 @@ export default class WarnCommand extends Command {
 						id: member.id,
 						points: points
 					});
-					msg.guild.settings.update('warnings', guildWarnings);
+					msg.guild.settings.update('warnings', guildWarnings, msg.guild);
 					// Set up embed message
 					warnEmbed.setDescription(stripIndents`
 						**Moderator:** ${msg.author.tag} (${msg.author.id})

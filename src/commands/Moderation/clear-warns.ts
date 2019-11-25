@@ -78,7 +78,7 @@ export default class ClearWarnsCommand extends Command {
 						id: member.id,
 						points: 0
 					};
-					msg.guild.settings.update('warnings', guildWarnings);
+					msg.guild.settings.update('warnings', guildWarnings, msg.guild);
 					// Set up embed message
 					warnEmbed.setDescription(stripIndents`
 						**Moderator:** ${msg.author.tag} (${msg.author.id})
