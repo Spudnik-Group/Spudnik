@@ -156,6 +156,9 @@ export const KlasaConfig: KlasaClientOptions = {
 			ignoreEdits: true,
 			ignoreSelf: true,
 			ignoreWebhooks: true
+		},
+		providers: {
+			enabled: true
 		}
 	},
 	permissionLevels,
