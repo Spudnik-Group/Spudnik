@@ -81,24 +81,13 @@ export const KlasaConfig: KlasaClientOptions = {
 	 * Database Options
 	 */
 	providers: {
-		/*
 		// Provider Connection object for process based databases:
 		// rethinkdb, mongodb, mssql, mysql, postgresql
-		mysql: {
-			host: 'localhost',
-			db: 'klasa',
-			user: 'database-user',
-			password: 'database-password',
-			options: {}
-		},
-		*/
+		default: 'json',
 		default: 'mongodb',
 		mongodb: {
 			db: 'spud-dev-nate',
-			host: 'ds018248.mlab.com',
-			password: '8Uyl7CEEZjoj',
-			port: '18248',
-			user: 'spud-dev'
+			connectionString: SpudConfig.spudCoreDB
 		}
 	},
 
