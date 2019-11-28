@@ -35,6 +35,18 @@ export const resolveMention = (usertxt: string): string => {
 	return userid;
 }
 
+export const resolveChannel = (channeltxt: string): string => {
+	let channelid = channeltxt;
+
+	if (channeltxt.startsWith('<#!')) {
+		channelid = channeltxt.substr(3, channeltxt.length - 4);
+	} else if (channeltxt.startsWith('<#')) {
+		channelid = channeltxt.substr(2, channeltxt.length -3);
+	}
+
+	return channelid;
+}
+
 /**
  * Returns a timeout as a promise.
  *

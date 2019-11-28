@@ -56,13 +56,13 @@ export default class ListServersCommand extends Command {
 					template.fields.push({
 						name: guild.name,
 						value: stripIndents`
-							ID: ${guild.id}
-							User Count: ${guild.memberCount}
-							Channel Count: ${guild.channels.size}
-							Bot Invited: ${format(guild.joinedTimestamp, 'MMMM Do YYYY [at] HH:mm')}
-							Owner: ${guild.owner.user.tag} (${guild.ownerID})
-							Region: ${guild.region}
-							Prefix: ${msg.guildSettings.get('prefix') ? msg.guildSettings.get('prefix') : '!'}
+							**ID**: ${guild.id}
+							**User Count**: ${guild.memberCount}
+							**Channel Count**: ${guild.channels.size}
+							**Bot Invited**: ${format(guild.joinedTimestamp, 'MMMM Do YYYY [at] HH:mm')}
+							**Owner**: ${guild.owner.user.tag} (${guild.ownerID})
+							**Region**: ${guild.region}
+							**Prefix**: ${msg.guildSettings.get('prefix') ? msg.guildSettings.get('prefix') : '!'}
 		
 							--
 						`

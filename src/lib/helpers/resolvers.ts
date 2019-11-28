@@ -1,7 +1,7 @@
-import { Command } from "klasa";
+import { Command, Possible, KlasaMessage } from "klasa";
 import * as fs from 'fs';
 import { standardPlatforms } from "../constants/game-platforms";
-import { list } from "./helpers";
+import { list, resolveChannel } from "./helpers";
 
 export const hexColor = (color) => {
     if (!color) return;
@@ -35,4 +35,11 @@ export const platform = (platform) => {
     if (standardPlatforms.includes(platform)) return platform;
 
     throw `Please provide a valid platform. Options are: ${list(standardPlatforms, 'or')}.`;
+}
+
+export const featureContent = (arg: string, possible: Possible, message: KlasaMessage, [subCommand]) => {
+	if (subCommand === 'channel' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw 'Please provide a channel for the Goodbye message to be displayed in.';
+	if (subCommand === 'message' && !arg) throw 'Please include the new text for the Goodbye message.';
+
+	return arg;
 }

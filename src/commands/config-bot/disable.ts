@@ -1,7 +1,8 @@
 import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
-import { getEmbedColor, sendSimpleEmbeddedError, modLogMessage, isCommandCategoryEnabled, isCommandEnabled, commandOrCategory } from '../../lib/helpers';
+import { getEmbedColor, sendSimpleEmbeddedError, modLogMessage, isCommandCategoryEnabled, isCommandEnabled, commandOrCategory, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import * as fs from 'fs';
 
 /**
  * Disables a command or command category.
@@ -30,7 +31,7 @@ export default class DisableCommand extends Command {
 			`,
             guarded: true,
             name: 'disable',
-            usage: '<cmdOrCat:command|string>'
+            usage: '<cmdOrCat:command|cmdOrCat:string>'
         });
 
         this.createCustomResolver('cmdOrCat', commandOrCategory)
@@ -56,10 +57,13 @@ export default class DisableCommand extends Command {
 
         if (typeof cmdOrCat === 'string') {
             // category
+			const groups: any[] = fs.readdirSync('commands')
+				.filter(path => fs.statSync(`commands/${path}`).isDirectory());
+			const parsedGroup: string = cmdOrCat.toLowerCase();
             if (!isCommandCategoryEnabled(msg, cmdOrCat)) {
                 return sendSimpleEmbeddedError(msg,
                     `The \`${cmdOrCat}\` category is already disabled.`, 3000);
-            } else {
+            } else if (groups.find((g: string) => g === parsedGroup)) {
                 msg.guild.settings.update('disabledCommandCategories', cmdOrCat.toLowerCase());
                 disableEmbed.setDescription(stripIndents`
                 **Moderator:** ${msg.author.tag} (${msg.author.id})
@@ -67,7 +71,9 @@ export default class DisableCommand extends Command {
                 modLogMessage(msg, disableEmbed);
 
                 return msg.sendEmbed(disableEmbed);
-            }
+            } else {
+				return sendSimpleEmbeddedMessage(msg, `No groups matching that name. Use \`${msg.guild.settings['prefix']}commands\` to view a list of command groups.`, 3000);
+			}
         } else {
             // command
             if (!isCommandEnabled(msg, cmdOrCat)) {
