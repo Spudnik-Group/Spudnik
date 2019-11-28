@@ -27,8 +27,7 @@ export default class BlacklistCommand extends Command {
 			hidden: true,
 			guarded: true,
 			permissionLevel: 10,
-			usage: '<User:user|Guild:guild|guild:string> [...]',
-			usageDelim: ' '
+			usage: '<User:user|Guild:guild|guild:string> [...]'
 		});
 	}
 

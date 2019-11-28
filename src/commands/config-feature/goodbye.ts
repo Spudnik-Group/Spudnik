@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Channel, MessageEmbed } from 'discord.js';
-import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, resolveChannel, featureContent } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
@@ -34,9 +34,12 @@ export default class GoodbyeCommand extends Command {
 				\`MANAGE_GUILD\` permission required.
 			`,
 			name: 'goodbye',
-			permissionLevel: 6,
-			usage: '<message|channel|on|off|status> (content:channel|...string)'
+			permissionLevel: 6, // MANAGE_GUILD
+			subcommands: true,
+			usage: '<message|channel|on|off|status> (content:content)'
 		});
+
+		this.createCustomResolver('content', featureContent);
 	}
 
 	/**
@@ -55,23 +58,19 @@ export default class GoodbyeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		if (!content) {
-			return sendSimpleEmbeddedMessage(msg, 'You must include the new message along with the `message` command. See `help goodbye` for details.', 3000);
-		} else {
-			try {
-				await msg.guild.settings.update('goodbyeMessage', content);
-				// Set up embed message
-				goodbyeEmbed.setDescription(stripIndents`
-							**Member:** ${msg.author.tag} (${msg.author.id})
-							**Action:** Goodbye message set to:
-							\`\`\`${content}\`\`\`
-						`);
-				goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
+		try {
+			await msg.guild.settings.update('goodbye.message', content, msg.guild);
+			// Set up embed message
+			goodbyeEmbed.setDescription(stripIndents`
+						**Member:** ${msg.author.tag} (${msg.author.id})
+						**Action:** Goodbye message set to:
+						\`\`\`${content}\`\`\`
+					`);
+			goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
 
-				return this.sendSuccess(msg, goodbyeEmbed);
-			} catch (err) {
-				return this.catchError(msg, { subCommand: 'message', content }, err)
-			}
+			return this.sendSuccess(msg, goodbyeEmbed);
+		} catch (err) {
+			return this.catchError(msg, { subCommand: 'message', content }, err)
 		}
 	}
 
@@ -91,29 +90,25 @@ export default class GoodbyeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const goodbyeChannel = await msg.guild.settings.get('goodbyeChannel');
-		if (content instanceof Channel) {
-			const channelID = (content as Channel).id;
+		const goodbyeChannel = await msg.guild.settings.get('goodbye.channel');
+		const channelID = msg.guild.channels.get(resolveChannel(content)).id;
 
-			if (goodbyeChannel && goodbyeChannel === channelID) {
-				return sendSimpleEmbeddedMessage(msg, `Goodbye channel already set to <#${channelID}>!`, 3000);
-			} else {
-				try {
-					await msg.guild.settings.update('goodbyeChannel', channelID);
-					// Set up embed message
-					goodbyeEmbed.setDescription(stripIndents`
-								**Member:** ${msg.author.tag} (${msg.author.id})
-								**Action:** Goodbye Channel set to <#${channelID}>
-							`);
-					goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
-
-					return this.sendSuccess(msg, goodbyeEmbed);
-				} catch (err) {
-					return this.catchError(msg, { subCommand: 'channel', content }, err)
-				}
-			}
+		if (goodbyeChannel && goodbyeChannel === channelID) {
+			return sendSimpleEmbeddedMessage(msg, `Goodbye channel already set to <#${channelID}>!`, 3000);
 		} else {
-			return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
+			try {
+				await msg.guild.settings.update('goodbye.channel', channelID, msg.guild);
+				// Set up embed message
+				goodbyeEmbed.setDescription(stripIndents`
+							**Member:** ${msg.author.tag} (${msg.author.id})
+							**Action:** Goodbye Channel set to <#${channelID}>
+						`);
+				goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
+
+				return this.sendSuccess(msg, goodbyeEmbed);
+			} catch (err) {
+				return this.catchError(msg, { subCommand: 'channel', content }, err)
+			}
 		}
 	}
 
@@ -132,14 +127,14 @@ export default class GoodbyeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const goodbyeChannel = await msg.guild.settings.get('goodbyeChannel');
-		const goodbyeEnabled = await msg.guild.settings.get('goodbyeEnabled');
+		const goodbyeChannel = await msg.guild.settings.get('goodbye.channel');
+		const goodbyeEnabled = await msg.guild.settings.get('goodbye.enabled');
 		if (goodbyeChannel) {
 			if (goodbyeEnabled) {
 				return sendSimpleEmbeddedMessage(msg, 'Goodbye message already enabled!', 3000);
 			} else {
 				try {
-					await msg.guild.settings.update('goodbyeEnabled', true);
+					await msg.guild.settings.update('goodbye.enabled', true, msg.guild);
 					// Set up embed message
 					goodbyeEmbed.setDescription(stripIndents`
 								**Member:** ${msg.author.tag} (${msg.author.id})
@@ -172,10 +167,10 @@ export default class GoodbyeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const goodbyeEnabled = await msg.guild.settings.get('goodbyeEnabled');
+		const goodbyeEnabled = await msg.guild.settings.get('goodbye.enabled');
 		if (goodbyeEnabled) {
 			try {
-				await msg.guild.settings.update('goodbyeEnabled', false);
+				await msg.guild.settings.update('goodbye.enabled', false, msg.guild);
 				// Set up embed message
 				goodbyeEmbed.setDescription(stripIndents`
 							**Member:** ${msg.author.tag} (${msg.author.id})
@@ -208,9 +203,9 @@ export default class GoodbyeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const goodbyeChannel = await msg.guild.settings.get('goodbyeChannel');
-		const goodbyeMessage = await msg.guild.settings.get('goodbyeMessage');
-		const goodbyeEnabled = await msg.guild.settings.get('goodbyeEnabled');
+		const goodbyeChannel = await msg.guild.settings.get('goodbye.channel');
+		const goodbyeMessage = await msg.guild.settings.get('goodbye.message');
+		const goodbyeEnabled = await msg.guild.settings.get('goodbye.enabled');
 		// Set up embed message
 		goodbyeEmbed.setDescription(stripIndents`
 					Goodbye feature: ${goodbyeEnabled ? '_Enabled_' : '_Disabled_'}
