@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Channel, MessageEmbed } from 'discord.js';
-import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, resolveChannel, featureContent } from '../../lib/helpers';
+import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, resolveChannel, basicFeatureContent } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
@@ -12,26 +12,17 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class GoodbyeCommand extends Command {
-
-	/**
-	 * Creates an instance of GoodbyeCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof GoodbyeCommand
-	 */
+	
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Used to configure the message to be sent when a user leaves your guild.',
 			extendedHelp: stripIndents`
-				syntax: \`!goodbye <status|message|channel|on|off> (text | #channelMention)\`
-
+				**Subcommand Usage**:
 				\`status\` - return the goodbye feature configuration details.
 				\`message (text to say goodbye/heckle)\` - set the goodbye message. Use { guild } for guild name, and { user } to reference the user leaving.
 				\`channel <#channelMention>\` - set the channel for the goodbye message to be displayed.
 				\`on\` - enable the goodbye message feature.
 				\`off\` - disable the goodbye message feature.
-
-				\`MANAGE_GUILD\` permission required.
 			`,
 			name: 'goodbye',
 			permissionLevel: 6, // MANAGE_GUILD
@@ -39,7 +30,7 @@ export default class GoodbyeCommand extends Command {
 			usage: '<message|channel|on|off|status> (content:content)'
 		});
 
-		this.createCustomResolver('content', featureContent);
+		this.createCustomResolver('content', basicFeatureContent);
 	}
 
 	/**
@@ -58,8 +49,10 @@ export default class GoodbyeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
+		
 		try {
 			await msg.guild.settings.update('goodbye.message', content, msg.guild);
+
 			// Set up embed message
 			goodbyeEmbed.setDescription(stripIndents`
 						**Member:** ${msg.author.tag} (${msg.author.id})
@@ -98,6 +91,7 @@ export default class GoodbyeCommand extends Command {
 		} else {
 			try {
 				await msg.guild.settings.update('goodbye.channel', channelID, msg.guild);
+
 				// Set up embed message
 				goodbyeEmbed.setDescription(stripIndents`
 							**Member:** ${msg.author.tag} (${msg.author.id})
@@ -129,17 +123,19 @@ export default class GoodbyeCommand extends Command {
 		}).setTimestamp();
 		const goodbyeChannel = await msg.guild.settings.get('goodbye.channel');
 		const goodbyeEnabled = await msg.guild.settings.get('goodbye.enabled');
+
 		if (goodbyeChannel) {
 			if (goodbyeEnabled) {
 				return sendSimpleEmbeddedMessage(msg, 'Goodbye message already enabled!', 3000);
 			} else {
 				try {
 					await msg.guild.settings.update('goodbye.enabled', true, msg.guild);
+
 					// Set up embed message
 					goodbyeEmbed.setDescription(stripIndents`
-								**Member:** ${msg.author.tag} (${msg.author.id})
-								**Action:** Goodbye messages set to: _Enabled_
-							`);
+						**Member:** ${msg.author.tag} (${msg.author.id})
+						**Action:** Goodbye messages set to: _Enabled_
+					`);
 					goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
 
 					return this.sendSuccess(msg, goodbyeEmbed);
@@ -168,14 +164,16 @@ export default class GoodbyeCommand extends Command {
 			color: getEmbedColor(msg)
 		}).setTimestamp();
 		const goodbyeEnabled = await msg.guild.settings.get('goodbye.enabled');
+
 		if (goodbyeEnabled) {
 			try {
 				await msg.guild.settings.update('goodbye.enabled', false, msg.guild);
+
 				// Set up embed message
 				goodbyeEmbed.setDescription(stripIndents`
-							**Member:** ${msg.author.tag} (${msg.author.id})
-							**Action:** Goodbye messages set to: _Disabled_
-						`);
+					**Member:** ${msg.author.tag} (${msg.author.id})
+					**Action:** Goodbye messages set to: _Disabled_
+				`);
 				goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
 
 				return this.sendSuccess(msg, goodbyeEmbed);
@@ -206,13 +204,14 @@ export default class GoodbyeCommand extends Command {
 		const goodbyeChannel = await msg.guild.settings.get('goodbye.channel');
 		const goodbyeMessage = await msg.guild.settings.get('goodbye.message');
 		const goodbyeEnabled = await msg.guild.settings.get('goodbye.enabled');
+
 		// Set up embed message
 		goodbyeEmbed.setDescription(stripIndents`
-					Goodbye feature: ${goodbyeEnabled ? '_Enabled_' : '_Disabled_'}
-					Channel set to: <#${goodbyeChannel}>
-					Message set to:
-					\`\`\`${goodbyeMessage}\`\`\`
-				`);
+			Goodbye feature: ${goodbyeEnabled ? '_Enabled_' : '_Disabled_'}
+			Channel set to: <#${goodbyeChannel}>
+			Message set to:
+			\`\`\`${goodbyeMessage}\`\`\`
+		`);
 		// Send the success response
 		return msg.sendEmbed(goodbyeEmbed);
 	}

@@ -24,19 +24,18 @@ export default class TermsOfServiceCommand extends Command {
 		super(client, store, file, directory, {
 			description: 'Used to configure the Terms of Service for a guild.',
 			extendedHelp: stripIndents`
-				syntax: \`!tos (channel|title|body|get|list|status) (#channelMention | message number) (text | raw)\`
-
+				**Subcommand Usage**:
 				\`channel <#channelMention>\` - set the channel to display the terms of service in.
 				\`title <info block number> <text>\` - edit the title of a terms of service info block.
 				\`body <info block number> <text>\` - edit the body of a terms of service info block.
 				\`get <info block number> (raw)\` - returns the requested block number
 				\`list\` - return all the terms of service embedded blocks.
 				\`status\` - return the terms of service feature configuration details.
-
-				\`MANAGE_GUILD\` permission required.`,
+			`,
 			name: 'tos',
-			permissionLevel: 6,
-			usage: '<channel|title|body|get|list|status> (item:channel|integer) (text:...string|raw:boolean)'
+			permissionLevel: 6, // MANAGE_GUILD
+			subcommands: true,
+			usage: '<channel|title|body|get|list|status> (item:channel|item:integer) (text:...string|text:boolean)'
 		});
 	}
 
@@ -48,30 +47,26 @@ export default class TermsOfServiceCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		});
-		const tosChannel: string = await msg.guild.settings.get('tosChannel');
-		if (item instanceof Channel) {
-			const channelID = (item as Channel).id;
-			if (tosChannel && tosChannel === channelID) {
-				return sendSimpleEmbeddedMessage(msg, `Terms of Service channel already set to <#${channelID}>!`, 3000);
-			} else {
-				try {
-					await msg.guild.settings.update('tosChannel', channelID);
-					// Set up embed message
-					tosEmbed
-						.setDescription(stripIndents`
-									**Member:** ${msg.author.tag} (${msg.author.id})
-									**Action:** Terms of Service Channel set to <#${channelID}>
-								`)
-						.setFooter('Use the `tos status` command to see the details of this feature')
-						.setTimestamp();
-
-					return this.sendSuccess(msg, tosEmbed);
-				} catch (err) {
-					return this.catchError(msg, { subCommand: 'channel', item }, err);
-				}
-			}
+		const tosChannel: string = await msg.guild.settings.get('tos.channel');
+		const channelID = (item as Channel).id;
+		if (tosChannel && tosChannel === channelID) {
+			return sendSimpleEmbeddedMessage(msg, `Terms of Service channel already set to <#${channelID}>!`, 3000);
 		} else {
-			return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
+			try {
+				await msg.guild.settings.update('tos.channel', channelID, msg.guild);
+				// Set up embed message
+				tosEmbed
+					.setDescription(stripIndents`
+						**Member:** ${msg.author.tag} (${msg.author.id})
+						**Action:** Terms of Service Channel set to <#${channelID}>
+					`)
+					.setFooter('Use the `tos status` command to see the details of this feature')
+					.setTimestamp();
+
+				return this.sendSuccess(msg, tosEmbed);
+			} catch (err) {
+				return this.catchError(msg, { subCommand: 'channel', item }, err);
+			}
 		}
 	}
 
@@ -83,10 +78,11 @@ export default class TermsOfServiceCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		});
-		const tosMessageCount: number = await msg.guild.settings.get('tosMessageCount');
+		const tosMessageCount: number = await msg.guild.settings.get('tos.messageCount');
 		const tosMessages: ITOSMessage[] = [];
 		for (let i = 1; i < tosMessageCount + 1; i++) {
-			const tosMessage: ITOSMessage = await msg.guild.settings.get(`tosMessage${i}`);
+			// TODO: fix this
+			const tosMessage: ITOSMessage = await msg.guild.settings.get('tos.messages')[`${i}`];
 			if (tosMessage) {
 				tosMessages.push(tosMessage);
 			}
@@ -113,16 +109,17 @@ export default class TermsOfServiceCommand extends Command {
 		}
 		message.title = text;
 		try {
-			await msg.guild.settings.update(`tosMessage${item}`, message);
+			// TODO: don't know if this upsert shit works
+			await msg.guild.settings.update(`tos.messages`, message, msg.guild);
 			tosEmbed
 				.setDescription(stripIndents`
-							**Member:** ${msg.author.tag} (${msg.author.id})
-							**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
-						`)
+					**Member:** ${msg.author.tag} (${msg.author.id})
+					**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
+				`)
 				.setFooter('Use the `tos status` command to see the details of this feature')
 				.setTimestamp();
 
-			await msg.guild.settings.update('tosMessageCount', tosMessages.length);
+			await msg.guild.settings.update('tos.messageCount', tosMessages.length, msg.guild);
 
 			return this.sendSuccess(msg, tosEmbed);
 		} catch (err) {
@@ -139,10 +136,11 @@ export default class TermsOfServiceCommand extends Command {
 			color: getEmbedColor(msg)
 		});
 		// TODO: disallow message bodies with more than the allowed characters for an embed
-		const tosMessageCount: number = await msg.guild.settings.get('tosMessageCount');
+		const tosMessageCount: number = await msg.guild.settings.get('tos.messageCount');
 		const tosMessages: ITOSMessage[] = [];
 		for (let i = 1; i < tosMessageCount + 1; i++) {
-			const tosMessage: ITOSMessage = await msg.guild.settings.get(`tosMessage${i}`);
+			// TODO: fix this
+			const tosMessage: ITOSMessage = await msg.guild.settings.get('tos.message')[`${i}`];
 			if (tosMessage) {
 				tosMessages.push(tosMessage);
 			}
@@ -168,16 +166,17 @@ export default class TermsOfServiceCommand extends Command {
 		}
 		message.body = text;
 		try {
-			await msg.guild.settings.update(`tosMessage${item}`, message);
+			// TODO: don't know if this upsert shit works
+			await msg.guild.settings.update(`tos.messages`, message, msg.guild);
 			tosEmbed
 				.setDescription(stripIndents`
-							**Member:** ${msg.author.tag} (${msg.author.id})
-							**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
-						`)
+					**Member:** ${msg.author.tag} (${msg.author.id})
+					**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
+				`)
 				.setFooter('Use the `tos status` command to see the details of this feature')
 				.setTimestamp();
 
-			await msg.guild.settings.update('tosMessageCount', tosMessages.length);
+			await msg.guild.settings.update('tos.messageCount', tosMessages.length, msg.guild);
 
 			return this.sendSuccess(msg, tosEmbed);
 		} catch (err) {
@@ -194,10 +193,11 @@ export default class TermsOfServiceCommand extends Command {
 			color: getEmbedColor(msg)
 		});
 
-		const tosMessageCount: number = await msg.guild.settings.get('tosMessageCount');
+		const tosMessageCount: number = await msg.guild.settings.get('tos.messageCount');
 		const tosMessages: ITOSMessage[] = [];
 		for (let i = 1; i < tosMessageCount + 1; i++) {
-			const tosMessage: ITOSMessage = await msg.guild.settings.get(`tosMessage${i}`);
+			// TODO: fix this
+			const tosMessage: ITOSMessage = await msg.guild.settings.get(`tos.messages`)[`${i}`];
 			if (tosMessage) {
 				tosMessages.push(tosMessage);
 			}
@@ -208,10 +208,10 @@ export default class TermsOfServiceCommand extends Command {
 			message = tosMessages[item - 1];
 			tosEmbed
 				.setDescription(stripIndents`
-							**ID:** ${message.id}
-							**Title:** ${message.title}
-							**Body:** ${raw.toLowerCase() === 'true' ? markdownescape(message.body) : message.body}
-						`)
+					**ID:** ${message.id}
+					**Title:** ${message.title}
+					**Body:** ${raw.toLowerCase() === 'true' ? markdownescape(message.body) : message.body}
+				`)
 				.setFooter('Use the `tos status` command to see the details of this feature')
 				.setTimestamp();
 
@@ -229,11 +229,12 @@ export default class TermsOfServiceCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		});
-		const tosChannel: string = await msg.guild.settings.get('tosChannel');
-		const tosMessageCount: number = await msg.guild.settings.get('tosMessageCount');
+		const tosChannel: string = await msg.guild.settings.get('tos.channel');
+		const tosMessageCount: number = await msg.guild.settings.get('tos.messageCount');
 		const tosMessages: ITOSMessage[] = [];
 		for (let i = 1; i < tosMessageCount + 1; i++) {
-			const tosMessage: ITOSMessage = await msg.guild.settings.get(`tosMessage${i}`);
+			// TODO: fix this
+			const tosMessage: ITOSMessage = await msg.guild.settings.get('tos.messages')[`${i}`];
 			if (tosMessage) {
 				tosMessages.push(tosMessage);
 			}
@@ -269,11 +270,12 @@ export default class TermsOfServiceCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		});
-		const tosChannel: string = await msg.guild.settings.get('tosChannel');
-		const tosMessageCount: number = await msg.guild.settings.get('tosMessageCount');
+		const tosChannel: string = await msg.guild.settings.get('tos.channel');
+		const tosMessageCount: number = await msg.guild.settings.get('tos.messageCount');
 		const tosMessages: ITOSMessage[] = [];
 		for (let i = 1; i < tosMessageCount + 1; i++) {
-			const tosMessage: ITOSMessage = await msg.guild.settings.get(`tosMessage${i}`);
+			// TODO: fix this?
+			const tosMessage: ITOSMessage = await msg.guild.settings.get('tos.messages')[`${i}`];
 			if (tosMessage) {
 				tosMessages.push(tosMessage);
 			}

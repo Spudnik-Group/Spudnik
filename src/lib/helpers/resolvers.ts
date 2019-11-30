@@ -37,7 +37,7 @@ export const platform = (platform) => {
     throw `Please provide a valid platform. Options are: ${list(standardPlatforms, 'or')}.`;
 }
 
-export const featureContent = (arg: string, possible: Possible, message: KlasaMessage, [subCommand]) => {
+export const basicFeatureContent = (arg: string, possible: Possible, message: KlasaMessage, [subCommand]) => {
 	if (subCommand === 'channel' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw 'Please provide a channel for the Goodbye message to be displayed in.';
 	if (subCommand === 'message' && !arg) throw 'Please include the new text for the Goodbye message.';
 
