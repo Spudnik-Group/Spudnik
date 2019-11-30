@@ -1,8 +1,8 @@
 import { stripIndents } from 'common-tags';
 import { Channel, MessageEmbed } from 'discord.js';
-import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, resolveChannel } from '../../lib/helpers';
 import * as format from 'date-fns/format';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, KlasaClient, CommandStore, KlasaMessage, Possible } from 'klasa';
 import * as markdownescape from 'markdown-escape';
 import { ITOSMessage } from '../../lib/interfaces';
 
@@ -28,15 +28,28 @@ export default class TermsOfServiceCommand extends Command {
 				\`channel <#channelMention>\` - set the channel to display the terms of service in.
 				\`title <info block number> <text>\` - edit the title of a terms of service info block.
 				\`body <info block number> <text>\` - edit the body of a terms of service info block.
-				\`get <info block number> (raw)\` - returns the requested block number
+				\`get <info block number> (raw:boolean)\` - returns the requested block number
 				\`list\` - return all the terms of service embedded blocks.
 				\`status\` - return the terms of service feature configuration details.
 			`,
 			name: 'tos',
 			permissionLevel: 6, // MANAGE_GUILD
 			subcommands: true,
-			usage: '<channel|title|body|get|list|status> (item:channel|item:integer) (text:...string|text:boolean)'
+			usage: '<channel|title|body|get|list|status> (item) (text)'
 		});
+
+		this
+			.createCustomResolver('item', (arg: string, possible: Possible, message: KlasaMessage, [subCommand]) => {
+				if (subCommand === 'channel' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw 'Please provide a channel for the TOS message to be displayed in.';
+				if (['title', 'body'].includes(subCommand) && !arg) throw 'Please include the index of the TOS message you would like to update.';
+				if (subCommand === 'get' && !arg) throw 'Please include the index of the TOS message you would like to view.';
+
+				return arg;
+			})
+			.createCustomResolver('text', (arg: string, possible: Possible, message: KlasaMessage, [subCommand]) => {
+				if (['title', 'body'].includes(subCommand) && !arg) throw 'Please include the new text.';
+				if (subCommand === 'get' && (['true', 'false', 't', 'f'].includes(arg))) throw 'Please supply a valid boolean option for `raw` option.';
+			});
 	}
 
 	public async channel(msg: KlasaMessage, [item]): Promise<KlasaMessage | KlasaMessage[]> {
@@ -79,14 +92,8 @@ export default class TermsOfServiceCommand extends Command {
 			color: getEmbedColor(msg)
 		});
 		const tosMessageCount: number = await msg.guild.settings.get('tos.messageCount');
-		const tosMessages: ITOSMessage[] = [];
-		for (let i = 1; i < tosMessageCount + 1; i++) {
-			// TODO: fix this
-			const tosMessage: ITOSMessage = await msg.guild.settings.get('tos.messages')[`${i}`];
-			if (tosMessage) {
-				tosMessages.push(tosMessage);
-			}
-		}
+		const tosMessages: ITOSMessage[] = await msg.guild.settings.get('tos.messages');
+
 		let message: ITOSMessage;
 		let tosEmbedUpsertMessage = 'updated';
 		item = Number(item);

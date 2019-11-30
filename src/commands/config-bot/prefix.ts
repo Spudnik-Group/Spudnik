@@ -21,15 +21,12 @@ export default class PrefixCommand extends Command {
 		super(client, store, file, directory, {
 			description: 'Returns or sets the command prefix.',
 			extendedHelp: stripIndents`
-				syntax: \`!prefix (prefix|none|default)\`
-
 				If no prefix is provided, the current prefix will be shown.
 				If the prefix is "default", the prefix will be reset to the bot's default prefix.
 				If the prefix is "none", the prefix will be removed entirely, only allowing mentions to run commands.
-
-				\`ADMINISTRATOR\` permission required (to change the prefix).
 			`,
 			guarded: true,
+			permissionLevel: 6, // MANAGE_GUILD
 			name: 'prefix',
 			usage: '[prefix:string]'
 		});
@@ -55,7 +52,7 @@ export default class PrefixCommand extends Command {
 
 		// Just output the prefix
 		if (!prefix) {
-			const currentPrefix = msg.guild ? msg.guild.settings['prefix'] : this.client.options.prefix;
+			const currentPrefix = msg.guild ? msg.guild.settings.get('prefix') : this.client.options.prefix;
 			prefixEmbed.setDescription(stripIndents`
 				${currentPrefix ? `The command prefix is \`\`${currentPrefix}\`\`.` : 'There is no command prefix.'}
 				To run commands, use ${currentPrefix}\`commandName\`.

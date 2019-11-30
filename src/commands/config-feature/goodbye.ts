@@ -27,7 +27,7 @@ export default class GoodbyeCommand extends Command {
 			name: 'goodbye',
 			permissionLevel: 6, // MANAGE_GUILD
 			subcommands: true,
-			usage: '<message|channel|on|off|status> (content:content)'
+			usage: '<message|channel|on|off|status> (content)'
 		});
 
 		this.createCustomResolver('content', basicFeatureContent);
@@ -49,7 +49,7 @@ export default class GoodbyeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		
+
 		try {
 			await msg.guild.settings.update('goodbye.message', content, msg.guild);
 

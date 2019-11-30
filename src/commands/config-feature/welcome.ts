@@ -27,7 +27,7 @@ export default class WelcomeCommand extends Command {
 			name: 'welcome',
 			permissionLevel: 6, // MANAGE_GUILD
 			subcommands: true,
-			usage: '<message|channel|on|off|status> (content:content)'
+			usage: '<message|channel|on|off|status> (content)'
 		});
 
 		this.createCustomResolver('content', basicFeatureContent);

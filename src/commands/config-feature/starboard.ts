@@ -31,7 +31,7 @@ export default class StarboardCommand extends Command {
 			`,
 			name: 'starboard',
 			permissionLevel: 6, // MANAGE_GUILD
-			usage: '<on|off|status|channel|trigger> (content:content)',
+			usage: '<on|off|status|channel|trigger> (content)',
 			requiredPermissions: ['EMBED_LINKS', 'READ_MESSAGE_HISTORY', 'ATTACH_FILES'],
 		});
 
