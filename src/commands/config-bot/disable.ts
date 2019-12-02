@@ -22,15 +22,9 @@ export default class DisableCommand extends Command {
         super(client, store, file, directory, {
             aliases: ['disable-command', 'cmd-off', 'command-off'],
             description: 'Disables a command or command category.',
-            extendedHelp: stripIndents`
-				syntax: \`!disable <command|commandGroup>\`
-				
-				The argument must be the name/ID (partial or whole) of a command or command group.
-
-				\`ADMINISTRATOR\` permission required.
-			`,
             guarded: true,
-            name: 'disable',
+			name: 'disable',
+			permissionLevel: 6, // MANAGE_GUILD
             usage: '<cmdOrCat:command|cmdOrCat:string>'
         });
 
@@ -60,11 +54,13 @@ export default class DisableCommand extends Command {
 			const groups: any[] = fs.readdirSync('commands')
 				.filter(path => fs.statSync(`commands/${path}`).isDirectory());
 			const parsedGroup: string = cmdOrCat.toLowerCase();
+			
             if (!isCommandCategoryEnabled(msg, cmdOrCat)) {
                 return sendSimpleEmbeddedError(msg,
                     `The \`${cmdOrCat}\` category is already disabled.`, 3000);
             } else if (groups.find((g: string) => g === parsedGroup)) {
-                msg.guild.settings.update('disabledCommandCategories', cmdOrCat.toLowerCase());
+				msg.guild.settings.update('disabledCommandCategories', cmdOrCat.toLowerCase(), msg.guild);
+				
                 disableEmbed.setDescription(stripIndents`
                 **Moderator:** ${msg.author.tag} (${msg.author.id})
 			    **Action:** Disabled the \`${cmdOrCat}\` category.`);
@@ -72,7 +68,7 @@ export default class DisableCommand extends Command {
 
                 return msg.sendEmbed(disableEmbed);
             } else {
-				return sendSimpleEmbeddedMessage(msg, `No groups matching that name. Use \`${msg.guild.settings['prefix']}commands\` to view a list of command groups.`, 3000);
+				return sendSimpleEmbeddedMessage(msg, `No groups matching that name. Use \`${msg.guild.settings.get('prefix')}commands\` to view a list of command groups.`, 3000);
 			}
         } else {
             // command
@@ -84,7 +80,7 @@ export default class DisableCommand extends Command {
                         `You cannot disable the \`${cmdOrCat.name}\` command.`, 3000
                     );
                 }
-                msg.guild.settings.update('disabledCommands', cmdOrCat.name.toLowerCase());
+                msg.guild.settings.update('disabledCommands', cmdOrCat.name.toLowerCase(), msg.guild);
                 disableEmbed.setDescription(stripIndents`
                 **Moderator:** ${msg.author.tag} (${msg.author.id})
 			    **Action:** Disabled the \`${cmdOrCat.name}\` command.`);

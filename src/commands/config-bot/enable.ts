@@ -1,7 +1,8 @@
 import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
-import { modLogMessage, getEmbedColor, sendSimpleEmbeddedError, commandOrCategory, isCommandCategoryEnabled, isCommandEnabled } from '../../lib/helpers';
+import { modLogMessage, getEmbedColor, sendSimpleEmbeddedError, commandOrCategory, isCommandCategoryEnabled, isCommandEnabled, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import * as fs from 'fs';
 
 /**
  * Enables a command or command group.
@@ -21,15 +22,9 @@ export default class EnableCommand extends Command {
         super(client, store, file, directory, {
             aliases: ['enable-command', 'cmd-off', 'command-off'],
             description: 'Enables a command or command group.',
-            extendedHelp: stripIndents`
-				syntax: \`!disable <command|commandGroup>\`
-				
-				The argument must be the name/ID (partial or whole) of a command or command group.
-
-				\`ADMINISTRATOR\` permission required.
-			`,
             guarded: true,
             name: 'enable',
+			permissionLevel: 6, // MANAGE_GUILD
             usage: '<cmdOrCat:command|string>'
         });
 
@@ -56,24 +51,32 @@ export default class EnableCommand extends Command {
 
         if (typeof cmdOrCat === 'string') {
             // category
+			const groups: any[] = fs.readdirSync('commands')
+				.filter(path => fs.statSync(`commands/${path}`).isDirectory());
+			const parsedGroup: string = cmdOrCat.toLowerCase();
+
             if (!isCommandCategoryEnabled(msg, cmdOrCat)) {
                 return sendSimpleEmbeddedError(msg,
                     `The \`${cmdOrCat}\` category is already enabled.`, 3000);
-            } else {
-                msg.guild.settings.update('disabledCommandCategories', cmdOrCat.toLowerCase());
+			} else if (groups.find((g: string) => g === parsedGroup)) {
+				msg.guild.settings.update('disabledCommandCategories', cmdOrCat.toLowerCase(), msg.guild);
+				
                 enableEmbed.setDescription(stripIndents`
                 **Moderator:** ${msg.author.tag} (${msg.author.id})
 			    **Action:** Enabled the \`${cmdOrCat}\` category.`);
                 modLogMessage(msg, enableEmbed);
 
                 return msg.sendEmbed(enableEmbed);
-            }
+            } else {
+				return sendSimpleEmbeddedMessage(msg, `No groups matching that name. Use \`${msg.guild.settings.get('prefix')}commands\` to view a list of command groups.`, 3000);
+			}
         } else {
             // command
             if (!isCommandEnabled(msg, cmdOrCat)) {
                 return sendSimpleEmbeddedError(msg, `The \`${cmdOrCat.name}\` command is already enabled.`, 3000);
             } else {
-                msg.guild.settings.update('disabledCommands', cmdOrCat.name.toLowerCase());
+				msg.guild.settings.update('disabledCommands', cmdOrCat.name.toLowerCase(), msg.guild);
+				
                 enableEmbed.setDescription(stripIndents`
                 **Moderator:** ${msg.author.tag} (${msg.author.id})
 			    **Action:** Enabled the \`${cmdOrCat.name}\` command${

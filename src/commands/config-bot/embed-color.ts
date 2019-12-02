@@ -29,6 +29,7 @@ export default class EmbedColorCommand extends Command {
 				\`MANAGE_GUILD\` permission required.
 			`,
 			name: 'embedcolor',
+			permissionLevel: 6, // MANAGE_GUILD
 			usage: '[color:string]'
 		});
 
@@ -54,7 +55,7 @@ export default class EmbedColorCommand extends Command {
 
 		if (color) {
 			try {
-				await msg.guild.settings.update('embedColor', color);
+				await msg.guild.settings.update('embedColor', color, msg.guild);
 				// Set up embed message
 				embedColorEmbed.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})

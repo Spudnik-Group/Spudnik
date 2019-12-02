@@ -62,11 +62,7 @@ export default class PrefixCommand extends Command {
 		}
 
 		// Check the user's permission before changing anything
-		if (msg.guild) {
-			if (!msg.member.hasPermission('ADMINISTRATOR') && (this.client.owner !== msg.author)) {
-				return sendSimpleEmbeddedError(msg, 'Only administrators may change the command prefix.', 3000);
-			}
-		} else if (this.client.owner !== msg.author) {
+		if (!msg.guild && this.client.owner !== msg.author) {
 			return sendSimpleEmbeddedError(msg, 'Only the bot owner(s) may change the global command prefix.', 3000);
 		}
 
@@ -75,13 +71,21 @@ export default class PrefixCommand extends Command {
 		const newPrefix = lowercase === 'none' ? '' : prefix;
 		let response;
 		if (lowercase === 'default') {
-			if (msg.guild) msg.guild.settings['prefix'] = null; else this.client.options.prefix = null;
+			if (msg.guild) {
+				msg.guild.settings.reset('prefix');
+			} else {
+				this.client.options.prefix = '!';
+			}
 
 			const current = this.client.options.prefix ? `\`\`${this.client.options.prefix}\`\`` : 'no prefix';
 
 			response = `Reset the command prefix to the default (currently ${current}).`;
 		} else {
-			if (msg.guild) msg.guild.settings['prefix'] = newPrefix; else this.client.options.prefix = newPrefix;
+			if (msg.guild) {
+				msg.guild.settings.update('prefix', newPrefix, msg.guild);
+			} else {
+				this.client.options.prefix = newPrefix;
+			}
 
 			response = newPrefix ? `Set the command prefix to \`\`${prefix}\`\`.` : 'Removed the command prefix entirely.';
 		}

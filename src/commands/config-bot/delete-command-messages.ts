@@ -25,12 +25,8 @@ export default class DeleteCommandMessagesCommand extends Command {
 			],
 			requiredPermissions: ['MANAGE_MESSAGES'],
 			description: 'Enable or disable the Delete Command Messages feature.',
-			extendedHelp: stripIndents`
-				syntax: \`!delete-command-messages <on|off>\`
-
-				\`MANAGE_MESSAGES\` permission required.`,
 			name: 'delete-command-messages',
-			permissionLevel: 1,
+			permissionLevel: 1, // MANAGE_MESSAGES
 			usage: '<on|off>',
 			subcommands: true
 		});
@@ -44,7 +40,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 	 * @memberof DeleteCommandMessagesCommand
 	 */
 	public async on(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const deleteCommandMessagesEnabled = await msg.guild.settings.get('deleteCommandMessage') || false;
+		const deleteCommandMessagesEnabled = await msg.guild.settings.get('deleteCommandMessages');
 		const deleteCommandMessagesEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				name: '🛑 DeleteCommandMessages'
@@ -57,7 +53,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 			return sendSimpleEmbeddedMessage(msg, 'DeleteCommandMessages feature already enabled!', 3000);
 		} else {
 			try {
-				await msg.guild.settings.update('deleteCommandMessage', true);
+				await msg.guild.settings.update('deleteCommandMessages', true, msg.guild);
 				// Set up embed message
 				deleteCommandMessagesEmbed.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
@@ -78,7 +74,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 	 * @memberof DeleteCommandMessagesCommand
 	 */
 	public async off(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const deleteCommandMessagesEnabled = await msg.guild.settings.get('deleteCommandMessage') || false;
+		const deleteCommandMessagesEnabled = await msg.guild.settings.get('deleteCommandMessages');
 		const deleteCommandMessagesEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				name: '🛑 DeleteCommandMessages'
@@ -89,7 +85,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 
 		if (deleteCommandMessagesEnabled) {
 			try {
-				await msg.guild.settings.update('deleteCommandMessage', false);
+				await msg.guild.settings.update('deleteCommandMessages', false, msg.guild);
 				// Set up embed message
 				deleteCommandMessagesEmbed.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
