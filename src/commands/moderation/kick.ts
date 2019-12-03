@@ -21,15 +21,10 @@ export default class KickCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Kicks a user.',
-			extendedHelp: stripIndents`
-				syntax: \`!kick <@userMention> <reason>\`
-
-				\`KICK_MEMBERS\` permission required.
-			`,
 			name: 'kick',
-			usage: '<member:member> [reason:...string]',
-			permissionLevel: 3,
-			requiredPermissions: ['KICK_MEMBERS']
+			permissionLevel: 3, // KICK_MEMBERS
+			requiredPermissions: ['KICK_MEMBERS'],
+			usage: '<member:member> [reason:...string]'
 		});
 	}
 
@@ -68,6 +63,7 @@ export default class KickCommand extends Command {
 			`);
 
 			modLogMessage(msg, kickEmbed);
+
 			// Send the success response
 			return msg.sendEmbed(kickEmbed);
 		} catch (err) {

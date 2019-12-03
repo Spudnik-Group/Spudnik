@@ -20,15 +20,10 @@ export default class MoveCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Moves a message to a different channel.',
-			extendedHelp: stripIndents`
-				syntax: \`!move <messageId> <#channel> (reason)\`\
-
-				\`MANAGE_MESSAGES\` permission required.
-			`,
 			name: 'move',
-			permissionLevel: 1,
-			usage: '<message:msg> <channel:channel> [reason:...string]',
-			requiredPermissions: ['MANAGE_MESSAGES']
+			permissionLevel: 1, // MANAGE_MESSAGES
+			requiredPermissions: ['MANAGE_MESSAGES'],
+			usage: '<message:msg> <channel:channel> [reason:...string]'
 		});
 	}
 

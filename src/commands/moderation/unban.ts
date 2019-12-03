@@ -21,15 +21,10 @@ export default class UnBanCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Un-Bans the user.',
-			extendedHelp: stripIndents`
-				syntax: \`!unban <@userMention | id> <reason>\`
-
-				\`BAN_MEMBERS\` permission required.
-			`,
 			name: 'unban',
-			permissionLevel: 4,
-			usage: '<user:user> [reason:...string]',
-			requiredPermissions: ['BAN_MEMBERS']
+			permissionLevel: 4, // BAN_MEMBERS
+			requiredPermissions: ['BAN_MEMBERS'],
+			usage: '<user:user> [reason:...string]'
 		});
 	}
 
@@ -52,7 +47,7 @@ export default class UnBanCommand extends Command {
 		}).setTimestamp();
 
 		await msg.guild.members.unban(user, `Un-Banned by: ${msg.author} for: ${reason}`)
-			.catch((err: Error) => this.catchError(msg, { user, reason }, err));
+			.catch((err: Error) => this.catchError(msg, { user: user, reason: reason }, err));
 
 		// Set up embed message
 		unbanEmbed.setDescription(stripIndents`
@@ -76,6 +71,7 @@ export default class UnBanCommand extends Command {
 		**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
 		**Input:** \`${args.user.tag} (${args.user.id})\` || \`${args.reason}\`
 		**Error Message:** ${err}`);
+
 		// Inform the user the command failed
 		return sendSimpleEmbeddedError(msg, `Unbanning ${args.user} for ${args.reason} failed!`, 3000);
 	}

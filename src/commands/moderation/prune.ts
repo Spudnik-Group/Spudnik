@@ -27,22 +27,18 @@ export default class PruneCommand extends Command {
 			],
 			description: 'Deletes messages.',
 			extendedHelp: stripIndents`
-				syntax: \`!prune <number> (filter)\`
-
 				List of filters:
 				\`invites\`: Messages containing an invite
 				\`@usermention\`: Messages sent by @user
 				\`bots\`: Messages sent by bots
 				\`uploads\`: Messages containing an attachment
 				\`me\`: Messages sent by you
-				\`links\`: Messages containing a link\n
-
-				\`MANAGE_MESSAGES\` permission required.
+				\`links\`: Messages containing a link
 			`,
 			name: 'prune',
 			permissionLevel: 1,
-			usage: '[limit:integer] [links|invites|bots|me|uploads|user:user]',
-			requiredPermissions: ['MANAGE_MESSAGES']
+			requiredPermissions: ['MANAGE_MESSAGES'],
+			usage: '[limit:integer] [links|invites|bots|me|uploads|user:user]'
 		});
 	}
 
@@ -84,9 +80,10 @@ export default class PruneCommand extends Command {
 
 			return sendSimpleEmbeddedMessage(msg, `Pruned ${limit} messages`, 5000);
 		} catch (err) {
-			this.catchError(msg, { limit, filter }, err);
+			this.catchError(msg, { limit: limit, filter: filter }, err);
 		}
 		await msg.channel.bulkDelete(messagesToDelete);
+		
 		return msg.sendMessage(`Successfully deleted ${messagesToDelete.length} messages from ${limit}.`);
 	}
 

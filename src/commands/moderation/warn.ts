@@ -21,13 +21,8 @@ export default class WarnCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Warn a member with a specified amount of points',
-			extendedHelp: stripIndents`
-				syntax: \`!warn <@userMention> <points> (reason)\`
-
-				\`MANAGE_MESSAGES\` permission required.
-			`,
 			name: 'warn',
-			permissionLevel: 1,
+			permissionLevel: 1, // MANAGE_MESSAGES
 			usage: '<member:member> <points:int> [reason:...string]'
 		});
 	}
@@ -84,6 +79,7 @@ export default class WarnCommand extends Command {
 						**Previous Warning Points:** ${previousPoints}
 						**Current Warning Points:** ${newPoints}
 						**Reason:** ${reason ? reason : 'No reason has been added by the moderator'}`);
+					
 					// Send the success response
 					return msg.sendEmbed(warnEmbed);
 				} else {
@@ -101,11 +97,12 @@ export default class WarnCommand extends Command {
 						**Previous Warning Points:** 0
 						**Current Warning Points:** ${points}
 						**Reason:** ${reason ? reason : 'No reason has been added by the moderator'}`);
+					
 					// Send the success response
 					return msg.sendEmbed(warnEmbed);
 				}
 			} catch (err) {
-				this.catchError(msg, { member, points, reason }, err);
+				this.catchError(msg, { member: member, points: points, reason: reason }, err);
 			}
 		} else {
 			// No warnings for current guild
@@ -124,6 +121,7 @@ export default class WarnCommand extends Command {
 				**Previous Warning Points:** 0
 				**Current Warning Points:** ${points}
 				**Reason:** ${reason ? reason : 'No reason has been added by the moderator'}`);
+
 			// Send the success response
 			return msg.sendEmbed(warnEmbed);
 		}
@@ -138,6 +136,7 @@ export default class WarnCommand extends Command {
 		**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
 		**Input:** \`${args.member.user.tag} (${args.member.id})\`|| \`${args.points}\` || \`${args.reason}\`
 		**Error Message:** ${err}`);
+
 		// Inform the user the command failed
 		return sendSimpleEmbeddedError(msg, `Warning ${args.member} failed!`, 3000);
 	}

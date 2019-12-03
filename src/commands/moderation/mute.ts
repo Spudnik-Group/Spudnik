@@ -1,16 +1,16 @@
-import { Command, KlasaClient, CommandStore, Duration } from "klasa";
-import { MessageEmbed } from "discord.js";
-import { getEmbedColor, sendSimpleEmbeddedError, modLogMessage } from "../../lib/helpers";
-import { stripIndents } from "common-tags";
-import format = require("date-fns/format");
+import { Command, KlasaClient, CommandStore, Duration } from 'klasa';
+import { MessageEmbed } from 'discord.js';
+import { getEmbedColor, sendSimpleEmbeddedError, modLogMessage } from '../../lib/helpers';
+import { stripIndents } from 'common-tags';
+import format = require('date-fns/format');
 
 module.exports = class extends Command {
 
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			permissionLevel: 6,
-			requiredPermissions: ['MANAGE_ROLES'],
 			description: 'Mutes a mentioned member.',
+			permissionLevel: 6, // MANAGE_GUILD
+			requiredPermissions: ['MANAGE_ROLES'],
 			usage: '[when:time] <member:member> [reason:...string]'
 		});
 	}
@@ -53,6 +53,7 @@ module.exports = class extends Command {
 				`);
 
 				modLogMessage(msg, muteEmbed);
+
 				// Send the success response
 				return msg.sendEmbed(muteEmbed);
 			}

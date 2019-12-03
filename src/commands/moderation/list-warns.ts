@@ -25,11 +25,7 @@ export default class ListWarnsCommand extends Command {
 				'warns'
 			],
 			description: 'List warns for the guild.',
-			extendedHelp: stripIndents`
-				\`MANAGE_MESSAGES\` permission required.
-			`,
-			name: 'list-warns',
-			permissionLevel: 1
+			name: 'list-warns'
 		});
 	}
 
@@ -62,6 +58,7 @@ export default class ListWarnsCommand extends Command {
 					`;
 			});
 			warnEmbed.description += '\n\n';
+
 			// Send the success response
 			return msg.sendEmbed(warnEmbed);
 		} else {

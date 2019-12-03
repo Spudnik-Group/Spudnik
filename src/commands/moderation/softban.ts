@@ -1,21 +1,16 @@
-import { Command, KlasaClient, CommandStore, KlasaMessage } from "klasa";
-import { GuildMember, MessageEmbed } from "discord.js";
-import { sendSimpleEmbeddedError, modLogMessage, getEmbedColor } from "../../lib/helpers";
-import { stripIndents } from "common-tags";
-import { format } from "date-fns";
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { GuildMember, MessageEmbed } from 'discord.js';
+import { sendSimpleEmbeddedError, modLogMessage, getEmbedColor } from '../../lib/helpers';
+import { stripIndents } from 'common-tags';
+import { format } from 'date-fns';
 
 module.exports = class extends Command {
 
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			permissionLevel: 4,
-			requiredPermissions: ['BAN_MEMBERS'],
 			description: 'Soft-Bans the user, with a supplied reason',
-			extendedHelp: stripIndents`
-				syntax: \`!softban <@userMention> <reason>\`
-
-				\`BAN_MEMBERS\` permission required.
-			`,
+			permissionLevel: 4, // BAN_MEMBERS
+			requiredPermissions: ['BAN_MEMBERS'],
 			usage: '<member:member> <reason:...string>'
 		});
 	}
@@ -53,7 +48,7 @@ module.exports = class extends Command {
 			// Send the success response
 			return msg.sendEmbed(banEmbed);
 		} catch (err) {
-			this.catchError(msg, { member, reason }, err);
+			this.catchError(msg, { member: member, reason: reason }, err);
 		}
 	}
 

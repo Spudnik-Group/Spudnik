@@ -20,15 +20,10 @@ export default class BanCommand extends Command {
 	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			requiredPermissions: ['BAN_MEMBERS'],
 			description: 'Bans the user, with a supplied reason',
-			extendedHelp: stripIndents`
-				syntax: \`!ban <@userMention> <reason>\`
-
-				\`BAN_MEMBERS\` permission required.
-			`,
 			name: 'ban',
-			permissionLevel: 4,
+			permissionLevel: 4, // BAN_MEMBERS
+			requiredPermissions: ['BAN_MEMBERS'],
 			usage: '<member:user> <reason:...string>'
 		});
 	}
@@ -60,7 +55,7 @@ export default class BanCommand extends Command {
 
 		// Ban
 		memberToBan.ban({ reason: `Banned by: ${msg.author} for: ${reason}` })
-			.catch((err: Error) => this.catchError(msg, { member, reason }, err));
+			.catch((err: Error) => this.catchError(msg, { member: member, reason: reason }, err));
 
 		// Set up embed message
 		banEmbed.setDescription(stripIndents`

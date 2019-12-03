@@ -25,14 +25,9 @@ export default class ClearWarnsCommand extends Command {
 				'warn-clear'
 			],
 			description: 'Clear warnings for the specified member.',
-			extendedHelp: stripIndents`
-				syntax: \`!warn <@userMention> (reason)\`
-
-				\`MANAGE_MESSAGES\` permission required.
-			`,
 			name: 'clear-warns',
-			usage: '<member:member> [reason:...string]',
-			permissionLevel: 1
+			permissionLevel: 3, // KICK_MEMBERS
+			usage: '<member:member> [reason:...string]'
 		});
 	}
 
@@ -59,26 +54,18 @@ export default class ClearWarnsCommand extends Command {
 		if (guildWarnings.length) {
 			// Warnings present for current guild
 			try {
-				let memberIndex = null;
 				// Check for previous warnings of supplied member
-				const currentWarnings = guildWarnings.find((warning, index) => {
-					if (warning.id === member.id) {
-						memberIndex = index;
+				const currentWarnings = guildWarnings.find((warning, index) => warning.id === member.id);
 
-						return true
-					}
-
-					return false;
-				});
 				if (currentWarnings) {
 					// Previous warnings present for supplied member
 					previousPoints = currentWarnings.points;
 					// Update previous warning points
-					guildWarnings[memberIndex] = {
+					const newEntry = {
 						id: member.id,
 						points: 0
 					};
-					msg.guild.settings.update('warnings', guildWarnings, msg.guild);
+					msg.guild.settings.update('warnings', newEntry, msg.guild);
 					// Set up embed message
 					warnEmbed.setDescription(stripIndents`
 						**Moderator:** ${msg.author.tag} (${msg.author.id})
@@ -95,7 +82,7 @@ export default class ClearWarnsCommand extends Command {
 					return sendSimpleEmbeddedError(msg, 'No warnings present for the supplied member.');
 				}
 			} catch (err) {
-				this.catchError(msg, { member, reason }, err);
+				this.catchError(msg, { member: member, reason: reason }, err);
 			}
 		} else {
 			// No warnings for current guild
