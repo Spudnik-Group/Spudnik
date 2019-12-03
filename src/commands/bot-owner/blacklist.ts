@@ -26,7 +26,7 @@ export default class BlacklistCommand extends Command {
 			description: (language: any) => language.get('COMMAND_BLACKLIST_DESCRIPTION'),
 			hidden: true,
 			guarded: true,
-			permissionLevel: 10,
+			permissionLevel: 10, // BOT OWNER
 			usage: '<User:user|Guild:guild|guild:string> [...]'
 		});
 	}

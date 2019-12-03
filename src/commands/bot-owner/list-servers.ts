@@ -29,7 +29,7 @@ export default class ListServersCommand extends Command {
 			guarded: true,
 			hidden: true,
 			name: 'list-servers',
-			permissionLevel: 10
+			permissionLevel: 10 // BOT OWNER
 		});
 	}
 
@@ -68,8 +68,8 @@ export default class ListServersCommand extends Command {
 						`
 					});
 				});
-				
-                return template;
+
+				return template;
 			});
 		}
 		// @ts-ignore // RichDisplay doesn't like this syntax in TS, but it works.

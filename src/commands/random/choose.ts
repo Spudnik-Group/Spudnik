@@ -21,8 +21,6 @@ export default class ChooseCommand extends Command {
 		super(client, store, file, directory, {
 			description: 'Have the bot choose something for you. Max 10 items.',
 			extendedHelp: stripIndents`
-				syntax: \`!choose <choices>\`
-
 				The command takes an infinite number of space-separated arguements.
 			`,
 			name: 'choose',

@@ -16,19 +16,12 @@ const steamGameNames = Object.entries(SteamGames).map(item => {
  * @extends {Command}
  */
 export default class GoCommand extends Command {
-	/**
-	 * Creates an instance of GoCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof GoCommand
-	 */
+
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['play-game', 'lets-play', 'go-play'],
 			description: 'Displays a link to launch a steam game.',
 			extendedHelp: stripIndents`
-				syntax: \`!go gameName\`
-
 				Only a few games have been added at this time, submit a ticket on our GitHub to request specific ones.
 			`,
 			name: 'go',

@@ -43,7 +43,7 @@ Client.defaultGuildSchema
 	.add('embedColor', 'string', { default: '555555' })
 	.add('adblockEnabled', 'boolean', { default: false })
 	.add('deleteCommandMessages', 'boolean', { default: false })
-	.add('hasSendModLogMessage', 'boolean', { default: false });
+	.add('hasSentModLogMessage', 'boolean', { default: false });
 
 /**
  * The Spudnik Discord Bot.

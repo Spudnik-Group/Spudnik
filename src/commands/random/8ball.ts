@@ -21,7 +21,6 @@ export default class EightBallCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Ask the magic 8 ball a question.',
-			extendedHelp: 'syntax: `!8ball <query>`',
 			name: '8ball',
 			usage: '<query:string>'
 		});

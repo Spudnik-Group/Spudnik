@@ -12,12 +12,7 @@ import { Command, KlasaClient, CommandStore, KlasaMessage, Possible } from 'klas
  * @extends {Command}
  */
 export default class StarboardCommand extends Command {
-	/**
-	 * Creates an instance of StarboardCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof StarboardCommand
-	 */
+
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Used to configure the :star: Star Board feature.',
@@ -31,8 +26,9 @@ export default class StarboardCommand extends Command {
 			`,
 			name: 'starboard',
 			permissionLevel: 6, // MANAGE_GUILD
-			usage: '<on|off|status|channel|trigger> (content)',
 			requiredPermissions: ['EMBED_LINKS', 'READ_MESSAGE_HISTORY', 'ATTACH_FILES'],
+			subcommands: true,
+			usage: '<on|off|status|channel|trigger> (content)'
 		});
 
 		this.createCustomResolver('content', (arg: string, possible: Possible, message: KlasaMessage, [subCommand]) => {
@@ -40,7 +36,7 @@ export default class StarboardCommand extends Command {
 
 			if (subCommand === 'channel' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw 'Please provide a channel for the starboard messages to be displayed in.';
 			if (subCommand === 'trigger' && (!arg || !arg.match(emojiRegex))) throw 'Please include the new emoji trigger for the starboard feature.';
-		
+
 			return arg;
 		});
 	}
@@ -71,7 +67,7 @@ export default class StarboardCommand extends Command {
 
 				return this.sendSuccess(msg, starboardEmbed);
 			} catch (err) {
-				return this.catchError(msg, { subCommand: 'channel', content }, err);
+				return this.catchError(msg, { subCommand: 'channel', content: content }, err);
 			}
 		}
 	}
@@ -84,7 +80,7 @@ export default class StarboardCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		
+
 		try {
 			await msg.guild.settings.update('starboard.trigger', content, msg.guild);
 
@@ -97,7 +93,7 @@ export default class StarboardCommand extends Command {
 
 			return this.sendSuccess(msg, starboardEmbed);
 		} catch (err) {
-			return this.catchError(msg, { subCommand: 'trigger', content }, err);
+			return this.catchError(msg, { subCommand: 'trigger', content: content }, err);
 		}
 	}
 
@@ -248,6 +244,7 @@ export default class StarboardCommand extends Command {
 
 	private sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
 		modLogMessage(msg, embed);
+
 		// Send the success response
 		return msg.sendEmbed(embed);
 	}

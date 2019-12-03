@@ -23,7 +23,7 @@ export default class RebootCommand extends Command {
 			description: language => language.get('COMMAND_REBOOT_DESCRIPTION'),
 			hidden: true,
 			guarded: true,
-			permissionLevel: 10,
+			permissionLevel: 10 // BOT OWNER
 		});
 	}
 
@@ -38,7 +38,7 @@ export default class RebootCommand extends Command {
 		await message.sendLocale('COMMAND_REBOOT').catch(err => this.client.emit('error', err));
 		await Promise.all(this.client.providers.map(provider => provider.shutdown()));
 		process.exit();
-		
+
 		return message.send('Restarting...');
 	}
 };

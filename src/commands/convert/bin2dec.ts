@@ -9,12 +9,7 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class Bin2DecCommand extends Command {
-	/**
-	 * Creates an instance of Bin2DecCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof Bin2DecCommand
-	 */
+
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Converts binary to decimal',

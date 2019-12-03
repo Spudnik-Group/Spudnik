@@ -10,12 +10,7 @@ import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
  * @extends {Command}
  */
 export default class UpvoteCommand extends Command {
-	/**
-	 * Creates an instance of UpvoteCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof UpvoteCommand
-	 */
+
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns links to upvote the bot on bot listing sites.',

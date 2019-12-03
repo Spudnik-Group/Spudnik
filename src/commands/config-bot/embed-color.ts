@@ -12,21 +12,12 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class EmbedColorCommand extends Command {
-	/**
-	 * Creates an instance of EmbedColorCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof EmbedColorCommand
-	 */
+
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Used to change the default embed color the bot uses for responses, or reset it.',
 			extendedHelp: stripIndents`
-				syntax: \`!embedcolor (hex color)\`
-
 				Supplying no hex color resets the embed color to default.
-
-				\`MANAGE_GUILD\` permission required.
 			`,
 			name: 'embedcolor',
 			permissionLevel: 6, // MANAGE_GUILD

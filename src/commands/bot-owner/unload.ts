@@ -25,7 +25,7 @@ export default class UnloadCommandCommand extends Command {
 			hidden: true,
 			guarded: true,
 			name: 'unload',
-			permissionLevel: 10,
+			permissionLevel: 10, // BOT OWNER
 			usage: '<Piece:piece>'
 		});
 	}
@@ -44,12 +44,12 @@ export default class UnloadCommandCommand extends Command {
 		}
 		piece.unload();
 
-		if(this.client.shard) {
+		if (this.client.shard) {
 			try {
 				await this.client.shard.broadcastEval(`
 					if(this.shard.id !== ${this.client.shard.id}) this.${piece.store}.get('${piece.name}').unload();
 				`);
-			} catch(err) {
+			} catch (err) {
 				this.client.emit('warn', 'Error when broadcasting command unload to other shards');
 				this.client.emit('error', err);
 				return msg.sendMessage(`Unloaded \`${piece.name}\` command, but failed to unload on other shards.`);

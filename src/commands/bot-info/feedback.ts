@@ -9,12 +9,7 @@ import { sendSimpleEmbeddedMessage } from "../../lib/helpers";
  * @extends {Command}
  */
 export default class FeedbackCommand extends Command {
-	/**
-	 * Creates an instance of FeedbackCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof FeedbackCommand
-	 */
+
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Provides links to suggest features, submit bugs, or email the devs.',

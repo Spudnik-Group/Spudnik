@@ -36,7 +36,7 @@ export default class PruneCommand extends Command {
 				\`links\`: Messages containing a link
 			`,
 			name: 'prune',
-			permissionLevel: 1,
+			permissionLevel: 1, // MANAGE_MESSAGES
 			requiredPermissions: ['MANAGE_MESSAGES'],
 			usage: '[limit:integer] [links|invites|bots|me|uploads|user:user]'
 		});

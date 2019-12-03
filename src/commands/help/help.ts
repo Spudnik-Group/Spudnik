@@ -11,12 +11,7 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class HelpCommand extends Command {
-	/**
-	 * Creates an instance of HelpCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof HelpCommand
-	 */
+
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Used to return helpful information on the bot, or detailed information for a specified command.',

@@ -9,12 +9,7 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class Hex2DecCommand extends Command {
-	/**
-	 * Creates an instance of Hex2DecCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof Hex2DecCommand
-	 */
+
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Converts hexadecimal to decimal',

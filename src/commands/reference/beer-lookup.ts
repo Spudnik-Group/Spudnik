@@ -2,7 +2,6 @@ import { MessageEmbed } from 'discord.js';
 import axios from 'axios';
 import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
-import { stripIndents } from 'common-tags';
 import { SpudConfig } from '../../lib/config';
 
 const breweryDbApiKey: string = SpudConfig.breweryDbApiKey;
@@ -24,9 +23,6 @@ export default class BrewCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns information about a brewery or brew. Uses the BreweryDB API.',
-			extendedHelp: stripIndents`
-				syntax: \`!brew <brew|brewery name>\`
-			`,
 			name: 'brew',
 			usage: '<query:...string>'
 		});

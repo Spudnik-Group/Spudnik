@@ -9,12 +9,7 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class SupportCommand extends Command {
-	/**
-	 * Creates an instance of SupportCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof SupportCommand
-	 */
+
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns a link to my support server!',

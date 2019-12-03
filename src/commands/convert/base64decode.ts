@@ -10,12 +10,7 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class Base64DecodeCommand extends Command {
-	/**
-	 * Creates an instance of Base64DecodeCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof Base64DecodeCommand
-	 */
+
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Base64 decodes a string',

@@ -25,7 +25,7 @@ export default class ReloadCommandCommand extends Command {
 			hidden: true,
 			guarded: true,
 			name: 'reload',
-			permissionLevel: 10,
+			permissionLevel: 10, // BOT OWNER
 			usage: '<Store:store|Piece:piece|everything:default>'
 		});
 	}

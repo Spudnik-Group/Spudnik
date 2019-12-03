@@ -11,12 +11,7 @@ import * as fs from 'fs';
  * @extends {Command}
  */
 export default class CommandsCommand extends Command {
-	/**
-	 * Creates an instance of CommandsCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof CommandsCommand
-	 */
+
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns a list of command groups, or all commands in a given group.',

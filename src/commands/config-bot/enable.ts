@@ -12,19 +12,14 @@ import * as fs from 'fs';
  * @extends {Command}
  */
 export default class EnableCommand extends Command {
-	/**
-	 * Creates an instance of EnableCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof EnableCommand
-	 */
+
     constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
         super(client, store, file, directory, {
             aliases: ['enable-command', 'cmd-off', 'command-off'],
             description: 'Enables a command or command group.',
             guarded: true,
             name: 'enable',
-			permissionLevel: 6, // MANAGE_GUILD
+            permissionLevel: 6, // MANAGE_GUILD
             usage: '<cmdOrCat:command|string>'
         });
 
@@ -51,16 +46,16 @@ export default class EnableCommand extends Command {
 
         if (typeof cmdOrCat === 'string') {
             // category
-			const groups: any[] = fs.readdirSync('commands')
-				.filter(path => fs.statSync(`commands/${path}`).isDirectory());
-			const parsedGroup: string = cmdOrCat.toLowerCase();
+            const groups: any[] = fs.readdirSync('commands')
+                .filter(path => fs.statSync(`commands/${path}`).isDirectory());
+            const parsedGroup: string = cmdOrCat.toLowerCase();
 
             if (!isCommandCategoryEnabled(msg, cmdOrCat)) {
                 return sendSimpleEmbeddedError(msg,
                     `The \`${cmdOrCat}\` category is already enabled.`, 3000);
-			} else if (groups.find((g: string) => g === parsedGroup)) {
-				msg.guild.settings.update('disabledCommandCategories', cmdOrCat.toLowerCase(), msg.guild);
-				
+            } else if (groups.find((g: string) => g === parsedGroup)) {
+                msg.guild.settings.update('disabledCommandCategories', cmdOrCat.toLowerCase(), msg.guild);
+
                 enableEmbed.setDescription(stripIndents`
                 **Moderator:** ${msg.author.tag} (${msg.author.id})
 			    **Action:** Enabled the \`${cmdOrCat}\` category.`);
@@ -68,15 +63,15 @@ export default class EnableCommand extends Command {
 
                 return msg.sendEmbed(enableEmbed);
             } else {
-				return sendSimpleEmbeddedMessage(msg, `No groups matching that name. Use \`${msg.guild.settings.get('prefix')}commands\` to view a list of command groups.`, 3000);
-			}
+                return sendSimpleEmbeddedMessage(msg, `No groups matching that name. Use \`${msg.guild.settings.get('prefix')}commands\` to view a list of command groups.`, 3000);
+            }
         } else {
             // command
             if (!isCommandEnabled(msg, cmdOrCat)) {
                 return sendSimpleEmbeddedError(msg, `The \`${cmdOrCat.name}\` command is already enabled.`, 3000);
             } else {
-				msg.guild.settings.update('disabledCommands', cmdOrCat.name.toLowerCase(), msg.guild);
-				
+                msg.guild.settings.update('disabledCommands', cmdOrCat.name.toLowerCase(), msg.guild);
+
                 enableEmbed.setDescription(stripIndents`
                 **Moderator:** ${msg.author.tag} (${msg.author.id})
 			    **Action:** Enabled the \`${cmdOrCat.name}\` command${

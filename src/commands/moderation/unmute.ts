@@ -9,7 +9,7 @@ module.exports = class extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Unmutes a mentioned user.',
-			permissionLevel: 6,
+			permissionLevel: 6, // MANAGE_GUILD
 			requiredPermissions: ['MANAGE_ROLES'],
 			usage: '<member:member> [reason:...string]'
 		});

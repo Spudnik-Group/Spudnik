@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Collection, Message, MessageEmbed, Role } from 'discord.js';
-import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, isNormalInteger } from '../../lib/helpers';
+import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, isNormalInteger, hexColor } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
@@ -12,30 +12,23 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class RoleCommand extends Command {
-	/**
-	 * Creates an instance of RoleCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof RoleCommand
-	 */
+
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Used to add or remove roles from your server.',
 			extendedHelp: stripIndents`
-				syntax: \`!sar <add|remove> <@roleMention|newRoleName> (hexcolor)\`
-
+				**Subcommand Usage**:
 				\`add "role name" (hexcolor)\` - adds the role to your guild with the supplied color.
 				\`remove "role name" ("reason")\` - removes the role from your guild.
-
-				\`MANAGE_ROLES\` permission required.
 			`,
 			name: 'role',
-			permissionLevel: 2,
-			// TODO: fix the hexcolor param to be its own type. I'm so fucking lazy
-			usage: '<add|remove> <name:Role|string> (color:string)',
+			permissionLevel: 2, // MANAGE_ROLES
 			requiredPermissions: ['MANAGE_ROLES'],
-			subcommands: true
+			subcommands: true,
+			usage: '<add|remove> <name:Role|string> [color:string]'
 		});
+
+		this.createCustomResolver('color', hexColor);
 	}
 
 	/**
@@ -63,14 +56,14 @@ export default class RoleCommand extends Command {
 			if (color !== '') {
 				roleMetaData = {
 					data: {
-						color,
-						name
+						color: color,
+						name: name
 					}
 				};
 			} else {
 				roleMetaData = {
 					data: {
-						name
+						name: name
 					}
 				};
 			}
@@ -78,7 +71,7 @@ export default class RoleCommand extends Command {
 			//TODO: add a reason
 			await msg.guild.roles.create(roleMetaData);
 		} catch (err) {
-			return this.catchError(msg, { subCommand: 'add', name, arg3: color }, err);
+			return this.catchError(msg, { subCommand: 'add', name: name, arg3: color }, err);
 		}
 
 		roleEmbed.setDescription(stripIndents`
@@ -142,17 +135,17 @@ export default class RoleCommand extends Command {
 
 							return msg.sendEmbed(roleEmbed);
 						}).catch(err => {
-							return this.catchError(msg, { subCommand: 'remove', name }, err);
+							return this.catchError(msg, { subCommand: 'remove', name: name }, err);
 						});
 
 					} catch (err) {
-						return this.catchError(msg, { subCommand: 'remove', name }, err);
+						return this.catchError(msg, { subCommand: 'remove', name: name }, err);
 					}
 				} else {
 					return sendSimpleEmbeddedError(msg, 'Please supply a row number corresponding to the role you want to delete.');
 				}
 			} catch (err) {
-				return this.catchError(msg, { subCommand: 'remove', name }, err);
+				return this.catchError(msg, { subCommand: 'remove', name: name }, err);
 			}
 		} else if (rolesFound.size === 1) {
 			const roleToDelete = rolesFound.first();
@@ -168,10 +161,10 @@ export default class RoleCommand extends Command {
 
 					return msg.sendEmbed(roleEmbed);
 				}).catch(err => {
-					return this.catchError(msg, { subCommand: 'remove', name }, err);
+					return this.catchError(msg, { subCommand: 'remove', name: name }, err);
 				});
 			} catch (err) {
-				return this.catchError(msg, { subCommand: 'remove', name }, err);
+				return this.catchError(msg, { subCommand: 'remove', name: name }, err);
 			}
 		} else {
 			return sendSimpleEmbeddedError(msg, `A role with the supplied name \`${name}\` was not found on this guild.`);

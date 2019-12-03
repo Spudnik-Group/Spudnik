@@ -12,23 +12,15 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class AdblockCommand extends Command {
-	/**
-	 * Creates an instance of AdblockCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof AdblockCommand
-	 */
+
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Enable or disable the adblock feature.',
-			extendedHelp: stripIndents`
-				syntax: \`!adblock <enable|disable>\`
-
-				\`MANAGE_MESSAGES\` permission required.`,
 			name: 'adblock',
-			permissionLevel: 1,
-			usage: '<on|off>',
-			requiredPermissions: ['MANAGE_MESSAGES']
+			permissionLevel: 1, // MANAGE_MESSAGES
+			requiredPermissions: ['MANAGE_MESSAGES'],
+			subcommands: true,
+			usage: '<on|off>'
 		});
 	}
 
@@ -43,7 +35,7 @@ export default class AdblockCommand extends Command {
 		}).setTimestamp();
 		if (adblockEnabled) {
 			try {
-				await msg.guild.settings.update('adblockEnabled', false);
+				await msg.guild.settings.update('adblockEnabled', false, msg.guild);
 				// Set up embed message
 				adblockEmbed.setDescription(stripIndents`
 						**Member:** ${msg.author.tag} (${msg.author.id})
@@ -79,7 +71,7 @@ export default class AdblockCommand extends Command {
 			return sendSimpleEmbeddedMessage(msg, 'Adblock feature already enabled!', 3000);
 		} else {
 			try {
-				await msg.guild.settings.update('adblockEnabled', true);
+				await msg.guild.settings.update('adblockEnabled', true, msg.guild);
 				// Set up embed message
 				adblockEmbed.setDescription(stripIndents`
 						**Member:** ${msg.author.tag} (${msg.author.id})

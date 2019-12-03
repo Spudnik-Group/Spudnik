@@ -12,12 +12,7 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class DeleteCommandMessagesCommand extends Command {
-	/**
-	 * Creates an instance of DeleteCommandMessagesCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof DeleteCommandMessagesCommand
-	 */
+
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: [

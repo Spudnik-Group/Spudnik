@@ -10,12 +10,7 @@ import { MessageEmbed } from 'discord.js';
  * @extends {Command}
  */
 export default class CommandSearchCommand extends Command {
-	/**
-	 * Creates an instance of CommandSearchCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof CommandSearchCommand
-	 */
+
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Search for a command with the given text.',
@@ -38,7 +33,7 @@ export default class CommandSearchCommand extends Command {
 			.setColor(getEmbedColor(msg))
 			.setFooter(`Comrade! I bring ${this.client.commands.size} commands in this version!`);
 		const commands = this.client.commands.filter(command => command.name.includes(commandName));
-		
+
 		if (commands.size > 0) {
 			commandsEmbed
 				.setTitle('Command Search')
@@ -46,7 +41,7 @@ export default class CommandSearchCommand extends Command {
 				.addField('❯ Commands', `\`\`\`css\n${msg.guild.settings['prefix']}${commands.map((c: any) => c.name).join(`\n${msg.guild.settings['prefix']}`)}\`\`\``)
 				.addField('❯ Need more details?', `Run \`${msg.guild.settings['prefix']}help <commandName>\``)
 				.addField('❯ Want the complete list of commands?', 'Visit [the website](https://spudnik.io) and check out the commands page: https://docs.spudnik.io/commands/');
-			
+
 			return msg.sendEmbed(commandsEmbed);
 		} else {
 			return sendSimpleEmbeddedMessage(msg, `No commands found containing that text. Use \`${msg.guild.settings['prefix']}commands\` to view a list of command groups.`, 3000);

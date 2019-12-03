@@ -10,12 +10,7 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class Base64EncodeCommand extends Command {
-	/**
-	 * Creates an instance of Base64EncodeCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof Base64EncodeCommand
-	 */
+
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Base64 encodes a string',

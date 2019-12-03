@@ -11,12 +11,7 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class PrefixCommand extends Command {
-	/**
-	 * Creates an instance of PrefixCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof PrefixCommand
-	 */
+
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns or sets the command prefix.',

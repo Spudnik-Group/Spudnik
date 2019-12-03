@@ -11,12 +11,7 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class NickCommand extends Command {
-	/**
-	 * Creates an instance of NickCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof NickCommand
-	 */
+
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			requiredPermissions: ['MANAGE_NICKNAMES'],

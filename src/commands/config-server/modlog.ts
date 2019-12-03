@@ -12,26 +12,20 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class ModlogCommand extends Command {
-	/**
-	 * Creates an instance of ModlogCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof ModlogCommand
-	 */
+
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Enable or disable the modlog feature.',
 			extendedHelp: stripIndents`
-				syntax: \`!modlog <status|enable|disable|channel> (#channelMention)\`
-
+				**Subcommand Usage**:
 				\`status\` - return the mod log configuration details.
 				\`channel <#channelMention>\` - set mod log channel to the channel supplied.
 				\`on\` - enable the mod log feature.
 				\`off\` - disable the mod log feature.
-				
-				\`MANAGE_GUILD\` permission required.`,
+			`,
 			name: 'modlog',
-			permissionLevel: 6,
+			permissionLevel: 6, // MANAGE_GUILD
+			subcommands: true,
 			usage: '<on|off|status|channel> (channel:channel)'
 		});
 	}

@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { Command, KlasaClient, CommandStore } from 'klasa';
 import { MessageEmbed } from 'discord.js';
-import { stripIndents } from 'common-tags';
 import { sendSimpleEmbeddedError } from '../../lib/helpers';
 import { SpudConfig } from '../../lib/config';
 
@@ -12,9 +11,6 @@ export default class MovieCommand extends Command {
 		super(client, store, file, directory, {
 			aliases: ['movies', 'film', 'films'],
 			description: 'Finds a movie on TMDB.org',
-			extendedHelp: stripIndents`
-				syntax: \`!movie <query> [page]\`
-			`,
 			usage: '<query:string> [page:number]',
 			name: 'movie'
 		});

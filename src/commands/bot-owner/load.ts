@@ -28,9 +28,8 @@ export default class LoadCommandCommand extends Command {
 			description: language => language.get('COMMAND_LOAD_DESCRIPTION'),
 			hidden: true,
 			guarded: true,
-			permissionLevel: 10,
-			usage: '[core] <Store:store> <path:...string>',
-			usageDelim: ' '
+			permissionLevel: 10, // BOT OWNER
+			usage: '[core] <Store:store> <path:...string>'
 		});
 	}
 

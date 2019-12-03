@@ -1,7 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
-import { stripIndents } from 'common-tags';
 
 /**
  * Convert a statement to be structured as Yoda speaks.
@@ -20,9 +19,6 @@ export default class YodafyCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Translates text to Yoda speak.',
-			extendedHelp: stripIndents`
-				syntax: \`!yodafy <text>\`
-			`,
 			name: 'yodafy',
 			usage: '<query:...string>'
 		});

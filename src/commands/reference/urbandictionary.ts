@@ -23,9 +23,7 @@ export default class UrbanCommand extends Command {
 			description: 'Returns the Urban Dictionary result of the supplied query. If no query is supplied, returns a random thing.',
 			name: 'urban',
 			extendedHelp: stripIndents`
-				syntax: \`!urban (query)\`
 				Supplying no query will return a random result.
-				Urban Dictionary results are NSFW.
 			`,
 			nsfw: true,
 			usage: '<query:...string>'

@@ -33,7 +33,7 @@ export const KlasaConfig: KlasaClientOptions = {
 	],
 	disabledCorePieces: [
 		'commands',
-		'providers'
+		// 'providers'
 	],
 	// If your bot should be able to mention @everyone
 	disableEveryone: false,
@@ -84,7 +84,7 @@ export const KlasaConfig: KlasaClientOptions = {
 		// Provider Connection object for process based databases:
 		// rethinkdb, mongodb, mssql, mysql, postgresql
 		default: 'json',
-		default: 'mongodb',
+		// default: 'mongodb',
 		mongodb: {
 			db: 'spud-dev-nate',
 			connectionString: SpudConfig.spudCoreDB

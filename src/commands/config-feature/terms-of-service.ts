@@ -14,12 +14,7 @@ import { ITOSMessage } from '../../lib/interfaces';
  * @extends {Command}
  */
 export default class TermsOfServiceCommand extends Command {
-	/**
-	 * Creates an instance of TermsOfServiceCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof TermsOfServiceCommand
-	 */
+
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Used to configure the Terms of Service for a guild.',

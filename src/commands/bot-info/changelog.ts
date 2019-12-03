@@ -11,12 +11,6 @@ import axios from 'axios';
  * @extends {Command}
  */
 export default class changelogCommand extends Command {
-	/**
-	 * Creates an instance of changelogCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof changelogCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns GitHub release notes for the 3 most recent releases.',

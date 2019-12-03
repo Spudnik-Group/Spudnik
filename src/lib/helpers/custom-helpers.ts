@@ -39,7 +39,7 @@ export const modLogMessage = (msg: KlasaMessage, embed: MessageEmbed): Promise<K
 			📃 I can keep a log of moderator actions if you create a channel named \'mod-logs\'
 			(or some other name configured by the ${guild.settings.get('prefix')}modlog command) and give me access to it.
 			This message will only show up this one time and never again after this so if you desire to set up mod logs make sure to do so now.`);
-		guild.settings.update('hasSentModLogMessage', true);
+		guild.settings.update('hasSentModLogMessage', true, guild);
 	}
 
 	return outChannelID && guild.settings.get('modlogEnabled')

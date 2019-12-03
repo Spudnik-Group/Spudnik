@@ -9,12 +9,7 @@ import { sendSimpleEmbeddedMessage } from "../../lib/helpers";
  * @extends {Command}
  */
 export default class SourceCommand extends Command {
-	/**
-	 * Creates an instance of SourceCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof SourceCommand
-	 */
+
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns a link to my source code!',
