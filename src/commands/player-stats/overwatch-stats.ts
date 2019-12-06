@@ -21,9 +21,10 @@ export default class OverwatchStatsCommand extends Command {
 
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			description: 'Returns Overwatch stats for a user on a specific platform and region. ',
+			description: 'Returns Overwatch stats for a user on a specific platform and region.',
 			extendedHelp: stripIndents`
-				syntax: \`!overwatch-stats <platform: pc|xbl|psn> <battletag> <region: eu|us|kr|cn|global>\`
+				Platform must be one of: \`xbl, psn, pc\`
+				Region must be one of: \`eu, us, kr, cn, global\` (default is global)
 			`,
 			name: 'overwatch-stats',
 			usage: '<platform:string> <battletag:string> [region:string]'

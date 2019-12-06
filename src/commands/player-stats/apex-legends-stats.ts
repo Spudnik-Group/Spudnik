@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, getEmbedColor, platform } from '../../lib/helpers';
 import axios from 'axios';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 import { SpudConfig } from '../../lib/config';
@@ -31,13 +31,13 @@ export default class ApexLegendsStatsCommand extends Command {
 			aliases: ['apex', 'apex-stats'],
 			description: 'Returns Apex Legends stats for a user on a specific platform.',
 			extendedHelp: stripIndents`
-				syntax: \`!apex-legends-stats <platform> <username>\`
-				
 				Platform must be one of: ${Object.keys(platforms).join(', ')}
 			`,
 			name: 'apex-legends-stats',
 			usage: '<platform:string> <username:string>'
 		});
+
+		this.createCustomResolver('platform', platform);
 	}
 
 	/**

@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, getEmbedColor, platform } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 import { SpudConfig } from '../../lib/config';
 import * as Scout from '@scoutsdk/server-sdk';
@@ -26,15 +26,15 @@ export default class R6StatsCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['r6', 'rainbow6-stats'],
-			description: 'Returns Rainbow 6: Siege stats for a user on a specific platform. Uses the TrackerNetwork API.',
+			description: 'Returns Rainbow 6: Siege stats for a user on a specific platform.',
 			extendedHelp: stripIndents`
-				syntax: \`!r6-stats <platform> <username>\`
-				
-				Platform must be one of: pc, psn, xbl
+				Platform must be one of: \`pc, psn, xbl\`
 			`,
 			name: 'r6-stats',
 			usage: '<platform:string> <username:string>'
 		});
+
+		this.createCustomResolver('platform', platform);
 	}
 
 	/**

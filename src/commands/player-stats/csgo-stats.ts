@@ -26,8 +26,7 @@ export default class CSGOStatsCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['csgo'],
-			description: 'Returns Counter Strike: Global Offensive stats for a user. Uses the TrackerNetwork API.',
-			extendedHelp: 'syntax: \`!csgo-stats <username>\`',
+			description: 'Returns Counter Strike: Global Offensive stats for a user.',
 			name: 'csgo-stats',
 			usage: '<username:string>'
 		});
