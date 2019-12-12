@@ -49,6 +49,7 @@ export default class ListServersCommand extends Command {
 			.setDescription(`Spudnik is connected to **${totalGuilds}** servers${this.client.shard ? `, in Shard ${this.client.shard.id}` : ''}.`)
 		)
 		let noOfPages = Math.ceil(totalGuilds / 5);
+
 		for (let i = 0; i < noOfPages; i++) {
 			guilds = guilds.slice(i * 5, (i * 5) + 5);
 			display.addPage((template: MessageEmbed) => {
@@ -72,6 +73,7 @@ export default class ListServersCommand extends Command {
 				return template;
 			});
 		}
+
 		// @ts-ignore // RichDisplay doesn't like this syntax in TS, but it works.
 		return display.run(await msg.send('Loading server list...'), { filter: (reaction: any, user: any) => user === msg.author });
 	}

@@ -47,6 +47,7 @@ export default class EmbedColorCommand extends Command {
 		if (color) {
 			try {
 				await msg.guild.settings.update('embedColor', color, msg.guild);
+
 				// Set up embed message
 				embedColorEmbed.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
@@ -60,6 +61,7 @@ export default class EmbedColorCommand extends Command {
 		} else {
 			try {
 				await msg.guild.settings.update('embedColor', '55555');
+
 				// Set up embed message
 				embedColorEmbed.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})

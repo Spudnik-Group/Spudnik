@@ -63,11 +63,13 @@ export default class TermsOfServiceCommand extends Command {
 		});
 		const tosChannel: string = await msg.guild.settings.get('tos.channel');
 		const channelID = (item as Channel).id;
+
 		if (tosChannel && tosChannel === channelID) {
 			return sendSimpleEmbeddedMessage(msg, `Terms of Service channel already set to <#${channelID}>!`, 3000);
 		} else {
 			try {
 				await msg.guild.settings.update('tos.channel', channelID, msg.guild);
+
 				// Set up embed message
 				tosEmbed
 					.setDescription(stripIndents`
@@ -101,6 +103,7 @@ export default class TermsOfServiceCommand extends Command {
 			try {
 				existingTosMessage.title = text;
 				await msg.guild.settings.update('tos.messages', existingTosMessage, { action: 'overwrite', force: true });
+
 				tosEmbed
 					.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
@@ -123,6 +126,7 @@ export default class TermsOfServiceCommand extends Command {
 
 			try {
 				await msg.guild.settings.update('tos.messages', existingTosMessage, msg.guild);
+
 				tosEmbed
 					.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
@@ -155,6 +159,7 @@ export default class TermsOfServiceCommand extends Command {
 			try {
 				existingTosMessage.body = text;
 				await msg.guild.settings.update('tos.messages', existingTosMessage, { action: 'overwrite', force: true });
+
 				tosEmbed
 					.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
@@ -177,6 +182,7 @@ export default class TermsOfServiceCommand extends Command {
 
 			try {
 				await msg.guild.settings.update('tos.messages', existingTosMessage, msg.guild);
+
 				tosEmbed
 					.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
@@ -272,6 +278,7 @@ export default class TermsOfServiceCommand extends Command {
 		tosEmbed.description = `Channel: ${tosChannel ? `<#${tosChannel}>` : 'None set.'}\nMessage List:\n`;
 		if (tosMessages.length) {
 			let tosList = '';
+
 			tosMessages.forEach((message, index) => {
 				tosList += `${index + 1} - ${message.title}\n`;
 			});

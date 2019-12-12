@@ -45,13 +45,15 @@ export default class extends Command {
 		this.timestamp = new Timestamp('dddd, MMMM d YYYY');
 	}
 
-	run(msg: KlasaMessage, [role]) {
+	async run(msg: KlasaMessage, [role]) {
 		const allPermissions = Object.entries(role.permissions.serialize()).filter(perm => perm[1]).map(([perm]) => perms[perm]).join(', ');
+		const defaultRoles = await msg.guild.settings.get('roles.defaultRoles');
 
 		return msg.sendEmbed(new MessageEmbed()
 			.setColor(role.hexColor || 0xFFFFFF)
 			.addField('❯ Name', role.name, true)
 			.addField('❯ ID', role.id, true)
+			.addField('❯ Is Default Role', defaultRoles.includes(role.id), true)
 			.addField('❯ Color', role.hexColor || 'None', true)
 			.addField('❯ Creation Date', this.timestamp.display(role.createdAt), true)
 			.addField('❯ Hoisted', role.hoist ? 'Yes' : 'No', true)

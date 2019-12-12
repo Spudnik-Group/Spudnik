@@ -45,6 +45,7 @@ export default class BlacklistCommand extends Command {
 
 		for (const userOrGuild of new Set(usersAndGuilds)) {
 			const type = userOrGuild instanceof User ? 'user' : 'guild';
+
 			if (this.client.settings[`${type}Blacklist`].includes(userOrGuild.id || userOrGuild)) {
 				changes[this.terms.indexOf(`${type}sRemoved`)].push(userOrGuild.name || userOrGuild.username || userOrGuild);
 			} else {
@@ -54,6 +55,7 @@ export default class BlacklistCommand extends Command {
 		}
 
 		const { errors } = await this.client.settings.update([['userBlacklist', queries[0]], ['guildBlacklist', queries[1]]]);
+
 		if (errors.length) throw String(errors[0]);
 
 		return message.sendLocale('COMMAND_BLACKLIST_SUCCESS', changes);

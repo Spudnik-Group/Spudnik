@@ -41,6 +41,7 @@ export default class WelcomeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
+
 		try {
 			await msg.guild.settings.update('welcome.message', content, msg.guild);
 

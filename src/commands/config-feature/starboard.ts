@@ -114,6 +114,7 @@ export default class StarboardCommand extends Command {
 			} else {
 				try {
 					await msg.guild.settings.update('starboard.enabled', true, msg.guild);
+
 					// Set up embed message
 					starboardEmbed.setDescription(stripIndents`
 						**Member:** ${msg.author.tag} (${msg.author.id})
@@ -144,6 +145,7 @@ export default class StarboardCommand extends Command {
 		if (starboardEnabled) {
 			try {
 				await msg.guild.settings.update('starboard.enabled', false, msg.guild);
+
 				// Set up embed message
 				starboardEmbed.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
@@ -185,10 +187,12 @@ export default class StarboardCommand extends Command {
 			Channel set to: <#${starboard}>
 			Reaction Trigger set to: ${starboardTrigger}
 		`);
+
 		if (starboard) {
 			const botCanRead: boolean = await msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('READ_MESSAGE_HISTORY');
 			const botCanPostLinks: boolean = await msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('EMBED_LINKS');
 			const botCanPostAttachments: boolean = await msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('ATTACH_FILES');
+
 			starboardEmbed.description += stripIndents`
 
 						Permissions:

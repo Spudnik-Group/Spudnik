@@ -33,9 +33,11 @@ export default class AdblockCommand extends Command {
 			color: getEmbedColor(msg),
 			description: ''
 		}).setTimestamp();
+
 		if (adblockEnabled) {
 			try {
 				await msg.guild.settings.update('adblockEnabled', false, msg.guild);
+
 				// Set up embed message
 				adblockEmbed.setDescription(stripIndents`
 						**Member:** ${msg.author.tag} (${msg.author.id})
@@ -67,11 +69,13 @@ export default class AdblockCommand extends Command {
 			color: getEmbedColor(msg),
 			description: ''
 		}).setTimestamp();
+
 		if (adblockEnabled) {
 			return sendSimpleEmbeddedMessage(msg, 'Adblock feature already enabled!', 3000);
 		} else {
 			try {
 				await msg.guild.settings.update('adblockEnabled', true, msg.guild);
+
 				// Set up embed message
 				adblockEmbed.setDescription(stripIndents`
 						**Member:** ${msg.author.tag} (${msg.author.id})

@@ -73,6 +73,7 @@ export default class ReloadCommandCommand extends Command {
 			await store.loadAll();
 			await store.init();
 		}));
+
 		if (this.client.shard) {
 			await this.client.shard.broadcastEval(`
 				if (String(this.shard.id) !== '${this.client.shard.id}') this.pieceStores.map(async (store) => {

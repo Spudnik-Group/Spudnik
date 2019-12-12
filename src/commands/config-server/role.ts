@@ -50,6 +50,7 @@ export default class RoleCommand extends Command {
 				text: 'Use the `role` command to add/remove a role from your guild'
 			}
 		}).setTimestamp();
+
 		try {
 			let roleMetaData = {};
 

@@ -1,8 +1,8 @@
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, Channel } from 'discord.js';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, getEmbedColor, modLogMessage } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, getEmbedColor, modLogMessage, resolveChannel } from '../../lib/helpers';
 import * as format from 'date-fns/format';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, KlasaClient, CommandStore, KlasaMessage, Possible } from 'klasa';
 
 /**
  * Enable or disable the Modlog feature.
@@ -28,6 +28,12 @@ export default class ModlogCommand extends Command {
 			subcommands: true,
 			usage: '<on|off|status|channel> (channel:channel)'
 		});
+
+		this.createCustomResolver('channel', (arg: string, possible: Possible, message: KlasaMessage, [subCommand]) => {
+			if (subCommand === 'channel' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw 'Please provide a channel for the modlog messages to be displayed in.';
+
+			return arg;
+		});
 	}
 
 	public async on(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
@@ -39,14 +45,16 @@ export default class ModlogCommand extends Command {
 			color: getEmbedColor(msg),
 			description: ''
 		}).setTimestamp();
-		const modlogChannel = await msg.guild.settings.get('modlogChannel');
-		const modlogEnabled = await msg.guild.settings.get('modlogEnabled');
+		const modlogChannel = await msg.guild.settings.get('modlog.channel');
+		const modlogEnabled = await msg.guild.settings.get('modlog.enabled');
+
 		if (modlogChannel) {
 			if (modlogEnabled) {
 				return sendSimpleEmbeddedMessage(msg, 'Modlog feature already enabled!', 3000);
 			} else {
 				try {
-					await msg.guild.settings.update('modlogEnabled', true);
+					await msg.guild.settings.update('modlog.enabled', true, msg.guild);
+
 					// Set up embed message
 					modlogEmbed.setDescription(stripIndents`
 								**Member:** ${msg.author.tag} (${msg.author.id})
@@ -73,10 +81,12 @@ export default class ModlogCommand extends Command {
 			color: getEmbedColor(msg),
 			description: ''
 		}).setTimestamp();
-		const modlogEnabled = await msg.guild.settings.get('modlogEnabled');
+		const modlogEnabled = await msg.guild.settings.get('modlog.enabled');
+
 		if (modlogEnabled) {
 			try {
-				await msg.guild.settings.update('modlogEnabled', false);
+				await msg.guild.settings.update('modlog.enabled', false, msg.guild);
+
 				// Set up embed message
 				modlogEmbed.setDescription(stripIndents`
 							**Member:** ${msg.author.tag} (${msg.author.id})
@@ -102,7 +112,8 @@ export default class ModlogCommand extends Command {
 			color: getEmbedColor(msg),
 			description: ''
 		}).setTimestamp();
-		const modlogChannel = await msg.guild.settings.get('modlogChannel');
+		const modlogChannel = await msg.guild.settings.get('modlog.channel');
+
 		if (channel instanceof Channel) {
 			const channelID = (channel as Channel).id;
 
@@ -110,7 +121,8 @@ export default class ModlogCommand extends Command {
 				return sendSimpleEmbeddedMessage(msg, `Modlog channel already set to <#${channelID}>!`, 3000);
 			} else {
 				try {
-					await msg.guild.settings.update('modlogChannel', channelID);
+					await msg.guild.settings.update('modlog.channel', channelID, msg.guild);
+
 					// Set up embed message
 					modlogEmbed.setDescription(stripIndents`
 								**Member:** ${msg.author.tag} (${msg.author.id})
@@ -145,8 +157,9 @@ export default class ModlogCommand extends Command {
 			color: getEmbedColor(msg),
 			description: ''
 		}).setTimestamp();
-		const modlogChannel = await msg.guild.settings.get('modlogChannel');
-		const modlogEnabled = await msg.guild.settings.get('modlogEnabled');
+		const modlogChannel = await msg.guild.settings.get('modlog.channel');
+		const modlogEnabled = await msg.guild.settings.get('modlog.enabled');
+
 		// Set up embed message
 		modlogEmbed.setDescription(stripIndents`Modlog feature: ${modlogEnabled ? '_Enabled_' : '_Disabled_'}
 										Channel set to: <#${modlogChannel}>`);

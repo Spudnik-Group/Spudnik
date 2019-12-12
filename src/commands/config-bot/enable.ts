@@ -54,7 +54,7 @@ export default class EnableCommand extends Command {
                 return sendSimpleEmbeddedError(msg,
                     `The \`${cmdOrCat}\` category is already enabled.`, 3000);
             } else if (groups.find((g: string) => g === parsedGroup)) {
-                msg.guild.settings.update('disabledCommandCategories', cmdOrCat.toLowerCase(), msg.guild);
+                await msg.guild.settings.update('disabledCommandCategories', cmdOrCat.toLowerCase(), msg.guild);
 
                 enableEmbed.setDescription(stripIndents`
                 **Moderator:** ${msg.author.tag} (${msg.author.id})
@@ -70,7 +70,7 @@ export default class EnableCommand extends Command {
             if (!isCommandEnabled(msg, cmdOrCat)) {
                 return sendSimpleEmbeddedError(msg, `The \`${cmdOrCat.name}\` command is already enabled.`, 3000);
             } else {
-                msg.guild.settings.update('disabledCommands', cmdOrCat.name.toLowerCase(), msg.guild);
+                await msg.guild.settings.update('disabledCommands', cmdOrCat.name.toLowerCase(), msg.guild);
 
                 enableEmbed.setDescription(stripIndents`
                 **Moderator:** ${msg.author.tag} (${msg.author.id})

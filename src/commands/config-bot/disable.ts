@@ -54,7 +54,7 @@ export default class DisableCommand extends Command {
                 return sendSimpleEmbeddedError(msg,
                     `The \`${cmdOrCat}\` category is already disabled.`, 3000);
             } else if (groups.find((g: string) => g === parsedGroup)) {
-                msg.guild.settings.update('disabledCommandCategories', cmdOrCat.toLowerCase(), msg.guild);
+                await msg.guild.settings.update('disabledCommandCategories', cmdOrCat.toLowerCase(), msg.guild);
 
                 disableEmbed.setDescription(stripIndents`
                 **Moderator:** ${msg.author.tag} (${msg.author.id})
@@ -75,7 +75,8 @@ export default class DisableCommand extends Command {
                         `You cannot disable the \`${cmdOrCat.name}\` command.`, 3000
                     );
                 }
-                msg.guild.settings.update('disabledCommands', cmdOrCat.name.toLowerCase(), msg.guild);
+                await msg.guild.settings.update('disabledCommands', cmdOrCat.name.toLowerCase(), msg.guild);
+
                 disableEmbed.setDescription(stripIndents`
                 **Moderator:** ${msg.author.tag} (${msg.author.id})
 			    **Action:** Disabled the \`${cmdOrCat.name}\` command.`);

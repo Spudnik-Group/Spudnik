@@ -49,6 +49,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 		} else {
 			try {
 				await msg.guild.settings.update('deleteCommandMessages', true, msg.guild);
+
 				// Set up embed message
 				deleteCommandMessagesEmbed.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
@@ -81,6 +82,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 		if (deleteCommandMessagesEnabled) {
 			try {
 				await msg.guild.settings.update('deleteCommandMessages', false, msg.guild);
+
 				// Set up embed message
 				deleteCommandMessagesEmbed.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})

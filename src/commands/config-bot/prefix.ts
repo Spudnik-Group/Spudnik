@@ -48,6 +48,7 @@ export default class PrefixCommand extends Command {
 		// Just output the prefix
 		if (!prefix) {
 			const currentPrefix = msg.guild ? msg.guild.settings.get('prefix') : this.client.options.prefix;
+
 			prefixEmbed.setDescription(stripIndents`
 				${currentPrefix ? `The command prefix is \`\`${currentPrefix}\`\`.` : 'There is no command prefix.'}
 				To run commands, use ${currentPrefix}\`commandName\`.
@@ -65,6 +66,7 @@ export default class PrefixCommand extends Command {
 		const lowercase = prefix.toLowerCase();
 		const newPrefix = lowercase === 'none' ? '' : prefix;
 		let response;
+
 		if (lowercase === 'default') {
 			if (msg.guild) {
 				msg.guild.settings.reset('prefix');
