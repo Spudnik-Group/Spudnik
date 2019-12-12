@@ -12,7 +12,7 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class WelcomeCommand extends Command {
-	
+
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Used to configure the message to be sent when a new user join your guild.',
@@ -27,7 +27,7 @@ export default class WelcomeCommand extends Command {
 			name: 'welcome',
 			permissionLevel: 6, // MANAGE_GUILD
 			subcommands: true,
-			usage: '<message|channel|on|off|status> (content)'
+			usage: '<message|channel|on|off|status> (content:content)'
 		});
 
 		this.createCustomResolver('content', basicFeatureContent);

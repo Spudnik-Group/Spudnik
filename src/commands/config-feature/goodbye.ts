@@ -12,7 +12,7 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class GoodbyeCommand extends Command {
-	
+
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Used to configure the message to be sent when a user leaves your guild.',
@@ -27,7 +27,7 @@ export default class GoodbyeCommand extends Command {
 			name: 'goodbye',
 			permissionLevel: 6, // MANAGE_GUILD
 			subcommands: true,
-			usage: '<message|channel|on|off|status> (content)'
+			usage: '<message|channel|on|off|status> (content:content)'
 		});
 
 		this.createCustomResolver('content', basicFeatureContent);

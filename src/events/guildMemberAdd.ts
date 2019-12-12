@@ -7,15 +7,15 @@ export default class extends Event {
     run(member) {
         const guild = member.guild;
         if (SpudConfig.botListGuilds.includes(guild.id)) { return; } //Guild is on Blacklist, ignore.
-        const welcomeEnabled = this.client.settings.get('welcomeEnabled');
-        const welcomeChannel = this.client.settings.get('welcomeChannel');
+        const welcomeEnabled = this.client.settings.get('welcome.enabled');
+        const welcomeChannel = this.client.settings.get('welcome.channel');
 
         if (welcomeEnabled && welcomeChannel) {
-            const welcomeMessage = this.client.settings.get('welcomeMessage');
+            const welcomeMessage = this.client.settings.get('welcome.message');
             const message = welcomeMessage.replace('{guild}', guild.name).replace('{user}', `<@${member.id}>`);
             const channel = guild.channels.get(welcomeChannel);
 
-            if (channel && channel.type === 'text') {
+            if (channel) {
                 (channel as TextChannel).send(message);
             } else {
                 this.client.emit('warn', `There was an error trying to welcome a new guild member in ${guild}, the channel may no longer exist or was set to a non-text channel`);

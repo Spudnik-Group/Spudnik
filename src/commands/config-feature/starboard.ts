@@ -28,7 +28,7 @@ export default class StarboardCommand extends Command {
 			permissionLevel: 6, // MANAGE_GUILD
 			requiredPermissions: ['EMBED_LINKS', 'READ_MESSAGE_HISTORY', 'ATTACH_FILES'],
 			subcommands: true,
-			usage: '<on|off|status|channel|trigger> (content)'
+			usage: '<on|off|status|channel|trigger> (content:content)'
 		});
 
 		this.createCustomResolver('content', (arg: string, possible: Possible, message: KlasaMessage, [subCommand]) => {

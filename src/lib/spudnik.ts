@@ -37,8 +37,7 @@ Client.defaultGuildSchema
 	)
 	.add('tos', folder => folder
 		.add('channel', 'TextChannel', { default: null })
-		.add('messages', 'tosMessage', { array: true })
-		.add('messageCount', 'number', { default: 0 })
+		.add('messages', 'any', { array: true })
 	)
 	.add('embedColor', 'string', { default: '555555' })
 	.add('adblockEnabled', 'boolean', { default: false })
