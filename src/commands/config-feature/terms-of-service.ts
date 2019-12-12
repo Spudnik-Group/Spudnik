@@ -30,7 +30,7 @@ export default class TermsOfServiceCommand extends Command {
 			name: 'tos',
 			permissionLevel: 6, // MANAGE_GUILD
 			subcommands: true,
-			usage: '<channel|title|body|get|list|status> (item) (text)'
+			usage: '<channel|title|body|get|list|status> (item:item) (...text:text)'
 		});
 
 		this
@@ -44,6 +44,12 @@ export default class TermsOfServiceCommand extends Command {
 			.createCustomResolver('text', (arg: string, possible: Possible, message: KlasaMessage, [subCommand]) => {
 				if (['title', 'body'].includes(subCommand) && !arg) throw 'Please include the new text.';
 				if (subCommand === 'get' && (['true', 'false', 't', 'f'].includes(arg))) throw 'Please supply a valid boolean option for `raw` option.';
+
+				// Check text length against Discord embed limits
+				if (subCommand === 'title' && arg.length > 256) throw 'Discord message embed titles are limited to 256 characters, Please supply a shorter title';
+				if (subCommand === 'body' && arg.length > 2048) throw 'Discord message embed bodies are limited to 2048 characters, Please supply a shorter body';
+
+				return arg;
 			});
 	}
 
@@ -86,46 +92,49 @@ export default class TermsOfServiceCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		});
-		const tosMessageCount: number = await msg.guild.settings.get('tos.messageCount');
+		const itemIndex = Number(item);
 		const tosMessages: ITOSMessage[] = await msg.guild.settings.get('tos.messages');
+		let existingTosMessage = tosMessages.find(item => item.id === itemIndex);
+		const tosEmbedUpsertMessage = existingTosMessage ? 'updated' : 'added';
 
-		let message: ITOSMessage;
-		let tosEmbedUpsertMessage = 'updated';
-		item = Number(item);
-		message = tosMessages[item - 1];
-		if (Number.isInteger(item) && text.length) {
-			if (item === tosMessageCount + 1) {
-				tosEmbedUpsertMessage = 'added';
-			} else if (item > tosMessageCount + 2) {
-				return sendSimpleEmbeddedError(msg, 'You must supply either an already existing message number or one greater than the current count.', 3000);
-			}
-
-			if (!message) {
-				message = {
-					body: '',
-					id: item - 1,
-					title: ''
-				}
-				tosMessages.push(message);
-			}
-		}
-		message.title = text;
-		try {
-			// TODO: don't know if this upsert shit works
-			await msg.guild.settings.update(`tos.messages`, message, msg.guild);
-			tosEmbed
-				.setDescription(stripIndents`
+		if (existingTosMessage) {
+			try {
+				existingTosMessage.title = text;
+				await msg.guild.settings.update('tos.messages', existingTosMessage, { action: 'overwrite', force: true });
+				tosEmbed
+					.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
 					**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
 				`)
-				.setFooter('Use the `tos status` command to see the details of this feature')
-				.setTimestamp();
+					.setFooter('Use the `tos status` command to see the details of this feature')
+					.setTimestamp();
 
-			await msg.guild.settings.update('tos.messageCount', tosMessages.length, msg.guild);
+				return this.sendSuccess(msg, tosEmbed);
+			} catch (err) {
+				return this.catchError(msg, { subCommand: 'title', item, text }, err);
+			}
+		} else {
+			// TODO: enforce that "item" is the next index of the array of TOS messages
+			existingTosMessage = {
+				title: text,
+				id: item,
+				body: ''
+			}
 
-			return this.sendSuccess(msg, tosEmbed);
-		} catch (err) {
-			return this.catchError(msg, { subCommand: 'title', item, text }, err);
+			try {
+				await msg.guild.settings.update('tos.messages', existingTosMessage, msg.guild);
+				tosEmbed
+					.setDescription(stripIndents`
+					**Member:** ${msg.author.tag} (${msg.author.id})
+					**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
+				`)
+					.setFooter('Use the `tos status` command to see the details of this feature')
+					.setTimestamp();
+
+				return this.sendSuccess(msg, tosEmbed);
+			} catch (err) {
+				return this.catchError(msg, { subCommand: 'title', item, text }, err);
+			}
 		}
 	}
 
@@ -137,52 +146,49 @@ export default class TermsOfServiceCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		});
-		// TODO: disallow message bodies with more than the allowed characters for an embed
-		const tosMessageCount: number = await msg.guild.settings.get('tos.messageCount');
-		const tosMessages: ITOSMessage[] = [];
-		for (let i = 1; i < tosMessageCount + 1; i++) {
-			// TODO: fix this
-			const tosMessage: ITOSMessage = await msg.guild.settings.get('tos.message')[`${i}`];
-			if (tosMessage) {
-				tosMessages.push(tosMessage);
-			}
-		}
-		let message: ITOSMessage;
-		let tosEmbedUpsertMessage = 'updated';
-		item = Number(item);
-		message = tosMessages[item - 1];
-		if (Number.isInteger(item) && text.length) {
-			if (item === tosMessageCount + 1) {
-				tosEmbedUpsertMessage = 'added';
-			} else if (item > tosMessageCount + 2) {
-				return sendSimpleEmbeddedError(msg, 'You must supply either an already existing message number or one greater than the current count.', 3000);
-			}
-			if (!message) {
-				message = {
-					body: '',
-					id: item - 1,
-					title: ''
-				}
-				tosMessages.push(message);
-			}
-		}
-		message.body = text;
-		try {
-			// TODO: don't know if this upsert shit works
-			await msg.guild.settings.update(`tos.messages`, message, msg.guild);
-			tosEmbed
-				.setDescription(stripIndents`
+		const itemIndex = Number(item);
+		const tosMessages: ITOSMessage[] = await msg.guild.settings.get('tos.messages');
+		let existingTosMessage = tosMessages.find(item => item.id === itemIndex);
+		const tosEmbedUpsertMessage = existingTosMessage ? 'updated' : 'added';
+
+		if (existingTosMessage) {
+			try {
+				existingTosMessage.body = text;
+				await msg.guild.settings.update('tos.messages', existingTosMessage, { action: 'overwrite', force: true });
+				tosEmbed
+					.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
 					**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
 				`)
-				.setFooter('Use the `tos status` command to see the details of this feature')
-				.setTimestamp();
+					.setFooter('Use the `tos status` command to see the details of this feature')
+					.setTimestamp();
 
-			await msg.guild.settings.update('tos.messageCount', tosMessages.length, msg.guild);
+				return this.sendSuccess(msg, tosEmbed);
+			} catch (err) {
+				return this.catchError(msg, { subCommand: 'body', item, text }, err);
+			}
+		} else {
+			// TODO: enforce that "item" is the next index of the array of TOS messages
+			existingTosMessage = {
+				title: '',
+				id: item,
+				body: text
+			}
 
-			return this.sendSuccess(msg, tosEmbed);
-		} catch (err) {
-			return this.catchError(msg, { subCommand: 'body', item, text }, err);
+			try {
+				await msg.guild.settings.update('tos.messages', existingTosMessage, msg.guild);
+				tosEmbed
+					.setDescription(stripIndents`
+					**Member:** ${msg.author.tag} (${msg.author.id})
+					**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
+				`)
+					.setFooter('Use the `tos status` command to see the details of this feature')
+					.setTimestamp();
+
+				return this.sendSuccess(msg, tosEmbed);
+			} catch (err) {
+				return this.catchError(msg, { subCommand: 'body', item, text }, err);
+			}
 		}
 	}
 
@@ -194,32 +200,27 @@ export default class TermsOfServiceCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		});
+		const itemIndex = Number(item);
+		const tosMessages: ITOSMessage[] = await msg.guild.settings.get('tos.messages');
+		const existingTosMessage = tosMessages.find(item => item.id === itemIndex);
 
-		const tosMessageCount: number = await msg.guild.settings.get('tos.messageCount');
-		const tosMessages: ITOSMessage[] = [];
-		for (let i = 1; i < tosMessageCount + 1; i++) {
-			// TODO: fix this
-			const tosMessage: ITOSMessage = await msg.guild.settings.get(`tos.messages`)[`${i}`];
-			if (tosMessage) {
-				tosMessages.push(tosMessage);
-			}
-		}
-		let message: ITOSMessage;
-		try {
-			item = Number(item);
-			message = tosMessages[item - 1];
-			tosEmbed
-				.setDescription(stripIndents`
-					**ID:** ${message.id}
-					**Title:** ${message.title}
-					**Body:** ${raw.toLowerCase() === 'true' ? markdownescape(message.body) : message.body}
+		if (existingTosMessage) {
+			try {
+				tosEmbed
+					.setDescription(stripIndents`
+					**ID:** ${existingTosMessage.id}
+					**Title:** ${existingTosMessage.title}
+					**Body:** ${raw.toLowerCase() === 'true' ? markdownescape(existingTosMessage.body) : existingTosMessage.body}
 				`)
-				.setFooter('Use the `tos status` command to see the details of this feature')
-				.setTimestamp();
+					.setFooter('Use the `tos status` command to see the details of this feature')
+					.setTimestamp();
 
-			return this.sendSuccess(msg, tosEmbed);
-		} catch (err) {
-			return this.catchError(msg, { subCommand: 'get', item, raw }, err);
+				return this.sendSuccess(msg, tosEmbed);
+			} catch (err) {
+				return this.catchError(msg, { subCommand: 'get', item, raw }, err);
+			}
+		} else {
+			return sendSimpleEmbeddedError(msg, 'No TOS message with that index', 3000);
 		}
 	}
 
@@ -232,15 +233,8 @@ export default class TermsOfServiceCommand extends Command {
 			color: getEmbedColor(msg)
 		});
 		const tosChannel: string = await msg.guild.settings.get('tos.channel');
-		const tosMessageCount: number = await msg.guild.settings.get('tos.messageCount');
-		const tosMessages: ITOSMessage[] = [];
-		for (let i = 1; i < tosMessageCount + 1; i++) {
-			// TODO: fix this
-			const tosMessage: ITOSMessage = await msg.guild.settings.get('tos.messages')[`${i}`];
-			if (tosMessage) {
-				tosMessages.push(tosMessage);
-			}
-		}
+		const tosMessages: ITOSMessage[] = await msg.guild.settings.get('tos.messages');
+
 		if (tosChannel && tosChannel === msg.channel.id) {
 			if (tosMessages && tosMessages.length) {
 				tosMessages.forEach((message) => {
@@ -273,15 +267,8 @@ export default class TermsOfServiceCommand extends Command {
 			color: getEmbedColor(msg)
 		});
 		const tosChannel: string = await msg.guild.settings.get('tos.channel');
-		const tosMessageCount: number = await msg.guild.settings.get('tos.messageCount');
-		const tosMessages: ITOSMessage[] = [];
-		for (let i = 1; i < tosMessageCount + 1; i++) {
-			// TODO: fix this?
-			const tosMessage: ITOSMessage = await msg.guild.settings.get('tos.messages')[`${i}`];
-			if (tosMessage) {
-				tosMessages.push(tosMessage);
-			}
-		}
+		const tosMessages: ITOSMessage[] = await msg.guild.settings.get('tos.messages');
+
 		tosEmbed.description = `Channel: ${tosChannel ? `<#${tosChannel}>` : 'None set.'}\nMessage List:\n`;
 		if (tosMessages.length) {
 			let tosList = '';
@@ -293,6 +280,7 @@ export default class TermsOfServiceCommand extends Command {
 		} else {
 			tosEmbed.description += 'No Messages.';
 		}
+		tosEmbed.setFooter('Use the `tos get` command to see the full message content')
 
 		// Send the success response
 		return msg.sendEmbed(tosEmbed);
