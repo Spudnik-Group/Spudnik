@@ -47,83 +47,60 @@ export default class WarnCommand extends Command {
 		let previousPoints = 0;
 		const guildWarnings = await msg.guild.settings.get('warnings');
 
-		if (guildWarnings.length) {
-			// Warnings present for current guild
-			try {
-				let memberIndex = null;
-				// Check for previous warnings of supplied member
-				const currentWarnings = guildWarnings.find((warning, index) => {
-					if (warning.id === member.id) {
-						memberIndex = index;
+		try {
+			let memberIndex = null;
+			// Check for previous warnings of supplied member
+			const currentWarnings = guildWarnings.find((warning, index) => {
+				if (warning.id === member.id) {
+					memberIndex = index;
 
-						return true
-					}
-
-					return false;
-				});
-				if (currentWarnings && memberIndex) {
-					// Previous warnings present for supplied member
-					previousPoints = currentWarnings.points;
-					const newPoints = previousPoints + points;
-					// Update previous warning points
-					guildWarnings[memberIndex] = {
-						id: member.id,
-						points: newPoints
-					};
-					msg.guild.settings.update('warnings', guildWarnings);
-					// Set up embed message
-					warnEmbed.setDescription(stripIndents`
-						**Moderator:** ${msg.author.tag} (${msg.author.id})
-						**Member:** ${member.user.tag} (${member.id})
-						**Action:** Warn
-						**Previous Warning Points:** ${previousPoints}
-						**Current Warning Points:** ${newPoints}
-						**Reason:** ${reason ? reason : 'No reason has been added by the moderator'}`);
-					
-					// Send the success response
-					return msg.sendEmbed(warnEmbed);
-				} else {
-					// No previous warnings present
-					guildWarnings.push({
-						id: member.id,
-						points: points
-					});
-					msg.guild.settings.update('warnings', guildWarnings, msg.guild);
-					// Set up embed message
-					warnEmbed.setDescription(stripIndents`
-						**Moderator:** ${msg.author.tag} (${msg.author.id})
-						**Member:** ${member.user.tag} (${member.id})
-						**Action:** Warn
-						**Previous Warning Points:** 0
-						**Current Warning Points:** ${points}
-						**Reason:** ${reason ? reason : 'No reason has been added by the moderator'}`);
-					
-					// Send the success response
-					return msg.sendEmbed(warnEmbed);
+					return true
 				}
-			} catch (err) {
-				this.catchError(msg, { member: member, points: points, reason: reason }, err);
-			}
-		} else {
-			// No warnings for current guild
-			const newWarnings = [
-				{
+
+				return false;
+			});
+			if (currentWarnings && memberIndex) {
+				// Previous warnings present for supplied member
+				previousPoints = currentWarnings.points;
+				const newPoints = previousPoints + points;
+				// Update previous warning points
+				guildWarnings[memberIndex] = {
+					id: member.id,
+					points: newPoints
+				};
+				msg.guild.settings.update('warnings', guildWarnings, { action: 'overwrite', force: true });
+				// Set up embed message
+				warnEmbed.setDescription(stripIndents`
+					**Moderator:** ${msg.author.tag} (${msg.author.id})
+					**Member:** ${member.user.tag} (${member.id})
+					**Action:** Warn
+					**Previous Warning Points:** ${previousPoints}
+					**Current Warning Points:** ${newPoints}
+					**Reason:** ${reason ? reason : 'No reason has been added by the moderator'}`);
+
+				// Send the success response
+				return msg.sendEmbed(warnEmbed);
+			} else {
+				// No previous warnings present
+				guildWarnings.push({
 					id: member.id,
 					points: points
-				}
-			];
-			msg.guild.settings.update('warnings', newWarnings);
-			// Set up embed message
-			warnEmbed.setDescription(stripIndents`
-				**Moderator:** ${msg.author.tag} (${msg.author.id})
-				**Member:** ${member.user.tag} (${member.id})
-				**Action:** Warn
-				**Previous Warning Points:** 0
-				**Current Warning Points:** ${points}
-				**Reason:** ${reason ? reason : 'No reason has been added by the moderator'}`);
+				});
+				msg.guild.settings.update('warnings', guildWarnings, { action: 'add', force: true });
+				// Set up embed message
+				warnEmbed.setDescription(stripIndents`
+					**Moderator:** ${msg.author.tag} (${msg.author.id})
+					**Member:** ${member.user.tag} (${member.id})
+					**Action:** Warn
+					**Previous Warning Points:** 0
+					**Current Warning Points:** ${points}
+					**Reason:** ${reason ? reason : 'No reason has been added by the moderator'}`);
 
-			// Send the success response
-			return msg.sendEmbed(warnEmbed);
+				// Send the success response
+				return msg.sendEmbed(warnEmbed);
+			}
+		} catch (err) {
+			this.catchError(msg, { member: member, points: points, reason: reason }, err);
 		}
 	}
 

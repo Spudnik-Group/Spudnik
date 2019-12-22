@@ -60,12 +60,8 @@ export default class ClearWarnsCommand extends Command {
 				if (currentWarnings) {
 					// Previous warnings present for supplied member
 					previousPoints = currentWarnings.points;
-					// Update previous warning points
-					const newEntry = {
-						id: member.id,
-						points: 0
-					};
-					msg.guild.settings.update('warnings', newEntry, msg.guild);
+
+					msg.guild.settings.update('warnings', currentWarnings, { action: 'remove' });
 					// Set up embed message
 					warnEmbed.setDescription(stripIndents`
 						**Moderator:** ${msg.author.tag} (${msg.author.id})
