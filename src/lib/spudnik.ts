@@ -12,31 +12,31 @@ Client.defaultGuildSchema
 	.add('disabledCommands', 'string', { array: true })
 	.add('disabledCommandCategories', 'string', { array: true })
 	.add('roles', folder => folder
-		.add('defaultRoles', 'Role', { array: true })
+		.add('defaultRole', 'Role')
 		.add('muted', 'Role')
 		.add('selfAssignableRoles', 'Role', { array: true })
 	)
 	.add('starboard', folder => folder
 		.add('enabled', 'boolean', { default: false })
-		.add('channel', 'TextChannel', { default: null })
+		.add('channel', 'TextChannel')
 		.add('trigger', 'string', { default: '⭐' })
 	)
 	.add('welcome', folder => folder
 		.add('enabled', 'boolean', { default: false })
-		.add('channel', 'TextChannel', { default: null })
+		.add('channel', 'TextChannel')
 		.add('message', 'string', { default: `@here, please Welcome {user} to {guild}!` })
 	)
 	.add('goodbye', folder => folder
 		.add('enabled', 'boolean', { default: false })
-		.add('channel', 'TextChannel', { default: null })
+		.add('channel', 'TextChannel')
 		.add('message', 'string', { default: `{user} has left the server.` })
 	)
 	.add('modlog', folder => folder
-		.add('channel', 'TextChannel', { default: null })
+		.add('channel', 'TextChannel')
 		.add('enabled', 'boolean', { default: false })
 	)
 	.add('tos', folder => folder
-		.add('channel', 'TextChannel', { default: null })
+		.add('channel', 'TextChannel')
 		.add('messages', 'any', { array: true })
 	)
 	.add('embedColor', 'string', { default: '555555' })

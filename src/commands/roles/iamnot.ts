@@ -1,4 +1,4 @@
-import { MessageEmbed, Role } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
@@ -19,9 +19,8 @@ export default class IAmNotCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			requiredPermissions: ['MANAGE_ROLES'],
-			requiredSettings: ['selfAssignableRoles'],
+			requiredSettings: ['roles.selfAssignableRoles'],
 			description: 'Used to remove a self-assignable role from yourself.',
-			extendedHelp: 'syntax: `!iamnot <role name>`',
 			name: 'iamnot',
 			usage: '<role:Role>'
 		});
@@ -44,19 +43,18 @@ export default class IAmNotCommand extends Command {
 			color: getEmbedColor(msg)
 		});
 
-		const foundRole = msg.guild.roles.find((r: Role) => r.name.toLowerCase() === role.toLowerCase());
 		const guildAssignableRoles: string[] = await msg.guild.settings.get('assignableRoles') || [];
 
-		if (foundRole && guildAssignableRoles.includes(foundRole.id)) {
-			if (msg.member.roles.has(foundRole.id)) {
-				await msg.member.roles.remove(foundRole.id);
+		if (guildAssignableRoles.includes(role)) {
+			if (msg.member.roles.has(role.id)) {
+				await msg.member.roles.remove(role.id);
 
-				roleEmbed.description = `<@${msg.member.id}>, you no longer have the ${foundRole.name} role.`;
+				roleEmbed.description = `<@${msg.member.id}>, you no longer have the ${role.name} role.`;
 
 				return msg.sendEmbed(roleEmbed);
 			} else {
 
-				return sendSimpleEmbeddedError(msg, `<@${msg.member.id}>, you do not have the role ${foundRole.name}.`, 3000);
+				return sendSimpleEmbeddedError(msg, `<@${msg.member.id}>, you do not have the role ${role.name}.`, 3000);
 			}
 		} else {
 

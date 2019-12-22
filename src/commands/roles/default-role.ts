@@ -26,11 +26,7 @@ export default class DefaultRoleCommand extends Command {
 			requiredPermissions: ['MANAGE_ROLES'],
 			description: 'Used to configure the default role for the `accept` command.',
 			extendedHelp: stripIndents`
-                syntax: \`!dr (@roleMention)\`
-                
 				\`(@roleMention)\` - sets the default role, or clears all if no role is provided.
-
-				\`MANAGE_ROLES\` permission required.
 			`,
 			name: 'default-role',
 			permissionLevel: 2,
@@ -60,11 +56,11 @@ export default class DefaultRoleCommand extends Command {
 			}
 		}).setTimestamp();
 
-		let guildDefaultRoles: string[] = await msg.guild.settings.get('defaultRoles') || [];
+		let guildDefaultRole: Role = await msg.guild.settings.get('roles.defaultRole');
 
 		if (!role) {
 			try {
-				await msg.guild.settings.reset('defaultRoles');
+				await msg.guild.settings.reset('roles.defaultRole');
 				// Set up embed message
 				roleEmbed.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
@@ -73,40 +69,38 @@ export default class DefaultRoleCommand extends Command {
 
 				return this.sendSuccess(msg, roleEmbed);
 			} catch (err) {
-				this.catchError(msg, role, err);
+				this.catchError(msg, role, 'reset', err);
 			}
-		} else if (!guildDefaultRoles.includes(role.id)) {
-			guildDefaultRoles.push(role.id);
-
+		} else if (guildDefaultRole === role) {
+			return sendSimpleEmbeddedError(msg, `Default role already set to <@${role.id}>`, 3000);
+		} else {
 			try {
-				await msg.guild.settings.update('defaultRoles', guildDefaultRoles);
+				await msg.guild.settings.update('roles.defaultRole', role);
+
 				// Set up embed message
 				roleEmbed.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
-					**Action:** Added role '${role.name}' to the list of default roles.
+					**Action:** Set '${role.name}' as the default role for the server.
 				`);
 
 				return this.sendSuccess(msg, roleEmbed);
 			} catch (err) {
-				// TODO: make the error handling the same?
-				msg.client.emit('warn', `Error in command roles:role-add: ${err}`);
-
-				return sendSimpleEmbeddedError(msg, 'There was an error processing the request.', 3000);
+				this.catchError(msg, role, 'set', err);
 			}
 		}
 	}
 
-	private catchError(msg: KlasaMessage, role: Role, err: Error) {
+	private catchError(msg: KlasaMessage, role: Role, action: string, err: Error) {
 		// Build warning message
 		const roleWarn = stripIndents`
 			Error occurred in \`role-management\` command!
 			**Server:** ${msg.guild.name} (${msg.guild.id})
 			**Author:** ${msg.author.tag} (${msg.author.id})
 			**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
-			**Input:** \`Role name: ${role}
-			**Error Message:** Setting default role failed!\n
+			${action === 'set' ? `**Input:** \`Role name: ${role}` : ''}
+			**Error Message:** ${action === 'set' ? 'Setting' : 'Resetting'} default role failed!\n
 			`;
-		let roleUserWarn = 'Setting default role failed!';
+		let roleUserWarn = `${action === 'set' ? 'Setting' : 'Resetting'} default role failed!`;
 
 		// Emit warn event for debugging
 		msg.client.emit('warn', roleWarn);

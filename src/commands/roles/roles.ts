@@ -1,7 +1,6 @@
 import { MessageEmbed, Role } from 'discord.js';
 import { getEmbedColor } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
-import { stripIndents } from 'common-tags';
 
 /**
  * Lists default and self-assignable roles.
@@ -20,9 +19,6 @@ export default class RolesCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Lists default and self-assignable roles.',
-			extendedHelp: stripIndents`
-				syntax: \`!roles\`
-			`,
 			name: 'roles',
 		});
 	}
@@ -45,52 +41,37 @@ export default class RolesCommand extends Command {
 				text: 'Use the `iam`/`iamnot` commands to manage your roles'
 			}
 		});
-		
-		let guildAssignableRoles: string[] = await msg.guild.settings.get('assignableRoles') || [];
-		let guildDefaultRoles: string[] = await msg.guild.settings.get('defaultRoles') || [];
 
-		if (Array.isArray(guildAssignableRoles) && guildAssignableRoles.length > 0) {
-			const roles: Role[] = msg.guild.roles.filter((role) => guildAssignableRoles.includes(role.id)).array();
+		let guildAssignableRoles: Role[] = await msg.guild.settings.get('roles.selfAssignableRoles') || [];
+		let guildDefaultRole: Role = await msg.guild.settings.get('roles.defaultRole');
 
-			if (roles.length > 0) {
-				const rolesListOut: string[] = [];
+		if (guildAssignableRoles.length) {
+			const rolesListOut: string[] = [];
 
-				roles.forEach((i: Role) => {
-					rolesListOut.push(`* ${i.name} - ${i.members.size} members`);
-				});
+			guildAssignableRoles.forEach((role: Role) => {
+				rolesListOut.push(`* ${role.name} - ${role.members.size} members`);
+			});
 
-				roleEmbed.fields.push({
-					inline: true,
-					name: 'Assignable Roles',
-					value: `${rolesListOut.sort().join(`
-					`)}`
-				});
-			}
+			roleEmbed.fields.push({
+				inline: true,
+				name: 'Assignable Roles',
+				value: `${rolesListOut.sort().join(`
+				`)}`
+			});
 		}
 
-		if (Array.isArray(guildDefaultRoles) && guildDefaultRoles.length > 0) {
-			const roles: Role[] = msg.guild.roles.filter((role) => guildDefaultRoles.includes(role.id)).array();
-
-			if (roles.length > 0) {
-				const rolesListOut: string[] = [];
-
-				roles.forEach((i: Role) => {
-					rolesListOut.push(`* ${i.name}`);
-				});
-
-				roleEmbed.fields.push({
-					inline: true,
-					name: 'Default Roles',
-					value: `${rolesListOut.sort().join(`
-					`)}`
-				});
-			}
+		if (guildDefaultRole) {
+			roleEmbed.fields.push({
+				inline: true,
+				name: 'Default Roles',
+				value: guildDefaultRole.name
+			});
 		}
 
 		if (Array.isArray(roleEmbed.fields) && roleEmbed.fields.length === 0) {
 			roleEmbed.setDescription('This guild does not have a default role or any self-assignable roles set.');
 		}
-		
+
 		// Send the response
 		return msg.sendEmbed(roleEmbed);
 	}

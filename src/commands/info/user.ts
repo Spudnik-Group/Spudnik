@@ -69,7 +69,6 @@ export default class UserCommand extends Command {
 			// Check if user is a member of the guild
 			const member: GuildMember = await msg.guild.members.fetch(currentUser.id);
 			const roles = member.roles
-				.filter(role => role.id !== msg.guild.defaultRole.id)
 				.sort((a, b) => b.position - a.position)
 				.map(role => role.name);
 			userEmbed
@@ -78,8 +77,7 @@ export default class UserCommand extends Command {
 					: '')
 				.addField('❯ Server Join Date', format(member.joinedAt, 'MM/DD/YYYY h:mm A'), true)
 				.addField('❯ Nickname', member.nickname || 'None', true)
-				.addField('❯ Highest Role',
-					member.roles.highest.id === msg.guild.defaultRole.id ? 'None' : member.roles.highest.name, true)
+				.addField('❯ Highest Role', member.roles.highest.name, true)
 				.addField('❯ Hoist Role', member.roles.hoist ? member.roles.hoist.name : 'None', true)
 				.addField(`❯ Roles (${roles.length})`, roles.length ? trimArray(roles, 10).join(', ') : 'None');
 

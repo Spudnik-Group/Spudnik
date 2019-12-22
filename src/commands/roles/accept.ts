@@ -1,5 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { MessageEmbed } from 'discord.js';
+import { MessageEmbed, Role } from 'discord.js';
 import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
@@ -22,7 +22,7 @@ export default class AcceptCommand extends Command {
 		super(client, store, file, directory, {
 			description: 'Accept the Terms of Use for the current guild.',
 			name: 'accept',
-			requiredSettings: ['tos.tosChannel', 'roles.defaultRole']
+			requiredSettings: ['tos.channel', 'roles.defaultRole']
 		});
 	}
 
@@ -43,8 +43,8 @@ export default class AcceptCommand extends Command {
 			color: getEmbedColor(msg)
 		}).setTimestamp();
 
-		const defaultRole: string = msg.guild.settings.get('roles.defaultRole');
-		const acceptChannel: string = msg.guild.settings.get('tos.tosChannel');
+		const defaultRole: Role = msg.guild.settings.get('roles.defaultRole');
+		const acceptChannel: string = msg.guild.settings.get('tos.channel');
 
 		if (defaultRole && msg.channel.id === acceptChannel) {
 			try {
@@ -56,7 +56,7 @@ export default class AcceptCommand extends Command {
 			// Set up embed message
 			acceptEmbed.setDescription(stripIndents`
 				**Member:** ${msg.author.tag} (${msg.author.id})
-				**Action:** The default role of ${defaultRole} for the guild ${msg.guild.name} has been applied.
+				**Action:** The default role of ${defaultRole.name} has been applied.
 			`);
 
 			modLogMessage(msg, acceptEmbed);
@@ -64,7 +64,7 @@ export default class AcceptCommand extends Command {
 
 		return null;
 	}
-	
+
 	private catchError(msg: KlasaMessage, err: Error) {
 		// Build warning message
 		let acceptWarn = stripIndents`

@@ -25,12 +25,9 @@ export default class SelfAssignableRolesCommand extends Command {
 			],
 			description: 'Used to configure the self-assignable roles feature.',
 			extendedHelp: stripIndents`
-				syntax: \`!sar <add|remove> @roleMention\`
-
+				**Subcommand Usage**:
 				\`add <@roleMention>\` - adds the role to the list of self-assignable-roles.
 				\`remove <@roleMention>\` - removes the role from the list of self-assignable-roles.
-
-				\`MANAGE_ROLES\` permission required.
 			`,
 			name: 'self-assignable-roles',
 			permissionLevel: 2,
@@ -60,11 +57,11 @@ export default class SelfAssignableRolesCommand extends Command {
 		}).setTimestamp();
 
 		let guildAssignableRoles: string[] = await msg.guild.settings.get('assignableRoles');
-		
+
 		if (!Array.isArray(guildAssignableRoles)) {
 			guildAssignableRoles = [];
 		}
-		
+
 		if (!guildAssignableRoles.includes(role.id)) {
 			guildAssignableRoles.push(role.id);
 
@@ -78,13 +75,13 @@ export default class SelfAssignableRolesCommand extends Command {
 
 					return this.sendSuccess(msg, roleEmbed);
 				})
-				.catch((err: Error) => this.catchError(msg, {subCommand: 'add', role: role}, err));
-		} else {	
+				.catch((err: Error) => this.catchError(msg, { subCommand: 'add', role: role }, err));
+		} else {
 
 			return sendSimpleEmbeddedError(msg, `${role.name} is already in the list of assignable roles for this guild.`, 3000);
 		}
 	}
-	
+
 	public async remove(msg: KlasaMessage, [role]): Promise<KlasaMessage | KlasaMessage[]> {
 		const roleEmbed = new MessageEmbed({
 			author: {
@@ -98,7 +95,7 @@ export default class SelfAssignableRolesCommand extends Command {
 		}).setTimestamp();
 
 		let guildAssignableRoles: string[] = await msg.guild.settings.get('assignableRoles');
-		
+
 		if (!Array.isArray(guildAssignableRoles)) {
 			guildAssignableRoles = [];
 		}
@@ -116,13 +113,13 @@ export default class SelfAssignableRolesCommand extends Command {
 
 					return this.sendSuccess(msg, roleEmbed);
 				})
-				.catch((err: Error) => this.catchError(msg, {subCommand: 'remove', role: role}, err));
+				.catch((err: Error) => this.catchError(msg, { subCommand: 'remove', role: role }, err));
 		} else {
 
 			return sendSimpleEmbeddedError(msg, `Could not find role with name ${role.name} in the list of assignable roles for this guild.`, 3000);
 		}
 	}
-	
+
 	private catchError(msg: KlasaMessage, args: any, err: Error) {
 		// Build warning message
 		let roleWarn = stripIndents`
@@ -144,11 +141,11 @@ export default class SelfAssignableRolesCommand extends Command {
 				break;
 			}
 		}
-		
+
 		roleWarn += `**Error Message:** ${err}`;
-		
+
 		msg.client.emit('warn', roleWarn);
-		
+
 		// Emit warn event for debugging
 
 		// Inform the user the command failed
