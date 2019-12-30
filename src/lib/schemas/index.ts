@@ -1,2 +1,2 @@
 // export * from './guild';
-export * from './permissionLevels';
+export * from './permission-levels';

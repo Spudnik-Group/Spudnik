@@ -1,6 +1,6 @@
-import { KlasaClient, CommandStore, KlasaMessage, Command } from "klasa";
-import { getEmbedColor, sendSimpleEmbeddedError } from "../../lib/helpers";
-import { MessageEmbed } from "discord.js";
+import { KlasaClient, CommandStore, KlasaMessage, Command } from 'klasa';
+import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
+import { MessageEmbed } from 'discord.js';
 import axios from 'axios';
 
 /**

@@ -20,7 +20,7 @@ export default class EnableCommand extends Command {
             guarded: true,
             name: 'enable',
             permissionLevel: 6, // MANAGE_GUILD
-            usage: '<cmdOrCat:command|string>'
+            usage: '<cmdOrCat:command|cmdOrCat:string>'
         });
 
         this.createCustomResolver('cmdOrCat', commandOrCategory)
@@ -50,7 +50,7 @@ export default class EnableCommand extends Command {
                 .filter(path => fs.statSync(`commands/${path}`).isDirectory());
             const parsedGroup: string = cmdOrCat.toLowerCase();
 
-            if (!isCommandCategoryEnabled(msg, cmdOrCat)) {
+            if (isCommandCategoryEnabled(msg, cmdOrCat)) {
                 return sendSimpleEmbeddedError(msg,
                     `The \`${cmdOrCat}\` category is already enabled.`, 3000);
             } else if (groups.find((g: string) => g === parsedGroup)) {
@@ -67,7 +67,7 @@ export default class EnableCommand extends Command {
             }
         } else {
             // command
-            if (!isCommandEnabled(msg, cmdOrCat)) {
+            if (isCommandEnabled(msg, cmdOrCat)) {
                 return sendSimpleEmbeddedError(msg, `The \`${cmdOrCat.name}\` command is already enabled.`, 3000);
             } else {
                 await msg.guild.settings.update('disabledCommands', cmdOrCat.name.toLowerCase(), msg.guild);

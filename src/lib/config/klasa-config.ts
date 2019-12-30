@@ -1,6 +1,6 @@
 import { Client, KlasaClientOptions } from 'klasa';
 import { SpudConfig } from './spud-config';
-import { permissionLevels } from '../schemas/permissionLevels';
+import { permissionLevels } from '../schemas/permission-levels';
 
 /**
  * The following are all client options for Klasa/Discord.js.
@@ -114,12 +114,9 @@ export const KlasaConfig: KlasaClientOptions = {
 			enabled: true,
 			guarded: false,
 			nsfw: false,
-			permissionLevel: 0,
 			promptLimit: 0,
 			promptTime: 30000,
 			quotedStringSupport: true,
-			requiredPermissions: 0,
-			requiredSettings: [],
 			runIn: ['text'],
 			subcommands: false,
 			usage: '',

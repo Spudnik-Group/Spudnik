@@ -127,7 +127,8 @@ module.exports = {
                         "check-else",
                         "check-open-brace",
                         "check-whitespace"
-                    ]
+					],
+					"comment-format": false
                 }
             }
         ]

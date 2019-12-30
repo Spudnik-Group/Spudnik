@@ -1,5 +1,5 @@
-import { KlasaClient, CommandStore, KlasaMessage, Command } from "klasa";
-import { sendSimpleEmbeddedMessage } from "../../lib/helpers";
+import { KlasaClient, CommandStore, KlasaMessage, Command } from 'klasa';
+import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 /**
  * Provides links to suggest features, submit bugs, or email the devs.

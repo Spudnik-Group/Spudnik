@@ -1,15 +1,5 @@
-/**
- * Copyright 2019 - Spudnik Group
- *
- * @summary Add/remove a user/guild to/from the blacklist
- * @author Spudnik Group <comrades@spudnik.io> (https://spudnik.io)
- *
- * Created at     : 2019-08-30 11:40:59 
- * Last modified  : 2019-09-06 11:46:38
- */
-
-import { KlasaClient, CommandStore, KlasaMessage, Command } from "klasa";
-import { User } from "discord.js";
+import { KlasaClient, CommandStore, KlasaMessage, Command } from 'klasa';
+import { User } from 'discord.js';
 
 /**
  * Add/remove a user/guild to/from the blacklist
@@ -24,9 +14,9 @@ export default class BlacklistCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: (language: any) => language.get('COMMAND_BLACKLIST_DESCRIPTION'),
-			hidden: true,
 			guarded: true,
-			permissionLevel: 10, // BOT OWNER
+			hidden: true,
+			permissionLevel: 9, // BOT OWNER
 			usage: '<User:user|Guild:guild|guild:string> [...]'
 		});
 	}

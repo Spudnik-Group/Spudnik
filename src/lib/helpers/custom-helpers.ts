@@ -11,7 +11,7 @@ import { KlasaMessage, Command } from 'klasa';
  * @returns number
  */
 export const getEmbedColor = (msg: KlasaMessage): number => {
-	let embedColor: number = parseInt(msg.guild.settings.get('embedColor'), 16) || 555555;
+	let embedColor: number = parseInt(msg.guild.settings.get('embedColor'), 16);
 
 	// This shouldn't happen, but if it does, return the default embed color
 	if (embedColor > parseInt('FFFFFF', 16) || embedColor < 0) {
@@ -31,7 +31,7 @@ export const getEmbedColor = (msg: KlasaMessage): number => {
  */
 export const modLogMessage = (msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> | null => {
 	const guild = msg.guild;
-	const outChannelID = guild.settings.get('modlogChannel') || null;
+	const outChannelID = guild.settings.get('modlog.channel');
 	const outChannel = (msg.guild.channels.get(outChannelID) as TextChannel);
 
 	if (!guild.settings.get('hasSentModLogMessage')) {
@@ -42,7 +42,7 @@ export const modLogMessage = (msg: KlasaMessage, embed: MessageEmbed): Promise<K
 		guild.settings.update('hasSentModLogMessage', true, guild);
 	}
 
-	return outChannelID && guild.settings.get('modlogEnabled')
+	return outChannelID && guild.settings.get('modlog.enabled')
 		? outChannel.sendEmbed(new MessageEmbed(embed))
 		: null;
 }
@@ -59,7 +59,7 @@ export const getPermissionsFromLevel = (permissionsLevel: number): string => {
 		'GUILD OWNER',
 		'',
 		'BOT OWNER',
-		'BOT OWNER',
+		'BOT OWNER'
 	];
 
 	return permissionLevels[permissionsLevel];

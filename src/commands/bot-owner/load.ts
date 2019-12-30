@@ -1,13 +1,3 @@
-/**
- * Copyright 2019 - Spudnik Group
- *
- * @summary Loads a command.
- * @author Spudnik Group <comrades@spudnik.io> (https://spudnik.io)
- *
- * Created at     : 2019-08-30 11:46:55 
- * Last modified  : 2019-09-06 11:47:06
- */
-
 import { Command, KlasaClient, CommandStore, KlasaMessage, Stopwatch } from 'klasa';
 import { join } from 'path';
 import { pathExists } from 'fs-nextra';
@@ -26,8 +16,8 @@ export default class LoadCommandCommand extends Command {
 		super(client, store, file, directory, {
 			aliases: ['l'],
 			description: language => language.get('COMMAND_LOAD_DESCRIPTION'),
-			hidden: true,
 			guarded: true,
+			hidden: true,
 			permissionLevel: 10, // BOT OWNER
 			usage: '[core] <Store:store> <path:...string>'
 		});
@@ -59,6 +49,7 @@ export default class LoadCommandCommand extends Command {
 					}
 				`);
 			}
+
 			return message.sendLocale('COMMAND_LOAD', [timer.stop(), store.name, piece.name]);
 		} catch (error) {
 			timer.stop();
@@ -68,6 +59,7 @@ export default class LoadCommandCommand extends Command {
 
 	async tryEach(store: any, path: string) {
 		for (const dir of store.coreDirectories) if (await pathExists(join(dir, ...path))) return store.load(dir, path);
+		
 		return undefined;
 	}
 }

@@ -24,12 +24,12 @@ Client.defaultGuildSchema
 	.add('welcome', folder => folder
 		.add('enabled', 'boolean', { default: false })
 		.add('channel', 'TextChannel')
-		.add('message', 'string', { default: `@here, please Welcome {user} to {guild}!` })
+		.add('message', 'string', { default: '@here, please Welcome {user} to {guild}!' })
 	)
 	.add('goodbye', folder => folder
 		.add('enabled', 'boolean', { default: false })
 		.add('channel', 'TextChannel')
-		.add('message', 'string', { default: `{user} has left the server.` })
+		.add('message', 'string', { default: '{user} has left the server.' })
 	)
 	.add('modlog', folder => folder
 		.add('channel', 'TextChannel')

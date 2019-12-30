@@ -1,13 +1,3 @@
-/**
- * Copyright 2019 - Spudnik Group
- *
- * @summary Unloads a command.
- * @author Spudnik Group <comrades@spudnik.io> (https://spudnik.io)
- *
- * Created at     : 2019-08-30 11:48:41 
- * Last modified  : 2019-09-06 11:47:58
- */
-
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
@@ -22,8 +12,8 @@ export default class UnloadCommandCommand extends Command {
 		super(client, store, file, directory, {
 			aliases: ['unload-command', 'u'],
 			description: 'Unloads a command.',
-			hidden: true,
 			guarded: true,
+			hidden: true,
 			name: 'unload',
 			permissionLevel: 10, // BOT OWNER
 			usage: '<Piece:piece>'
@@ -52,6 +42,7 @@ export default class UnloadCommandCommand extends Command {
 			} catch (err) {
 				this.client.emit('warn', 'Error when broadcasting command unload to other shards');
 				this.client.emit('error', err);
+				
 				return msg.sendMessage(`Unloaded \`${piece.name}\` command, but failed to unload on other shards.`);
 			}
 		}

@@ -1,7 +1,7 @@
-import { Command, Possible, KlasaMessage } from "klasa";
+import { Command, Possible, KlasaMessage } from 'klasa';
 import * as fs from 'fs';
-import { standardPlatforms } from "../constants/game-platforms";
-import { list, resolveChannel } from "./helpers";
+import { standardPlatforms } from '../constants/game-platforms';
+import { list, resolveChannel } from './helpers';
 
 export const hexColor = (color) => {
     if (!color) return;
@@ -15,12 +15,12 @@ export const hexColor = (color) => {
 export const commandOrCategory = (cmdOrCategory) => {
     if (!cmdOrCategory) throw 'Please provide a valid command or command category name';
     const command = this.client.commands.array().find((command: Command) => command.name.toLowerCase() === cmdOrCategory.toLowerCase());
-    if (command) return cmdOrCategory; // valid command name
+    if (command) return cmdOrCategory; // Valid command name
 
     const categories: any[] = fs.readdirSync('commands')
         .filter(path => fs.statSync(`commands/${path}`).isDirectory());
     const category = categories.find(category => category === cmdOrCategory.toLowerCase());
-    if (category) return cmdOrCategory; // valid category name
+    if (category) return cmdOrCategory; // Valid category name
 
     throw 'Please provide a valid command or command category name';
 }
