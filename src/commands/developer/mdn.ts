@@ -58,6 +58,7 @@ export default class MdnReferenceCommand extends Command {
 			}
 			const firstRes = response.documents[0];
 
+			// TODO: convert this to return a list of results, allow the user to choose an item to display
 			mdnEmbed
 				.setTitle(firstRes.title)
 				.setURL(firstRes.url)
@@ -69,8 +70,8 @@ export default class MdnReferenceCommand extends Command {
 					${response.documents.slice(1, 4).map(({ url, slug }: any, index: any) => `${index + 1}) [${slug}](${url})`).join('\n')}` : ''}
 	
 	
-					__Tag${firstRes.tags.length === 1 ? '' : 's'}__:
-					${firstRes.tags.join(', ')}
+					${firstRes.tags ? `__Tag${firstRes.tags.length === 1 ? '' : 's'}__:
+					${firstRes.tags.join(', ')}` : ''}
 				`)
 				.setFooter(`${response.count} documents found for "${query}". ${response.count < 1 ? '' : `Showing results 1 to ${response.documents.length < 5 ? response.documents.length : '4'}`} | Article ID: ${response.documents[0].id}`)
 

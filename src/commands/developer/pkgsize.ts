@@ -1,10 +1,12 @@
-import { Command, KlasaClient, CommandStore } from "klasa";
+import { Command, KlasaClient, CommandStore, KlasaMessage } from "klasa";
 import axios from 'axios';
 import { stripIndents } from "common-tags";
+import { MessageEmbed } from "discord.js";
 
 const suffixes = ['Bytes', 'KB', 'MB', 'GB'];
 const getBytes = (bytes) => {
 	const i = Math.floor(Math.log(bytes) / Math.log(1024));
+
 	return (!bytes && '0 Bytes') || `${(bytes / Math.pow(1024, i)).toFixed(2)} ${suffixes[i]}`;
 };
 
@@ -16,16 +18,18 @@ export default class extends Command {
 		});
 	}
 
-	async run(msg, [name]) {
+	async run(msg: KlasaMessage, [name]) {
 		const { data } = await axios(`https://packagephobia.now.sh/api.json?p=${encodeURIComponent(name)}`);
 		const { publishSize, installSize } = data;
 		if (!publishSize && !installSize) throw 'That package doesn\'t exist.';
 
-		return msg.send(stripIndents`
-			<https://www.npmjs.com/package/${name}>
+		return msg.sendEmbed(new MessageEmbed()
+			.setDescription(stripIndents`
+				<https://www.npmjs.com/package/${name}>
 
-			**Publish Size:** ${getBytes(publishSize)}
-			**Install Size:** ${getBytes(installSize)}
-		`);
+				**Publish Size:** ${getBytes(publishSize)}
+				**Install Size:** ${getBytes(installSize)}
+			`)
+		);
 	}
 };
