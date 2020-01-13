@@ -4,9 +4,9 @@ import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 import { SteamGames } from '../../lib/constants';
 
-const steamGameNames = Object.entries(SteamGames).map(item => {
-	return `* ${item}\n`
-});
+const steamGameNames = Object.keys(SteamGames).map(item => {
+	return `* ${item}`
+}).join('\n');
 
 /**
  * Displays a link to launch a steam game.
@@ -38,8 +38,8 @@ export default class GoCommand extends Command {
 	 * @memberof GoCommand
 	 */
 	public async run(msg: KlasaMessage, [game]): Promise<KlasaMessage | KlasaMessage[]> {
-		if (Object.entries(SteamGames).indexOf(game.toUpperCase()) === -1) {
-			return sendSimpleEmbeddedError(msg, `Sorry, only a few games are supported at this time: \n ${steamGameNames}`, 3000);
+		if (Object.keys(SteamGames).indexOf(game.toUpperCase()) === -1) {
+			return sendSimpleEmbeddedError(msg, `Sorry, only a few games are supported at this time: \n ${steamGameNames}`, 5000);
 		}
 		const gameID = SteamGames[game.toUpperCase()];
 

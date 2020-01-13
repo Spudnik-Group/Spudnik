@@ -1,11 +1,12 @@
-import axios from "axios";
-import { Command, KlasaClient, CommandStore } from "klasa";
-import { MessageEmbed } from "discord.js";
-import { stripIndents } from "common-tags";
+import axios from 'axios';
+import { Command, KlasaClient, CommandStore } from 'klasa';
+import { MessageEmbed } from 'discord.js';
+import { stripIndents } from 'common-tags';
 
 const suffixes = ['Bytes', 'KB', 'MB'];
 const getBytes = (bytes) => {
 	const i = Math.floor(Math.log(bytes) / Math.log(1024));
+
 	return (!bytes && '0 Bytes') || `${(bytes / Math.pow(1024, i)).toFixed(2)} ${suffixes[i]}`;
 };
 
@@ -30,17 +31,22 @@ export default class extends Command {
 			.setDescription(stripIndents`
 				${crate.description}
 
-				[Documentation](${crate.documentation}) - [Repository](${crate.repository})
+				${crate.documentation ? `[Documentation](${crate.documentation})` : ''} - ${crate.repository ? `[Repository](${crate.repository})` : ''}
 			`)
 			.addField('Total Downloads', crate.downloads.toLocaleString(), true)
-			.addField('Categories', crate.categories.join(', '), true)
-			.addField('Keywords', crate.keywords.join(', '), true)
 			.addField('Latest Version', stripIndents`
 				**Number:** ${latest.num}
 				**Size:** ${getBytes(latest.crate_size)}
 				**Downloads:** ${latest.downloads.toLocaleString()}
 				**License:** ${latest.license}
 			`, true);
+
+		if (crate.categories.length) {
+			embed.addField('Categories', crate.categories.join(', '), true);
+		}
+		if (crate.keywords.length) {
+			embed.addField('Keywords', crate.keywords.join(', '), true);
+		}
 
 		return msg.sendEmbed(embed);
 	}
