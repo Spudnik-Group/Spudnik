@@ -25,7 +25,7 @@ export default class RoleCommand extends Command {
 			permissionLevel: 2, // MANAGE_ROLES
 			requiredPermissions: ['MANAGE_ROLES'],
 			subcommands: true,
-			usage: '<add|remove> <name:Role|string> [color:string]'
+			usage: '<add|remove> <name:Role|name:string> [color:color]'
 		});
 
 		this.createCustomResolver('color', hexColor);

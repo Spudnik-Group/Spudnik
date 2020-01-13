@@ -18,12 +18,12 @@ export default class DeleteCommandMessagesCommand extends Command {
 			aliases: [
 				'deletecommandmessages'
 			],
-			requiredPermissions: ['MANAGE_MESSAGES'],
 			description: 'Enable or disable the Delete Command Messages feature.',
 			name: 'delete-command-messages',
 			permissionLevel: 1, // MANAGE_MESSAGES
-			usage: '<on|off>',
-			subcommands: true
+			requiredPermissions: ['MANAGE_MESSAGES'],
+			subcommands: true,
+			usage: '<on|off>'
 		});
 	}
 

@@ -110,6 +110,7 @@ export default class AdblockCommand extends Command {
 
 	private sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
 		modLogMessage(msg, embed);
+		
 		// Send the success response
 		return msg.sendEmbed(embed);
 	}
