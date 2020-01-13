@@ -33,16 +33,8 @@ export default class Base64DecodeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		})
-			.addField({
-				inline: false,
-				name: 'Input:',
-				value: `${stringToDecode}`
-			}, false)
-			.addField({
-				inline: false,
-				name: 'Output:',
-				value: `${Convert.base64decode(stringToDecode)}`
-			}, false);
+			.addField('Input:', stringToDecode)
+			.addField('Output:', Convert.base64decode(stringToDecode));
 
 		return msg.sendEmbed(returnMessage);
 	}

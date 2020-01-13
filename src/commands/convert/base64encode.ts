@@ -15,7 +15,7 @@ export default class Base64EncodeCommand extends Command {
 		super(client, store, file, directory, {
 			description: 'Base64 encodes a string',
 			name: 'base64encode',
-			usage: '<stringToEncode:string>'
+			usage: '<stringToEncode:...string>'
 		});
 	}
 
@@ -27,22 +27,17 @@ export default class Base64EncodeCommand extends Command {
 	 * @memberof Base64EncodeCommand
 	 */
 	public async run(msg: KlasaMessage, [stringToEncode]): Promise<KlasaMessage | KlasaMessage[]> {
+		console.log(stringToEncode);
+		console.log(Convert.base64encode(stringToEncode));
+
 		const returnMessage = new MessageEmbed({
 			author: {
 				name: 'Base64 Encoded String:'
 			},
 			color: getEmbedColor(msg)
 		})
-			.addField({
-				inline: false,
-				name: 'Input:',
-				value: `${stringToEncode}`
-			}, false)
-			.addField({
-				inline: false,
-				name: 'Output:',
-				value: `${Convert.base64encode(stringToEncode)}`
-			}, false);
+			.addField('Input:', stringToEncode)
+			.addField('Output:', Convert.base64encode(stringToEncode));
 
 		return msg.sendEmbed(returnMessage);
 	}

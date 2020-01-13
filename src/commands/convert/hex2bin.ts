@@ -26,6 +26,7 @@ export default class Hex2BinCommand extends Command {
 	 * @memberof Hex2BinCommand
 	 */
 	public async run(msg: KlasaMessage, [numberToConvert]): Promise<KlasaMessage | KlasaMessage[]> {
+		numberToConvert = numberToConvert['input'];
 		numberToConvert = !numberToConvert.toLowerCase().startsWith('0x') ? `0x${numberToConvert.toUpperCase()}` : `0x${numberToConvert.toLowerCase().replace('0x', '').toUpperCase()}`;
 
 		return sendSimpleEmbeddedMessageWithAuthor(msg, `${numberToConvert} = ${Convert.hex2bin(numberToConvert)}`, { name: 'Hexadecimal to Binary Conversion:' });

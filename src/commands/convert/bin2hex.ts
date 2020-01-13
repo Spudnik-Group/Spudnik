@@ -14,7 +14,7 @@ export default class Bin2HexCommand extends Command {
 		super(client, store, file, directory, {
 			description: 'Converts binary to decimal',
 			name: 'bin2hex',
-			usage: '<numberToConvert:regex/\\/^[0-1]+$/>'
+			usage: '<numberToConvert:regex/^[0-1]+$/>'
 		});
 	}
 
