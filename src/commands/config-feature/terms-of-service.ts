@@ -3,7 +3,7 @@ import { Channel, MessageEmbed } from 'discord.js';
 import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, resolveChannel } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 import { Command, KlasaClient, CommandStore, KlasaMessage, Possible } from 'klasa';
-// import * as markdownescape from 'markdown-escape';
+import * as markdownescape from 'markdown-escape';
 import { ITOSMessage } from '../../lib/interfaces';
 
 /**
@@ -105,8 +105,6 @@ export default class TermsOfServiceCommand extends Command {
 			return false;
 		});
 
-		console.log(`item index ${itemIndex}`);
-
 		const tosEmbedUpsertMessage = existingTosMessage ? 'updated' : 'added';
 
 		if (existingTosMessage) {
@@ -128,7 +126,6 @@ export default class TermsOfServiceCommand extends Command {
 				return this.catchError(msg, { subCommand: 'title', item, ...text }, err);
 			}
 		} else {
-			// TODO: enforce that "item" is the next index of the array of TOS messages
 			existingTosMessage = {
 				title: text,
 				id: item,
@@ -154,11 +151,99 @@ export default class TermsOfServiceCommand extends Command {
 	}
 
 	public async body(msg: KlasaMessage, [item, ...text]): Promise<KlasaMessage | KlasaMessage[]> {
-		return null;
+		const tosEmbed: MessageEmbed = new MessageEmbed({
+			author: {
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/ballot-box-with-check_2611.png',
+				name: 'Terms of Service'
+			},
+			color: getEmbedColor(msg)
+		});
+		let itemIndex: number = null;
+		const tosMessages = await msg.guild.settings.get('tos.messages');
+		let existingTosMessage = tosMessages.find((message, index) => {
+			if(Number(message.id) === Number(item)){
+				itemIndex = index;
+				return true;
+			}
+
+			return false;
+		});
+
+		const tosEmbedUpsertMessage = existingTosMessage ? 'updated' : 'added';
+
+		if (existingTosMessage) {
+			try {
+				existingTosMessage.body = text;
+
+				await msg.guild.settings.update('tos.messages', existingTosMessage, null, { arrayPosition: itemIndex });
+
+				tosEmbed
+					.setDescription(stripIndents`
+						**Member:** ${msg.author.tag} (${msg.author.id})
+						**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
+					`)
+					.setFooter('Use the `tos status` command to see the details of this feature')
+					.setTimestamp();
+
+				return this.sendSuccess(msg, tosEmbed);
+			} catch (err) {
+				return this.catchError(msg, { subCommand: 'title', item, ...text }, err);
+			}
+		} else {
+			existingTosMessage = {
+				title: '',
+				id: item,
+				body: text
+			}
+
+			try {
+				await msg.guild.settings.update('tos.messages', existingTosMessage, null, { arrayPosition: itemIndex });
+				
+				tosEmbed
+					.setDescription(stripIndents`
+						**Member:** ${msg.author.tag} (${msg.author.id})
+						**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
+					`)
+					.setFooter('Use the `tos status` command to see the details of this feature')
+					.setTimestamp();
+
+				return this.sendSuccess(msg, tosEmbed);
+			} catch (err) {
+				return this.catchError(msg, { subCommand: 'title', item, ...text }, err);
+			}
+		}
 	}
 
 	public async get(msg: KlasaMessage, [item, ...text]): Promise<KlasaMessage | KlasaMessage[]> {
-		return null;
+		const tosEmbed: MessageEmbed = new MessageEmbed({
+			author: {
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/ballot-box-with-check_2611.png',
+				name: 'Terms of Service'
+			},
+			color: getEmbedColor(msg)
+		});
+		const tosMessage: ITOSMessage = await msg.guild.settings.get('tos.messages').find((message, index) => {
+			if(Number(message.id) === Number(item)){
+				return true;
+			}
+
+			return false;
+		});
+
+		if(tosMessage){
+			tosEmbed
+				.setDescription(stripIndents`
+					**ID:** ${tosMessage.id}
+					**Title:** ${tosMessage.title}
+					**Body:** ${(text.toString().toLowerCase() === 'raw') ? markdownescape(tosMessage.body.toString()) : tosMessage.body.toString()}
+				`)
+				.setFooter('Use the `tos status` command to see the details of this feature')
+				.setTimestamp();
+
+			return this.sendSuccess(msg, tosEmbed);
+		} else {
+
+		}
 	}
 
 	public async list(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
@@ -170,14 +255,15 @@ export default class TermsOfServiceCommand extends Command {
 			color: getEmbedColor(msg)
 		});
 		const tosChannel: string = await msg.guild.settings.get('tos.channel');
-		const tosMessages: ITOSMessage[] = await msg.guild.settings.get('tos.messages');
+		const tosMessages: ITOSMessage[] = await msg.guild.settings.get('tos.messages').sort((a, b) => a.id - b.id);
+
+		console.log(tosMessages);
 
 		if (tosChannel && tosChannel === msg.channel.id) {
-			if (tosMessages && tosMessages.length) {
+			if (tosMessages && tosMessages.length > 0) {
 				tosMessages.forEach((message) => {
-					tosEmbed.author.name = message.title;
-					tosEmbed.author.iconURL = undefined;
-					tosEmbed.description = message.body;
+					tosEmbed.author.name = `${message.title}`;
+					tosEmbed.description = `${message.body}`;
 
 					return msg.sendEmbed(tosEmbed);
 				});
@@ -204,7 +290,7 @@ export default class TermsOfServiceCommand extends Command {
 			color: getEmbedColor(msg)
 		});
 		const tosChannel: string = await msg.guild.settings.get('tos.channel');
-		const tosMessages = await msg.guild.settings.get('tos.messages');
+		const tosMessages: ITOSMessage[] = await msg.guild.settings.get('tos.messages').sort((a, b) => a.id - b.id);
 		console.log(tosMessages);
 
 		tosEmbed.description = `Channel: ${tosChannel ? `<#${tosChannel}>` : 'None set.'}\nMessage List:\n`;
@@ -212,7 +298,7 @@ export default class TermsOfServiceCommand extends Command {
 			let tosList = '';
 
 			tosMessages.forEach((message, index) => {
-				tosList += `${index + 1} - ${message.title}\n`;
+				tosList += `${message.id} - ${message.title}\n`;
 			});
 			// TODO: change this to better output messages, this could overload the embed character limit
 			tosEmbed.description += `\`\`\`${tosList}\`\`\``;
