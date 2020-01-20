@@ -3,7 +3,7 @@ import { Channel, MessageEmbed } from 'discord.js';
 import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, resolveChannel } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 import { Command, KlasaClient, CommandStore, KlasaMessage, Possible } from 'klasa';
-import * as markdownescape from 'markdown-escape';
+// import * as markdownescape from 'markdown-escape';
 import { ITOSMessage } from '../../lib/interfaces';
 
 /**
@@ -30,7 +30,7 @@ export default class TermsOfServiceCommand extends Command {
 			name: 'tos',
 			permissionLevel: 6, // MANAGE_GUILD
 			subcommands: true,
-			usage: '<channel|title|body|get|list|status> (item:item) (...text:text)'
+			usage: '<channel|title|body|get|list|status> [item:item] [text:...string]'
 		});
 
 		this
@@ -46,8 +46,8 @@ export default class TermsOfServiceCommand extends Command {
 				if (subCommand === 'get' && (['true', 'false', 't', 'f'].includes(arg))) throw 'Please supply a valid boolean option for `raw` option.';
 
 				// Check text length against Discord embed limits
-				if (subCommand === 'title' && arg.length > 256) throw 'Discord message embed titles are limited to 256 characters, Please supply a shorter title';
-				if (subCommand === 'body' && arg.length > 2048) throw 'Discord message embed bodies are limited to 2048 characters, Please supply a shorter body';
+				if (subCommand === 'title' && arg.length > 256) throw 'Discord message embed titles are limited to 256 characters; please supply a shorter title.';
+				if (subCommand === 'body' && arg.length > 2048) throw 'Discord message embed bodies are limited to 2048 characters; please supply a shorter body.';
 
 				return arg;
 			});
@@ -63,8 +63,6 @@ export default class TermsOfServiceCommand extends Command {
 		});
 		const tosChannel: string = await msg.guild.settings.get('tos.channel');
 		const newTosChannel = msg.guild.channels.get(resolveChannel(item));
-
-		console.log(tosChannel, item);
 
 		if (tosChannel && newTosChannel && tosChannel === newTosChannel.id) {
 			return sendSimpleEmbeddedMessage(msg, `Terms of Service channel already set to ${item}!`, 3000);
@@ -88,7 +86,7 @@ export default class TermsOfServiceCommand extends Command {
 		}
 	}
 
-	public async title(msg: KlasaMessage, [item, text]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async title(msg: KlasaMessage, [item, ...text]): Promise<KlasaMessage | KlasaMessage[]> {
 		const tosEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/ballot-box-with-check_2611.png',
@@ -96,27 +94,38 @@ export default class TermsOfServiceCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		});
-		const itemIndex = Number(item);
-		const tosMessages: ITOSMessage[] = await msg.guild.settings.get('tos.messages');
-		let existingTosMessage = tosMessages.find(item => item.id === itemIndex);
+		let itemIndex: number = null;
+		const tosMessages = await msg.guild.settings.get('tos.messages');
+		let existingTosMessage = tosMessages.find((message, index) => {
+			if(Number(message.id) === Number(item)){
+				itemIndex = index;
+				return true;
+			}
+
+			return false;
+		});
+
+		console.log(`item index ${itemIndex}`);
+
 		const tosEmbedUpsertMessage = existingTosMessage ? 'updated' : 'added';
 
 		if (existingTosMessage) {
 			try {
 				existingTosMessage.title = text;
-				await msg.guild.settings.update('tos.messages', existingTosMessage, { action: 'overwrite', force: true });
+
+				await msg.guild.settings.update('tos.messages', existingTosMessage, null, { arrayPosition: itemIndex });
 
 				tosEmbed
 					.setDescription(stripIndents`
-					**Member:** ${msg.author.tag} (${msg.author.id})
-					**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
-				`)
+						**Member:** ${msg.author.tag} (${msg.author.id})
+						**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
+					`)
 					.setFooter('Use the `tos status` command to see the details of this feature')
 					.setTimestamp();
 
 				return this.sendSuccess(msg, tosEmbed);
 			} catch (err) {
-				return this.catchError(msg, { subCommand: 'title', item, text }, err);
+				return this.catchError(msg, { subCommand: 'title', item, ...text }, err);
 			}
 		} else {
 			// TODO: enforce that "item" is the next index of the array of TOS messages
@@ -127,109 +136,29 @@ export default class TermsOfServiceCommand extends Command {
 			}
 
 			try {
-				await msg.guild.settings.update('tos.messages', existingTosMessage, msg.guild);
-
+				await msg.guild.settings.update('tos.messages', existingTosMessage, null, { arrayPosition: itemIndex });
+				
 				tosEmbed
 					.setDescription(stripIndents`
-					**Member:** ${msg.author.tag} (${msg.author.id})
-					**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
-				`)
+						**Member:** ${msg.author.tag} (${msg.author.id})
+						**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
+					`)
 					.setFooter('Use the `tos status` command to see the details of this feature')
 					.setTimestamp();
 
 				return this.sendSuccess(msg, tosEmbed);
 			} catch (err) {
-				return this.catchError(msg, { subCommand: 'title', item, text }, err);
+				return this.catchError(msg, { subCommand: 'title', item, ...text }, err);
 			}
 		}
 	}
 
-	public async body(msg: KlasaMessage, [item, text]): Promise<KlasaMessage | KlasaMessage[]> {
-		const tosEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/ballot-box-with-check_2611.png',
-				name: 'Terms of Service'
-			},
-			color: getEmbedColor(msg)
-		});
-		const itemIndex = Number(item);
-		const tosMessages: ITOSMessage[] = await msg.guild.settings.get('tos.messages');
-		let existingTosMessage = tosMessages.find(item => item.id === itemIndex);
-		const tosEmbedUpsertMessage = existingTosMessage ? 'updated' : 'added';
-
-		if (existingTosMessage) {
-			try {
-				existingTosMessage.body = text;
-				await msg.guild.settings.update('tos.messages', existingTosMessage, { action: 'overwrite', force: true });
-
-				tosEmbed
-					.setDescription(stripIndents`
-					**Member:** ${msg.author.tag} (${msg.author.id})
-					**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
-				`)
-					.setFooter('Use the `tos status` command to see the details of this feature')
-					.setTimestamp();
-
-				return this.sendSuccess(msg, tosEmbed);
-			} catch (err) {
-				return this.catchError(msg, { subCommand: 'body', item, text }, err);
-			}
-		} else {
-			// TODO: enforce that "item" is the next index of the array of TOS messages
-			existingTosMessage = {
-				title: '',
-				id: item,
-				body: text
-			}
-
-			try {
-				await msg.guild.settings.update('tos.messages', existingTosMessage, msg.guild);
-
-				tosEmbed
-					.setDescription(stripIndents`
-					**Member:** ${msg.author.tag} (${msg.author.id})
-					**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
-				`)
-					.setFooter('Use the `tos status` command to see the details of this feature')
-					.setTimestamp();
-
-				return this.sendSuccess(msg, tosEmbed);
-			} catch (err) {
-				return this.catchError(msg, { subCommand: 'body', item, text }, err);
-			}
-		}
+	public async body(msg: KlasaMessage, [item, ...text]): Promise<KlasaMessage | KlasaMessage[]> {
+		return null;
 	}
 
-	public async get(msg: KlasaMessage, [item, raw]): Promise<KlasaMessage | KlasaMessage[]> {
-		const tosEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/ballot-box-with-check_2611.png',
-				name: 'Terms of Service'
-			},
-			color: getEmbedColor(msg)
-		});
-		const itemIndex = Number(item);
-		const tosMessages: ITOSMessage[] = await msg.guild.settings.get('tos.messages');
-		const existingTosMessage = tosMessages.find(item => item.id === itemIndex);
-
-		if (existingTosMessage) {
-			try {
-				tosEmbed
-					.setDescription(stripIndents`
-					**ID:** ${existingTosMessage.id}
-					**Title:** ${existingTosMessage.title}
-					**Body:** ${raw.toLowerCase() === 'true' ? markdownescape(existingTosMessage.body) : existingTosMessage.body}
-				`)
-					.setFooter('Use the `tos status` command to see the details of this feature')
-					.setTimestamp();
-
-				return this.sendSuccess(msg, tosEmbed);
-			} catch (err) {
-				return this.catchError(msg, { subCommand: 'get', item, raw }, err);
-			}
-		} else {
-			return sendSimpleEmbeddedError(msg, 'No TOS message with that index', 3000);
-		}
+	public async get(msg: KlasaMessage, [item, ...text]): Promise<KlasaMessage | KlasaMessage[]> {
+		return null;
 	}
 
 	public async list(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
@@ -275,7 +204,8 @@ export default class TermsOfServiceCommand extends Command {
 			color: getEmbedColor(msg)
 		});
 		const tosChannel: string = await msg.guild.settings.get('tos.channel');
-		const tosMessages: ITOSMessage[] = await msg.guild.settings.get('tos.messages');
+		const tosMessages = await msg.guild.settings.get('tos.messages');
+		console.log(tosMessages);
 
 		tosEmbed.description = `Channel: ${tosChannel ? `<#${tosChannel}>` : 'None set.'}\nMessage List:\n`;
 		if (tosMessages.length) {
