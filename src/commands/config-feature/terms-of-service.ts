@@ -62,19 +62,21 @@ export default class TermsOfServiceCommand extends Command {
 			color: getEmbedColor(msg)
 		});
 		const tosChannel: string = await msg.guild.settings.get('tos.channel');
-		const channelID = (item as Channel).id;
+		const newTosChannel = msg.guild.channels.get(resolveChannel(item));
 
-		if (tosChannel && tosChannel === channelID) {
-			return sendSimpleEmbeddedMessage(msg, `Terms of Service channel already set to <#${channelID}>!`, 3000);
+		console.log(tosChannel, item);
+
+		if (tosChannel && newTosChannel && tosChannel === newTosChannel.id) {
+			return sendSimpleEmbeddedMessage(msg, `Terms of Service channel already set to ${item}!`, 3000);
 		} else {
 			try {
-				await msg.guild.settings.update('tos.channel', channelID, msg.guild);
+				await msg.guild.settings.update('tos.channel', newTosChannel.id, msg.guild);
 
 				// Set up embed message
 				tosEmbed
 					.setDescription(stripIndents`
 						**Member:** ${msg.author.tag} (${msg.author.id})
-						**Action:** Terms of Service Channel set to <#${channelID}>
+						**Action:** Terms of Service Channel set to <#${newTosChannel.id}>
 					`)
 					.setFooter('Use the `tos status` command to see the details of this feature')
 					.setTimestamp();
