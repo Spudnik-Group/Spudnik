@@ -53,7 +53,7 @@ export default class KickCommand extends Command {
 		}
 
 		try {
-			await memberToKick.kick(`Kicked by: ${msg.author} for: ${reason}`);
+			await memberToKick.kick(`Kicked by: ${msg.author.tag} (${msg.author.id}) for: ${reason}`);
 			// Set up embed message
 			kickEmbed.setDescription(stripIndents`
 				**Moderator:** ${msg.author.tag} (${msg.author.id})

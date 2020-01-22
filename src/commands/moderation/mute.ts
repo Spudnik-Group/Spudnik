@@ -1,4 +1,4 @@
-import { Command, KlasaClient, CommandStore, Duration } from 'klasa';
+import { Command, KlasaClient, CommandStore, Duration, KlasaMessage } from 'klasa';
 import { MessageEmbed } from 'discord.js';
 import { getEmbedColor, sendSimpleEmbeddedError, modLogMessage } from '../../lib/helpers';
 import { stripIndents } from 'common-tags';
@@ -15,7 +15,7 @@ module.exports = class extends Command {
 		});
 	}
 
-	async run(msg, [when, member, reason]) {
+	async run(msg: KlasaMessage, [when, member, reason]) {
 		const muteEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/google/223/speaker-with-cancellation-stroke_1f507.png',
@@ -30,12 +30,12 @@ module.exports = class extends Command {
 			return sendSimpleEmbeddedError(msg, 'You cannot mute this user. Do they have the same or higher role than you?', 3000);
 		}
 		// Check if the mentioned user is already muted
-		if (member.roles.has(msg.guild.settings.roles.muted)) {
+		if (member.roles.has(msg.guild.settings.get('roles.muted'))) {
 			return sendSimpleEmbeddedError(msg, 'The member is already muted.', 3000);
 		}
 
 		try {
-			await member.roles.add(msg.guild.settings.roles.muted);
+			await member.roles.add(msg.guild.settings.get('roles.muted'));
 			if (when) {
 				await this.client.schedule.create('unmute', when, {
 					data: {
@@ -58,7 +58,7 @@ module.exports = class extends Command {
 				return msg.sendEmbed(muteEmbed);
 			}
 
-			return msg.sendMessage(`${member.user.tag} got muted.${reason ? ` With reason of: ${reason}` : ''}`);
+			return msg.sendMessage(`${member.user.tag} was muted.${reason ? ` With reason of: ${reason}` : ''}`);
 		} catch (err) {
 			// Emit warn event for debugging
 			msg.client.emit('warn', stripIndents`

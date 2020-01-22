@@ -54,7 +54,7 @@ export default class ListWarnsCommand extends Command {
 			guildWarnings.forEach(warning => {
 				warnEmbed.description += stripIndents`
 
-						**${warning.tag}** (${warning.id}) - ${warning.points} Points
+						<@${warning.id}> (${warning.id}) - ${warning.points} Points
 					`;
 			});
 			warnEmbed.description += '\n\n';

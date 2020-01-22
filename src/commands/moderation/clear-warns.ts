@@ -54,14 +54,23 @@ export default class ClearWarnsCommand extends Command {
 		if (guildWarnings.length) {
 			// Warnings present for current guild
 			try {
+				let memberIndex: number = null;
 				// Check for previous warnings of supplied member
-				const currentWarnings = guildWarnings.find((warning, index) => warning.id === member.id);
+				const currentWarnings = guildWarnings.find((warning, index) => {
+					if (warning.id === member.id) {
+						memberIndex = index;
 
-				if (currentWarnings) {
+						return true
+					}
+
+					return false;
+				});
+
+				if (currentWarnings && memberIndex !== null) {
 					// Previous warnings present for supplied member
 					previousPoints = currentWarnings.points;
 
-					msg.guild.settings.update('warnings', currentWarnings, { action: 'remove' });
+					msg.guild.settings.update('warnings', currentWarnings, null, { arrayPosition: memberIndex });
 					// Set up embed message
 					warnEmbed.setDescription(stripIndents`
 						**Moderator:** ${msg.author.tag} (${msg.author.id})
