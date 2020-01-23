@@ -42,48 +42,41 @@ export default class RolesCommand extends Command {
 			}
 		});
 
-		let guildAssignableRoles: string[] = await msg.guild.settings.get('roles.selfAssignable') || [];
-		let guildDefaultRoleId: string = await msg.guild.settings.get('roles.default');
-		let guildMutedRoleId: string = await msg.guild.settings.get('roles.muted');
+		let guildAssignableRoles: Role[] = await msg.guild.settings.get('roles.selfAssignable') || [];
+		let guildDefaultRole: Role = await msg.guild.settings.get('roles.default');
+		let guildMutedRole: Role = await msg.guild.settings.get('roles.muted');
 
 		if (guildAssignableRoles.length) {
 			const rolesListOut: string[] = [];
 
-			guildAssignableRoles.forEach((roleId: string) => {
-				const role = msg.guild.roles.filter((r: Role) => r.id === roleId).first();
-				if(role) rolesListOut.push(`* <@&${roleId}> - ${role.members.size} members`);
+			guildAssignableRoles.forEach(role => {
+				const r: Role = msg.guild.roles.find((r: Role) => r.id === role.toString());
+				if(r) rolesListOut.push(`* <@&${r.id}> - ${r.members.size} members`);
 			});
 
+			if(rolesListOut.length){
+				roleEmbed.fields.push({
+					inline: true,
+					name: 'Assignable Roles',
+					value: `${rolesListOut.sort().join('\n')}`
+				});
+			}
+		}
+
+		if (guildDefaultRole) {
 			roleEmbed.fields.push({
 				inline: true,
-				name: 'Assignable Roles',
-				value: `${rolesListOut.sort().join(`
-				`)}`
+				name: 'Default Role',
+				value: `<@&${guildDefaultRole}>`
 			});
 		}
 
-		if (guildDefaultRoleId) {
-			const role = msg.guild.roles.filter((r: Role) => r.id === guildDefaultRoleId).first();
-
-			if(role){
-				roleEmbed.fields.push({
-					inline: true,
-					name: 'Default Role',
-					value: `<@&${role.id}>`
-				});
-			}
-		}
-
-		if (guildMutedRoleId) {
-			const role = msg.guild.roles.filter((r: Role) => r.id === guildMutedRoleId).first();
-			
-			if(role) {
-				roleEmbed.fields.push({
-					inline: true,
-					name: 'Muted Role',
-					value: `<@&${role.id}>`
-				});
-			}
+		if (guildMutedRole) {
+			roleEmbed.fields.push({
+				inline: true,
+				name: 'Muted Role',
+				value: `<@&${guildMutedRole}>`
+			});
 		}
 
 		if (Array.isArray(roleEmbed.fields) && roleEmbed.fields.length === 0) {

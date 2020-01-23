@@ -73,7 +73,7 @@ export default class DefaultRoleCommand extends Command {
 			}
 		} else if (!guildDefaultRole || guildDefaultRole.id !== role.id) {
 			try {
-				await msg.guild.settings.update('roles.default', role.id);
+				await msg.guild.settings.update('roles.default', role, msg.guild);
 
 				// Set up embed message
 				roleEmbed.setDescription(stripIndents`

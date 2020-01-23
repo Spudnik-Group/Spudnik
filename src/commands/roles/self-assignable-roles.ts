@@ -1,5 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { MessageEmbed } from 'discord.js';
+import { MessageEmbed, Role } from 'discord.js';
 import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
@@ -63,11 +63,11 @@ export default class SelfAssignableRolesCommand extends Command {
 		}
 
 		if (!guildAssignableRoles.includes(role.id)) {
-			guildAssignableRoles.push(role.id);
+			// guildAssignableRoles.push(role.id);
 
-			console.log(guildAssignableRoles);
+			// console.log(guildAssignableRoles);
 
-			msg.guild.settings.update('roles.selfAssignable', guildAssignableRoles, { action: 'overwrite', force: true })
+			msg.guild.settings.update('roles.selfAssignable', role, msg.guild)
 				.then(() => {
 					// Set up embed message
 					roleEmbed.setDescription(stripIndents`
@@ -96,16 +96,14 @@ export default class SelfAssignableRolesCommand extends Command {
 			}
 		}).setTimestamp();
 
-		let guildAssignableRoles: string[] = await msg.guild.settings.get('roles.selfAssignable');
+		let guildAssignableRoles: Role[] = await msg.guild.settings.get('roles.selfAssignable');
 
 		if (!Array.isArray(guildAssignableRoles)) {
 			guildAssignableRoles = [];
 		}
 
 		if (guildAssignableRoles.includes(role.id)) {
-			guildAssignableRoles = guildAssignableRoles.filter((i: string) => i !== role.id);
-
-			msg.guild.settings.update('roles.selfAssignable', guildAssignableRoles, { action: 'overwrite', force: true })
+			msg.guild.settings.update('roles.selfAssignable', role, msg.guild)
 				.then(() => {
 					// Set up embed message
 					roleEmbed.setDescription(stripIndents`

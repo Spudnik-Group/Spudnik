@@ -12,9 +12,9 @@ Client.defaultGuildSchema
 	.add('disabledCommands', 'string', { array: true })
 	.add('disabledCommandCategories', 'string', { array: true })
 	.add('roles', folder => folder
-		.add('default', 'string')
-		.add('muted', 'string')
-		.add('selfAssignable', 'string', { array: true })
+		.add('default', 'Role')
+		.add('muted', 'Role')
+		.add('selfAssignable', 'Role', { array: true })
 	)
 	.add('starboard', folder => folder
 		.add('enabled', 'boolean')

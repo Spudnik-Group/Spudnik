@@ -73,7 +73,7 @@ export default class MuteRoleCommand extends Command {
 			}
 		} else if (!guildMuteRole || guildMuteRole.id !== role.id) {
 			try {
-				await msg.guild.settings.update('roles.muted', role.id);
+				await msg.guild.settings.update('roles.muted', role, msg.guild);
 
 				// Set up embed message
 				roleEmbed.setDescription(stripIndents`
