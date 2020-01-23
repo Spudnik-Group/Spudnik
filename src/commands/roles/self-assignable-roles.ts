@@ -26,8 +26,8 @@ export default class SelfAssignableRolesCommand extends Command {
 			description: 'Used to configure the self-assignable roles feature.',
 			extendedHelp: stripIndents`
 				**Subcommand Usage**:
-				\`add <@roleMention>\` - adds the role to the list of self-assignable-roles.
-				\`remove <@roleMention>\` - removes the role from the list of self-assignable-roles.
+				\`add <@&roleMention>\` - adds the role to the list of self-assignable-roles.
+				\`remove <@&roleMention>\` - removes the role from the list of self-assignable-roles.
 			`,
 			name: 'self-assignable-roles',
 			permissionLevel: 2,
@@ -56,7 +56,7 @@ export default class SelfAssignableRolesCommand extends Command {
 			}
 		}).setTimestamp();
 
-		let guildAssignableRoles: string[] = await msg.guild.settings.get('assignableRoles');
+		let guildAssignableRoles: string[] = await msg.guild.settings.get('roles.selfAssignable');
 
 		if (!Array.isArray(guildAssignableRoles)) {
 			guildAssignableRoles = [];
@@ -65,12 +65,14 @@ export default class SelfAssignableRolesCommand extends Command {
 		if (!guildAssignableRoles.includes(role.id)) {
 			guildAssignableRoles.push(role.id);
 
-			msg.guild.settings.update('selfAssignableRoles', guildAssignableRoles)
+			console.log(guildAssignableRoles);
+
+			msg.guild.settings.update('roles.selfAssignable', guildAssignableRoles, { action: 'overwrite', force: true })
 				.then(() => {
 					// Set up embed message
 					roleEmbed.setDescription(stripIndents`
 						**Member:** ${msg.author.tag} (${msg.author.id})
-						**Action:** Added role '${role.name}' to the list of assignable roles.
+						**Action:** Added role <@&${role.id}> to the list of assignable roles.
 					`);
 
 					return this.sendSuccess(msg, roleEmbed);
@@ -94,7 +96,7 @@ export default class SelfAssignableRolesCommand extends Command {
 			}
 		}).setTimestamp();
 
-		let guildAssignableRoles: string[] = await msg.guild.settings.get('assignableRoles');
+		let guildAssignableRoles: string[] = await msg.guild.settings.get('roles.selfAssignable');
 
 		if (!Array.isArray(guildAssignableRoles)) {
 			guildAssignableRoles = [];
@@ -103,12 +105,12 @@ export default class SelfAssignableRolesCommand extends Command {
 		if (guildAssignableRoles.includes(role.id)) {
 			guildAssignableRoles = guildAssignableRoles.filter((i: string) => i !== role.id);
 
-			msg.guild.settings.update('assignableRoles', guildAssignableRoles)
+			msg.guild.settings.update('roles.selfAssignable', guildAssignableRoles, { action: 'overwrite', force: true })
 				.then(() => {
 					// Set up embed message
 					roleEmbed.setDescription(stripIndents`
 						**Member:** ${msg.author.tag} (${msg.author.id})
-						**Action:** Removed role '${role.name}' from the list of assignable roles.
+						**Action:** Removed role <@&${role.id}> from the list of assignable roles.
 					`);
 
 					return this.sendSuccess(msg, roleEmbed);

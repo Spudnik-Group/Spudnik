@@ -42,14 +42,16 @@ export default class RolesCommand extends Command {
 			}
 		});
 
-		let guildAssignableRoles: Role[] = await msg.guild.settings.get('roles.selfAssignableRoles') || [];
-		let guildDefaultRole: Role = await msg.guild.settings.get('roles.defaultRole');
+		let guildAssignableRoles: string[] = await msg.guild.settings.get('roles.selfAssignable') || [];
+		let guildDefaultRoleId: string = await msg.guild.settings.get('roles.default');
+		let guildMutedRoleId: string = await msg.guild.settings.get('roles.muted');
 
 		if (guildAssignableRoles.length) {
 			const rolesListOut: string[] = [];
 
-			guildAssignableRoles.forEach((role: Role) => {
-				rolesListOut.push(`* ${role.name} - ${role.members.size} members`);
+			guildAssignableRoles.forEach((roleId: string) => {
+				const role = msg.guild.roles.filter((r: Role) => r.id === roleId).first();
+				if(role) rolesListOut.push(`* <@&${roleId}> - ${role.members.size} members`);
 			});
 
 			roleEmbed.fields.push({
@@ -60,16 +62,32 @@ export default class RolesCommand extends Command {
 			});
 		}
 
-		if (guildDefaultRole) {
-			roleEmbed.fields.push({
-				inline: true,
-				name: 'Default Roles',
-				value: guildDefaultRole.name
-			});
+		if (guildDefaultRoleId) {
+			const role = msg.guild.roles.filter((r: Role) => r.id === guildDefaultRoleId).first();
+
+			if(role){
+				roleEmbed.fields.push({
+					inline: true,
+					name: 'Default Role',
+					value: `<@&${role.id}>`
+				});
+			}
+		}
+
+		if (guildMutedRoleId) {
+			const role = msg.guild.roles.filter((r: Role) => r.id === guildMutedRoleId).first();
+			
+			if(role) {
+				roleEmbed.fields.push({
+					inline: true,
+					name: 'Muted Role',
+					value: `<@&${role.id}>`
+				});
+			}
 		}
 
 		if (Array.isArray(roleEmbed.fields) && roleEmbed.fields.length === 0) {
-			roleEmbed.setDescription('This guild does not have a default role or any self-assignable roles set.');
+			roleEmbed.setDescription('This guild does not have a default role, muted role, or any self-assignable roles set.');
 		}
 
 		// Send the response

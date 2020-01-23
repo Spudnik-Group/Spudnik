@@ -8,10 +8,10 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * Manage setting a default role.
  *
  * @export
- * @class DefaultRoleCommand
+ * @class MuteRoleCommand
  * @extends {Command}
  */
-export default class DefaultRoleCommand extends Command {
+export default class MuteRoleCommand extends Command {
 	/**
 	 * Creates an instance of RoleCommand.
 	 *
@@ -21,14 +21,14 @@ export default class DefaultRoleCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: [
-				'dr'
+				'mr'
 			],
 			requiredPermissions: ['MANAGE_ROLES'],
 			description: 'Used to configure the default role for the `accept` command.',
 			extendedHelp: stripIndents`
 				\`(@roleMention)\` - sets the default role, or clears all if no role is provided.
 			`,
-			name: 'default-role',
+			name: 'muted-role',
 			permissionLevel: 2,
 			usage: '[role:Role]'
 		});
@@ -56,37 +56,38 @@ export default class DefaultRoleCommand extends Command {
 			}
 		}).setTimestamp();
 
-		let guildDefaultRole: Role = await msg.guild.settings.get('roles.default');
+		let guildMuteRole: Role = await msg.guild.settings.get('roles.muted');
 
 		if (!role) {
 			try {
-				await msg.guild.settings.reset('roles.default');
+				await msg.guild.settings.reset('roles.muted');
 				// Set up embed message
 				roleEmbed.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
-					**Action:** Removed default role.
+					**Action:** Removed muted role.
 				`);
 
 				return this.sendSuccess(msg, roleEmbed);
 			} catch (err) {
 				this.catchError(msg, role, 'reset', err);
 			}
-		} else if (!guildDefaultRole || guildDefaultRole.id !== role.id) {
+		} else if (!guildMuteRole || guildMuteRole.id !== role.id) {
 			try {
-				await msg.guild.settings.update('roles.default', role.id);
+				await msg.guild.settings.update('roles.muted', role.id);
 
 				// Set up embed message
 				roleEmbed.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
-					**Action:** Set <@&${role.id}> as the default role for the server.
+					**Action:** Set <@&${role.id}> as the muted role for the server.
 				`);
 
 				return this.sendSuccess(msg, roleEmbed);
 			} catch (err) {
 				this.catchError(msg, role, 'set', err);
-			}
+            }
 		} else {
-			return sendSimpleEmbeddedError(msg, `Default role already set to <@&${role.id}>`, 3000);
+            return sendSimpleEmbeddedError(msg, `Muted role already set to <@&${role.id}>`, 3000);
+			
 		}
 	}
 
