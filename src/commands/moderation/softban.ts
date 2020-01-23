@@ -32,7 +32,7 @@ module.exports = class extends Command {
 
 		try {
 			// Ban
-			await msg.guild.member.ban(member, { reason: `Soft-Banned by: ${msg.author} for: ${reason}` });
+			await msg.guild.member.ban(member, { reason: `Soft-Banned by: ${msg.author.tag} (${msg.author.id}) for: ${reason}` });
 
 			await msg.guild.members.unban(member, 'Softban released.');
 

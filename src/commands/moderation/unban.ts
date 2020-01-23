@@ -46,20 +46,23 @@ export default class UnBanCommand extends Command {
 			description: ''
 		}).setTimestamp();
 
-		await msg.guild.members.unban(user, `Un-Banned by: ${msg.author} for: ${reason}`)
-			.catch((err: Error) => this.catchError(msg, { user: user, reason: reason }, err));
-
-		// Set up embed message
-		unbanEmbed.setDescription(stripIndents`
-			**Moderator:** ${msg.author.tag} (${msg.author.id})
-			**User:** ${user.tag} (${user.id})
-			**Action:** UnBan
-			**Reason:** ${reason}`);
-
-		modLogMessage(msg, unbanEmbed);
-
-		// Send the success response
-		return msg.sendEmbed(unbanEmbed);
+		try {
+			await msg.guild.members.unban(user, `Un-Banned by: ${msg.author.tag} (${msg.author.id}) for: ${reason}`);
+	
+			// Set up embed message
+			unbanEmbed.setDescription(stripIndents`
+				**Moderator:** ${msg.author.tag} (${msg.author.id})
+				**User:** ${user.tag} (${user.id})
+				**Action:** UnBan
+				**Reason:** ${reason}`);
+	
+			modLogMessage(msg, unbanEmbed);
+	
+			// Send the success response
+			return msg.sendEmbed(unbanEmbed);
+		} catch (err) {
+			this.catchError(msg, { user: user, reason: reason }, err);
+		}
 	}
 
 	private catchError(msg: KlasaMessage, args: { user: User, reason: string }, err: Error) {

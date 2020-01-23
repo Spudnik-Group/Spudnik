@@ -8,7 +8,7 @@ export default class Warning extends Serializer {
     }
 
     deserialize(data: string, piece, language, guild) {
-        return JSON.parse(data);
+        return JSON.parse(JSON.stringify(data));
     }
 
     serialize(value: IWarning) {

@@ -8,7 +8,7 @@ const PORT = SpudConfig.port || 1337;
 
 // Define Default Schemas
 Client.defaultGuildSchema
-	.add('warnings', 'warning', { array: true })
+	.add('warnings', 'any', { array: true })
 	.add('disabledCommands', 'string', { array: true })
 	.add('disabledCommandCategories', 'string', { array: true })
 	.add('roles', folder => folder
@@ -17,32 +17,32 @@ Client.defaultGuildSchema
 		.add('selfAssignable', 'string', { array: true })
 	)
 	.add('starboard', folder => folder
-		.add('enabled', 'boolean', { default: false })
+		.add('enabled', 'boolean')
 		.add('channel', 'TextChannel')
 		.add('trigger', 'string', { default: '⭐' })
 	)
 	.add('welcome', folder => folder
-		.add('enabled', 'boolean', { default: false })
+		.add('enabled', 'boolean')
 		.add('channel', 'TextChannel')
 		.add('message', 'string', { default: '@here, please Welcome {user} to {guild}!' })
 	)
 	.add('goodbye', folder => folder
-		.add('enabled', 'boolean', { default: false })
+		.add('enabled', 'boolean')
 		.add('channel', 'TextChannel')
 		.add('message', 'string', { default: '{user} has left the server.' })
 	)
 	.add('modlog', folder => folder
 		.add('channel', 'TextChannel')
-		.add('enabled', 'boolean', { default: false })
+		.add('enabled', 'boolean')
 	)
 	.add('tos', folder => folder
 		.add('channel', 'TextChannel')
 		.add('messages', 'any', { array: true })
 	)
 	.add('embedColor', 'string', { default: '555555' })
-	.add('adblockEnabled', 'boolean', { default: false })
-	.add('deleteCommandMessages', 'boolean', { default: false })
-	.add('hasSentModLogMessage', 'boolean', { default: false });
+	.add('adblockEnabled', 'boolean')
+	.add('deleteCommandMessages', 'boolean')
+	.add('hasSentModLogMessage', 'boolean');
 
 /**
  * The Spudnik Discord Bot.

@@ -1,4 +1,4 @@
-import { Command, KlasaClient, CommandStore } from 'klasa';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed } from 'discord.js';
 import { getEmbedColor, sendSimpleEmbeddedError, modLogMessage } from '../../lib/helpers';
 import { stripIndents } from 'common-tags';
@@ -15,7 +15,7 @@ module.exports = class extends Command {
 		});
 	}
 
-	async run(msg, [member, reason]) {
+	async run(msg: KlasaMessage, [member, reason]) {
 		const muteEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/google/223/speaker-with-cancellation-stroke_1f507.png',
@@ -30,12 +30,12 @@ module.exports = class extends Command {
 			return sendSimpleEmbeddedError(msg, 'You cannot unmute this user. Do they have the same or higher role than you?', 3000);
 		}
 		// Check if the mentioned user is already muted
-		if (!member.roles.has(msg.guild.settings.roles.muted)) {
+		if (!member.roles.has(msg.guild.settings.get('roles.muted'))) {
 			return sendSimpleEmbeddedError(msg, 'The member is not muted.', 3000);
 		}
 
 		try {
-			await member.roles.remove(msg.guild.settings.roles.muted);
+			await member.roles.remove(msg.guild.settings.get('roles.muted'));
 			// Set up embed message
 			muteEmbed.setDescription(stripIndents`
 					**Moderator:** ${msg.author.tag} (${msg.author.id})

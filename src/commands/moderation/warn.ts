@@ -48,7 +48,7 @@ export default class WarnCommand extends Command {
 		const guildWarnings = await msg.guild.settings.get('warnings');
 
 		try {
-			let memberIndex = null;
+			let memberIndex: number = null;
 			// Check for previous warnings of supplied member
 			const currentWarnings = guildWarnings.find((warning, index) => {
 				if (warning.id === member.id) {
@@ -59,16 +59,13 @@ export default class WarnCommand extends Command {
 
 				return false;
 			});
-			if (currentWarnings && memberIndex) {
+			
+			if (currentWarnings && memberIndex !== null) {
 				// Previous warnings present for supplied member
 				previousPoints = currentWarnings.points;
 				const newPoints = previousPoints + points;
 				// Update previous warning points
-				guildWarnings[memberIndex] = {
-					id: member.id,
-					points: newPoints
-				};
-				msg.guild.settings.update('warnings', guildWarnings, { action: 'overwrite', force: true });
+				msg.guild.settings.update('warnings', { id: member.id, points: newPoints }, null, { arrayPosition: memberIndex });
 				// Set up embed message
 				warnEmbed.setDescription(stripIndents`
 					**Moderator:** ${msg.author.tag} (${msg.author.id})
@@ -82,11 +79,7 @@ export default class WarnCommand extends Command {
 				return msg.sendEmbed(warnEmbed);
 			} else {
 				// No previous warnings present
-				guildWarnings.push({
-					id: member.id,
-					points: points
-				});
-				msg.guild.settings.update('warnings', guildWarnings, { action: 'add', force: true });
+				msg.guild.settings.update('warnings', { id: member.id, points: points }, null, { action: 'add' });
 				// Set up embed message
 				warnEmbed.setDescription(stripIndents`
 					**Moderator:** ${msg.author.tag} (${msg.author.id})
