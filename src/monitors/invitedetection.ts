@@ -12,7 +12,7 @@ export default class extends Monitor {
 	}
 
 	async run(msg) {
-		if (!msg.guild || !msg.guild.settings['adblockEnabled']) return null;
+		if (!msg.guild || !msg.guild.settings.get('adblockEnabled')) return null;
 		if (await msg.hasAtLeastPermissionLevel(6)) return null;
 		if (!/(https?:\/\/)?(www\.)?(discord\.(gg|li|me|io)|discordapp\.com\/invite)\/.+/.test(msg.content)) return null;
 		msg.delete()

@@ -46,19 +46,19 @@ export default class CommandsCommand extends Command {
 					.setTitle(`List of commands in the ${groupName} category`)
 					.setDescription(`Use the \`commands\` command to get a list of all ${groups.length} command groups.`)
 					.addField(`❯ ${commands.length} ${groupName} Commands`, `\`\`\`css\n${commands.map((c: any) => c.name).join('\n')}\`\`\``)
-					.addField('❯ Need more details?', `Run \`${msg.guild.settings['prefix']}help <commandName>\``)
+					.addField('❯ Need more details?', `Run \`${msg.guild.settings.get('prefix')}help <commandName>\``)
 					.addField('❯ Want the complete list of commands?', 'Visit [the website](https://spudnik.io) and check out the commands page: https://docs.spudnik.io/commands/');
 
 				return msg.sendEmbed(commandsEmbed);
 			} else {
-				return sendSimpleEmbeddedMessage(msg, `No groups matching that name. Use \`${msg.guild.settings['prefix']}commands\` to view a list of command groups.`, 3000);
+				return sendSimpleEmbeddedMessage(msg, `No groups matching that name. Use \`${msg.guild.settings.get('prefix')}commands\` to view a list of command groups.`, 3000);
 			}
 		} else {
 			commandsEmbed
 				.setTitle('List of Command Groups')
-				.setDescription(`Run \`${msg.guild.settings['prefix']}commands <groupName>\` to view all the commands in the given group.`)
+				.setDescription(`Run \`${msg.guild.settings.get('prefix')}commands <groupName>\` to view all the commands in the given group.`)
 				.addField('❯ Command Groups', `\`\`\`css\n${groups.join('\n')}\`\`\``)
-				.addField('❯ Need more details?', `Run \`${msg.guild.settings['prefix']}help <commandName>\``)
+				.addField('❯ Need more details?', `Run \`${msg.guild.settings.get('prefix')}help <commandName>\``)
 				.addField('❯ Want the complete list of commands?', 'Visit [the website](https://spudnik.io) and check out the commands page: https://docs.spudnik.io/commands/');
 
 			return msg.sendEmbed(commandsEmbed);

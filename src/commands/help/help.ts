@@ -53,13 +53,13 @@ export default class HelpCommand extends Command {
 				.setTitle('**Help**')
 				.setThumbnail(`${this.client.user.avatarURL()}`)
 				.setDescription(stripIndents`
-					To get the list of command categories, type \`${msg.guild.settings['prefix']}commands\`.
-					To get the list of commands in a specific category, type \`${msg.guild.settings['prefix']}commands <categoryName>\`.
-					To get help with a specific command, type \`${msg.guild.settings['prefix']}help <commandName>\`.
+					To get the list of command categories, type \`${msg.guild.settings.get('prefix')}commands\`.
+					To get the list of commands in a specific category, type \`${msg.guild.settings.get('prefix')}commands <categoryName>\`.
+					To get help with a specific command, type \`${msg.guild.settings.get('prefix')}help <commandName>\`.
 				`)
 				.addField('❯ Spudnik Command', '[Join](https://spudnik.io/support)', true)
 				.addField('❯ Invite to Your Server!', '[Invite](https://spudnik.io/invite)', true)
-				.setFooter(`Server Prefix: ${msg.guild.settings['prefix']} • Total Commands: ${this.client.commands.size}`);
+				.setFooter(`Server Prefix: ${msg.guild.settings.get('prefix')} • Total Commands: ${this.client.commands.size}`);
 
 			return msg.sendEmbed(helpEmbed);
 		}
