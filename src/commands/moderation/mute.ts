@@ -11,6 +11,7 @@ module.exports = class extends Command {
 			description: 'Mutes a mentioned member.',
 			permissionLevel: 6, // MANAGE_GUILD
 			requiredPermissions: ['MANAGE_ROLES'],
+			requiredSettings: ['roles.muted'],
 			usage: '[when:time] <member:member> [reason:...string]'
 		});
 	}

@@ -23,13 +23,13 @@ export default class MuteRoleCommand extends Command {
 			aliases: [
 				'mr'
 			],
-			requiredPermissions: ['MANAGE_ROLES'],
 			description: 'Used to configure the default role for the `accept` command.',
 			extendedHelp: stripIndents`
 				\`(@roleMention)\` - sets the default role, or clears all if no role is provided.
 			`,
 			name: 'muted-role',
 			permissionLevel: 2,
+			requiredPermissions: ['MANAGE_ROLES'],
 			usage: '[role:Role]'
 		});
 
@@ -84,10 +84,9 @@ export default class MuteRoleCommand extends Command {
 				return this.sendSuccess(msg, roleEmbed);
 			} catch (err) {
 				this.catchError(msg, role, 'set', err);
-            }
+			}
 		} else {
-            return sendSimpleEmbeddedError(msg, `Muted role already set to <@&${role.id}>`, 3000);
-			
+			return sendSimpleEmbeddedError(msg, `Muted role already set to <@&${role.id}>`, 3000);
 		}
 	}
 
