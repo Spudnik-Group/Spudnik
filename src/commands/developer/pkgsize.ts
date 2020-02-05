@@ -2,6 +2,7 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from "klasa";
 import axios from 'axios';
 import { stripIndents } from "common-tags";
 import { MessageEmbed } from "discord.js";
+import { sendSimpleEmbeddedError } from "../../lib/helpers";
 
 const suffixes = ['Bytes', 'KB', 'MB', 'GB'];
 const getBytes = (bytes) => {
@@ -19,17 +20,23 @@ export default class extends Command {
 	}
 
 	async run(msg: KlasaMessage, [name]) {
-		const { data } = await axios(`https://packagephobia.now.sh/api.json?p=${encodeURIComponent(name)}`);
-		const { publishSize, installSize } = data;
-		if (!publishSize && !installSize) throw 'That package doesn\'t exist.';
+		try {
+			const { data } = await axios(`https://packagephobia.now.sh/api.json?p=${encodeURIComponent(name)}`);
+			const { publishSize, installSize } = data;
+			if (!publishSize && !installSize) throw 'That package doesn\'t exist.';
+	
+			return msg.sendEmbed(new MessageEmbed()
+				.setDescription(stripIndents`
+					<https://www.npmjs.com/package/${name}>
+	
+					**Publish Size:** ${getBytes(publishSize)}
+					**Install Size:** ${getBytes(installSize)}
+				`)
+			);
+		} catch (err) {
+			msg.client.emit('warn', `Error in command dev:pkgsize: ${err}`);
 
-		return msg.sendEmbed(new MessageEmbed()
-			.setDescription(stripIndents`
-				<https://www.npmjs.com/package/${name}>
-
-				**Publish Size:** ${getBytes(publishSize)}
-				**Install Size:** ${getBytes(installSize)}
-			`)
-		);
+			return sendSimpleEmbeddedError(msg, 'Could not fetch that repo, are you sure it exists?', 3000);
+		}
 	}
 };
