@@ -15,8 +15,6 @@ export const SpudConfig = {
 	'tmdbAPIkey': process.env.spud_moviedbapi || '',
 	'dictionaryApiKey': process.env.spud_dictionaryapi || '',
 	'breweryDbApiKey': process.env.spud_brewdbapi || '',
-	'scoutId': process.env.spud_scoutid || '',
-	'scoutSecret': process.env.spud_scoutsecret || '',
 	'trackerApiKey': process.env.spud_trackerapi || '',
 	'stackoverflowApiKey': process.env.spud_stackoverflowapi || '',
 	// Bot List API Keys

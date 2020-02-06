@@ -31,8 +31,8 @@ export default class OverwatchStatsCommand extends Command {
 		});
 
 		this
-			.createCustomResolver('battletag', battletag)
 			.createCustomResolver('platform', platform)
+			.createCustomResolver('battletag', battletag)
 			.createCustomResolver('region', (arg: string) => {
 				if (!arg) return 'global';
 				const regionList = ['eu', 'us', 'kr', 'cn', 'global'];
@@ -61,7 +61,7 @@ export default class OverwatchStatsCommand extends Command {
 			const overwatchEmbed: MessageEmbed = new MessageEmbed({
 				author: {
 					icon_url: profile.competitive ? profile.competitive.rank_img : null,
-					name: `${battletag.replace('-', '#')}'s Overwatch Stats`,
+					name: `${battletag}'s Overwatch Stats`,
 					url: `https://playoverwatch.com/career/${platform}/${encodeURI(battletag)}`
 				},
 				fields: [
@@ -106,22 +106,22 @@ export default class OverwatchStatsCommand extends Command {
 					{
 						inline: true,
 						name: 'Endorsement Level',
-						value: profile.endorsement.level !== null ? `${profile.endorsement.level}` : 'N/A'
+						value: profile.endorsement.level ? `${profile.endorsement.level}` : 'N/A'
 					},
 					{
 						inline: true,
 						name: 'Sportsmanship',
-						value: profile.endorsement.sportsmanship.rate !== null ? `${profile.endorsement.sportsmanship.rate}%` : 'N/A'
+						value: profile.endorsement.sportsmanship.rate ? `${profile.endorsement.sportsmanship.rate}%` : 'N/A'
 					},
 					{
 						inline: true,
 						name: 'Shotcaller',
-						value: profile.endorsement.shotcaller.rate !== null ? `${profile.endorsement.shotcaller.rate}%` : 'N/A'
+						value: profile.endorsement.shotcaller.rate ? `${profile.endorsement.shotcaller.rate}%` : 'N/A'
 					},
 					{
 						inline: true,
 						name: 'Good Teammate',
-						value: profile.endorsement.teammate.rate !== null ? `${profile.endorsement.teammate.rate}%` : 'N/A'
+						value: profile.endorsement.teammate.rate ? `${profile.endorsement.teammate.rate}%` : 'N/A'
 					}
 				);
 			}
