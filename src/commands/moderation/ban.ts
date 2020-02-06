@@ -1,5 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { GuildMember, MessageEmbed, Role } from 'discord.js';
+import { GuildMember, MessageEmbed, Role, Permissions } from 'discord.js';
 import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
@@ -23,7 +23,7 @@ export default class BanCommand extends Command {
 			description: 'Bans the member, with a supplied reason',
 			name: 'ban',
 			permissionLevel: 4, // BAN_MEMBERS
-			requiredPermissions: ['BAN_MEMBERS'],
+			requiredPermissions: Permissions.FLAGS['BAN_MEMBERS'],
 			usage: '<member:user> <reason:...string>'
 		});
 	}

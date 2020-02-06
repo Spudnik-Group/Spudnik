@@ -1,46 +1,38 @@
 import { stripIndents } from 'common-tags';
-import { MessageEmbed, Role } from 'discord.js';
+import { MessageEmbed, Role, Permissions } from 'discord.js';
 import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
 /**
- * Manage setting a default role.
+ * Manage setting a mute role.
  *
  * @export
  * @class MuteRoleCommand
  * @extends {Command}
  */
 export default class MuteRoleCommand extends Command {
-	/**
-	 * Creates an instance of RoleCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof RoleCommand
-	 */
+	
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: [
 				'mr'
 			],
-			description: 'Used to configure the default role for the `accept` command.',
-			extendedHelp: stripIndents`
-				\`(@roleMention)\` - sets the default role, or clears all if no role is provided.
-			`,
-			name: 'muted-role',
+			description: 'Used to configure the role for the `mute` command.',
+			name: 'mute-role',
 			permissionLevel: 2,
-			requiredPermissions: ['MANAGE_ROLES'],
+			requiredPermissions: Permissions.FLAGS['MANAGE_ROLES'],
 			usage: '[role:Role]'
 		});
 
-		this.customizeResponse('role', 'Please supply a valid role to set as the default.');
+		this.customizeResponse('role', 'Please supply a valid role to set as the mute role.');
 	}
 
 	/**
-	 * Run the "role" command.
+	 * Run the "mute-role" command.
 	 *
 	 * @param {KlasaMessage} msg
-	 * @param {{ subCommand: string, role: Role }} args
+	 * @param {Role} [role]
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof RoleManagementCommands
 	 */
@@ -52,7 +44,7 @@ export default class MuteRoleCommand extends Command {
 			},
 			color: getEmbedColor(msg),
 			footer: {
-				text: 'Use the `roles` command to list the current default, muted, and assignable roles'
+				text: 'Use the `roles` command to list the current default, muted, and self-assignable roles'
 			}
 		}).setTimestamp();
 
@@ -71,36 +63,36 @@ export default class MuteRoleCommand extends Command {
 			} catch (err) {
 				this.catchError(msg, role, 'reset', err);
 			}
-		} else if (!guildMuteRole || guildMuteRole.id !== role.id) {
+		} else if (guildMuteRole === role) {
+			return sendSimpleEmbeddedError(msg, `Muted role already set to <@${role.id}>`, 3000);
+		} else {
 			try {
 				await msg.guild.settings.update('roles.muted', role, msg.guild);
 
 				// Set up embed message
 				roleEmbed.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
-					**Action:** Set <@&${role.id}> as the muted role for the server.
+					**Action:** Set '${role.name}' as the muted role for the server.
 				`);
 
 				return this.sendSuccess(msg, roleEmbed);
 			} catch (err) {
 				this.catchError(msg, role, 'set', err);
 			}
-		} else {
-			return sendSimpleEmbeddedError(msg, `Muted role already set to <@&${role.id}>`, 3000);
 		}
 	}
 
 	private catchError(msg: KlasaMessage, role: Role, action: string, err: Error) {
 		// Build warning message
 		const roleWarn = stripIndents`
-			Error occurred in \`role-management\` command!
+			Error occurred in \`mute-role\` command!
 			**Server:** ${msg.guild.name} (${msg.guild.id})
 			**Author:** ${msg.author.tag} (${msg.author.id})
 			**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
 			${action === 'set' ? `**Input:** \`Role name: ${role}` : ''}
-			**Error Message:** ${action === 'set' ? 'Setting' : 'Resetting'} default role failed!\n
+			**Error Message:** ${action === 'set' ? 'Setting' : 'Resetting'} muted role failed!\n
 			`;
-		let roleUserWarn = `${action === 'set' ? 'Setting' : 'Resetting'} default role failed!`;
+		let roleUserWarn = `${action === 'set' ? 'Setting' : 'Resetting'} muted role failed!`;
 
 		// Emit warn event for debugging
 		msg.client.emit('warn', roleWarn);

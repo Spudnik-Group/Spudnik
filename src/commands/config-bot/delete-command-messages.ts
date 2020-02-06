@@ -1,5 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { MessageEmbed } from 'discord.js';
+import { MessageEmbed, Permissions } from 'discord.js';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, getEmbedColor } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
@@ -21,7 +21,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 			description: 'Enable or disable the Delete Command Messages feature.',
 			name: 'delete-command-messages',
 			permissionLevel: 1, // MANAGE_MESSAGES
-			requiredPermissions: ['MANAGE_MESSAGES'],
+			requiredPermissions: Permissions.FLAGS['MANAGE_MESSAGES'],
 			subcommands: true,
 			usage: '<on|off>'
 		});

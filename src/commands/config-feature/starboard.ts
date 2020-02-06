@@ -26,6 +26,7 @@ export default class StarboardCommand extends Command {
 			`,
 			name: 'starboard',
 			permissionLevel: 6, // MANAGE_GUILD
+			// TODO: fix permissions here
 			requiredPermissions: ['EMBED_LINKS', 'READ_MESSAGE_HISTORY', 'ATTACH_FILES'],
 			subcommands: true,
 			usage: '<on|off|status|channel|trigger> (content:content)'

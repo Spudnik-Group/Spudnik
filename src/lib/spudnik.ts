@@ -44,6 +44,10 @@ Client.defaultGuildSchema
 	.add('deleteCommandMessages', 'boolean')
 	.add('hasSentModLogMessage', 'boolean');
 
+Client.defaultClientSchema
+	.add('guildBlacklist', 'guild', { array: true })
+	.add('userBlacklist', 'user', { array: true });
+
 /**
  * The Spudnik Discord Bot.
  *

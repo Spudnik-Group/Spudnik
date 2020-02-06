@@ -1,5 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { MessageEmbed } from 'discord.js';
+import { MessageEmbed, Permissions } from 'discord.js';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, getEmbedColor, modLogMessage } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
@@ -18,7 +18,7 @@ export default class AdblockCommand extends Command {
 			description: 'Enable or disable the adblock feature.',
 			name: 'adblock',
 			permissionLevel: 1, // MANAGE_MESSAGES
-			requiredPermissions: ['MANAGE_MESSAGES'],
+			requiredPermissions: Permissions.FLAGS['MANAGE_MESSAGES'],
 			subcommands: true,
 			usage: '<on|off>'
 		});

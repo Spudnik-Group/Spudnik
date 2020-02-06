@@ -1,5 +1,5 @@
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
-import { GuildMember, MessageEmbed } from 'discord.js';
+import { GuildMember, MessageEmbed, Permissions } from 'discord.js';
 import { sendSimpleEmbeddedError, modLogMessage, getEmbedColor } from '../../lib/helpers';
 import { stripIndents } from 'common-tags';
 import { format } from 'date-fns';
@@ -10,7 +10,7 @@ module.exports = class extends Command {
 		super(client, store, file, directory, {
 			description: 'Soft-Bans the user, with a supplied reason',
 			permissionLevel: 4, // BAN_MEMBERS
-			requiredPermissions: ['BAN_MEMBERS'],
+			requiredPermissions: Permissions.FLAGS['BAN_MEMBERS'],
 			usage: '<member:member> <reason:...string>'
 		});
 	}

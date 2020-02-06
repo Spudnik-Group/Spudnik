@@ -1,5 +1,5 @@
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
-import { MessageEmbed } from 'discord.js';
+import { MessageEmbed, Permissions } from 'discord.js';
 import { getEmbedColor, sendSimpleEmbeddedError, modLogMessage } from '../../lib/helpers';
 import { stripIndents } from 'common-tags';
 import format = require('date-fns/format');
@@ -10,7 +10,8 @@ module.exports = class extends Command {
 		super(client, store, file, directory, {
 			description: 'Unmutes a mentioned user.',
 			permissionLevel: 6, // MANAGE_GUILD
-			requiredPermissions: ['MANAGE_ROLES'],
+			requiredPermissions: Permissions.FLAGS['MANAGE_ROLES'],
+			requiredSettings: ['roles.muted'],
 			usage: '<member:member> [reason:...string]'
 		});
 	}

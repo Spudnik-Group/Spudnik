@@ -1,5 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { GuildMember, Message, MessageEmbed } from 'discord.js';
+import { GuildMember, Message, MessageEmbed, Permissions } from 'discord.js';
 import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
@@ -23,7 +23,7 @@ export default class KickCommand extends Command {
 			description: 'Kicks a user.',
 			name: 'kick',
 			permissionLevel: 3, // KICK_MEMBERS
-			requiredPermissions: ['KICK_MEMBERS'],
+			requiredPermissions: Permissions.FLAGS['KICK_MEMBERS'],
 			usage: '<member:member> [reason:...string]'
 		});
 	}

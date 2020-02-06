@@ -1,6 +1,6 @@
 import { KlasaClient, CommandStore, KlasaMessage, Command } from 'klasa';
 import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
-import { MessageEmbed } from 'discord.js';
+import { MessageEmbed, Permissions } from 'discord.js';
 import axios from 'axios';
 
 /**
@@ -15,7 +15,7 @@ export default class changelogCommand extends Command {
 		super(client, store, file, directory, {
 			description: 'Returns GitHub release notes for the 3 most recent releases.',
 			name: 'changelog',
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissions: Permissions.FLAGS['EMBED_LINKS']
 		});
 	}
 

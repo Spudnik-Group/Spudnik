@@ -1,5 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { MessageEmbed, User } from 'discord.js';
+import { MessageEmbed, User, Permissions } from 'discord.js';
 import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
@@ -23,7 +23,7 @@ export default class UnBanCommand extends Command {
 			description: 'Un-Bans the user.',
 			name: 'unban',
 			permissionLevel: 4, // BAN_MEMBERS
-			requiredPermissions: ['BAN_MEMBERS'],
+			requiredPermissions: Permissions.FLAGS['BAN_MEMBERS'],
 			usage: '<user:user> [reason:...string]'
 		});
 	}

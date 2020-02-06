@@ -1,5 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { GuildMember } from 'discord.js';
+import { GuildMember, Permissions } from 'discord.js';
 import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
@@ -14,7 +14,7 @@ export default class NickCommand extends Command {
 
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			requiredPermissions: ['MANAGE_NICKNAMES'],
+			requiredPermissions: Permissions.FLAGS['MANAGE_NICKNAMES'],
 			description: 'Used to change the bot\'s nickname on your server, or reset it.',
 			extendedHelp: stripIndents`
 				Supplying no nickname resets the nickname to default.
