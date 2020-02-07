@@ -42,7 +42,7 @@ export default class WolframCommand extends Command {
 					primary: true,
 				}
 			})
-				.then((body: any) => body.body.queryresult.pods)
+				.then((body: any) => body.data.queryresult.pods)
 
 			if (!pods || pods.error) throw "Couldn't find an answer to that question!";
 
@@ -57,7 +57,7 @@ export default class WolframCommand extends Command {
 		} catch (err) {
 			msg.client.emit('warn', `Error in command ref:wolfram: ${err}`);
 
-			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+			return sendSimpleEmbeddedError(msg, err === 'Couldn\'t find an answer to that question!' ? err : 'There was an error with the request. Try again?', 3000);
 		};
 	}
 };
