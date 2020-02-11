@@ -12,7 +12,6 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class AdblockCommand extends Command {
-
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Enable or disable the adblock feature.',
@@ -52,14 +51,7 @@ export default class AdblockCommand extends Command {
 			return sendSimpleEmbeddedMessage(msg, 'Adblock feature already disabled!', 3000);
 		}
 	}
-	/**
-	 * Run the "adblock" command.
-	 *
-	 * @param {KlasaMessage} msg
-	 * @param {{ subCommand: string }} args
-	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
-	 * @memberof AdblockCommand
-	 */
+	
 	public async on(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const adblockEnabled = await msg.guild.settings.get('adblockEnabled');
 		const adblockEmbed: MessageEmbed = new MessageEmbed({
@@ -89,7 +81,7 @@ export default class AdblockCommand extends Command {
 		}
 	}
 
-	private catchError(msg: KlasaMessage, args: { subCommand: string }, err: Error) {
+	private catchError(msg: KlasaMessage, args: { subCommand: string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Emit warn event for debugging
 		msg.client.emit('warn', stripIndents`
 			Error occurred in \`adblock\` command!

@@ -1,8 +1,8 @@
-import { Command, KlasaClient, CommandStore, KlasaMessage } from "klasa";
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 import axios from 'axios';
-import { stripIndents } from "common-tags";
-import { MessageEmbed } from "discord.js";
-import { sendSimpleEmbeddedError } from "../../lib/helpers";
+import { stripIndents } from 'common-tags';
+import { MessageEmbed, Permissions } from 'discord.js';
+import { sendSimpleEmbeddedError } from '../../lib/helpers';
 
 const suffixes = ['Bytes', 'KB', 'MB', 'GB'];
 const getBytes = (bytes) => {
@@ -11,10 +11,11 @@ const getBytes = (bytes) => {
 	return (!bytes && '0 Bytes') || `${(bytes / Math.pow(1024, i)).toFixed(2)} ${suffixes[i]}`;
 };
 
-export default class extends Command {
+export default class PackagesizeCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Shows the install/publish size of a npm package.',
+			requiredPermissions: Permissions.FLAGS.EMBED_LINKS,
 			usage: '<name:string>'
 		});
 	}

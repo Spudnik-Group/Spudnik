@@ -10,12 +10,6 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class TopicCommand extends Command {
-	/**
-	 * Creates an instance of TopicCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof TopicCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns the purpose of the chat channel.',

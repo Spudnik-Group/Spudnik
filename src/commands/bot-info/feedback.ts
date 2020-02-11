@@ -1,5 +1,6 @@
 import { KlasaClient, CommandStore, KlasaMessage, Command } from 'klasa';
 import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { Permissions } from 'discord.js';
 
 /**
  * Provides links to suggest features, submit bugs, or email the devs.
@@ -9,12 +10,12 @@ import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
  * @extends {Command}
  */
 export default class FeedbackCommand extends Command {
-
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Provides links to suggest features, submit bugs, or email the devs.',
 			guarded: true,
-			name: 'feedback'
+			name: 'feedback',
+			requiredPermissions: Permissions.FLAGS.EMBED_LINKS
 		});
 	}
 

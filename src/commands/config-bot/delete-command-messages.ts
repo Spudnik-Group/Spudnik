@@ -12,7 +12,6 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class DeleteCommandMessagesCommand extends Command {
-
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: [
@@ -62,6 +61,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 			}
 		}
 	}
+
 	/**
 	 * Disable the feature
 	 *
@@ -98,7 +98,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 		}
 	}
 
-	private catchError(msg: KlasaMessage, args: { subCommand: string }, err: Error) {
+	private catchError(msg: KlasaMessage, args: { subCommand: string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Emit warn event for debugging
 		msg.client.emit('warn', stripIndents`
 			Error occurred in \`delete-command-messages\` command!

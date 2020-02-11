@@ -1,5 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { GuildMember, Message, MessageEmbed, Permissions } from 'discord.js';
+import { GuildMember, MessageEmbed, Permissions } from 'discord.js';
 import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
@@ -12,18 +12,12 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class KickCommand extends Command {
-	/**
-	 * Creates an instance of KickCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof KickCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Kicks a user.',
 			name: 'kick',
 			permissionLevel: 3, // KICK_MEMBERS
-			requiredPermissions: Permissions.FLAGS['KICK_MEMBERS'],
+			requiredPermissions: Permissions.FLAGS.KICK_MEMBERS,
 			usage: '<member:member> [reason:...string]'
 		});
 	}
@@ -36,7 +30,7 @@ export default class KickCommand extends Command {
 	 * @returns {(Promise<Message | Message[] | any>)}
 	 * @memberof KickCommand
 	 */
-	public async run(msg: KlasaMessage, [member, reason]): Promise<Message | Message[] | any> {
+	public async run(msg: KlasaMessage, [member, reason]): Promise<KlasaMessage | KlasaMessage[]> {
 		const memberToKick: GuildMember = member;
 		const kickEmbed: MessageEmbed = new MessageEmbed({
 			author: {

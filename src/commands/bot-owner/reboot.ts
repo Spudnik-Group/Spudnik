@@ -24,11 +24,9 @@ export default class RebootCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof RebootCommand
 	 */
-	async run(message: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(message: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		await message.sendLocale('COMMAND_REBOOT').catch(err => this.client.emit('error', err));
 		await Promise.all(this.client.providers.map(provider => provider.shutdown()));
 		process.exit();
-
-		return message.send('Restarting...');
 	}
 };

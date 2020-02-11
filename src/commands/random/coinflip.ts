@@ -1,5 +1,6 @@
 import { getRandomInt, sendSimpleEmbeddedImage } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Permissions } from 'discord.js';
 
 const { coinflip }: { coinflip: any[] } = require('../../extras/data');
 
@@ -11,17 +12,11 @@ const { coinflip }: { coinflip: any[] } = require('../../extras/data');
  * @extends {Command}
  */
 export default class CoinFlipCommand extends Command {
-	/**
-	 * Creates an instance of CoinFlipCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof CoinFlipCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			requiredPermissions: ['ATTACH_FILES'],
 			description: 'Flips a coin for you.',
-			name: 'coinflip'
+			name: 'coinflip',
+			requiredPermissions: Permissions.FLAGS.ATTACH_FILES
 		});
 	}
 

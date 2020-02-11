@@ -14,13 +14,13 @@ export default class NickCommand extends Command {
 
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			requiredPermissions: Permissions.FLAGS['MANAGE_NICKNAMES'],
 			description: 'Used to change the bot\'s nickname on your server, or reset it.',
 			extendedHelp: stripIndents`
 				Supplying no nickname resets the nickname to default.
 			`,
 			name: 'nick',
 			permissionLevel: 6, // MANAGE_GUILD
+			requiredPermissions: Permissions.FLAGS['MANAGE_NICKNAMES'],
 			usage: '[nickName:string]'
 		});
 	}
@@ -29,7 +29,7 @@ export default class NickCommand extends Command {
 	 * Run the "nick" command.
 	 *
 	 * @param {KlasaMessage} msg
-	 * @param {{ nickName: string }} args
+	 * @param {string} nickName
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof NickCommand
 	 */

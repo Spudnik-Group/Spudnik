@@ -11,19 +11,10 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class StrawpollCommand extends Command {
-	/**
-	 * Creates an instance of StrawpollCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof StrawpollCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['poll'],
 			description: 'Generates a Strawpoll with the provided options.',
-			extendedHelp: stripIndents`
-				syntax: \`!strawpoll "<title>" <option1> <option2>\`
-			`,
 			name: 'strawpoll',
 			usage: '<title:string> <options:string> [...]'
 		});

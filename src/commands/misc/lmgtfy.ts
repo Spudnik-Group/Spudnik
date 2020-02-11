@@ -1,5 +1,6 @@
 import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Permissions } from 'discord.js';
 
 /**
  * Generates a "Let Me Google That For You" link.
@@ -9,17 +10,11 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class LmgtfyCommand extends Command {
-	/**
-	 * Creates an instance of LmgtfyCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof LmgtfyCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns a Let Me Google That For You link, so you can school a n00b.',
-			extendedHelp: 'syntax: `!lmgtfy <query>`',
 			name: 'lmgtfy',
+			requiredPermissions: Permissions.FLAGS.EMBED_LINKS,
 			usage: '<query:string>'
 		});
 	}

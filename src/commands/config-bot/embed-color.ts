@@ -12,7 +12,6 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class EmbedColorCommand extends Command {
-
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Used to change the default embed color the bot uses for responses, or reset it.',
@@ -31,7 +30,7 @@ export default class EmbedColorCommand extends Command {
 	 * Run the "embedColor" command.
 	 *
 	 * @param {KlasaMessage} msg
-	 * @param {{ color: string }} args
+	 * @param {string} color
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof EmbedColorCommand
 	 */
@@ -75,7 +74,7 @@ export default class EmbedColorCommand extends Command {
 		}
 	}
 
-	private catchError(msg: KlasaMessage, args: { color: string }, err: Error) {
+	private catchError(msg: KlasaMessage, args: { color: string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Emit warn event for debugging
 		msg.client.emit('warn', stripIndents`
 			Error occurred in \`embedcolor\` command!

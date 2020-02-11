@@ -2,21 +2,20 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed, Permissions } from 'discord.js';
 import { getEmbedColor, sendSimpleEmbeddedError, modLogMessage } from '../../lib/helpers';
 import { stripIndents } from 'common-tags';
-import format = require('date-fns/format');
+import * as format from 'date-fns/format';
 
-module.exports = class extends Command {
-
+export default class UnmuteCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Unmutes a mentioned user.',
 			permissionLevel: 6, // MANAGE_GUILD
-			requiredPermissions: Permissions.FLAGS['MANAGE_ROLES'],
+			requiredPermissions: Permissions.FLAGS.MANAGE_ROLES,
 			requiredSettings: ['roles.muted'],
 			usage: '<member:member> [reason:...string]'
 		});
 	}
 
-	async run(msg: KlasaMessage, [member, reason]) {
+	async run(msg: KlasaMessage, [member, reason]): Promise<KlasaMessage | KlasaMessage[]> {
 		const muteEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/google/223/speaker-with-cancellation-stroke_1f507.png',

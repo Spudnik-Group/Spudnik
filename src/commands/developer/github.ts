@@ -1,5 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { MessageEmbed } from 'discord.js';
+import { MessageEmbed, Permissions } from 'discord.js';
 import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
 import axios from 'axios';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
@@ -12,12 +12,6 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class GithubCommand extends Command {
-	/**
-	 * Creates an instance of GithubCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof GithubCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['gh'],
@@ -26,7 +20,7 @@ export default class GithubCommand extends Command {
 				syntax: \`!github <repo-name>\`
 			`,
 			name: 'github',
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissions: Permissions.FLAGS.EMBED_LINKS,
 			usage: '<query:string>'
 		});
 	}

@@ -1,5 +1,6 @@
 import { sendSimpleEmbeddedImage } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Permissions } from 'discord.js';
 
 /**
  * Show the XKCD "Now" comic.
@@ -9,17 +10,11 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class HighNoonCommand extends Command {
-	/**
-	 * Creates an instance of HighNoonCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof HighNoonCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Displays the High Noon XKCD comic.',
 			name: 'highnoon',
-			requiredPermissions: ['ATTACH_FILES']
+			requiredPermissions: Permissions.FLAGS.ATTACH_FILES
 		});
 	}
 

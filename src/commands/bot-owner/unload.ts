@@ -28,7 +28,7 @@ export default class UnloadCommandCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof UnloadCommandCommand
 	 */
-	public async run(msg: KlasaMessage, [piece]: any): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [piece]): Promise<KlasaMessage | KlasaMessage[]> {
 		if ((piece.type === 'event' && piece.name === 'message') || (piece.type === 'monitor' && piece.name === 'commandHandler')) {
 			return msg.sendLocale('COMMAND_UNLOAD_WARN');
 		}

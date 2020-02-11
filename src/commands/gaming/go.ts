@@ -16,7 +16,6 @@ const steamGameNames = Object.keys(SteamGames).map(item => {
  * @extends {Command}
  */
 export default class GoCommand extends Command {
-
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['play-game', 'lets-play', 'go-play'],

@@ -1,6 +1,6 @@
-import { stripIndents } from 'common-tags';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Permissions } from 'discord.js';
 
 /**
  * Unshorten a url.
@@ -10,20 +10,12 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class UnshortCommand extends Command {
-	/**
-	 * Creates an instance of UnshortCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof UnshortCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['unshorten'],
 			description: 'Unshorten a link.',
-			extendedHelp: stripIndents`
-				syntax: \`!unshort <short link>\`
-			`,
 			name: 'unshort',
+			requiredPermissions: Permissions.FLAGS.EMBED_LINKS,
 			usage: '<query:string>'
 		});
 	}

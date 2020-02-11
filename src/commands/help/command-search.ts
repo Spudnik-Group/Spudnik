@@ -1,6 +1,6 @@
 import { getEmbedColor, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
-import { MessageEmbed } from 'discord.js';
+import { MessageEmbed, Permissions } from 'discord.js';
 
 /**
  * Search for a command with the given text.
@@ -16,6 +16,7 @@ export default class CommandSearchCommand extends Command {
 			description: 'Search for a command with the given text.',
 			guarded: true,
 			name: 'command-search',
+			requiredPermissions: Permissions.FLAGS.EMBED_LINKS,
 			usage: '<commandName:string>'
 		});
 	}

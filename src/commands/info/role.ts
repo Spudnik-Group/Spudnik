@@ -1,43 +1,42 @@
-import { Command, KlasaClient, CommandStore, Timestamp, KlasaMessage } from "klasa";
-import { MessageEmbed } from "discord.js";
+import { Command, KlasaClient, CommandStore, Timestamp, KlasaMessage } from 'klasa';
+import { MessageEmbed } from 'discord.js';
 
 const perms = {
+	ADD_REACTIONS: 'Add Reactions',
 	ADMINISTRATOR: 'Administrator',
-	VIEW_AUDIT_LOG: 'View Audit Log',
-	MANAGE_GUILD: 'Manage Server',
-	MANAGE_ROLES: 'Manage Roles',
-	MANAGE_CHANNELS: 'Manage Channels',
-	KICK_MEMBERS: 'Kick Members',
+	ATTACH_FILES: 'Attach Files',
 	BAN_MEMBERS: 'Ban Members',
-	CREATE_INSTANT_INVITE: 'Create Instant Invite',
 	CHANGE_NICKNAME: 'Change Nickname',
-	MANAGE_NICKNAMES: 'Manage Nicknames',
+	CONNECT: 'Connect',
+	CREATE_INSTANT_INVITE: 'Create Instant Invite',
+	DEAFEN_MEMBERS: 'Deafen Members',
+	EMBED_LINKS: 'Embed Links',
+	KICK_MEMBERS: 'Kick Members',
+	MANAGE_CHANNELS: 'Manage Channels',
 	MANAGE_EMOJIS: 'Manage Emojis',
+	MANAGE_GUILD: 'Manage Server',
+	MANAGE_MESSAGES: 'Manage Messages',
+	MANAGE_NICKNAMES: 'Manage Nicknames',
+	MANAGE_ROLES: 'Manage Roles',
 	MANAGE_WEBHOOKS: 'Manage Webhooks',
-	VIEW_CHANNEL: 'Read Text Channels and See Voice Channels',
+	MENTION_EVERYONE: 'Mention Everyone',
+	MOVE_MEMBERS: 'Move Members',
+	MUTE_MEMBERS: 'Mute Members',
+	READ_MESSAGE_HISTORY: 'Read Message History',
 	SEND_MESSAGES: 'Send Messages',
 	SEND_TTS_MESSAGES: 'Send TTS Messages',
-	MANAGE_MESSAGES: 'Manage Messages',
-	EMBED_LINKS: 'Embed Links',
-	ATTACH_FILES: 'Attach Files',
-	READ_MESSAGE_HISTORY: 'Read Message History',
-	MENTION_EVERYONE: 'Mention Everyone',
-	USE_EXTERNAL_EMOJIS: 'Use External Emojis',
-	ADD_REACTIONS: 'Add Reactions',
-	CONNECT: 'Connect',
 	SPEAK: 'Speak',
-	MUTE_MEMBERS: 'Mute Members',
-	DEAFEN_MEMBERS: 'Deafen Members',
-	MOVE_MEMBERS: 'Move Members',
-	USE_VAD: 'Use Voice Activity'
+	USE_EXTERNAL_EMOJIS: 'Use External Emojis',
+	USE_VAD: 'Use Voice Activity',
+	VIEW_AUDIT_LOG: 'View Audit Log',
+	VIEW_CHANNEL: 'Read Text Channels and See Voice Channels'
 };
 
-export default class extends Command {
+export default class RoleComand extends Command {
 	private timestamp: Timestamp;
 
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			runIn: ['text'],
 			description: 'Get information on a role with an id or a mention.',
 			name: 'role-info',
 			usage: '<Role:role>'
@@ -45,7 +44,7 @@ export default class extends Command {
 		this.timestamp = new Timestamp('dddd, MMMM d YYYY');
 	}
 
-	async run(msg: KlasaMessage, [role]) {
+	public async run(msg: KlasaMessage, [role]): Promise<KlasaMessage | KlasaMessage[]> {
 		const allPermissions = Object.entries(role.permissions.serialize()).filter(perm => perm[1]).map(([perm]) => perms[perm]).join(', ');
 		const defaultRole = await msg.guild.settings.get('roles.defaultRole');
 

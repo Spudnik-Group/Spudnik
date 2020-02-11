@@ -11,12 +11,6 @@ import { stripIndents } from 'common-tags';
  * @extends {Command}
  */
 export default class RollCommand extends Command {
-	/**
-	 * Creates an instance of RollCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof RollCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Roll one die with x sides + any modifiers, with an optional reason.',

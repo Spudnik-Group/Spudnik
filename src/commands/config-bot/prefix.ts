@@ -11,7 +11,6 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class PrefixCommand extends Command {
-
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns or sets the command prefix.',
@@ -21,8 +20,8 @@ export default class PrefixCommand extends Command {
 				If the prefix is "none", the prefix will be removed entirely, only allowing mentions to run commands.
 			`,
 			guarded: true,
-			permissionLevel: 6, // MANAGE_GUILD
 			name: 'prefix',
+			permissionLevel: 6, // MANAGE_GUILD
 			usage: '[prefix:string]'
 		});
 	}
@@ -31,7 +30,7 @@ export default class PrefixCommand extends Command {
 	 * Run the "Prefix" command.
 	 *
 	 * @param {KlasaMessage} msg
-	 * @param {{ prefix: string }} args
+	 * @param {string} prefix
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof PrefixCommand
 	 */

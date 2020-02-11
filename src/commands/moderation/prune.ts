@@ -12,12 +12,6 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class PruneCommand extends Command {
-	/**
-	 * Creates an instance of PruneCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof PruneCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: [
@@ -37,7 +31,7 @@ export default class PruneCommand extends Command {
 			`,
 			name: 'prune',
 			permissionLevel: 1, // MANAGE_MESSAGES
-			requiredPermissions: Permissions.FLAGS['MANAGE_MESSAGES'],
+			requiredPermissions: Permissions.FLAGS.MANAGE_MESSAGES,
 			usage: '[limit:integer] [links|invites|bots|me|uploads|user:user]'
 		});
 	}
@@ -99,7 +93,7 @@ export default class PruneCommand extends Command {
 		}
 	}
 
-	private catchError(msg: KlasaMessage, args: { limit: number, filter: string }, err: Error) {
+	private catchError(msg: KlasaMessage, args: { limit: number, filter: string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Emit warn event for debugging
 		msg.client.emit('warn', stripIndents`
 		Error occurred in \`prune\` command!

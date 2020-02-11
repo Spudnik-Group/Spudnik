@@ -10,7 +10,7 @@ import { pathExists } from 'fs-nextra';
  * @extends {Command}
  */
 export default class LoadCommandCommand extends Command {
-	regExp = /\\\\?|\//g;
+	private regExp = /\\\\?|\//g;
 
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
@@ -33,7 +33,7 @@ export default class LoadCommandCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof LoadCommandCommand
 	 */
-	async run(message: KlasaMessage, [core, store, ...path]: any) {
+	public async run(message: KlasaMessage, [core, store, path]): Promise<KlasaMessage | KlasaMessage[]> {
 		path = (path.endsWith('.js') ? path : `${path}.js`).split(this.regExp);
 		const timer = new Stopwatch();
 		const piece = await (core ? this.tryEach(store, path) : store.load(store.userDirectory, path));
@@ -57,7 +57,7 @@ export default class LoadCommandCommand extends Command {
 		}
 	}
 
-	async tryEach(store: any, path: string) {
+	private async tryEach(store: any, path: string) {
 		for (const dir of store.coreDirectories) if (await pathExists(join(dir, ...path))) return store.load(dir, path);
 		
 		return undefined;

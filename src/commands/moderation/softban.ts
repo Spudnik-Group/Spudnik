@@ -4,18 +4,17 @@ import { sendSimpleEmbeddedError, modLogMessage, getEmbedColor } from '../../lib
 import { stripIndents } from 'common-tags';
 import { format } from 'date-fns';
 
-module.exports = class extends Command {
-
+export default class SoftbanCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Soft-Bans the user, with a supplied reason',
 			permissionLevel: 4, // BAN_MEMBERS
-			requiredPermissions: Permissions.FLAGS['BAN_MEMBERS'],
+			requiredPermissions: Permissions.FLAGS.BAN_MEMBERS,
 			usage: '<member:member> <reason:...string>'
 		});
 	}
 
-	async run(msg, [member, reason]) {
+	public async run(msg: KlasaMessage, [member, reason]): Promise<KlasaMessage | KlasaMessage[]> {
 		const banEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/hammer_1f528.png',
@@ -32,7 +31,7 @@ module.exports = class extends Command {
 
 		try {
 			// Ban
-			await msg.guild.member.ban(member, { reason: `Soft-Banned by: ${msg.author.tag} (${msg.author.id}) for: ${reason}` });
+			await msg.guild.members.ban(member, { reason: `Soft-Banned by: ${msg.author.tag} (${msg.author.id}) for: ${reason}` });
 
 			await msg.guild.members.unban(member, 'Softban released.');
 
@@ -52,7 +51,7 @@ module.exports = class extends Command {
 		}
 	}
 
-	private catchError(msg: KlasaMessage, args: { member: GuildMember, reason: string }, err: Error) {
+	private catchError(msg: KlasaMessage, args: { member: GuildMember, reason: string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Emit warn event for debugging
 		msg.client.emit('warn', stripIndents`
 			Error occurred in \`softban\` command!

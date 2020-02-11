@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { MessageEmbed, Permissions } from 'discord.js';
 import { getEmbedColor, sendSimpleEmbeddedMessage } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 import * as fs from 'fs';
@@ -11,12 +11,12 @@ import * as fs from 'fs';
  * @extends {Command}
  */
 export default class CommandsCommand extends Command {
-
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns a list of command groups, or all commands in a given group.',
 			guarded: true,
 			name: 'commands',
+			requiredPermissions: Permissions.FLAGS.EMBED_LINKS,
 			usage: '[groupName:string]'
 		});
 	}

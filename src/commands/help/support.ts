@@ -1,5 +1,6 @@
 import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Permissions } from 'discord.js';
 
 /**
  * Post a link to the Spudnik Command Discord Server.
@@ -9,12 +10,12 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class SupportCommand extends Command {
-
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns a link to my support server!',
 			guarded: true,
-			name: 'support'
+			name: 'support',
+			requiredPermissions: Permissions.FLAGS.EMBED_LINKS
 		});
 	}
 

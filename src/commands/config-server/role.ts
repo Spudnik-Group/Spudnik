@@ -1,5 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { Collection, Message, MessageEmbed, Role } from 'discord.js';
+import { Collection, Message, MessageEmbed, Role, Permissions } from 'discord.js';
 import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, isNormalInteger, hexColor } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
@@ -12,7 +12,6 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class RoleCommand extends Command {
-
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Used to add or remove roles from your server.',
@@ -23,7 +22,7 @@ export default class RoleCommand extends Command {
 			`,
 			name: 'role',
 			permissionLevel: 2, // MANAGE_ROLES
-			requiredPermissions: ['MANAGE_ROLES'],
+			requiredPermissions: Permissions.FLAGS.MANAGE_ROLES,
 			subcommands: true,
 			usage: '<add|remove> <name:Role|name:string> [color:color]'
 		});
@@ -172,7 +171,7 @@ export default class RoleCommand extends Command {
 		}
 	}
 
-	private catchError(msg: KlasaMessage, args: { subCommand: string, name: string, arg3?: string }, err: Error) {
+	private catchError(msg: KlasaMessage, args: { subCommand: string, name: string, arg3?: string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Build warning message
 		let roleWarn = stripIndents`
 			Error occurred in \`role\` command!

@@ -12,7 +12,6 @@ import { Command, KlasaClient, CommandStore, KlasaMessage, Possible } from 'klas
  * @extends {Command}
  */
 export default class ModlogCommand extends Command {
-
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Enable or disable the modlog feature.',
@@ -132,7 +131,7 @@ export default class ModlogCommand extends Command {
 
 					return this.sendSuccess(msg, modlogEmbed);
 				} catch (err) {
-					return this.catchError(msg, { subCommand: 'channel', channel }, err);
+					return this.catchError(msg, { subCommand: 'channel', channel: channel }, err);
 				}
 			}
 		} else {
@@ -168,7 +167,7 @@ export default class ModlogCommand extends Command {
 		return msg.sendEmbed(modlogEmbed);
 	}
 
-	private catchError(msg: KlasaMessage, args: { subCommand: string, channel?: Channel }, err: Error) {
+	private catchError(msg: KlasaMessage, args: { subCommand: string, channel?: Channel }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Build warning message
 		let modlogWarn = stripIndents`
 			Error occurred in \`accept\` command!

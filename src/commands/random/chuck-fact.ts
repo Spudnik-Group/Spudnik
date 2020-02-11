@@ -11,12 +11,6 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class ChuckFactCommand extends Command {
-	/**
-	 * Creates an instance of ChuckFactCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof ChuckFactCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['chucknorris', 'norrisfact', 'chuck-norris'],

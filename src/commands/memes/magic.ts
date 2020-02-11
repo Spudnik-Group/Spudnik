@@ -1,5 +1,6 @@
 import { sendSimpleEmbeddedImage } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Permissions } from 'discord.js';
 
 /**
  * Display a magical gif of Shia Labeouf.
@@ -9,17 +10,11 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class MagicCommand extends Command {
-	/**
-	 * Creates an instance of MagicCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof MagicCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Displays a magical gif of Shia Labeouf.',
 			name: 'magic',
-			requiredPermissions: ['ATTACH_FILES']
+			requiredPermissions: Permissions.FLAGS.ATTACH_FILES
 		});
 	}
 

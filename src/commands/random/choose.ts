@@ -1,7 +1,6 @@
 import { getEmbedColor, getRandomInt, sendSimpleEmbeddedError } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed } from 'discord.js';
-import { stripIndents } from 'common-tags';
 
 /**
  * Post a random choice of 2 options.
@@ -11,18 +10,9 @@ import { stripIndents } from 'common-tags';
  * @extends {Command}
  */
 export default class ChooseCommand extends Command {
-	/**
-	 * Creates an instance of ChooseCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof ChooseCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			description: 'Have the bot choose something for you. Max 10 items.',
-			extendedHelp: stripIndents`
-				The command takes an infinite number of space-separated arguements.
-			`,
+			description: 'Have the bot choose something for you.',
 			name: 'choose',
 			usage: '<choice:string> <choice:string> [...]',
 			usageDelim: ', '

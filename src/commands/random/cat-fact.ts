@@ -11,12 +11,6 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class CatFactCommand extends Command {
-	/**
-	 * Creates an instance of CatFactCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof CatFactCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns a random cat fact.',

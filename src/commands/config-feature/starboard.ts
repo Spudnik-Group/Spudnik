@@ -1,5 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { Channel, MessageEmbed } from 'discord.js';
+import { Channel, MessageEmbed, Permissions } from 'discord.js';
 import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, resolveChannel } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 import { Command, KlasaClient, CommandStore, KlasaMessage, Possible } from 'klasa';
@@ -12,7 +12,6 @@ import { Command, KlasaClient, CommandStore, KlasaMessage, Possible } from 'klas
  * @extends {Command}
  */
 export default class StarboardCommand extends Command {
-
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Used to configure the :star: Star Board feature.',
@@ -26,8 +25,7 @@ export default class StarboardCommand extends Command {
 			`,
 			name: 'starboard',
 			permissionLevel: 6, // MANAGE_GUILD
-			// TODO: fix permissions here
-			requiredPermissions: ['EMBED_LINKS', 'READ_MESSAGE_HISTORY', 'ATTACH_FILES'],
+			requiredPermissions: [Permissions.FLAGS.EMBED_LINKS, Permissions.FLAGS.READ_MESSAGE_HISTORY, Permissions.FLAGS.ATTACH_FILES],
 			subcommands: true,
 			usage: '<on|off|status|channel|trigger> (content:content)'
 		});
@@ -42,6 +40,14 @@ export default class StarboardCommand extends Command {
 		});
 	}
 
+	/**
+	 * Change the channel the starred message is saved to
+	 *
+	 * @param {KlasaMessage} msg
+	 * @param {Channel} content
+	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
+	 * @memberof StarboardCommand
+	 */
 	public async channel(msg: KlasaMessage, [content]): Promise<KlasaMessage | KlasaMessage[]> {
 		const starboardEmbed: MessageEmbed = new MessageEmbed({
 			author: {
@@ -73,6 +79,14 @@ export default class StarboardCommand extends Command {
 		}
 	}
 
+	/**
+	 * Change the emoji that triggers saving a message to the starboard.
+	 *
+	 * @param {KlasaMessage} msg
+	 * @param {Channel} content
+	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
+	 * @memberof StarboardCommand
+	 */
 	public async trigger(msg: KlasaMessage, [content]): Promise<KlasaMessage | KlasaMessage[]> {
 		const starboardEmbed: MessageEmbed = new MessageEmbed({
 			author: {
@@ -98,6 +112,13 @@ export default class StarboardCommand extends Command {
 		}
 	}
 
+	/**
+	 * Turn the feature on
+	 *
+	 * @param {KlasaMessage} msg
+	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
+	 * @memberof StarboardCommand
+	 */
 	public async on(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const starboardEmbed: MessageEmbed = new MessageEmbed({
 			author: {
@@ -133,6 +154,13 @@ export default class StarboardCommand extends Command {
 		}
 	}
 
+	/**
+	 * Turn the feature off
+	 *
+	 * @param {KlasaMessage} msg
+	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
+	 * @memberof StarboardCommand
+	 */
 	public async off(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const starboardEmbed: MessageEmbed = new MessageEmbed({
 			author: {
@@ -162,12 +190,12 @@ export default class StarboardCommand extends Command {
 			return sendSimpleEmbeddedMessage(msg, 'Star Board already disabled!', 3000);
 		}
 	}
-
+	
 	/**
-	 * Run the "starboard" command.
+	 * Return the status of the feature
 	 *
 	 * @param {KlasaMessage} msg
-	 * @param {{ subCommand: string, content: Channel | string }} args
+	 * @param {Channel | string } content
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof StarboardCommand
 	 */
@@ -206,7 +234,15 @@ export default class StarboardCommand extends Command {
 		return msg.sendEmbed(starboardEmbed);
 	}
 
-	private catchError(msg: KlasaMessage, args: { subCommand: string, content?: Channel | string }, err: Error) {
+	/**
+	 * Handle errors in the command's execution
+	 *
+	 * @param {KlasaMessage} msg
+	 * @param {{ subCommand: string, content?: Channel | string }} args
+	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
+	 * @memberof StarboardCommand
+	 */
+	private catchError(msg: KlasaMessage, args: { subCommand: string, content?: Channel | string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Build warning message
 		let starboardWarn = stripIndents`
 		Error occurred in \`starboard\` command!

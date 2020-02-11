@@ -28,7 +28,7 @@ export default class ReloadCommandCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof ReloadCommandCommand
 	 */
-	async run(message: KlasaMessage, [piece]: any) {
+	public async run(message: KlasaMessage, [piece]: any): Promise<KlasaMessage | KlasaMessage[]> {
 		if (piece === 'everything') return this.everything(message);
 		if (piece instanceof Store) {
 			const timer = new Stopwatch();
@@ -60,7 +60,7 @@ export default class ReloadCommandCommand extends Command {
 		}
 	}
 
-	async everything(message: KlasaMessage) {
+	private async everything(message: KlasaMessage) {
 		const timer = new Stopwatch();
 		await Promise.all(this.client.pieceStores.map(async (store) => {
 			await store.loadAll();

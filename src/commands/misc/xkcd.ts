@@ -12,18 +12,10 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class XkcdCommand extends Command {
-	/**
-	 * Creates an instance of XkcdCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof XkcdCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns a given XKCD comic number (or the latest if nothing specified)',
 			extendedHelp: stripIndents`
-				syntax: \`!xkcd (comic number)\`
-
 				Supplying no comic number returns the latest comic.`,
 			name: 'xkcd',
 			usage: '[comicNumber:number]'

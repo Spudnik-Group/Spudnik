@@ -2,7 +2,6 @@ import { MessageEmbed } from 'discord.js';
 import { getRandomInt, getEmbedColor } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
-// tslint:disable-next-line:no-var-requires
 const { smiff }: { smiff: string[] } = require('../../extras/data.json');
 
 /**
@@ -13,12 +12,6 @@ const { smiff }: { smiff: string[] } = require('../../extras/data.json');
  * @extends {Command}
  */
 export default class SmiffFactCommand extends Command {
-	/**
-	 * Creates an instance of SmiffFactCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof SmiffFactCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['smith-fact', 'willsmith'],

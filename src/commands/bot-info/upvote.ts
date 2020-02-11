@@ -1,9 +1,10 @@
 import { stripIndents } from 'common-tags';
 import { KlasaClient, CommandStore, KlasaMessage, Command } from 'klasa';
 import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { Permissions } from 'discord.js';
 
 /**
- * Post links to upvote the bot's listings.
+ * Returns links to upvote the bot on bot listing sites.
  *
  * @export
  * @class UpvoteCommand
@@ -15,7 +16,8 @@ export default class UpvoteCommand extends Command {
 		super(client, store, file, directory, {
 			description: 'Returns links to upvote the bot on bot listing sites.',
 			guarded: true,
-			name: 'upvote'
+			name: 'upvote',
+			requiredPermissions: Permissions.FLAGS.EMBED_LINKS
 		});
 	}
 

@@ -14,7 +14,6 @@ import { ITOSMessage } from '../../lib/interfaces';
  * @extends {Command}
  */
 export default class TermsOfServiceCommand extends Command {
-
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Used to configure the Terms of Service for a guild.',
@@ -81,12 +80,12 @@ export default class TermsOfServiceCommand extends Command {
 
 				return this.sendSuccess(msg, tosEmbed);
 			} catch (err) {
-				return this.catchError(msg, { subCommand: 'channel', item }, err);
+				return this.catchError(msg, { subCommand: 'channel', item: item }, err);
 			}
 		}
 	}
 
-	public async title(msg: KlasaMessage, [item, ...text]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async title(msg: KlasaMessage, [item, text]): Promise<KlasaMessage | KlasaMessage[]> {
 		const tosEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/ballot-box-with-check_2611.png',
@@ -97,8 +96,9 @@ export default class TermsOfServiceCommand extends Command {
 		let itemIndex: number = null;
 		const tosMessages = await msg.guild.settings.get('tos.messages');
 		let existingTosMessage = tosMessages.find((message, index) => {
-			if(Number(message.id) === Number(item)){
+			if(Number(message.id) === Number(item)) {
 				itemIndex = index;
+
 				return true;
 			}
 
@@ -123,13 +123,13 @@ export default class TermsOfServiceCommand extends Command {
 
 				return this.sendSuccess(msg, tosEmbed);
 			} catch (err) {
-				return this.catchError(msg, { subCommand: 'title', item, ...text }, err);
+				return this.catchError(msg, { subCommand: 'title', item: item, ...text }, err);
 			}
 		} else {
 			existingTosMessage = {
-				title: text,
+				body: '',
 				id: item,
-				body: ''
+				title: text
 			}
 
 			try {
@@ -145,7 +145,7 @@ export default class TermsOfServiceCommand extends Command {
 
 				return this.sendSuccess(msg, tosEmbed);
 			} catch (err) {
-				return this.catchError(msg, { subCommand: 'title', item, ...text }, err);
+				return this.catchError(msg, { subCommand: 'title', item: item, ...text }, err);
 			}
 		}
 	}
@@ -161,8 +161,9 @@ export default class TermsOfServiceCommand extends Command {
 		let itemIndex: number = null;
 		const tosMessages = await msg.guild.settings.get('tos.messages');
 		let existingTosMessage = tosMessages.find((message, index) => {
-			if(Number(message.id) === Number(item)){
+			if(Number(message.id) === Number(item)) {
 				itemIndex = index;
+
 				return true;
 			}
 
@@ -187,13 +188,13 @@ export default class TermsOfServiceCommand extends Command {
 
 				return this.sendSuccess(msg, tosEmbed);
 			} catch (err) {
-				return this.catchError(msg, { subCommand: 'title', item, ...text }, err);
+				return this.catchError(msg, { subCommand: 'title', item: item, ...text }, err);
 			}
 		} else {
 			existingTosMessage = {
-				title: '',
+				body: text,
 				id: item,
-				body: text
+				title: ''
 			}
 
 			try {
@@ -209,7 +210,7 @@ export default class TermsOfServiceCommand extends Command {
 
 				return this.sendSuccess(msg, tosEmbed);
 			} catch (err) {
-				return this.catchError(msg, { subCommand: 'title', item, ...text }, err);
+				return this.catchError(msg, { subCommand: 'title', item: item, ...text }, err);
 			}
 		}
 	}
@@ -223,14 +224,14 @@ export default class TermsOfServiceCommand extends Command {
 			color: getEmbedColor(msg)
 		});
 		const tosMessage: ITOSMessage = await msg.guild.settings.get('tos.messages').find((message, index) => {
-			if(Number(message.id) === Number(item)){
+			if(Number(message.id) === Number(item)) {
 				return true;
 			}
 
 			return false;
 		});
 
-		if(tosMessage){
+		if(tosMessage) {
 			tosEmbed
 				.setDescription(stripIndents`
 					**ID:** ${tosMessage.id}
@@ -242,7 +243,7 @@ export default class TermsOfServiceCommand extends Command {
 
 			return this.sendSuccess(msg, tosEmbed);
 		} else {
-
+			// toto?
 		}
 	}
 
@@ -273,14 +274,6 @@ export default class TermsOfServiceCommand extends Command {
 		}
 	}
 
-	/**
-	 * Run the "tos" command.
-	 *
-	 * @param {KlasaMessage} msg
-	 * @param {{ subCommand: string, item: Channel | number, text: string }} args
-	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
-	 * @memberof TermsOfServiceCommand
-	 */
 	public async status(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const tosEmbed: MessageEmbed = new MessageEmbed({
 			author: {
@@ -311,7 +304,7 @@ export default class TermsOfServiceCommand extends Command {
 		return msg.sendEmbed(tosEmbed);
 	}
 
-	private catchError(msg: KlasaMessage, args: { subCommand: string, item: Channel | number, text?: string, raw?: string }, err: Error) {
+	private catchError(msg: KlasaMessage, args: { subCommand: string, item: Channel | number, text?: string, raw?: string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Build warning message
 		let tosWarn = stripIndents`
 			Error occurred in \`tos\` command!
@@ -352,6 +345,7 @@ export default class TermsOfServiceCommand extends Command {
 
 	private sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
 		modLogMessage(msg, embed);
+
 		// Send the success response
 		return msg.sendEmbed(embed);
 	}

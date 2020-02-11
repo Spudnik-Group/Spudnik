@@ -12,18 +12,12 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class UnBanCommand extends Command {
-	/**
-	 * Creates an instance of UnBanCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof UnBanCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Un-Bans the user.',
 			name: 'unban',
 			permissionLevel: 4, // BAN_MEMBERS
-			requiredPermissions: Permissions.FLAGS['BAN_MEMBERS'],
+			requiredPermissions: Permissions.FLAGS.BAN_MEMBERS,
 			usage: '<user:user> [reason:...string]'
 		});
 	}
@@ -65,7 +59,7 @@ export default class UnBanCommand extends Command {
 		}
 	}
 
-	private catchError(msg: KlasaMessage, args: { user: User, reason: string }, err: Error) {
+	private catchError(msg: KlasaMessage, args: { user: User, reason: string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Emit warn event for debugging
 		msg.client.emit('warn', stripIndents`
 		Error occurred in \`unban\` command!

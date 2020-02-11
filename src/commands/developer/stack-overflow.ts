@@ -1,5 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { MessageEmbed } from 'discord.js';
+import { MessageEmbed, Permissions } from 'discord.js';
 import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
 import axios from 'axios';
 import * as format from 'date-fns/format';
@@ -16,20 +16,14 @@ const apikey = SpudConfig.stackoverflowApiKey;
  * @extends {Command}
  */
 export default class StackOverflowCommand extends Command {
-	/**
-	 * Creates an instance of StackOverflowCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof StackOverflowCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			requiredPermissions: ['EMBED_LINKS'],
 			description: 'Returns results for the supplied query from Stack Overflow.',
 			extendedHelp: stripIndents`
 				syntax: \`!stack-overflow <query>\`
 			`,
 			name: 'stack-overflow',
+			requiredPermissions: Permissions.FLAGS.EMBED_LINKS,
 			usage: '<query:...string>'
 		});
 	}

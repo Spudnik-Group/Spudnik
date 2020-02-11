@@ -11,12 +11,6 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class DateFactCommand extends Command {
-	/**
-	 * Creates an instance of DateFactCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof DateFactCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns a random date fact.',

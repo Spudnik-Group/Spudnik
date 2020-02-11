@@ -9,7 +9,7 @@ import { User } from 'discord.js';
  * @extends {Command}
  */
 export default class BlacklistCommand extends Command {
-	terms = ['usersAdded', 'usersRemoved', 'guildsAdded', 'guildsRemoved'];
+	private terms = ['usersAdded', 'usersRemoved', 'guildsAdded', 'guildsRemoved'];
 
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
@@ -29,7 +29,7 @@ export default class BlacklistCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof BlacklistCommand
 	 */
-	async run(message: KlasaMessage, [...usersAndGuilds]) {
+	public async run(message: KlasaMessage, [...usersAndGuilds]): Promise<KlasaMessage | KlasaMessage[]> {
 		const changes: any[][] = [[], [], [], []];
 		const queries: any[][] = [[], []];
 

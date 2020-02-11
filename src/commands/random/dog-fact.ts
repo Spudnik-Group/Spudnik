@@ -11,12 +11,6 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class DogFactCommand extends Command {
-	/**
-	 * Creates an instance of DogFactCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof DogFactCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns a random dog fact.',

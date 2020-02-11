@@ -1,5 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { Message, MessageEmbed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
@@ -11,12 +11,6 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class ListWarnsCommand extends Command {
-	/**
-	 * Creates an instance of ListWarnsCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof ListWarnsCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: [
@@ -34,10 +28,10 @@ export default class ListWarnsCommand extends Command {
 	 *
 	 * @param {KlasaMessage} msg
 	 * @param {{ member: GuildMember, reason: string }} args
-	 * @returns {(Promise<Message | Message[] | any>)}
+	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof ListWarnsCommand
 	 */
-	public async run(msg: KlasaMessage): Promise<Message | Message[] | any> {
+	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const warnEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/warning-sign_26a0.png',

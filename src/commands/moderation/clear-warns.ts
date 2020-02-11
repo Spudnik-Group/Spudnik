@@ -1,5 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { GuildMember, Message, MessageEmbed } from 'discord.js';
+import { GuildMember, MessageEmbed } from 'discord.js';
 import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
@@ -12,12 +12,6 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class ClearWarnsCommand extends Command {
-	/**
-	 * Creates an instance of ClearWarnsCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof ClearWarnsCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: [
@@ -36,10 +30,10 @@ export default class ClearWarnsCommand extends Command {
 	 *
 	 * @param {KlasaMessage} msg
 	 * @param {{ member: GuildMember, reason: string }} args
-	 * @returns {(Promise<Message | Message[] | any>)}
+	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof ClearWarnsCommand
 	 */
-	public async run(msg: KlasaMessage, [member, reason]): Promise<Message | Message[] | any> {
+	public async run(msg: KlasaMessage, [member, reason]): Promise<KlasaMessage | KlasaMessage[]> {
 		const warnEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/warning-sign_26a0.png',
@@ -95,7 +89,7 @@ export default class ClearWarnsCommand extends Command {
 		}
 	}
 
-	private catchError(msg: KlasaMessage, args: { member: GuildMember, reason: string }, err: Error) {
+	private catchError(msg: KlasaMessage, args: { member: GuildMember, reason: string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Emit warn event for debugging
 		msg.client.emit('warn', stripIndents`
 		Error occurred in \`clear-warns\` command!

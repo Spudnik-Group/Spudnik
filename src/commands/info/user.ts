@@ -11,10 +11,10 @@ const activities = {
 	WATCHING: 'Watching'
 };
 const statuses = {
-	online: '💚 Online',
-	idle: '💛 Idle',
 	dnd: '❤ Do Not Disturb',
-	offline: '💔 Offline'
+	idle: '💛 Idle',
+	offline: '💔 Offline',
+	online: '💚 Online'
 };
 
 /**
@@ -25,23 +25,14 @@ const statuses = {
  * @extends {Command}
  */
 export default class UserCommand extends Command {
-	/**
-	 * Creates an instance of UserCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof UserCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['user-stats'],
 			description: 'Returns statistics about a user.',
 			extendedHelp: stripIndents`
-				syntax \`!user (@usermention|snowflake|username)\`
-
 				Supplying no usermention returns details about the calling user.
 			`,
 			name: 'user',
-			requiredPermissions: ['EMBED_LINKS'],
 			usage: '[user:user]'
 		});
 	}

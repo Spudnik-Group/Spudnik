@@ -1,7 +1,7 @@
 import { KlasaClient, CommandStore, KlasaMessage, Command } from 'klasa';
 import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
 import { MessageEmbed, Permissions } from 'discord.js';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 /**
  * Returns GitHub release notes for the 3 most recent releases.
@@ -27,7 +27,7 @@ export default class changelogCommand extends Command {
 	 * @memberof changelogCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const stackEmbed = new MessageEmbed({
+		const stackEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/scroll_1f4dc.png',
 				name: 'Change Log',
@@ -38,14 +38,14 @@ export default class changelogCommand extends Command {
 		});
 
 		try {
-			const res: any = await axios.get('https://api.github.com/repos/Spudnik-Group/Spudnik/releases', {
+			const res: AxiosResponse<any> = await axios.get('https://api.github.com/repos/Spudnik-Group/Spudnik/releases', {
 				headers: {
 					'Accept': 'application/vnd.github.v3+json',
 					'User-Agent': 'Spudnik Bot'
 				}
 			});
 
-			const changelog = res.data.slice(0, 3);
+			const changelog: Array<any> = res.data.slice(0, 3);
 
 			changelog.forEach((release: any) => {
 				stackEmbed.description += `

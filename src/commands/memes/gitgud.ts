@@ -11,18 +11,9 @@ import { MessageEmbed } from 'discord.js';
  * @extends {Command}
  */
 export default class GitGudCommand extends Command {
-	/**
-	 * Creates an instance of GitGudCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof GitGudCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Informs someone that they should "git gud".',
-			extendedHelp: stripIndents`
-				syntax: \`!gitgud (@user mention)\`
-			`,
 			name: 'gitgud',
 			usage: '[mention:member]'
 		});

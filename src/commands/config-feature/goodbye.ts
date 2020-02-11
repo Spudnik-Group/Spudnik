@@ -12,7 +12,6 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class GoodbyeCommand extends Command {
-
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Used to configure the message to be sent when a user leaves your guild.',
@@ -63,7 +62,7 @@ export default class GoodbyeCommand extends Command {
 
 			return this.sendSuccess(msg, goodbyeEmbed);
 		} catch (err) {
-			return this.catchError(msg, { subCommand: 'message', content }, err)
+			return this.catchError(msg, { subCommand: 'message', content: content }, err)
 		}
 	}
 
@@ -101,7 +100,7 @@ export default class GoodbyeCommand extends Command {
 
 				return this.sendSuccess(msg, goodbyeEmbed);
 			} catch (err) {
-				return this.catchError(msg, { subCommand: 'channel', content }, err)
+				return this.catchError(msg, { subCommand: 'channel', content: content }, err)
 			}
 		}
 	}
@@ -212,6 +211,7 @@ export default class GoodbyeCommand extends Command {
 			Message set to:
 			\`\`\`${goodbyeMessage}\`\`\`
 		`);
+
 		// Send the success response
 		return msg.sendEmbed(goodbyeEmbed);
 	}

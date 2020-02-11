@@ -14,12 +14,6 @@ const verificationLevels = ['None', 'Low', 'Medium', '(╯°□°）╯︵ ┻�
  * @extends {Command}
  */
 export default class ServerCommand extends Command {
-	/**
-	 * Creates an instance of ServerCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof ServerCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['server-stats'],

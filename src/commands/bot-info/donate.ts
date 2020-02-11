@@ -1,20 +1,21 @@
 import { KlasaClient, CommandStore, KlasaMessage, Command } from 'klasa';
 import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { Permissions } from 'discord.js';
 
 /**
- * Post a donate link.
+ * Returns options to donate to help support development and hosting of the bot.
  *
  * @export
  * @class DonateCommand
  * @extends {Command}
  */
 export default class DonateCommand extends Command {
-
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns options to donate to help support development and hosting of the bot.',
 			guarded: true,
-			name: 'donate'
+			name: 'donate',
+			requiredPermissions: Permissions.FLAGS.EMBED_LINKS
 		});
 	}
 

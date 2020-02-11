@@ -11,18 +11,10 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class PlayingCommand extends Command {
-	/**
-	 * Creates an instance of AcceptCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof PlayingCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns a list of people playing games. Allows filtering.',
 			extendedHelp: stripIndents`
-				syntax: \`!playing [game name]\`
-
 				Supplying no game name provides you with a list of all users who are marked with the "Playing" status type.
 				Supplying a game name provides you with a list of all users with that game name as their status (case insensitive)`,
 			name: 'playing',

@@ -12,21 +12,15 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class MdnReferenceCommand extends Command {
-	/**
-	 * Creates an instance of MdnReferenceCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof MdnReferenceCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['jsdocs'],
-			requiredPermissions: ['EMBED_LINKS'],
 			description: 'Returns results for the supplied query from the MDN.',
 			extendedHelp: stripIndents`
 				syntax: \`!mdn <query>\`
 			`,
 			name: 'mdn',
+			requiredPermissions: ['EMBED_LINKS'],
 			usage: '<query:...string>'
 		});
 	}

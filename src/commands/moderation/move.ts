@@ -11,18 +11,12 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class MoveCommand extends Command {
-	/**
-	 * Creates an instance of MoveCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof MoveCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Moves a message to a different channel.',
 			name: 'move',
 			permissionLevel: 1, // MANAGE_MESSAGES
-			requiredPermissions: Permissions.FLAGS['MANAGE_MESSAGES'],
+			requiredPermissions: Permissions.FLAGS.MANAGE_MESSAGES,
 			usage: '<message:msg> <channel:channel> [reason:...string]'
 		});
 	}

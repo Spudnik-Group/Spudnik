@@ -1,5 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { GuildMember, Message, MessageEmbed } from 'discord.js';
+import { GuildMember, MessageEmbed } from 'discord.js';
 import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 import { KlasaClient, CommandStore, Command, KlasaMessage } from 'klasa';
@@ -12,12 +12,6 @@ import { KlasaClient, CommandStore, Command, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class WarnCommand extends Command {
-	/**
-	 * Creates an instance of WarnCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof WarnCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Warn a member with a specified amount of points',
@@ -32,10 +26,10 @@ export default class WarnCommand extends Command {
 	 *
 	 * @param {KlasaMessage} msg
 	 * @param {{ member: GuildMember, points: number, reason: string }} args
-	 * @returns {(Promise<Message | Message[] | any>)}
+	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof WarnCommand
 	 */
-	public async run(msg: KlasaMessage, [member, points, reason]): Promise<Message | Message[] | any> {
+	public async run(msg: KlasaMessage, [member, points, reason]): Promise<KlasaMessage | KlasaMessage[]> {
 		const warnEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/warning-sign_26a0.png',
@@ -97,7 +91,7 @@ export default class WarnCommand extends Command {
 		}
 	}
 
-	private catchError(msg: KlasaMessage, args: { member: GuildMember, points: number, reason: string }, err: Error) {
+	private catchError(msg: KlasaMessage, args: { member: GuildMember, points: number, reason: string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Emit warn event for debugging
 		msg.client.emit('warn', stripIndents`
 		Error occurred in \`warn\` command!

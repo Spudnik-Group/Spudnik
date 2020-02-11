@@ -11,12 +11,6 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class YearFactCommand extends Command {
-	/**
-	 * Creates an instance of YearFactCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof YearFactCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns a random year fact.',

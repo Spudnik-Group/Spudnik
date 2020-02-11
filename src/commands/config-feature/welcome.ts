@@ -12,7 +12,6 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class WelcomeCommand extends Command {
-
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Used to configure the message to be sent when a new user join your guild.',
@@ -33,6 +32,14 @@ export default class WelcomeCommand extends Command {
 		this.createCustomResolver('content', basicFeatureContent);
 	}
 
+	/**
+	 * Change the message that is sent
+	 *
+	 * @param {KlasaMessage} msg
+	 * @param {string} content
+	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
+	 * @memberof WelcomeCommand
+	 */
 	public async message(msg: KlasaMessage, [content]): Promise<KlasaMessage | KlasaMessage[]> {
 		const welcomeEmbed = new MessageEmbed({
 			author: {
@@ -55,10 +62,18 @@ export default class WelcomeCommand extends Command {
 
 			return this.sendSuccess(msg, welcomeEmbed);
 		} catch (err) {
-			return this.catchError(msg, { subCommand: 'message', content }, err);
+			return this.catchError(msg, { subCommand: 'message', content: content }, err);
 		}
 	}
 
+	/**
+	 * Change the channel the welcome message is sent to
+	 *
+	 * @param {KlasaMessage} msg
+	 * @param {Channel} content
+	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
+	 * @memberof WelcomeCommand
+	 */
 	public async channel(msg: KlasaMessage, [content]): Promise<KlasaMessage | KlasaMessage[]> {
 		const welcomeEmbed = new MessageEmbed({
 			author: {
@@ -85,11 +100,18 @@ export default class WelcomeCommand extends Command {
 
 				return this.sendSuccess(msg, welcomeEmbed);
 			} catch (err) {
-				return this.catchError(msg, { subCommand: 'channel', content }, err);
+				return this.catchError(msg, { subCommand: 'channel', content: content }, err);
 			}
 		}
 	}
 
+	/**
+	 * Turn the feature on
+	 *
+	 * @param {KlasaMessage} msg
+	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
+	 * @memberof WelcomeCommand
+	 */
 	public async on(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const welcomeEmbed = new MessageEmbed({
 			author: {
@@ -125,6 +147,13 @@ export default class WelcomeCommand extends Command {
 		}
 	}
 
+	/**
+	 * Turn the feature off
+	 *
+	 * @param {KlasaMessage} msg
+	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
+	 * @memberof WelcomeCommand
+	 */
 	public async off(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const welcomeEmbed = new MessageEmbed({
 			author: {
@@ -156,10 +185,9 @@ export default class WelcomeCommand extends Command {
 	}
 
 	/**
-	 * Run the "welcome" command.
+	 * Return the status of the feature.
 	 *
 	 * @param {KlasaMessage} msg
-	 * @param {{ subCommand: string, content: Channel | string }} args
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof WelcomeCommand
 	 */
@@ -182,11 +210,20 @@ export default class WelcomeCommand extends Command {
 			Message set to:
 			\`\`\`${welcomeMessage}\`\`\`
 		`);
+
 		// Send the success response
 		return msg.sendEmbed(welcomeEmbed);
 	}
 
-	private catchError(msg: KlasaMessage, args: { subCommand: string, content?: Channel | string }, err: Error) {
+	/**
+	 * Handle errors in the command's execution
+	 *
+	 * @param {KlasaMessage} msg
+	 * @param {{ subCommand: string, content?: Channel | string }} args
+	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
+	 * @memberof WelcomeCommand
+	 */
+	private catchError(msg: KlasaMessage, args: { subCommand: string, content?: Channel | string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Build warning message
 		let welcomeWarn = stripIndents`
 		Error occurred in \`welcome\` command!
@@ -230,6 +267,7 @@ export default class WelcomeCommand extends Command {
 
 	private sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
 		modLogMessage(msg, embed);
+		
 		// Send the success response
 		return msg.sendEmbed(embed);
 	}

@@ -1,5 +1,6 @@
 import { KlasaClient, CommandStore, KlasaMessage, Command } from 'klasa';
 import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { Permissions } from 'discord.js';
 
 /**
  * Post a link to the Spudnik code repository.
@@ -14,7 +15,8 @@ export default class SourceCommand extends Command {
 		super(client, store, file, directory, {
 			description: 'Returns a link to my source code!',
 			guarded: true,
-			name: 'source'
+			name: 'source',
+			requiredPermissions: Permissions.FLAGS.EMBED_LINKS
 		});
 	}
 
