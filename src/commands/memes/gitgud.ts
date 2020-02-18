@@ -1,4 +1,3 @@
-import { stripIndents } from 'common-tags';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 import { sendSimpleEmbeddedImage } from '../../lib/helpers';
 import { MessageEmbed } from 'discord.js';

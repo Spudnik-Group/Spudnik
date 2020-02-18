@@ -1,4 +1,5 @@
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { sendSimpleEmbeddedMessage } from 'src/lib/helpers';
 
 /**
  * Reboots the bot.
@@ -24,9 +25,10 @@ export default class RebootCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof RebootCommand
 	 */
-	public async run(message: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		await message.sendLocale('COMMAND_REBOOT').catch(err => this.client.emit('error', err));
+	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		await Promise.all(this.client.providers.map(provider => provider.shutdown()));
 		process.exit();
+
+		return sendSimpleEmbeddedMessage(msg, 'Rebooting...');
 	}
 };
