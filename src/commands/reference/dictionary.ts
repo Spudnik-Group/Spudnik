@@ -16,12 +16,6 @@ const dict = new mw.CollegiateDictionary(dictionaryApiKey);
  * @extends {Command}
  */
 export default class DefineCommand extends Command {
-	/**
-	 * Creates an instance of DefineCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof DefineCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns the definition of a supplied word. Uses the Merriam-Webster Collegiate Dictionary API.',
@@ -82,7 +76,7 @@ export default class DefineCommand extends Command {
 		}
 	}
 
-	private renderDefinition(sensesIn: any) {
+	private renderDefinition(sensesIn: any): string {
 		return sensesIn
 			.map((def: any) => oneLine`
 				${def.number ? '*' + def.number + '.*' : ''}

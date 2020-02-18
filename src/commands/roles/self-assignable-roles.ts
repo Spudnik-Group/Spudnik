@@ -12,23 +12,12 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class SelfAssignableRolesCommand extends Command {
-	/**
-	 * Creates an instance of SelfAssignableRolesCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof SelfAssignableRolesCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: [
 				'sar'
 			],
 			description: 'Used to configure the self-assignable roles feature.',
-			extendedHelp: stripIndents`
-				**Subcommand Usage**:
-				\`add <@&roleMention>\` - adds the role to the list of self-assignable-roles.
-				\`remove <@&roleMention>\` - removes the role from the list of self-assignable-roles.
-			`,
 			name: 'self-assignable-roles',
 			permissionLevel: 2,
 			subcommands: true,
@@ -63,10 +52,6 @@ export default class SelfAssignableRolesCommand extends Command {
 		}
 
 		if (!guildAssignableRoles.includes(role.id)) {
-			// guildAssignableRoles.push(role.id);
-
-			// console.log(guildAssignableRoles);
-
 			msg.guild.settings.update('roles.selfAssignable', role, msg.guild)
 				.then(() => {
 					// Set up embed message
@@ -120,7 +105,7 @@ export default class SelfAssignableRolesCommand extends Command {
 		}
 	}
 
-	private catchError(msg: KlasaMessage, args: any, err: Error) {
+	private catchError(msg: KlasaMessage, args: any, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Build warning message
 		let roleWarn = stripIndents`
 			Error occurred in \`self-assignable-roles\` command!

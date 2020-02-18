@@ -11,12 +11,6 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class CocktailCommand extends Command {
-	/**
-	 * Creates an instance of CocktailCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof CocktailCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns information about a cocktail. Uses the CocktailDB API.',
@@ -114,7 +108,7 @@ export default class CocktailCommand extends Command {
 		};
 	}
 
-	private findSimilarProps(obj: any, propName: string): any {
+	private findSimilarProps(obj: any, propName: string): string[] {
 		return Object.keys(obj).filter(k => {
 			return k.indexOf(propName) === 0;
 		}).map(key => {

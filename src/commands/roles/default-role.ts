@@ -1,5 +1,5 @@
 import { stripIndents } from 'common-tags';
-import { MessageEmbed, Role } from 'discord.js';
+import { MessageEmbed, Role, Permissions } from 'discord.js';
 import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '../../lib/helpers';
 import * as format from 'date-fns/format';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
@@ -12,24 +12,18 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class DefaultRoleCommand extends Command {
-	/**
-	 * Creates an instance of RoleCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof RoleCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: [
 				'dr'
 			],
-			requiredPermissions: ['MANAGE_ROLES'],
 			description: 'Used to configure the default role for the `accept` command.',
 			extendedHelp: stripIndents`
-				\`(@roleMention)\` - sets the default role, or clears all if no role is provided.
+				If no role is provided, the default role is cleared.
 			`,
 			name: 'default-role',
 			permissionLevel: 2,
+			requiredPermissions: Permissions.FLAGS.MANAGE_ROLES,
 			usage: '[role:Role]'
 		});
 
@@ -69,7 +63,7 @@ export default class DefaultRoleCommand extends Command {
 
 				return this.sendSuccess(msg, roleEmbed);
 			} catch (err) {
-				this.catchError(msg, role, 'reset', err);
+				return this.catchError(msg, role, 'reset', err);
 			}
 		} else if (!guildDefaultRole || guildDefaultRole.id !== role.id) {
 			try {
@@ -83,14 +77,14 @@ export default class DefaultRoleCommand extends Command {
 
 				return this.sendSuccess(msg, roleEmbed);
 			} catch (err) {
-				this.catchError(msg, role, 'set', err);
+				return this.catchError(msg, role, 'set', err);
 			}
 		} else {
 			return sendSimpleEmbeddedError(msg, `Default role already set to <@&${role.id}>`, 3000);
 		}
 	}
 
-	private catchError(msg: KlasaMessage, role: Role, action: string, err: Error) {
+	private catchError(msg: KlasaMessage, role: Role, action: string, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Build warning message
 		const roleWarn = stripIndents`
 			Error occurred in \`role-management\` command!

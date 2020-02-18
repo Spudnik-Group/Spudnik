@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { MessageEmbed, Permissions } from 'discord.js';
 import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
@@ -10,18 +10,12 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class IAmNotCommand extends Command {
-	/**
-	 * Creates an instance of IAmNotCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof IAmNotCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			requiredPermissions: ['MANAGE_ROLES'],
-			requiredSettings: ['roles.selfAssignableRoles'],
 			description: 'Used to remove a self-assignable role from yourself.',
 			name: 'iamnot',
+			requiredPermissions: Permissions.FLAGS.MANAGE_ROLES,
+			requiredSettings: ['roles.selfAssignableRoles'],
 			usage: '<role:Role>'
 		});
 	}

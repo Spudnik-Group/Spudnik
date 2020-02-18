@@ -11,12 +11,6 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class WikiCommand extends Command {
-	/**
-	 * Creates an instance of WikiCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof WikiCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns the summary of the first matching search result from Wikipedia.',

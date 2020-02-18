@@ -12,7 +12,6 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class MuteRoleCommand extends Command {
-	
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: [
@@ -82,7 +81,7 @@ export default class MuteRoleCommand extends Command {
 		}
 	}
 
-	private catchError(msg: KlasaMessage, role: Role, action: string, err: Error) {
+	private catchError(msg: KlasaMessage, role: Role, action: string, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Build warning message
 		const roleWarn = stripIndents`
 			Error occurred in \`mute-role\` command!

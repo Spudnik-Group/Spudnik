@@ -14,12 +14,6 @@ const { version, dependencies } = require('../../../package');
  * @extends {Command}
  */
 export default class StatsCommand extends Command {
-	/**
-	 * Creates an instance of StatsCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof StatsCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['statistics'],

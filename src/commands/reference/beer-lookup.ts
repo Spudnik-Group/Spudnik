@@ -14,12 +14,6 @@ const breweryDbApiKey: string = SpudConfig.breweryDbApiKey;
  * @extends {Command}
  */
 export default class BrewCommand extends Command {
-	/**
-	 * Creates an instance of BrewCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof BrewCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns information about a brewery or brew. Uses the BreweryDB API.',

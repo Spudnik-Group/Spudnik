@@ -12,12 +12,6 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class AcceptCommand extends Command {
-	/**
-	 * Creates an instance of AcceptCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof AcceptCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Accept the Terms of Use for the current guild.',
@@ -50,7 +44,7 @@ export default class AcceptCommand extends Command {
 			try {
 				await msg.member.roles.add(defaultRole);
 			} catch (err) {
-				this.catchError(msg, err);
+				return this.catchError(msg, err);
 			}
 
 			// Set up embed message
@@ -65,7 +59,7 @@ export default class AcceptCommand extends Command {
 		return null;
 	}
 
-	private catchError(msg: KlasaMessage, err: Error) {
+	private catchError(msg: KlasaMessage, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Build warning message
 		let acceptWarn = stripIndents`
 			Error occurred in \`accept\` command!

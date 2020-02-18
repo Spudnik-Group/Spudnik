@@ -12,13 +12,6 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class OverwatchStatsCommand extends Command {
-	/**
-	 * Creates an instance of OverwatchStatsCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof OverwatchStatsCommand
-	 */
-
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns Overwatch stats for a user on a specific platform and region.',

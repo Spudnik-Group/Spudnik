@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Command, KlasaClient, CommandStore } from 'klasa';
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 import { stripIndents } from 'common-tags';
 import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
 import { MessageEmbed } from 'discord.js';
@@ -12,25 +12,22 @@ export default class WolframCommand extends Command {
 		super(client, store, file, directory, {
 			description: 'Query Wolfram Alpha with any mathematical question.',
 			name: 'wolfram',
-			extendedHelp: stripIndents`
-				syntax: \`!wolfram <query>\`
-			`,
 			usage: '<query:string>'
 		});
 
 		this.customizeResponse('query', 'Please supply a query');
 	}
 
-	async run(msg, [query]) {
+	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (!wolframAppID) return sendSimpleEmbeddedError(msg, 'No API Key has been set up. This feature is unusable', 3000);
 		const responseEmbed: MessageEmbed = new MessageEmbed({
-			color: getEmbedColor(msg),
-			description: '',
 			author: {
 				icon_url: 'http://products.wolframalpha.com/api/img/spikey.svg',
 				name: 'Wolfram Alpha',
 				url: 'https://wolframalpha.com'
-			}
+			},
+			color: getEmbedColor(msg),
+			description: ''
 		})
 
 		try {

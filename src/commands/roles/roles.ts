@@ -10,16 +10,10 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class RolesCommand extends Command {
-	/**
-	 * Creates an instance of RolesCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof RolesCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			description: 'Lists default and self-assignable roles.',
-			name: 'roles',
+			description: 'Lists default, muted, and self-assignable roles.',
+			name: 'roles'
 		});
 	}
 
@@ -42,7 +36,7 @@ export default class RolesCommand extends Command {
 			}
 		});
 
-		let guildAssignableRoles: Role[] = await msg.guild.settings.get('roles.selfAssignable') || [];
+		let guildAssignableRoles: Role[] = await msg.guild.settings.get('roles.selfAssignable');
 		let guildDefaultRole: Role = await msg.guild.settings.get('roles.default');
 		let guildMutedRole: Role = await msg.guild.settings.get('roles.muted');
 

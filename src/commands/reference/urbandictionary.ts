@@ -12,19 +12,13 @@ import * as UD from 'urban-dictionary';
  * @extends {Command}
  */
 export default class UrbanCommand extends Command {
-	/**
-	 * Creates an instance of UrbanCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof UrbanCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Returns the Urban Dictionary result of the supplied query. If no query is supplied, returns a random thing.',
-			name: 'urban',
 			extendedHelp: stripIndents`
 				Supplying no query will return a random result.
 			`,
+			name: 'urban',
 			nsfw: true,
 			usage: '<query:...string>'
 		});

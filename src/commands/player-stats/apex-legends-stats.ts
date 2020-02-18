@@ -20,12 +20,6 @@ const platforms: { [platform: string]: number } = {
  * @extends {Command}
  */
 export default class ApexLegendsStatsCommand extends Command {
-	/**
-	 * Creates an instance of ApexLegendsStatsCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof ApexLegendsStatsCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['apex', 'apex-stats'],

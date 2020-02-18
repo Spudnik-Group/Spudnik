@@ -10,12 +10,6 @@ import { delay } from '../../lib/helpers';
  * @extends {Command}
  */
 export default class PongCommand extends Command {
-	/**
-	 * Creates an instance of PongCommand.
-	 *
-	 * @param {CommandoClient} client
-	 * @memberof PongCommand
-	 */
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			description: 'Used to return the ping.',
