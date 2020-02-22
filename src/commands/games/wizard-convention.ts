@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import { stripIndents } from 'common-tags';
 import { Collection } from 'discord.js';
 import { awaitPlayers, delay, sendSimpleEmbeddedError, shuffle } from '../../lib/helpers';

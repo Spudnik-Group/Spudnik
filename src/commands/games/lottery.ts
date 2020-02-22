@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import { stripIndents } from 'common-tags';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 const prizes = ['$0', '$2', '$4', '$10', '$500', '$1,000,000', 'the Jackpot'];

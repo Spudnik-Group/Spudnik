@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import { oneLine } from 'common-tags';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 const red = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
