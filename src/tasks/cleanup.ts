@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import { Task, Colors, KlasaClient, TaskStore } from "klasa";
 import { SnowflakeUtil } from "discord.js";
 
