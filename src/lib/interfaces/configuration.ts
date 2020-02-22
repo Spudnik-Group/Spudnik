@@ -5,7 +5,7 @@
 export interface Configuration {
 	'bfdApiKey': string,
 	'bodApiKey': string,
-	'botListUpdateInterval': number;
+	'botListUpdateInterval': string;
 	'botsggApiKey': string,
 	'dbApiKey': string,
 	'dblApiKey': string;
@@ -14,6 +14,6 @@ export interface Configuration {
 	'spudCoreDB': string;
 	'owner': string;
 	'rollbarApiKey': string;
-	'statusUpdateInterval': number;
+	'statusUpdateInterval': string;
 	'token': string;
 }
