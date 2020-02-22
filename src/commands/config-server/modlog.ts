@@ -34,7 +34,7 @@ export default class ModlogCommand extends Command {
 		this.createCustomResolver('channel', (arg: string, possible: Possible, message: KlasaMessage, [subCommand]) => {
 			if (subCommand === 'channel' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw 'Please provide a channel for the modlog messages to be displayed in.';
 
-			return arg;
+			return resolveChannel(arg);
 		});
 	}
 
@@ -116,8 +116,8 @@ export default class ModlogCommand extends Command {
 		}).setTimestamp();
 		const modlogChannel = await msg.guild.settings.get('modlog.channel');
 
-		if (channel instanceof Channel) {
-			const channelID = (channel as Channel).id;
+		if (channel) {
+			const channelID = msg.guild.channels.get(channel).id;
 
 			if (modlogChannel && modlogChannel === channelID) {
 				return sendSimpleEmbeddedMessage(msg, `Modlog channel already set to <#${channelID}>!`, 3000);

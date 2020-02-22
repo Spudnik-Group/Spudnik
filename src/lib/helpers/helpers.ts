@@ -42,11 +42,14 @@ export const resolveMention = (usertxt: string): string => {
 export const resolveChannel = (channeltxt: string): string => {
 	let channelid = channeltxt;
 
-	if (channeltxt.startsWith('<#!')) {
+	if (channeltxt && channeltxt.startsWith('<#!')) {
 		channelid = channeltxt.substr(3, channeltxt.length - 4);
-	} else if (channeltxt.startsWith('<#')) {
+	} else if (channeltxt && channeltxt.startsWith('<#')) {
 		channelid = channeltxt.substr(2, channeltxt.length -3);
+	} else {
+		return null;
 	}
+
 
 	return channelid;
 }
