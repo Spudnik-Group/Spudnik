@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import { MessageEmbed, Permissions } from 'discord.js';
 import { stripIndents } from 'common-tags';
 import { getEmbedColor, getPermissionsFromBitfield, getPermissionsFromLevel, canCommandBeUsed } from '../../lib/helpers';
