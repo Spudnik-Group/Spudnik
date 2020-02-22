@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import { GuildMember, Message, MessageEmbed, TextChannel, Permissions } from 'discord.js';
 import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '../../lib/helpers';
 import { stripIndents } from 'common-tags';
