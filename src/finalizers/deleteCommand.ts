@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import { Finalizer, KlasaMessage } from 'klasa';
 
 export default class extends Finalizer {
