@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import { Client, KlasaClientOptions } from 'klasa';
 import { SpudConfig } from './spud-config';
 import { permissionLevels } from '../schemas/permission-levels';

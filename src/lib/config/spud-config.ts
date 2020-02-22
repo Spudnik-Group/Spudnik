@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 export const SpudConfig = {
 	'token': process.env.spud_token,
 	'port': process.env.spud_port,
