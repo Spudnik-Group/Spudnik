@@ -1,5 +1,5 @@
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
-import { sendSimpleEmbeddedMessage } from 'src/lib/helpers';
+import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
 
 /**
  * Reboots the bot.

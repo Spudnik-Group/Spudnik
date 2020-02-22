@@ -18,38 +18,40 @@ export default class extends Event {
 
 		const message: Message = await (channel as TextChannel).messages.fetch(data.message_id);
 		const starboardEnabled: boolean = await guild.settings.get('starboard.enabled');
-
+		
+		if (message.author.id === data.user_id) { return; } // You can't star your own messages
+		if (message.author.bot) { return; } // You can't star bot messages
 		if (!starboardEnabled) { return; } //Ignore if starboard isn't set up
 
-		const starboardChannel = await guild.settings.get('starboard.channel');
-		const starboard: GuildChannel = await guild.channels.get(starboardChannel);
-
-		if (!starboard || !starboardChannel) { return; } //Ignore if starboard isn't set up
-		if (starboard === channel) { return; } //Can't star items in starboard channel
-		if (!starboard.permissionsFor(this.client.user.id).has('SEND_MESSAGES') ||
-			!starboard.permissionsFor(this.client.user.id).has('EMBED_LINKS') ||
-			!starboard.permissionsFor(this.client.user.id).has('ATTACH_FILES')) {
-			//Bot doesn't have the right permissions in the starboard channel
-			// TODO: add a modlog error message here, this shouldn't silently fail
-			return;
-		}
-
 		const currentEmojiKey: any = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
-		const reaction: any = message.reactions.get(currentEmojiKey);
-		const starboardMessages = await (starboard as TextChannel).messages.fetch({ limit: 100 });
 		const starboardTrigger: string = await guild.settings.get('starboard.trigger');
-		const existingStar = starboardMessages.find(m => {
-			// Need this filter if there are non-starboard posts in the starboard channel.
-			if (m.embeds.length > 0) {
-				if (m.embeds[0].footer) {
-					// Find the previously-starred message
-					return m.embeds[0].footer.text.startsWith('⭐') && m.embeds[0].footer.text.endsWith(message.id);
-				}
-			}
-		});
 
 		// Check for starboard reaction
 		if (starboardTrigger === currentEmojiKey) {
+			const starboardChannel = await guild.settings.get('starboard.channel');
+			const starboard: GuildChannel = await guild.channels.get(starboardChannel);
+
+			if (!starboard || !starboardChannel) { return; } //Ignore if starboard isn't set up
+			if (starboard === channel) { return; } //Can't star items in starboard channel
+			if (!starboard.permissionsFor(this.client.user.id).has('SEND_MESSAGES') ||
+				!starboard.permissionsFor(this.client.user.id).has('EMBED_LINKS') ||
+				!starboard.permissionsFor(this.client.user.id).has('ATTACH_FILES')) {
+				//Bot doesn't have the right permissions in the starboard channel
+				// TODO: add a modlog error message here, this shouldn't silently fail
+				return;
+			}
+
+			const reaction: any = message.reactions.get(currentEmojiKey);
+			const starboardMessages = await (starboard as TextChannel).messages.fetch({ limit: 100 });
+			const existingStar = starboardMessages.find(m => {
+				// Need this filter if there are non-starboard posts in the starboard channel.
+				if (m.embeds.length > 0) {
+					if (m.embeds[0].footer) {
+						// Find the previously-starred message
+						return m.embeds[0].footer.text.startsWith('⭐') && m.embeds[0].footer.text.endsWith(message.id);
+					}
+				}
+			});
 			// If all of the starboard trigger emojis were removed from this message
 			if (!reaction) {
 				// Check if message is in the starboard
@@ -62,33 +64,6 @@ export default class extends Event {
 
 				return;
 			} else {
-				// You can't star your own messages
-				if (message.author.id === data.user_id) {
-					const reply: Message | Message[] = await (channel as TextChannel).send(`⚠ You cannot star your own messages, **<@${data.user_id}>**!`);
-					if (reply instanceof Message) {
-						if (reply.deletable) {
-							reply.delete({ timeout: 3000 });
-
-							return;
-						}
-					}
-
-					return;
-				}
-				// You can't star bot messages
-				if (message.author.bot) {
-					const reply: Message | Message[] = await (channel as TextChannel).send(`⚠ You cannot star bot messages, **<@${data.user_id}>**!`);
-					if (reply instanceof Message) {
-						if (reply.deletable) {
-							reply.delete({ timeout: 3000 });
-
-							return;
-						}
-					}
-
-					return;
-				}
-
 				const stars = reaction.count;
 				const starboardEmbed: MessageEmbed = new MessageEmbed()
 					.setAuthor(message.guild.name, message.guild.iconURL())

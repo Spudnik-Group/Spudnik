@@ -1,6 +1,6 @@
 import { Command, KlasaClient, CommandStore } from 'klasa';
 import axios from 'axios';
-import { sendSimpleEmbeddedError } from 'src/lib/helpers';
+import { sendSimpleEmbeddedError } from '../../lib/helpers';
 
 export default class HastebinCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
