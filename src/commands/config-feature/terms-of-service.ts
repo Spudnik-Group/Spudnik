@@ -111,45 +111,29 @@ export default class TermsOfServiceCommand extends Command {
 		const tosEmbedUpsertMessage = existingTosMessage ? 'updated' : 'added';
 
 		if (existingTosMessage) {
-			try {
-				existingTosMessage.title = text;
-
-				await msg.guild.settings.update('tos.messages', existingTosMessage, null, { arrayPosition: itemIndex });
-
-				tosEmbed
-					.setDescription(stripIndents`
-						**Member:** ${msg.author.tag} (${msg.author.id})
-						**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
-					`)
-					.setFooter('Use the `tos status` command to see the details of this feature')
-					.setTimestamp();
-
-				return this.sendSuccess(msg, tosEmbed);
-			} catch (err) {
-				return this.catchError(msg, { subCommand: 'title', item: item, ...text }, err);
-			}
+			existingTosMessage.title = text;
 		} else {
 			existingTosMessage = {
 				body: '',
 				id: item,
 				title: text
 			}
+		}
 
-			try {
-				await msg.guild.settings.update('tos.messages', existingTosMessage, null, { arrayPosition: itemIndex });
-				
-				tosEmbed
-					.setDescription(stripIndents`
-						**Member:** ${msg.author.tag} (${msg.author.id})
-						**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
-					`)
-					.setFooter('Use the `tos status` command to see the details of this feature')
-					.setTimestamp();
+		try {
+			await msg.guild.settings.update('tos.messages', existingTosMessage, null, { arrayPosition: itemIndex });
+			
+			tosEmbed
+				.setDescription(stripIndents`
+					**Member:** ${msg.author.tag} (${msg.author.id})
+					**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
+				`)
+				.setFooter('Use the `tos status` command to see the details of this feature')
+				.setTimestamp();
 
-				return this.sendSuccess(msg, tosEmbed);
-			} catch (err) {
-				return this.catchError(msg, { subCommand: 'title', item: item, ...text }, err);
-			}
+			return this.sendSuccess(msg, tosEmbed);
+		} catch (err) {
+			return this.catchError(msg, { subCommand: 'title', item: item, ...text }, err);
 		}
 	}
 
@@ -176,45 +160,29 @@ export default class TermsOfServiceCommand extends Command {
 		const tosEmbedUpsertMessage = existingTosMessage ? 'updated' : 'added';
 
 		if (existingTosMessage) {
-			try {
-				existingTosMessage.body = text;
-
-				await msg.guild.settings.update('tos.messages', existingTosMessage, null, { arrayPosition: itemIndex });
-
-				tosEmbed
-					.setDescription(stripIndents`
-						**Member:** ${msg.author.tag} (${msg.author.id})
-						**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
-					`)
-					.setFooter('Use the `tos status` command to see the details of this feature')
-					.setTimestamp();
-
-				return this.sendSuccess(msg, tosEmbed);
-			} catch (err) {
-				return this.catchError(msg, { subCommand: 'title', item: item, ...text }, err);
-			}
+			existingTosMessage.body = text.join();
 		} else {
 			existingTosMessage = {
-				body: text,
+				body: text.join(),
 				id: item,
 				title: ''
 			}
+		}
 
-			try {
-				await msg.guild.settings.update('tos.messages', existingTosMessage, null, { arrayPosition: itemIndex });
-				
-				tosEmbed
-					.setDescription(stripIndents`
-						**Member:** ${msg.author.tag} (${msg.author.id})
-						**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
-					`)
-					.setFooter('Use the `tos status` command to see the details of this feature')
-					.setTimestamp();
+		try {
+			await msg.guild.settings.update('tos.messages', existingTosMessage, null, { arrayPosition: itemIndex });
+			
+			tosEmbed
+				.setDescription(stripIndents`
+					**Member:** ${msg.author.tag} (${msg.author.id})
+					**Action:** Terms of Service message #${item} ${tosEmbedUpsertMessage}.
+				`)
+				.setFooter('Use the `tos status` command to see the details of this feature')
+				.setTimestamp();
 
-				return this.sendSuccess(msg, tosEmbed);
-			} catch (err) {
-				return this.catchError(msg, { subCommand: 'title', item: item, ...text }, err);
-			}
+			return this.sendSuccess(msg, tosEmbed);
+		} catch (err) {
+			return this.catchError(msg, { subCommand: 'title', item: item, ...text }, err);
 		}
 	}
 
