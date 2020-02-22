@@ -12,10 +12,18 @@ export default class extends Task {
     public async run() {
         this.client.emit('verbose', new Colors({ text: 'lightblue' }).format('[STATUS UPDATE]'));
 
+        const defaultPrefix = this.client.options.prefix;
+        const guildCount = this.client.guilds.array().length;
+        let userCount = this.client.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b).toString();
+
+        if(parseInt(userCount) > 10000) {
+            userCount = `${(Math.round(parseInt(userCount)/1000) * 1000).toString()}k`;
+        }
+
         const statuses = createPick<PresenceData>([
             {
                 activity: {
-                    name: `${this.client.options.prefix}help | ${this.client.guilds.array().length} Servers`,
+                    name: `${defaultPrefix}help | ${guildCount} Servers`,
                     type: 'PLAYING'
                 }
             },
@@ -27,31 +35,31 @@ export default class extends Task {
             },
             {
                 activity: {
-                    name: `${this.client.options.prefix}donate 💕`,
+                    name: `${defaultPrefix}donate 💕`,
                     type: 'PLAYING'
                 }
             },
             {
                 activity: {
-                    name: `Version: v${version} | ${this.client.options.prefix}help`,
+                    name: `Version: v${version} | ${defaultPrefix}help`,
                     type: 'PLAYING'
                 }
             },
             {
                 activity: {
-                    name: `spudnik.io/support | ${this.client.options.prefix}support`,
+                    name: `spudnik.io/support | ${defaultPrefix}support`,
                     type: 'PLAYING'
                 }
             },
             {
                 activity: {
-                    name: `and Assisting ${(Math.round((this.client.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b)/1000) * 1000))} users.`,
+                    name: `and Assisting ${userCount} users.`,
                     type: 'WATCHING'
                 }
             },
             {
                 activity: {
-                    name: `${this.client.options.prefix}upvote 👍`,
+                    name: `${defaultPrefix}upvote 👍`,
                     type: 'PLAYING'
                 }
             },
@@ -63,12 +71,12 @@ export default class extends Task {
             },
             {
                 activity: {
-                    name: `${this.client.options.prefix}changelog 📜`
+                    name: `${defaultPrefix}changelog 📜`
                 }
             },
             {
                 activity: {
-                    name: `and Assisting ${this.client.guilds.array().length} servers.`,
+                    name: `and Assisting ${guildCount} servers.`,
                     type: 'WATCHING'
                 }
             },
