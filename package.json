@@ -41,7 +41,7 @@
 		"mw-dict": "^3.0.0",
 		"remove-markdown": "0.3.0",
 		"rollbar": "^2.5.1",
-		"soap": "^0.29.0",
+		"soap": "^0.31.0",
 		"urban-dictionary": "^2.2.1",
 		"url-unshort": "^5.0.0",
 		"wikijs": "^6.0.0",
