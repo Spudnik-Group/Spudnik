@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import { stripIndents } from 'common-tags';
 import { GuildMember } from 'discord.js';
 import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
