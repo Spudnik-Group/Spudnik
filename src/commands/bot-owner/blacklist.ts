@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import { KlasaClient, CommandStore, KlasaMessage, Command } from 'klasa';
 import { User } from 'discord.js';
 

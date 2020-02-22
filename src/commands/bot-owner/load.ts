@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import { Command, KlasaClient, CommandStore, KlasaMessage, Stopwatch } from 'klasa';
 import { join } from 'path';
 import { pathExists } from 'fs-nextra';
