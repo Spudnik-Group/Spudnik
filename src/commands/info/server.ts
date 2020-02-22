@@ -4,8 +4,7 @@
 
 import { MessageEmbed, Channel } from 'discord.js';
 import { getEmbedColor } from '../../lib/helpers';
-import * as format from 'date-fns/format';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
 const filterLevels = ['Off', 'No Role', 'Everyone'];
 const verificationLevels = ['None', 'Low', 'Medium', '(╯°□°）╯︵ ┻━┻', '┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻'];
@@ -41,7 +40,7 @@ export default class ServerCommand extends Command {
 			.addField('❯ Name', msg.guild.name, true)
 			.addField('❯ ID', msg.guild.id, true)
 			.addField('❯ Region', msg.guild.region.toUpperCase(), true)
-			.addField('❯ Creation Date', format(msg.guild.createdAt, 'MM/DD/YYYY h:mm A'), true)
+			.addField('❯ Creation Date', new Timestamp('MM/DD/YYYY h:mm A').display(msg.guild.createdAt), true)
 			.addField('❯ Explicit Filter', filterLevels[msg.guild.explicitContentFilter], true)
 			.addField('❯ Verification Level', verificationLevels[msg.guild.verificationLevel], true)
 			.addField('❯ Owner', msg.guild.owner.user.tag, true)

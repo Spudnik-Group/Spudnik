@@ -5,8 +5,7 @@
 import { stripIndents } from 'common-tags';
 import { Channel, MessageEmbed } from 'discord.js';
 import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, resolveChannel, basicFeatureContent } from '../../lib/helpers';
-import * as format from 'date-fns/format';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
 /**
  * Manage notifications when someone leaves the guild.
@@ -234,7 +233,7 @@ export default class GoodbyeCommand extends Command {
 			Error occurred in \`goodbye\` command!
 			**Server:** ${msg.guild.name} (${msg.guild.id})
 			**Author:** ${msg.author.tag} (${msg.author.id})
-			**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+			**Time:** ${new Timestamp('MMMM D YYYY [at] HH:mm:ss [UTC]Z').display(msg.createdTimestamp)}
 			**Input:** \`Goodbye ${args.subCommand.toLowerCase()}\`
 		`;
 		let goodbyeUserWarn = '';

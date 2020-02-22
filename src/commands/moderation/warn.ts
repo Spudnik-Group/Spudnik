@@ -5,8 +5,7 @@
 import { stripIndents } from 'common-tags';
 import { GuildMember, MessageEmbed } from 'discord.js';
 import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
-import * as format from 'date-fns/format';
-import { KlasaClient, CommandStore, Command, KlasaMessage } from 'klasa';
+import { KlasaClient, CommandStore, Command, KlasaMessage, Timestamp } from 'klasa';
 
 /**
  * Warn a member of the guild.
@@ -101,7 +100,7 @@ export default class WarnCommand extends Command {
 		Error occurred in \`warn\` command!
 		**Server:** ${msg.guild.name} (${msg.guild.id})
 		**Author:** ${msg.author.tag} (${msg.author.id})
-		**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+		**Time:** ${new Timestamp('MMMM D YYYY [at] HH:mm:ss [UTC]Z').display(msg.createdTimestamp)}
 		**Input:** \`${args.member.user.tag} (${args.member.id})\`|| \`${args.points}\` || \`${args.reason}\`
 		**Error Message:** ${err}`);
 

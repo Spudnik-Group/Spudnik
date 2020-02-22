@@ -5,8 +5,7 @@
 import { stripIndents } from 'common-tags';
 import { GuildMember, MessageEmbed } from 'discord.js';
 import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
-import * as format from 'date-fns/format';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
 /**
  * Clears warns for a member of the guild.
@@ -99,7 +98,7 @@ export default class ClearWarnsCommand extends Command {
 		Error occurred in \`clear-warns\` command!
 		**Server:** ${msg.guild.name} (${msg.guild.id})
 		**Author:** ${msg.author.tag} (${msg.author.id})
-		**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+		**Time:** ${new Timestamp('MMMM D YYYY [at] HH:mm:ss [UTC]Z').display(msg.createdTimestamp)}
 		**Input:** \`${args.member.user.tag} (${args.member.id})\` || \`${args.reason}\`
 		**Error Message:** ${err}`);
 

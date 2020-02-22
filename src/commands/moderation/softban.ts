@@ -2,11 +2,10 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildMember, MessageEmbed, Permissions } from 'discord.js';
 import { sendSimpleEmbeddedError, modLogMessage, getEmbedColor } from '../../lib/helpers';
 import { stripIndents } from 'common-tags';
-import { format } from 'date-fns';
 
 export default class SoftbanCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
@@ -61,7 +60,7 @@ export default class SoftbanCommand extends Command {
 			Error occurred in \`softban\` command!
 			**Server:** ${msg.guild.name} (${msg.guild.id})
 			**Author:** ${msg.author.tag} (${msg.author.id})
-			**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+			**Time:** ${new Timestamp('MMMM D YYYY [at] HH:mm:ss [UTC]Z').display(msg.createdTimestamp)}
 			**Input:** \`${args.member.user.tag} (${args.member.id})\` || \`${args.reason}\`
 			**Error Message:** ${err}
 		`);

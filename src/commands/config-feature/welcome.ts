@@ -5,8 +5,7 @@
 import { stripIndents } from 'common-tags';
 import { Channel, MessageEmbed } from 'discord.js';
 import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, resolveChannel, sendSimpleEmbeddedMessage, basicFeatureContent } from '../../lib/helpers';
-import * as format from 'date-fns/format';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
 /**
  * Manage notifications when someone joins the guild.
@@ -233,7 +232,7 @@ export default class WelcomeCommand extends Command {
 		Error occurred in \`welcome\` command!
 		**Server:** ${msg.guild.name} (${msg.guild.id})
 		**Author:** ${msg.author.tag} (${msg.author.id})
-		**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+		**Time:** ${new Timestamp('MMMM D YYYY [at] HH:mm:ss [UTC]Z').display(msg.createdTimestamp)}
 		**Input:** \`Welcome ${args.subCommand.toLowerCase()}\``;
 		let welcomeUserWarn = '';
 

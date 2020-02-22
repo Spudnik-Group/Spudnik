@@ -6,8 +6,7 @@ import { stripIndents } from 'common-tags';
 import { MessageEmbed, Permissions } from 'discord.js';
 import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
 import axios from 'axios';
-import * as format from 'date-fns/format';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { SpudConfig } from '../../lib/config';
 
 const apikey = SpudConfig.stackoverflowApiKey;
@@ -67,8 +66,8 @@ export default class StackOverflowCommand extends Command {
 				.addField('❯ Asker', `[${firstRes.owner.display_name}](${firstRes.owner.link})`, true)
 				.addField('❯ Views', firstRes.view_count, true)
 				.addField('❯ Score', firstRes.score, true)
-				.addField('❯ Creation Date', format(firstRes.creation_date * 1000, 'MM/DD/YYYY h:mm A'), true)
-				.addField('❯ Last Activity', format(firstRes.last_activity_date * 1000, 'MM/DD/YYYY h:mm A'), true);
+				.addField('❯ Creation Date', new Timestamp('MM/DD/YYYY h:mm A').display(firstRes.creation_date * 1000), true)
+				.addField('❯ Last Activity', new Timestamp('MM/DD/YYYY h:mm A').display(firstRes.last_activity_date * 1000), true);
 
 			return msg.sendEmbed(stackEmbed)
 		} catch (err) {

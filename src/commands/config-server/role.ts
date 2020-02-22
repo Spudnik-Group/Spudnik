@@ -5,8 +5,7 @@
 import { stripIndents } from 'common-tags';
 import { Collection, Message, MessageEmbed, Role, Permissions } from 'discord.js';
 import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, isNormalInteger, hexColor } from '../../lib/helpers';
-import * as format from 'date-fns/format';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
 /**
  * Manage guild roles.
@@ -181,7 +180,7 @@ export default class RoleCommand extends Command {
 			Error occurred in \`role\` command!
 			**Server:** ${msg.guild.name} (${msg.guild.id})
 			**Author:** ${msg.author.tag} (${msg.author.id})
-			**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+			**Time:** ${new Timestamp('MMMM D YYYY [at] HH:mm:ss [UTC]Z').display(msg.createdTimestamp)}
 			**Input:** \`Role ${args.subCommand.toLowerCase()}\` | role name: ${args.name} | color/reason: ${args.arg3}`;
 		let roleUserWarn = '';
 

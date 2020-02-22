@@ -5,8 +5,7 @@
 import { stripIndents } from 'common-tags';
 import { Channel, MessageEmbed } from 'discord.js';
 import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, resolveChannel } from '../../lib/helpers';
-import * as format from 'date-fns/format';
-import { Command, KlasaClient, CommandStore, KlasaMessage, Possible } from 'klasa';
+import { Command, KlasaClient, CommandStore, KlasaMessage, Possible, Timestamp } from 'klasa';
 import * as markdownescape from 'markdown-escape';
 import { ITOSMessage } from '../../lib/interfaces';
 
@@ -314,7 +313,7 @@ export default class TermsOfServiceCommand extends Command {
 			Error occurred in \`tos\` command!
 			**Server:** ${msg.guild.name} (${msg.guild.id})
 			**Author:** ${msg.author.tag} (${msg.author.id})
-			**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+			**Time:** ${new Timestamp('MMMM D YYYY [at] HH:mm:ss [UTC]Z').display(msg.createdTimestamp)}
 			**Input:** \`TOS ${args.subCommand.toLowerCase()}\`
 		`;
 		let tosUserWarn = '';

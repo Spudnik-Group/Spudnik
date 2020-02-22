@@ -5,8 +5,7 @@
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, User, Permissions } from 'discord.js';
 import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '../../lib/helpers';
-import * as format from 'date-fns/format';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
 /**
  * Unban a member.
@@ -69,7 +68,7 @@ export default class UnBanCommand extends Command {
 		Error occurred in \`unban\` command!
 		**Server:** ${msg.guild.name} (${msg.guild.id})
 		**Author:** ${msg.author.tag} (${msg.author.id})
-		**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+		**Time:** ${new Timestamp('MMMM D YYYY [at] HH:mm:ss [UTC]Z').display(msg.createdTimestamp)}
 		**Input:** \`${args.user.tag} (${args.user.id})\` || \`${args.reason}\`
 		**Error Message:** ${err}`);
 

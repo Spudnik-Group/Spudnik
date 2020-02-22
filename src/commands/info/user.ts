@@ -3,10 +3,9 @@
  */
 
 import { MessageEmbed, User, GuildMember } from 'discord.js';
-import * as format from 'date-fns/format';
 import { trimArray, getEmbedColor } from '../../lib/helpers';
 import { stripIndents } from 'common-tags';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
 const activities = {
 	LISTENING: 'Listening to',
@@ -56,7 +55,7 @@ export default class UserCommand extends Command {
 			.setColor(getEmbedColor(msg))
 			.addField('❯ Name', currentUser.tag, true)
 			.addField('❯ ID', currentUser.id, true)
-			.addField('❯ Discord Join Date', format(currentUser.createdAt, 'MM/DD/YYYY h:mm A'), true)
+			.addField('❯ Discord Join Date', new Timestamp('MM/DD/YYYY h:mm A').display(currentUser.createdAt), true)
 			.addField('❯ Bot?', currentUser.bot ? 'Yes' : 'No', true)
 			.addField('❯ Status', statuses[user.presence.status], true);
 
@@ -70,7 +69,7 @@ export default class UserCommand extends Command {
 				.setDescription(member.presence.activity
 					? `${activities[member.presence.activity.type]} **${member.presence.activity.name}**`
 					: '')
-				.addField('❯ Server Join Date', format(member.joinedAt, 'MM/DD/YYYY h:mm A'), true)
+				.addField('❯ Server Join Date', new Timestamp('MM/DD/YYYY h:mm A').display(member.joinedAt), true)
 				.addField('❯ Nickname', member.nickname || 'None', true)
 				.addField('❯ Highest Role', member.roles.highest.name, true)
 				.addField('❯ Hoist Role', member.roles.hoist ? member.roles.hoist.name : 'None', true)

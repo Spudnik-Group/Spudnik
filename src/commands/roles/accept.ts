@@ -5,8 +5,7 @@
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, Role } from 'discord.js';
 import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '../../lib/helpers';
-import * as format from 'date-fns/format';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
 /**
  * Accept the guild rules, and be auto-assigned the default role.
@@ -69,7 +68,7 @@ export default class AcceptCommand extends Command {
 			Error occurred in \`accept\` command!
 			**Server:** ${msg.guild.name} (${msg.guild.id})
 			**Author:** ${msg.author.tag} (${msg.author.id})
-			**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+			**Time:** ${new Timestamp('MMMM D YYYY [at] HH:mm:ss [UTC]Z').display(msg.createdTimestamp)}
 		`;
 
 		acceptWarn += stripIndents`
