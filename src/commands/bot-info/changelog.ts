@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import { KlasaClient, CommandStore, KlasaMessage, Command } from 'klasa';
 import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
 import { MessageEmbed, Permissions } from 'discord.js';

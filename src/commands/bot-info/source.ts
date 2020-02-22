@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import { KlasaClient, CommandStore, KlasaMessage, Command } from 'klasa';
 import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
 import { Permissions } from 'discord.js';
