@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Copyright (c) 2020 Spudnik Group
 echo 'Sending Discord Webhook';
 export BACKTICK='`';
 export TIMESTAMP=$(date --utc +%FT%TZ);
