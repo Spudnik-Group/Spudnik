@@ -77,4 +77,8 @@ export default class extends Task {
         }
     }
     
+    public async init() {
+        this.run();
+    }
+
 };

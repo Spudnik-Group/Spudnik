@@ -88,5 +88,9 @@ export default class extends Task {
 
         this.client.user.setPresence(statuses());
     }
+
+    public async init() {
+        this.run();
+    }
     
 };
