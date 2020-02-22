@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import { MessageEmbed, Channel } from 'discord.js';
 import { getEmbedColor } from '../../lib/helpers';
 import * as format from 'date-fns/format';

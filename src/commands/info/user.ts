@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import { MessageEmbed, User, GuildMember } from 'discord.js';
 import * as format from 'date-fns/format';
 import { trimArray, getEmbedColor } from '../../lib/helpers';
