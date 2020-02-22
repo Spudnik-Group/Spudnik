@@ -5,7 +5,6 @@
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
 import { KlasaMessage, Command, KlasaClient, CommandStore } from 'klasa';
-import * as distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
 import { getEmbedColor } from '../../lib/helpers';
 
 const { version, dependencies } = require('../../../package');

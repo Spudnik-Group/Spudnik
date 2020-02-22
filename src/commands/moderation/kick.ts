@@ -5,8 +5,7 @@
 import { stripIndents } from 'common-tags';
 import { GuildMember, MessageEmbed, Permissions } from 'discord.js';
 import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '../../lib/helpers';
-import * as format from 'date-fns/format';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
 /**
  * Kick a member from the guild.
@@ -70,7 +69,7 @@ export default class KickCommand extends Command {
 			Error occurred in \`kick\` command!
 			**Server:** ${msg.guild.name} (${msg.guild.id})
 			**Author:** ${msg.author.tag} (${msg.author.id})
-			**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+			**Time:** ${new Timestamp('MMMM D YYYY [at] HH:mm:ss [UTC]Z').display(msg.createdTimestamp)}
 			**Input:** \`${member.user.tag} (${member.id})\` || \`${reason}\`
 			**Error Message:** ${err}`);
 

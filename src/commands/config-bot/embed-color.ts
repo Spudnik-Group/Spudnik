@@ -5,8 +5,7 @@
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
 import { sendSimpleEmbeddedError, hexColor } from '../../lib/helpers';
-import * as format from 'date-fns/format';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
 /**
  * Change the default embed color for the server.
@@ -84,7 +83,7 @@ export default class EmbedColorCommand extends Command {
 			Error occurred in \`embedcolor\` command!
 			**Server:** ${msg.guild.name} (${msg.guild.id})
 			**Author:** ${msg.author.tag} (${msg.author.id})
-			**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+			**Time:** ${new Timestamp('MMMM D YYYY [at] HH:mm:ss [UTC]Z').display(msg.createdTimestamp)}
 			**Input:** \`${args.color}\`
 			**Error Message:** ${err}
 		`);

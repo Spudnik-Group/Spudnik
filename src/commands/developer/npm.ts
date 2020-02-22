@@ -6,8 +6,7 @@ import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
 import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
 import axios from 'axios';
-import * as format from 'date-fns/format';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
 /**
  * Returns details for an NPM package.
@@ -82,7 +81,7 @@ export default class NPMCommand extends Command {
 					❯ **Version:** ${res['dist-tags'].latest}
 					❯ **License:** ${res.license}
 					❯ **Author:** ${res.author ? res.author.name : 'Unknown'}
-					❯ **Modified:** ${format(res.time.modified, 'MM/DD/YYYY h:mm A')}
+					❯ **Modified:** ${new Timestamp('MM/DD/YYYY h:mm A').display(res.time.modified)}
 					❯ **Dependencies:** ${deps && deps.length ? deps.join(', ') : 'None'}
 				`);
 

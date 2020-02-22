@@ -5,8 +5,7 @@
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, Permissions } from 'discord.js';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, getEmbedColor, modLogMessage } from '../../lib/helpers';
-import * as format from 'date-fns/format';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
 /**
  * Deletes previous messages.
@@ -103,7 +102,7 @@ export default class PruneCommand extends Command {
 		Error occurred in \`prune\` command!
 		**Server:** ${msg.guild.name} (${msg.guild.id})
 		**Author:** ${msg.author.tag} (${msg.author.id})
-		**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+		**Time:** ${new Timestamp('MMMM D YYYY [at] HH:mm:ss [UTC]Z').display(msg.createdTimestamp)}
 		**Input:** \`limit: ${args.limit} | filter: ${args.filter}\`
 		**Error Message:** ${err}`);
 

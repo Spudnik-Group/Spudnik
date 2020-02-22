@@ -2,11 +2,10 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Command, KlasaClient, CommandStore, Duration, KlasaMessage } from 'klasa';
+import { Command, KlasaClient, CommandStore, Duration, KlasaMessage, Timestamp } from 'klasa';
 import { MessageEmbed, Permissions } from 'discord.js';
 import { getEmbedColor, sendSimpleEmbeddedError, modLogMessage } from '../../lib/helpers';
 import { stripIndents } from 'common-tags';
-import * as format from 'date-fns/format';
 
 export default class MuteCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
@@ -69,7 +68,7 @@ export default class MuteCommand extends Command {
 			Error occurred in \`mute\` command!
 			**Server:** ${msg.guild.name} (${msg.guild.id})
 			**Author:** ${msg.author.tag} (${msg.author.id})
-			**Time:** ${format(msg.createdTimestamp, 'MMMM Do YYYY [at] HH:mm:ss [UTC]Z')}
+			**Time:** ${new Timestamp('MMMM D YYYY [at] HH:mm:ss [UTC]Z').display(msg.createdTimestamp)}
 			**Input:** \`${member.user.tag} (${member.id})\` || \`${reason}\`
 			**Error Message:** ${err}`);
 
