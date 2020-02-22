@@ -52,7 +52,7 @@
 		"@types/common-tags": "1.8.0",
 		"@types/date-fns": "2.6.0",
 		"@types/mongoose": "5.5.32",
-		"@types/node": "10.14.13",
+		"@types/node": "10.17.16",
 		"nodemon": "1.19.4",
 		"rimraf": "3.0.0",
 		"tslint": "5.20.1",
