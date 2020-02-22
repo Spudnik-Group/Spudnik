@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import { Serializer, KlasaClient, SerializerStore } from 'klasa';
 import { IWarning } from '../lib/interfaces/Warning';
 

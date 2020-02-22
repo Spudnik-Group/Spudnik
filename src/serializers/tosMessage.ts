@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import { Serializer, KlasaClient, SerializerStore, SchemaPiece, Language } from 'klasa';
 import { Guild } from 'discord.js';
 
