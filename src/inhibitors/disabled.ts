@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import { Inhibitor, KlasaMessage, Command } from 'klasa';
 import { isCommandCategoryEnabled, isCommandEnabled } from '../lib/helpers';
 
