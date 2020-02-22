@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import { Event, KlasaClient, EventStore } from 'klasa';
 
 export default class extends Event {

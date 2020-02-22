@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import { Event } from 'klasa';
 import * as Rollbar from 'rollbar';
 import { SpudConfig } from '../lib/config/spud-config';

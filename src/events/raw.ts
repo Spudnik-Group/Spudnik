@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import { Event } from 'klasa';
 import { TextChannel, Message, GuildChannel, MessageEmbed, Guild } from 'discord.js';
 import { SpudConfig } from '../lib/config/spud-config';
@@ -98,8 +102,8 @@ export default class extends Event {
 							return;
 						});
 				}
-
 			}
 		}
 	}
+
 }
