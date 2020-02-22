@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 export const ScoutGames = {
     "destiny2": {
         "id": "017cb919-5a49-4ea9-aab2-624d49d79a27",
