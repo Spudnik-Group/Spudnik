@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, Permissions } from 'discord.js';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, getEmbedColor } from '../../lib/helpers';
