@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import axios from 'axios';
 import { Command, KlasaClient, CommandStore } from 'klasa';
 import { MessageEmbed, Permissions } from 'discord.js';

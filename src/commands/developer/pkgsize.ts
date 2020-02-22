@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 import axios from 'axios';
 import { stripIndents } from 'common-tags';

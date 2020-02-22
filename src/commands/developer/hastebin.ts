@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import { Command, KlasaClient, CommandStore } from 'klasa';
 import axios from 'axios';
 import { sendSimpleEmbeddedError } from '../../lib/helpers';
