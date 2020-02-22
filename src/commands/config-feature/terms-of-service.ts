@@ -229,8 +229,6 @@ export default class TermsOfServiceCommand extends Command {
 		const tosChannel: string = await msg.guild.settings.get('tos.channel');
 		const tosMessages: ITOSMessage[] = await msg.guild.settings.get('tos.messages').sort((a, b) => a.id - b.id);
 
-		console.log(tosMessages);
-
 		if (tosChannel && tosChannel === msg.channel.id) {
 			if (tosMessages && tosMessages.length > 0) {
 				tosMessages.forEach((message) => {
@@ -255,7 +253,6 @@ export default class TermsOfServiceCommand extends Command {
 		});
 		const tosChannel: string = await msg.guild.settings.get('tos.channel');
 		const tosMessages: ITOSMessage[] = await msg.guild.settings.get('tos.messages').sort((a, b) => a.id - b.id);
-		console.log(tosMessages);
 
 		tosEmbed.description = `Channel: ${tosChannel ? `<#${tosChannel}>` : 'None set.'}\nMessage List:\n`;
 		if (tosMessages.length) {
