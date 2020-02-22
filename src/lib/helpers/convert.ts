@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 export const Convert = {
 	base64decode: (s: string): string => Buffer.from(s, 'base64').toString('utf8'),
 	base64encode: (s: string): string => Buffer.from(s).toString('base64'),

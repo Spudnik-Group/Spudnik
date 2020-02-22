@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import { Channel, TextChannel, User, PermissionString, Message } from 'discord.js';
 import { KlasaMessage } from 'klasa';
 

@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import { Message, MessageEmbed } from 'discord.js';
 import { KlasaMessage } from 'klasa';
 import { getEmbedColor } from './custom-helpers';

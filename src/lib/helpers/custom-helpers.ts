@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
 
 import { TextChannel, MessageEmbed } from 'discord.js';
 import { oneLine } from 'common-tags';

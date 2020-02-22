@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import { Command, Possible, KlasaMessage } from 'klasa';
 import * as fs from 'fs';
 import { standardPlatforms } from '../constants/game-platforms';
