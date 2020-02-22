@@ -40,7 +40,7 @@ export default class WolframCommand extends Command {
 					appid: wolframAppID,
 					input: query,
 					output: 'json',
-					primary: true,
+					primary: true
 				}
 			})
 				.then((body: any) => body.data.queryresult.pods)

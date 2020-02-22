@@ -9,8 +9,8 @@ export default class extends Event {
 
 	constructor(client: KlasaClient, store: EventStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
-			once: true,
-			event: 'ready'
+			event: 'ready',
+			once: true			
 		});
 	}
 

@@ -12,6 +12,7 @@ import { permissionLevels } from '../schemas/permission-levels';
  * This file is init with defaults from both Klasa and Discord.js.
  */
 
+// tslint:disable
 export const KlasaConfig: KlasaClientOptions = {
 	/**
 	 * General Options
@@ -69,10 +70,8 @@ export const KlasaConfig: KlasaClientOptions = {
 	/**
 	 * Sharding Options
 	 */
-	/* tslint:disable */
 	// shardCount: 0,
 	// shardId: 0,
-	/* tslint:enable */
 
 	/**
 	 * Command Handler Options
@@ -196,3 +195,4 @@ export const KlasaConfig: KlasaClientOptions = {
 	 */
 	schedule: { interval: 60000 }
 };
+// tslint:enable

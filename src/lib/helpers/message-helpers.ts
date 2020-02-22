@@ -16,26 +16,26 @@ import { getEmbedColor } from './custom-helpers';
  * @returns Promise<KlasaMessage | KlasaMessage[]>
  */
 export const sendSimpleEmbeddedMessage = (msg: KlasaMessage, text: string, timeout?: number): Promise<KlasaMessage | KlasaMessage[]> => {
-    const promise: Promise<KlasaMessage | KlasaMessage[]> = msg.sendEmbed(new MessageEmbed({
-        author: {
-            iconURL: msg.client.user.displayAvatarURL(),
-            name: `${msg.client.user.username}`
-        },
-        color: getEmbedColor(msg),
-        description: `${text}`
-    }));
+	const promise: Promise<KlasaMessage | KlasaMessage[]> = msg.sendEmbed(new MessageEmbed({
+		author: {
+			iconURL: msg.client.user.displayAvatarURL(),
+			name: `${msg.client.user.username}`
+		},
+		color: getEmbedColor(msg),
+		description: `${text}`
+	}));
 
-    if (timeout) {
-        promise.then((reply: Message | Message[]) => {
-            if (reply instanceof Message) {
-                reply.delete({ timeout: timeout }).catch(() => undefined);
-            } else if (reply instanceof Array) {
-                msg.channel.bulkDelete(reply);
-            }
-        });
-    }
+	if (timeout) {
+		promise.then((reply: Message | Message[]) => {
+			if (reply instanceof Message) {
+				reply.delete({ timeout: timeout }).catch(() => undefined);
+			} else if (reply instanceof Array) {
+				msg.channel.bulkDelete(reply);
+			}
+		});
+	}
 
-    return promise;
+	return promise;
 }
 
 /**
@@ -49,23 +49,23 @@ export const sendSimpleEmbeddedMessage = (msg: KlasaMessage, text: string, timeo
  * @returns Promise<KlasaMessage | KlasaMessage[]>
  */
 export const sendSimpleEmbeddedMessageWithAuthor = (msg: KlasaMessage, text: string, author: MessageEmbed['author'], timeout?: number): Promise<KlasaMessage | KlasaMessage[]> => {
-    const promise: Promise<KlasaMessage | KlasaMessage[]> = msg.sendEmbed(new MessageEmbed({
-        author: author,
-        color: getEmbedColor(msg),
-        description: `${text}`
-    }));
+	const promise: Promise<KlasaMessage | KlasaMessage[]> = msg.sendEmbed(new MessageEmbed({
+		author: author,
+		color: getEmbedColor(msg),
+		description: `${text}`
+	}));
 
-    if (timeout) {
-        promise.then((reply: Message | Message[]) => {
-            if (reply instanceof Message) {
-                reply.delete({ timeout: timeout }).catch(() => undefined);
-            } else if (reply instanceof Array) {
-                msg.channel.bulkDelete(reply);
-            }
-        });
-    }
+	if (timeout) {
+		promise.then((reply: Message | Message[]) => {
+			if (reply instanceof Message) {
+				reply.delete({ timeout: timeout }).catch(() => undefined);
+			} else if (reply instanceof Array) {
+				msg.channel.bulkDelete(reply);
+			}
+		});
+	}
 
-    return promise;
+	return promise;
 }
 
 /**
@@ -79,27 +79,27 @@ export const sendSimpleEmbeddedMessageWithAuthor = (msg: KlasaMessage, text: str
  * @returns Promise<KlasaMessage | KlasaMessage[]>
  */
 export const sendSimpleEmbeddedMessageWithTitle = (msg: KlasaMessage, text: string, title: string, timeout?: number): Promise<KlasaMessage | KlasaMessage[]> => {
-    const promise: Promise<KlasaMessage | KlasaMessage[]> = msg.sendEmbed(new MessageEmbed({
-        author: {
-            iconURL: msg.client.user.displayAvatarURL(),
-            name: `${msg.client.user.username}`
-        },
-        color: getEmbedColor(msg),
-        description: `${text}`,
-        title: `${title}`
-    }));
+	const promise: Promise<KlasaMessage | KlasaMessage[]> = msg.sendEmbed(new MessageEmbed({
+		author: {
+			iconURL: msg.client.user.displayAvatarURL(),
+			name: `${msg.client.user.username}`
+		},
+		color: getEmbedColor(msg),
+		description: `${text}`,
+		title: `${title}`
+	}));
 
-    if (timeout) {
-        promise.then((reply: Message | Message[]) => {
-            if (reply instanceof Message) {
-                reply.delete({ timeout: timeout }).catch(() => undefined);
-            } else if (reply instanceof Array) {
-                msg.channel.bulkDelete(reply);
-            }
-        });
-    }
+	if (timeout) {
+		promise.then((reply: Message | Message[]) => {
+			if (reply instanceof Message) {
+				reply.delete({ timeout: timeout }).catch(() => undefined);
+			} else if (reply instanceof Array) {
+				msg.channel.bulkDelete(reply);
+			}
+		});
+	}
 
-    return promise;
+	return promise;
 }
 
 /**
@@ -112,26 +112,26 @@ export const sendSimpleEmbeddedMessageWithTitle = (msg: KlasaMessage, text: stri
  * @returns Promise<KlasaMessage | KlasaMessage[]>
  */
 export const sendSimpleEmbeddedError = (msg: KlasaMessage, text: string, timeout?: number): Promise<KlasaMessage | KlasaMessage[]> => {
-    const promise: Promise<KlasaMessage | KlasaMessage[]> = msg.sendEmbed(new MessageEmbed({
-        author: {
-            iconURL: msg.client.user.displayAvatarURL(),
-            name: `${msg.client.user.username}`
-        },
-        color: 16711680,
-        description: `${text}`
-    }));
+	const promise: Promise<KlasaMessage | KlasaMessage[]> = msg.sendEmbed(new MessageEmbed({
+		author: {
+			iconURL: msg.client.user.displayAvatarURL(),
+			name: `${msg.client.user.username}`
+		},
+		color: 16711680,
+		description: `${text}`
+	}));
 
-    if (timeout) {
-        promise.then((reply: Message | Message[]) => {
-            if (reply instanceof Message) {
-                reply.delete({ timeout: timeout }).catch(() => undefined);
-            } else if (reply instanceof Array) {
-                msg.channel.bulkDelete(reply);
-            }
-        });
-    }
+	if (timeout) {
+		promise.then((reply: Message | Message[]) => {
+			if (reply instanceof Message) {
+				reply.delete({ timeout: timeout }).catch(() => undefined);
+			} else if (reply instanceof Array) {
+				msg.channel.bulkDelete(reply);
+			}
+		});
+	}
 
-    return promise;
+	return promise;
 }
 
 /**
@@ -144,26 +144,26 @@ export const sendSimpleEmbeddedError = (msg: KlasaMessage, text: string, timeout
  * @returns Promise<KlasaMessage | KlasaMessage[]>
  */
 export const sendSimpleEmbeddedSuccess = (msg: KlasaMessage, text: string, timeout?: number): Promise<KlasaMessage | KlasaMessage[]> => {
-    const promise: Promise<KlasaMessage | KlasaMessage[]> = msg.sendEmbed(new MessageEmbed({
-        author: {
-            iconURL: msg.client.user.displayAvatarURL(),
-            name: `${msg.client.user.username}`
-        },
-        color: 3447003,
-        description: `${text}`
-    }));
+	const promise: Promise<KlasaMessage | KlasaMessage[]> = msg.sendEmbed(new MessageEmbed({
+		author: {
+			iconURL: msg.client.user.displayAvatarURL(),
+			name: `${msg.client.user.username}`
+		},
+		color: 3447003,
+		description: `${text}`
+	}));
 
-    if (timeout) {
-        promise.then((reply: Message | Message[]) => {
-            if (reply instanceof Message) {
-                reply.delete({ timeout: timeout }).catch(() => undefined);
-            } else if (reply instanceof Array) {
-                msg.channel.bulkDelete(reply);
-            }
-        });
-    }
+	if (timeout) {
+		promise.then((reply: Message | Message[]) => {
+			if (reply instanceof Message) {
+				reply.delete({ timeout: timeout }).catch(() => undefined);
+			} else if (reply instanceof Array) {
+				msg.channel.bulkDelete(reply);
+			}
+		});
+	}
 
-    return promise;
+	return promise;
 }
 
 /**
@@ -176,13 +176,13 @@ export const sendSimpleEmbeddedSuccess = (msg: KlasaMessage, text: string, timeo
  * @returns Promise<KlasaMessage | KlasaMessage[]>
  */
 export const sendSimpleEmbeddedImage = (msg: KlasaMessage, url: string, description?: string): Promise<KlasaMessage | KlasaMessage[]> => {
-    return msg.sendEmbed(new MessageEmbed({
-        author: {
-            iconURL: msg.client.user.displayAvatarURL(),
-            name: `${msg.client.user.username}`
-        },
-        color: 3447003,
-        description: description,
-        image: { url: url }
-    }));
+	return msg.sendEmbed(new MessageEmbed({
+		author: {
+			iconURL: msg.client.user.displayAvatarURL(),
+			name: `${msg.client.user.username}`
+		},
+		color: 3447003,
+		description: description,
+		image: { url: url }
+	}));
 }

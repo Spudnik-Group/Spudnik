@@ -2,6 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
+// tslint:disable
 export const SpudConfig = {
 	'token': process.env.spud_token,
 	'port': process.env.spud_port,
@@ -26,5 +27,6 @@ export const SpudConfig = {
 	'bodApiKey': process.env.spud_bodapi || '',
 	'botsggApiKey': process.env.spud_botsggapi || '',
 	'dbApiKey': process.env.spud_dbapi || '',
-	'dblApiKey': process.env.spud_dblapi || '',
+	'dblApiKey': process.env.spud_dblapi || ''
 }
+// tslint:enable

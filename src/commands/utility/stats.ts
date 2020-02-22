@@ -4,7 +4,7 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { KlasaMessage, Command, KlasaClient, CommandStore } from 'klasa';
+import { KlasaMessage, Command, KlasaClient, CommandStore, Duration } from 'klasa';
 import { getEmbedColor } from '../../lib/helpers';
 
 const { version, dependencies } = require('../../../package');
@@ -36,7 +36,7 @@ export default class StatsCommand extends Command {
 		let statsEmbed = new MessageEmbed()
 			.setColor(getEmbedColor(msg))
 			.setDescription('**Spudnik Statistics**')
-			.addField('❯ Uptime', distanceInWordsToNow(this.client.readyAt, { includeSeconds: true }), true)
+			.addField('❯ Uptime', Duration.toNow(Date.now() - (process.uptime() * 1000)), true)
 			.addField('❯ Process Stats', stripIndents`
 						• Memory Usage: ${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB
 						• Node Version: ${process.version}
@@ -44,8 +44,7 @@ export default class StatsCommand extends Command {
 			.addField('❯ General Stats', stripIndents`
 						• Guilds: ${this.client.guilds.size}
 						• Channels: ${this.client.channels.size}
-						• Users: ${this.client.guilds.map((guild) => guild.memberCount)
-					.reduce((a, b) => a + b)}
+						• Users: ${this.client.guilds.map((guild) => guild.memberCount).reduce((a, b) => a + b)}
 						• Commands: ${this.client.commands.size}`, true)
 			.addField('❯ Spudnik Command', '[Join](https://spudnik.io/support)', true)
 			.addField('❯ Source Code', '[View](https://github.com/Spudnik-Group/Spudnik)', true)

@@ -52,7 +52,7 @@ export default class RolesCommand extends Command {
 				if(r) rolesListOut.push(`* <@&${r.id}> - ${r.members.size} members`);
 			});
 
-			if(rolesListOut.length){
+			if(rolesListOut.length) {
 				roleEmbed.fields.push({
 					inline: true,
 					name: 'Assignable Roles',

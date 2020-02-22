@@ -58,7 +58,7 @@ export default class EmbedColorCommand extends Command {
 
 				return this.sendSuccess(msg, embedColorEmbed);
 			} catch (err) {
-				return this.catchError(msg, { color }, err)
+				return this.catchError(msg, { color: color }, err)
 			}
 		} else {
 			try {

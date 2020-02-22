@@ -2,6 +2,6 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-export * from './Configuration';
-export * from './TOSMessage';
-export * from './Warning';
+export * from './configuration';
+export * from './tos-message';
+export * from './warning';

@@ -25,12 +25,12 @@ export default class NPMCommand extends Command {
 	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
 		super(client, store, file, directory, {
 			aliases: ['npmpackage', 'npmpkg', 'nodepackagemanager'],
-			requiredPermissions: ['EMBED_LINKS'],
 			description: 'Returns details for an NPM package.',
 			extendedHelp: stripIndents`
 				syntax: \`!npm <package-name>\`
 			`,
 			name: 'npm',
+			requiredPermissions: ['EMBED_LINKS'],
 			usage: '<query:...string>'
 		});
 	}

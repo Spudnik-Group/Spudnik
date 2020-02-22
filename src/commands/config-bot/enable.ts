@@ -48,7 +48,7 @@ export default class EnableCommand extends Command {
 		}).setTimestamp();
 
 		if (typeof cmdOrCat === 'string') {
-			// category
+			// Category
 			const groups: any[] = fs.readdirSync('commands')
 				.filter(path => fs.statSync(`commands/${path}`).isDirectory());
 			const parsedGroup: string = cmdOrCat.toLowerCase();
@@ -69,7 +69,7 @@ export default class EnableCommand extends Command {
 				return sendSimpleEmbeddedMessage(msg, `No groups matching that name. Use \`${msg.guild.settings.get('prefix')}commands\` to view a list of command groups.`, 3000);
 			}
 		} else {
-			// command
+			// Command
 			if (isCommandEnabled(msg, cmdOrCat)) {
 				return sendSimpleEmbeddedError(msg, `The \`${cmdOrCat.name}\` command is already enabled.`, 3000);
 			} else {

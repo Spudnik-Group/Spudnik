@@ -2,8 +2,8 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Command, KlasaClient, CommandStore, KlasaMessage } from "klasa";
-import { MessageEmbed } from "discord.js";
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { MessageEmbed } from 'discord.js';
 
 const questions = require('../../extras/google-feud');
 

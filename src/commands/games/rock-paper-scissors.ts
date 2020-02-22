@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Command, KlasaClient, CommandStore, KlasaMessage } from "klasa";
+import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 const choices: string[] = ['rock', 'paper', 'scissors'];
 
 /**

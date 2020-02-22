@@ -2,8 +2,8 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Task, Colors, KlasaClient, TaskStore } from "klasa";
-import { SnowflakeUtil } from "discord.js";
+import { Task, Colors, KlasaClient, TaskStore } from 'klasa';
+import { SnowflakeUtil } from 'discord.js';
 
 // THRESHOLD equals to 30 minutes in milliseconds:
 //     - 1000 milliseconds = 1 second
@@ -20,9 +20,9 @@ export default class MemorySweeper extends Task {
 
 		// The colors to stylise the console's logs
 		this.colors = {
+			green: new Colors({ text: 'green' }),
 			red: new Colors({ text: 'lightred' }),
-			yellow: new Colors({ text: 'lightyellow' }),
-			green: new Colors({ text: 'green' })
+			yellow: new Colors({ text: 'lightyellow' })
 		};
 
 		// The header with the console colors
@@ -78,13 +78,14 @@ export default class MemorySweeper extends Task {
 	 * @param {number} number The number to colourise
 	 * @returns {string}
 	 */
-	private setColor(number: number): string {
-		const text = String(number).padStart(5, ' ');
+	private setColor(num: number): string {
+		const text = String(num).padStart(5, ' ');
 		// Light Red color
-		if (number > 1000) return this.colors.red.format(text);
+		if (num > 1000) return this.colors.red.format(text);
 		// Light Yellow color
-		if (number > 100) return this.colors.yellow.format(text);
+		if (num > 100) return this.colors.yellow.format(text);
 		// Green color
+		
 		return this.colors.green.format(text);
 	}
 };

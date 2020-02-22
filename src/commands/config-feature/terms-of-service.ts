@@ -246,7 +246,7 @@ export default class TermsOfServiceCommand extends Command {
 
 			return this.sendSuccess(msg, tosEmbed);
 		} else {
-			// toto?
+			// TODO?
 		}
 	}
 

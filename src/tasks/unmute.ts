@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Task } from "klasa";
+import { Task } from 'klasa';
 import { Guild, GuildMember } from 'discord.js';
 
 export default class extends Task {

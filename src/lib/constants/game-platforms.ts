@@ -3,7 +3,7 @@
  */
 
 export const standardPlatforms = [
-    'xbl',
-    'psn',
-    'pc'
+	'xbl',
+	'psn',
+	'pc'
 ]
