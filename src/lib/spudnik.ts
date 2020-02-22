@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import chalk from 'chalk';
 import { Client, KlasaClientOptions } from 'klasa';
 import { Configuration } from './interfaces';
