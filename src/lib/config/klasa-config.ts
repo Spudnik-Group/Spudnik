@@ -86,11 +86,11 @@ export const KlasaConfig: KlasaClientOptions = {
 	providers: {
 		// Provider Connection object for process based databases:
 		// rethinkdb, mongodb, mssql, mysql, postgresql
-		default: 'json',
-		// default: 'mongodb',
+		// default: 'json',
+		default: 'mongodb',
 		mongodb: {
-			db: 'spud-dev-nate',
-			connectionString: SpudConfig.spudCoreDB
+			db: SpudConfig.spudCoreDB,
+			connectionString: SpudConfig.spudCoreDBConnection
 		}
 	},
 
