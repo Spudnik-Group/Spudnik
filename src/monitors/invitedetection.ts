@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import { Monitor, KlasaClient, MonitorStore } from 'klasa';
 import { Message, MessageEmbed } from 'discord.js';
 
