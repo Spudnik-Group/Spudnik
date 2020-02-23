@@ -5,14 +5,14 @@
 // tslint:disable
 export const SpudConfig = {
 	'token': process.env.spud_token,
-	'port': process.env.port || 1337,
+	'port': process.env.PORT || 1337,
 	'owner': process.env.spud_owner,
 	'spudCoreDB': process.env.SPUD_CORE_DB,
 	'spudCoreDBConnection': process.env.SPUD_CORE_DB_CONNECTION,
 	'spudStatsDB': process.env.SPUD_STATS_DB,
 	'spudStatsDBConnection': process.env.SPUD_STATS_DB_CONNECTION,
 	'botListGuilds': process.env.spud_botlist_guilds ? process.env.spud_botlist_guilds.split(',') : [],
-	'botListUpdateInterval': process.env.spud_botlist_update_interval ? process.env.spud_botlist_update_interval : '* * * * *',
+	'botListUpdateInterval': process.env.spud_botlist_update_interval ? process.env.spud_botlist_update_interval : '0 10,22 * * *',
 	'statusUpdateInterval': process.env.spud_status_update_interval ? process.env.spud_status_update_interval : '* * * * *',
 	'debug': process.env.spud_debug ? !!process.env.spud_debug : false,
 	'rollbarApiKey': process.env.spud_rollbarapi || '',
