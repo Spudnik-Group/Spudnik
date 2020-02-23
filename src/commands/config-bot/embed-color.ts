@@ -1,0 +1,102 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
+import { stripIndents } from 'common-tags';
+import { MessageEmbed } from 'discord.js';
+import { sendSimpleEmbeddedError, hexColor } from '../../lib/helpers';
+import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+
+/**
+ * Change the default embed color for the server.
+ *
+ * @export
+ * @class EmbedColorCommand
+ * @extends {Command}
+ */
+export default class EmbedColorCommand extends Command {
+	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
+		super(client, store, file, directory, {
+			description: 'Used to change the default embed color the bot uses for responses, or reset it.',
+			extendedHelp: stripIndents`
+				Supplying no hex color resets the embed color to default.
+			`,
+			name: 'embedcolor',
+			permissionLevel: 6, // MANAGE_GUILD
+			usage: '[color:string]'
+		});
+
+		this.createCustomResolver('color', hexColor);
+	}
+
+	/**
+	 * Run the "embedColor" command.
+	 *
+	 * @param {KlasaMessage} msg
+	 * @param {string} color
+	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
+	 * @memberof EmbedColorCommand
+	 */
+	public async run(msg: KlasaMessage, [color]): Promise<KlasaMessage | KlasaMessage[]> {
+		const embedColorEmbed: MessageEmbed = new MessageEmbed({
+			author: {
+				iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/artist-palette_1f3a8.png',
+				name: 'Embed Color'
+			},
+			description: ''
+		}).setTimestamp();
+
+		if (color) {
+			try {
+				await msg.guild.settings.update('embedColor', color, msg.guild);
+
+				// Set up embed message
+				embedColorEmbed.setDescription(stripIndents`
+					**Member:** ${msg.author.tag} (${msg.author.id})
+					**Action:** Embed Color set to ${color}
+				`);
+
+				return this.sendSuccess(msg, embedColorEmbed);
+			} catch (err) {
+				return this.catchError(msg, { color: color }, err)
+			}
+		} else {
+			try {
+				await msg.guild.settings.update('embedColor', '55555');
+
+				// Set up embed message
+				embedColorEmbed.setDescription(stripIndents`
+					**Member:** ${msg.author.tag} (${msg.author.id})
+					**Action:** Embed Color Reset
+				`);
+
+				return this.sendSuccess(msg, embedColorEmbed);
+			} catch (err) {
+				return this.catchError(msg, { color: null }, err)
+			}
+		}
+	}
+
+	private catchError(msg: KlasaMessage, args: { color: string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
+		// Emit warn event for debugging
+		msg.client.emit('warn', stripIndents`
+			Error occurred in \`embedcolor\` command!
+			**Server:** ${msg.guild.name} (${msg.guild.id})
+			**Author:** ${msg.author.tag} (${msg.author.id})
+			**Time:** ${new Timestamp('MMMM D YYYY [at] HH:mm:ss [UTC]Z').display(msg.createdTimestamp)}
+			**Input:** \`${args.color}\`
+			**Error Message:** ${err}
+		`);
+
+		// Inform the user the command failed
+		if (args.color) {
+			return sendSimpleEmbeddedError(msg, `There was an error setting the embed color to ${args.color}`)
+		} else {
+			return sendSimpleEmbeddedError(msg, 'There was an error resetting the embed color.');
+		}
+	}
+
+	private sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
+		return msg.sendEmbed(embed);
+	}
+}

@@ -1,0 +1,21 @@
+#! /bin/sh
+echo "Setting environment variables"
+
+# core settings
+export spud_token="BOT TOKEN"
+export spud_owner="OWNER ID"
+export SPUD_CORE_DB="CORE DB CONNECT STRING"
+export spud_debug=false
+export spud_issuelog=""
+
+# api keys
+export spud_wolframapi=""
+export spud_moviedbapi=""
+export spud_dictionaryapi=""
+export spud_brewdbapi=""
+export spud_scoutid=""
+export spud_scoutsecret=""
+export spud_trackerapi=""
+export spud_stackoverflowapi=""
+
+echo "Environment variables set"

@@ -1,96 +1,98 @@
 {
-	"defaultSeverity": "error",
-	"jsRules": {
-		"no-empty": true
-	},
-	"rules": {
-		"arrow-return-shorthand": true,
-		"ban-comma-operator": true,
-		"comment-format": [
-			true,
-			"check-uppercase",
-			{
-				"ignore-words": [
-					"TODO"
-				]
-			}
-		],
-		"curly": [true, "ignore-same-line"],
-		"file-name-casing": [true, "kebab-case"],
-		"forin": false,
-		"indent": [
-			true,
-			"tabs"
-		],
-		"label-position": true,
-		"jsdoc-require": [
-			true,
-			"no-private",
-			"no-private-properties"
-		],
-		"max-classes-per-file": false,
-		"max-line-length": false,
-		"newline-before-return": true,
-		"newline-per-chained-call": false,
-		"no-console": false,
-		"no-construct": true,
-		"no-empty": [
-			true,
-			"allow-empty-catch",
-			"allow-empty-functions"
-		],
-		"no-shadowed-variable": false,
-		"no-var-keyword": true,
-		"object-literal-shorthand": [
-			true,
-			"never"
-		],
-		"object-literal-sort-keys": [
-			true,
-			"ignore-case"
-		],
-		"one-line": [
-			true,
-			"check-catch",
-			"check-finally",
-			"check-else",
-			"check-open-brace",
-			"check-whitespace"
-		],
-		"only-arrow-functions": true,
-		"promise-function-async": false,
-		"quotemark": [
-			true,
-			"single",
-			"avoid-escape",
-			"avoid-template"
-		],
-		"space-before-function-paren": false,
-		"trailing-comma": [
-			true,
-			{
-				"multiline": {
-					"objects": "never",
-					"arrays": "never",
-					"functions": "never",
-					"typeLiterals": "never"
-				},
-				"esSpecCompliant": true
-			}
-		],
-		"triple-equals": [
-			true,
-			"allow-null-check",
-			"allow-undefined-check"
-		],
-		"use-isnan": true,
-		"variable-name": [
-			true,
-			"ban-keywords",
-			"check-format",
-			"allow-pascal-case",
-			"allow-leading-underscore"
-		]
-	},
-	"rulesDirectory": ["./node_modules/tslint-jsdoc-rules/lib"]
+    "defaultSeverity": "error",
+    "jsRules": {
+        "no-empty": true
+    },
+    "rules": {
+        "arrow-return-shorthand": true,
+        "ban-comma-operator": true,
+        "comment-format": [
+            true,
+            "check-uppercase",
+            {
+                "ignore-words": [
+                    "TODO"
+                ]
+            }
+        ],
+        "curly": [true, "ignore-same-line"],
+        "file-name-casing": [true, [
+            "kebab-case",
+            "camel-case"
+        ]],
+        "forin": false,
+        "indent": [
+            true,
+            "tabs"
+        ],
+        "label-position": true,
+        "jsdoc-require": [
+            true,
+            "no-private",
+            "no-private-properties"
+        ],
+        "max-classes-per-file": false,
+        "max-line-length": false,
+        "newline-before-return": true,
+        "newline-per-chained-call": false,
+        "no-console": false,
+        "no-construct": true,
+        "no-empty": [
+            true,
+            "allow-empty-catch",
+            "allow-empty-functions"
+        ],
+        "no-shadowed-variable": false,
+        "no-var-keyword": true,
+        "object-literal-shorthand": [
+            true,
+            "never"
+        ],
+        "object-literal-sort-keys": [
+            true,
+            "ignore-case"
+        ],
+        "one-line": [
+            true,
+            "check-catch",
+            "check-finally",
+            "check-else",
+            "check-open-brace",
+            "check-whitespace"
+        ],
+        "only-arrow-functions": true,
+        "promise-function-async": false,
+        "quotemark": [
+            true,
+            "single",
+            "avoid-escape",
+            "avoid-template"
+        ],
+        "space-before-function-paren": false,
+        "trailing-comma": [
+            true,
+            {
+                "multiline": {
+                    "objects": "never",
+                    "arrays": "never",
+                    "functions": "never",
+                    "typeLiterals": "never"
+                },
+                "esSpecCompliant": true
+            }
+        ],
+        "triple-equals": [
+            true,
+            "allow-null-check",
+            "allow-undefined-check"
+        ],
+        "use-isnan": true,
+        "variable-name": [
+            true,
+            "ban-keywords",
+            "check-format",
+            "allow-pascal-case",
+            "allow-leading-underscore"
+        ]
+    }
 }

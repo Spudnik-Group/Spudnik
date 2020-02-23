@@ -8,7 +8,7 @@
 
 [![Add to Discord][img-button-add]][url-invite] [![Join Support Server][img-button-support]][url-support]
 
-[![Uptime][img-uptime-robot]][url-homepage] [![Current Release][img-current-release]][url-current-release] [![discord.js][img-discord-js]][url-discord-js] [![Commando][img-commando]][url-commando] [![License][img-license]][url-license] [![Build Status][img-build-status]][url-build-status] ![Code Style: tslint][img-code-style] [![Codacy Badge][img-codacy]][url-codacy]
+[![Uptime][img-uptime-robot]][url-homepage] [![Current Release][img-current-release]][url-current-release] [![discord.js][img-discord-js]][url-discord-js] [![Commando][img-klasa]][url-klasa] [![License][img-license]][url-license] [![Build Status][img-build-status]][url-build-status] ![Code Style: tslint][img-code-style] [![Codacy Badge][img-codacy]][url-codacy]
 
 [![Documentation][img-button-docs]][url-docs] [![Feature Requests][img-button-feathub]][url-feathub] [![Project Board][img-button-project]][url-github-project-board]
 
@@ -57,5 +57,5 @@ Instead, fork the bot and contribute! Ongoing contributors will be invited to jo
 
 [img-discord-js]: https://img.shields.io/badge/library-discord.js-blue.svg?style=flat-square
 [url-discord-js]: https://discord.js.org/#/
-[img-commando]: https://img.shields.io/badge/library-Commando-blue.svg?style=flat-square
-[url-commando]: https://github.com/discordjs/Commando
+[img-klasa]: https://img.shields.io/badge/library-Klasa-blue.svg?style=flat-square
+[url-klasa]: https://github.com/dirigeants/klasa
