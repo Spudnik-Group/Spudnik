@@ -39,24 +39,24 @@ export default class PlayingCommand extends Command {
 		const gamePlayers: { [id: string]: Array<GuildMember> } = {};
 
 		msg.guild.members.forEach((member: GuildMember) => {
-			if (member.user.bot || !member.presence.activity) {
+			if (member.user.bot || !member.presence.activities) {
 				return;
 			}
 
-			const game = member.presence.activity.name.toLowerCase();
-			if (game.indexOf(gameSearch) === -1) {
+			const game = member.presence.activities.find(x => x.name.indexOf(gameSearch) !== -1);
+			if (!game) {
 				return;
 			}
 
-			if (!gamePlayers.hasOwnProperty(game)) {
-				gamePlayers[game] = [];
+			if (!gamePlayers.hasOwnProperty(game.name)) {
+				gamePlayers[game.name] = [];
 			}
-			gamePlayers[game].push(member);
+			gamePlayers[game.name].push(member);
 		});
 
 		const sortedMessage = Object.keys(gamePlayers).sort()
 			.map((game) => {
-				return `**${gamePlayers[game][0].presence.activity.name}**\n` +
+				return `**${gamePlayers[game][0].presence.activities.find(x => x.name === game).name}**\n` +
 					gamePlayers[game].sort((a, b) => {
 						const aName = a.displayName.toLowerCase();
 						const bName = b.displayName.toLowerCase();

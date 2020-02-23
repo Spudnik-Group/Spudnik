@@ -39,7 +39,7 @@ export default class ListServersCommand extends Command {
 		const display = new RichDisplay(new MessageEmbed()
 			.setColor(getEmbedColor(msg))
 			.setTitle('Server List')
-			.setDescription(`Spudnik is connected to **${totalGuilds}** servers${this.client.shard ? `, in Shard ${this.client.shard.id}` : ''}.`)
+			.setDescription(`Spudnik is connected to **${totalGuilds}** servers${this.client.shard ? `, in Shard ${this.client.shard.ids}` : ''}.`)
 		)
 		let noOfPages = Math.ceil(totalGuilds / 5);
 

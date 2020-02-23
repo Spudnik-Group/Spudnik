@@ -66,8 +66,8 @@ export default class UserCommand extends Command {
 				.sort((a, b) => b.position - a.position)
 				.map(role => role.name);
 			userEmbed
-				.setDescription(member.presence.activity
-					? `${activities[member.presence.activity.type]} **${member.presence.activity.name}**`
+				.setDescription(member.presence.activities
+					? `${activities[member.presence.activities[0].type]} **${member.presence.activities[0].name}**`
 					: '')
 				.addField('❯ Server Join Date', new Timestamp('MM/DD/YYYY h:mm A').display(member.joinedAt), true)
 				.addField('❯ Nickname', member.nickname || 'None', true)

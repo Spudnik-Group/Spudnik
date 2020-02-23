@@ -62,16 +62,10 @@ export const KlasaConfig: KlasaClientOptions = {
 	 */
 	commandMessageLifetime: 1800,
 	fetchAllMembers: false,
-	messageCacheLifetime: 30,
-	messageCacheMaxSize: 0,
+	messageCacheLifetime: 900,
+	messageCacheMaxSize: 300,
 	// The above 2 options are ignored while the interval is 0
 	messageSweepInterval: 60,
-
-	/**
-	 * Sharding Options
-	 */
-	// shardCount: 0,
-	// shardId: 0,
 
 	/**
 	 * Command Handler Options

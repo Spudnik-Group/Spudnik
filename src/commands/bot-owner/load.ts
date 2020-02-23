@@ -47,7 +47,7 @@ export default class LoadCommandCommand extends Command {
 			await piece.init();
 			if (this.client.shard) {
 				await this.client.shard.broadcastEval(`
-					if (String(this.shard.id) !== '${this.client.shard.id}') {
+					if (String(this.shard.id) !== '${this.client.shard.ids}') {
 						const piece = this.${piece.store}.load('${piece.directory}', ${JSON.stringify(path)});
 						if (piece) piece.init();
 					}

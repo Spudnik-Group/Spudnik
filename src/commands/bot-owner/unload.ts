@@ -41,7 +41,7 @@ export default class UnloadCommandCommand extends Command {
 		if (this.client.shard) {
 			try {
 				await this.client.shard.broadcastEval(`
-					if(this.shard.id !== ${this.client.shard.id}) this.${piece.store}.get('${piece.name}').unload();
+					if(this.shard.id !== ${this.client.shard.ids}) this.${piece.store}.get('${piece.name}').unload();
 				`);
 			} catch (err) {
 				this.client.emit('warn', 'Error when broadcasting command unload to other shards');
