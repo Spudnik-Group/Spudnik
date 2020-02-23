@@ -36,6 +36,7 @@ Client.defaultGuildSchema
 		.add('message', 'string', { default: '{user} has left the server.' })
 	)
 	.add('modlog', folder => folder
+		.add('initialMessageSent', 'boolean')
 		.add('channel', 'TextChannel')
 		.add('enabled', 'boolean')
 	)
@@ -45,8 +46,7 @@ Client.defaultGuildSchema
 	)
 	.add('embedColor', 'string', { default: '555555' })
 	.add('adblockEnabled', 'boolean')
-	.add('deleteCommandMessages', 'boolean')
-	.add('hasSentModLogMessage', 'boolean');
+	.add('deleteCommandMessages', 'boolean');
 
 Client.defaultClientSchema
 	.add('guildBlacklist', 'guild', { array: true })
