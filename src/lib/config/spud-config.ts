@@ -5,7 +5,7 @@
 // tslint:disable
 export const SpudConfig = {
 	'token': process.env.spud_token,
-	'port': process.env.port,
+	'port': process.env.port || 1337,
 	'owner': process.env.spud_owner,
 	'spudCoreDB': process.env.SPUD_CORE_DB,
 	'spudCoreDBConnection': process.env.SPUD_CORE_DB_CONNECTION,

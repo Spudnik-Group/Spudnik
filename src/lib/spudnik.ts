@@ -8,7 +8,7 @@ import { Configuration } from './interfaces';
 import * as http from 'http';
 import { SpudConfig } from './config/spud-config';
 
-const PORT = SpudConfig.port || 1337;
+const PORT = SpudConfig.port;
 
 // Define Default Schemas
 Client.defaultGuildSchema
