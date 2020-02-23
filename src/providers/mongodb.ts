@@ -5,7 +5,7 @@
 const { Provider, util: { mergeDefault, mergeObjects, isObject } } = require('klasa');
 const { MongoClient: Mongo } = require('mongodb');
 
-module.exports = class extends Provider {
+export default class extends Provider {
 	public db: any = undefined;
 
 	constructor(...args: any) {

@@ -19,7 +19,7 @@ export default class AcceptCommand extends Command {
 		super(client, store, file, directory, {
 			description: 'Accept the Terms of Use for the current guild.',
 			name: 'accept',
-			requiredSettings: ['tos.channel', 'roles.defaultRole']
+			requiredSettings: ['tos.channel', 'roles.default']
 		});
 	}
 
@@ -40,7 +40,7 @@ export default class AcceptCommand extends Command {
 			color: getEmbedColor(msg)
 		}).setTimestamp();
 
-		const defaultRole: Role = msg.guild.settings.get('roles.defaultRole');
+		const defaultRole: Role = msg.guild.settings.get('roles.default');
 		const acceptChannel: string = msg.guild.settings.get('tos.channel');
 
 		if (defaultRole && msg.channel.id === acceptChannel) {

@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { MessageEmbed, Permissions } from 'discord.js';
+import { MessageEmbed, Permissions, Role } from 'discord.js';
 import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
 
@@ -19,8 +19,8 @@ export default class IAmNotCommand extends Command {
 			description: 'Used to remove a self-assignable role from yourself.',
 			name: 'iamnot',
 			requiredPermissions: Permissions.FLAGS.MANAGE_ROLES,
-			requiredSettings: ['roles.selfAssignableRoles'],
-			usage: '<role:Role>'
+			requiredSettings: ['roles.selfAssignable'],
+			usage: '<roleName:string>'
 		});
 	}
 
@@ -32,7 +32,7 @@ export default class IAmNotCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof IAmNotCommand
 	 */
-	public async run(msg: KlasaMessage, [role]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [roleName]): Promise<KlasaMessage | KlasaMessage[]> {
 		const roleEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/110/lock_1f512.png',
@@ -41,9 +41,10 @@ export default class IAmNotCommand extends Command {
 			color: getEmbedColor(msg)
 		});
 
-		const guildAssignableRoles: string[] = await msg.guild.settings.get('assignableRoles') || [];
+		const role = msg.guild.roles.find((r: Role) => r.name.toLowerCase() === roleName.toLowerCase());
+		const guildAssignableRoles = await msg.guild.settings.get('roles.selfAssignable');
 
-		if (guildAssignableRoles.includes(role)) {
+		if (role && guildAssignableRoles.includes(role.id)) {
 			if (msg.member.roles.has(role.id)) {
 				await msg.member.roles.remove(role.id);
 

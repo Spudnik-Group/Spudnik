@@ -50,7 +50,7 @@ export default class RoleComand extends Command {
 
 	public async run(msg: KlasaMessage, [role]): Promise<KlasaMessage | KlasaMessage[]> {
 		const allPermissions = Object.entries(role.permissions.serialize()).filter(perm => perm[1]).map(([perm]) => perms[perm]).join(', ');
-		const defaultRole = await msg.guild.settings.get('roles.defaultRole');
+		const defaultRole = await msg.guild.settings.get('roles.default');
 
 		return msg.sendEmbed(new MessageEmbed()
 			.setColor(role.hexColor || 0xFFFFFF)
