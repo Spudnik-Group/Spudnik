@@ -2,6 +2,7 @@
  * Copyright (c) 2017-2019 dirigeants. All rights reserved. MIT license.
  */
 
+/* eslint-disable @typescript-eslint/no-use-before-define */
 const { Provider, util: { mergeDefault, mergeObjects, isObject } } = require('klasa');
 const { MongoClient: Mongo } = require('mongodb');
 
@@ -9,12 +10,12 @@ export default class extends Provider {
 
 	public db: any = undefined;
 
-	constructor(...args: any) {
+	public constructor(...args: any) {
 		super(...args, { description: 'Allows use of MongoDB functionality throughout Klasa' });
 		this.db = null;
 	}
 
-	async init() {
+	public async init() {
 		const connection = mergeDefault({
 			db: 'klasa',
 			host: 'localhost',
@@ -35,59 +36,59 @@ export default class extends Provider {
 
 	/* Table methods */
 
-	get exec() {
+	public get exec() {
 		return this.db;
 	}
 
-	hasTable(table: any) {
+	public hasTable(table: any) {
 		return this.db.listCollections().toArray().then((collections: any) => collections.some((col: any) => col.name === table));
 	}
 
-	createTable(table: any) {
+	public createTable(table: any) {
 		return this.db.createCollection(table);
 	}
 
-	deleteTable(table: any) {
+	public deleteTable(table: any) {
 		return this.db.dropCollection(table);
 	}
 
 	/* Document methods */
 
-	getAll(table: any, filter: any[] = []) {
+	public getAll(table: any, filter: any[] = []) {
 		if (filter.length) return this.db.collection(table).find({ id: { $in: filter } }, { _id: 0 }).toArray();
 
 		return this.db.collection(table).find({}, { _id: 0 }).toArray();
 	}
 
-	getKeys(table: any) {
+	public getKeys(table: any) {
 		return this.db.collection(table).find({}, { id: 1, _id: 0 }).toArray();
 	}
 
-	get(table: any, id: any) {
+	public get(table: any, id: any) {
 		return this.db.collection(table).findOne(resolveQuery(id));
 	}
 
-	has(table: any, id: any) {
+	public has(table: any, id: any) {
 		return this.get(table, id).then(Boolean);
 	}
 
-	getRandom(table: any) {
+	public getRandom(table: any) {
 		return this.db.collection(table).aggregate({ $sample: { size: 1 } });
 	}
 
-	create(table: any, id: any, doc = {}) {
+	public create(table: any, id: any, doc = {}) {
 		return this.db.collection(table).insertOne(mergeObjects(this.parseUpdateInput(doc), resolveQuery(id)));
 	}
 
-	delete(table: any, id: any) {
+	public delete(table: any, id: any) {
 		return this.db.collection(table).deleteOne(resolveQuery(id));
 	}
 
-	update(table: any, id: any, doc: any) {
+	public update(table: any, id: any, doc: any) {
 		return this.db.collection(table).updateOne(resolveQuery(id), { $set: isObject(doc) ? flatten(doc) : parseEngineInput(doc) });
 	}
 
-	replace(table: any, id: any, doc: any) {
+	public replace(table: any, id: any, doc: any) {
 		return this.db.collection(table).replaceOne(resolveQuery(id), this.parseUpdateInput(doc));
 	}
 

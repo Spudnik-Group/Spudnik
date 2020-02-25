@@ -17,7 +17,7 @@ export const hexColor = color => {
 };
 
 export const commandOrCategory = cmdOrCategory => {
-	if (!cmdOrCategory) throw 'Please provide a valid command or command category name';
+	if (!cmdOrCategory) throw new Error('Please provide a valid command or command category name');
 	const command = this.client.commands.array().find((command: Command) => command.name.toLowerCase() === cmdOrCategory.toLowerCase());
 	if (command) return cmdOrCategory; // Valid command name
 
@@ -26,24 +26,24 @@ export const commandOrCategory = cmdOrCategory => {
 	const category = categories.find(category => category === cmdOrCategory.toLowerCase());
 	if (category) return cmdOrCategory; // Valid category name
 
-	throw 'Please provide a valid command or command category name';
+	throw new Error('Please provide a valid command or command category name');
 };
 
 export const battletag = tag => {
 	if (tag.match(/(\w{3,12})#(\d{4,5})/i)) return tag;
 
-	throw 'Please provide a valid battletag in the format: `username#0000`';
+	throw new Error('Please provide a valid battletag in the format: `username#0000`');
 };
 
 export const platform = platform => {
 	if (standardPlatforms.includes(platform)) return platform;
 
-	throw `Please provide a valid platform. Options are: ${list(standardPlatforms, 'or')}.`;
+	throw new Error(`Please provide a valid platform. Options are: ${list(standardPlatforms, 'or')}.`);
 };
 
 export const basicFeatureContent = (arg: string, possible: Possible, message: KlasaMessage, [subCommand]) => {
-	if (subCommand === 'channel' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw 'Please provide a channel for the Goodbye message to be displayed in.';
-	if (subCommand === 'message' && !arg) throw 'Please include the new text for the Goodbye message.';
+	if (subCommand === 'channel' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw new Error('Please provide a channel for the Goodbye message to be displayed in.');
+	if (subCommand === 'message' && !arg) throw new Error('Please include the new text for the Goodbye message.');
 
 	return arg;
 };
