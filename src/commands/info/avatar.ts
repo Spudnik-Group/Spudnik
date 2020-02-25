@@ -7,7 +7,7 @@ import { MessageEmbed } from 'discord.js';
 
 export default class AvatarCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows a user\'s avatar',
 			usage: '[user:user]'

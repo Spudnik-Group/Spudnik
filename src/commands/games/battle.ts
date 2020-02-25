@@ -21,7 +21,7 @@ export default class BattleCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof BattleCommand
 	 */
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['fight', 'death-battle'],
 			description: 'Engage in a turn-based battle against another user or the AI.',

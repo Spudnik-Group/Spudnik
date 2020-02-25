@@ -17,7 +17,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  */
 export default class MdnReferenceCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['jsdocs'],
 			description: 'Returns results for the supplied query from the MDN.',

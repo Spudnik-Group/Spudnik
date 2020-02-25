@@ -17,7 +17,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
  */
 export default class HelpCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Used to return helpful information on the bot, or detailed information for a specified command.',
 			guarded: true,

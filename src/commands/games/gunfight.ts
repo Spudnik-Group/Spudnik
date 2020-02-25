@@ -23,7 +23,7 @@ export default class GunFightCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof GunFightCommand
 	 */
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['western-gunfight'],
 			description: 'Engage in a western gunfight against another user. High noon.',

@@ -14,7 +14,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  */
 export default class Hex2DecCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Converts hexadecimal to decimal',
 			name: 'hex2dec',

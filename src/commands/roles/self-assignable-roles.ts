@@ -4,7 +4,7 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '@lib/helpers';
+import { getEmbedColor, modLogMessage } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
@@ -17,7 +17,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
  */
 export default class SelfAssignableRolesCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: [
 				'sar'
@@ -56,6 +56,7 @@ export default class SelfAssignableRolesCommand extends Command {
 			guildAssignableRoles = [];
 		}
 
+		// eslint-disable-next-line no-negated-condition
 		if (!guildAssignableRoles.includes(role.id)) {
 			msg.guild.settings.update('roles.selfAssignable', role)
 				.then(() => {
@@ -69,8 +70,7 @@ export default class SelfAssignableRolesCommand extends Command {
 				})
 				.catch((err: Error) => this.catchError(msg, { subCommand: 'add', role }, err));
 		} else {
-
-			return sendSimpleEmbeddedError(msg, `${role.name} is already in the list of assignable roles for this guild.`, 3000);
+			return msg.sendSimpleError(`${role.name} is already in the list of assignable roles for this guild.`, 3000);
 		}
 	}
 
@@ -105,8 +105,7 @@ export default class SelfAssignableRolesCommand extends Command {
 				})
 				.catch((err: Error) => this.catchError(msg, { subCommand: 'remove', role }, err));
 		} else {
-
-			return sendSimpleEmbeddedError(msg, `Could not find role with name ${role.name} in the list of assignable roles for this guild.`, 3000);
+			return msg.sendSimpleError(`Could not find role with name ${role.name} in the list of assignable roles for this guild.`, 3000);
 		}
 	}
 
@@ -134,12 +133,11 @@ export default class SelfAssignableRolesCommand extends Command {
 
 		roleWarn += `**Error Message:** ${err}`;
 
+		// Emit warn event for debugging
 		msg.client.emit('warn', roleWarn);
 
-		// Emit warn event for debugging
-
 		// Inform the user the command failed
-		return sendSimpleEmbeddedError(msg, roleUserWarn);
+		return msg.sendSimpleError(roleUserWarn);
 	}
 
 	private sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {

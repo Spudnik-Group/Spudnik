@@ -15,7 +15,7 @@ import { Permissions } from 'discord.js';
  */
 export default class HighNoonCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Displays the High Noon XKCD comic.',
 			name: 'highnoon',

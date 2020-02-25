@@ -18,7 +18,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
  */
 export default class EnableCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['enable-command', 'cmd-off', 'command-off'],
 			description: 'Enables a command or command group.',

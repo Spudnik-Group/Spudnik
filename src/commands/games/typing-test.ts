@@ -31,7 +31,7 @@ export default class TypingTestCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof TypingTestCommand
 	 */
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['typing-game'],
 			description: 'See how fast you can type a sentence in a given time limit.',

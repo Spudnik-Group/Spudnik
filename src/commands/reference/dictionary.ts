@@ -21,7 +21,7 @@ const dict = new mw.CollegiateDictionary(dictionaryApiKey);
  */
 export default class DefineCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns the definition of a supplied word. Uses the Merriam-Webster Collegiate Dictionary API.',
 			name: 'define',

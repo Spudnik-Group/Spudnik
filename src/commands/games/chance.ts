@@ -19,7 +19,7 @@ export default class ChanceCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof ChanceCommand
 	 */
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['1-in', 'one-in', 'lottery-classic'],
 			description: 'Attempt to win with a 1 in 1000 (or your choice) chance of winning.',

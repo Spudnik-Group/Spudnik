@@ -15,7 +15,7 @@ import { delay } from '@lib/helpers';
  */
 export default class PongCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Used to return the ping.',
 			name: 'pong'

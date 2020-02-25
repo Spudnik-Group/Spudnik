@@ -15,7 +15,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  */
 export default class Base64DecodeCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Base64 decodes a string',
 			name: 'base64decode',

@@ -29,7 +29,7 @@ const statuses = {
  */
 export default class UserCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['user-stats'],
 			description: 'Returns statistics about a user.',

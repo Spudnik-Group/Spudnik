@@ -16,7 +16,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  */
 export default class ChuckFactCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['chucknorris', 'norrisfact', 'chuck-norris'],
 			description: 'Returns a random Chuck Norris fact.',

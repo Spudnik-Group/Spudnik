@@ -12,7 +12,7 @@ export interface Configuration {
 	'debug': boolean;
 	'spudStatsDB': string;
 	'spudCoreDB': string;
-	'owner': string;
+	'owners': string;
 	'rollbarApiKey': string;
 	'statusUpdateInterval': string;
 	'token': string;

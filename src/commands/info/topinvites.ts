@@ -7,7 +7,7 @@ import { Permissions } from 'discord.js';
 
 export default class TopInvitesCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['ti'],
 			description: 'Shows the top invites in a server.',

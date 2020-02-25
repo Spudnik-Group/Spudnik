@@ -29,7 +29,7 @@ export default class RouletteCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof RouletteCommand
 	 */
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Play a game of roulette.',
 			extendedHelp: 'syntax: \`!roulette <space choice>\`',

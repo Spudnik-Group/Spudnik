@@ -13,7 +13,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  */
 export default class SayCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns the text provided.',
 			name: 'say',

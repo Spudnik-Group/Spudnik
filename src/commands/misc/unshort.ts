@@ -15,7 +15,7 @@ import { Permissions } from 'discord.js';
  */
 export default class UnshortCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['unshorten'],
 			description: 'Unshorten a link.',

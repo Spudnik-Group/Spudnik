@@ -10,7 +10,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 export default class MuteCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Mutes a mentioned member.',
 			permissionLevel: 6, // MANAGE_GUILD

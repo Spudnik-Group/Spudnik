@@ -15,7 +15,7 @@ import { MessageEmbed } from 'discord.js';
  */
 export default class ChooseCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Have the bot choose something for you.',
 			name: 'choose',

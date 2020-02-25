@@ -19,7 +19,7 @@ const steamGameNames = Object.keys(SteamGames).map(item => `* ${item}`).join('\n
  */
 export default class GoCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['play-game', 'lets-play', 'go-play'],
 			description: 'Displays a link to launch a steam game.',

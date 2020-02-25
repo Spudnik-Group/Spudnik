@@ -26,7 +26,7 @@ export default class ApplesToApplesCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof ApplesToApplesCommand
 	 */
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Compete to see who can come up with the best card to match an adjective.',
 			extendedHelp: 'syntax: \`!apples-to-apples <maxpoints>\`',

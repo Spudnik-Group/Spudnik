@@ -16,7 +16,7 @@ import { stripIndents } from 'common-tags';
  */
 export default class RollCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Roll one die with x sides + any modifiers, with an optional reason.',
 			extendedHelp: 'syntax: `!roll "[# of sides | [# of dice]d[# of sides]+modifiers]" [reason] >`',

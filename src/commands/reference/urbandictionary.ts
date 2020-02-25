@@ -17,7 +17,7 @@ import * as UD from 'urban-dictionary';
  */
 export default class UrbanCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns the Urban Dictionary result of the supplied query. If no query is supplied, returns a random thing.',
 			extendedHelp: stripIndents`

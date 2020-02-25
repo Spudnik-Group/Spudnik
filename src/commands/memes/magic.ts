@@ -15,7 +15,7 @@ import { Permissions } from 'discord.js';
  */
 export default class MagicCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Displays a magical gif of Shia Labeouf.',
 			name: 'magic',

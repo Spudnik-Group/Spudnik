@@ -31,7 +31,7 @@ export default class MathQuizCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof MathQuizCommand
 	 */
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['math-game'],
 			description: 'See how fast you can answer a math problem in a given time limit.',

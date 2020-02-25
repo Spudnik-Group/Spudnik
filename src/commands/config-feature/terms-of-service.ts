@@ -18,7 +18,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
  */
 export default class TermsOfServiceCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Used to configure the Terms of Service for a guild.',
 			extendedHelp: stripIndents`

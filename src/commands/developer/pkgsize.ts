@@ -17,7 +17,7 @@ const getBytes = bytes => {
 
 export default class PackagesizeCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows the install/publish size of a npm package.',
 			requiredPermissions: Permissions.FLAGS.EMBED_LINKS,

@@ -26,7 +26,7 @@ export default class QuizCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof QuizCommand
 	 */
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['jeopardy'],
 			description: 'Answer a quiz question.',

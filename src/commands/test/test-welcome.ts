@@ -12,7 +12,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 export default class TestWelcomeCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['tw'],
 			description: 'Accept the Terms of Use for the current guild.',

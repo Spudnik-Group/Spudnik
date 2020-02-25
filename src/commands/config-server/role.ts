@@ -16,7 +16,7 @@ import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
  */
 export default class RoleCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Used to add or remove roles from your server.',
 			extendedHelp: stripIndents`

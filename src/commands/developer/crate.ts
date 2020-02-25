@@ -17,7 +17,7 @@ const getBytes = bytes => {
 
 export default class CrateCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows the install/publish size of a cargo crate.',
 			requiredPermissions: Permissions.FLAGS.EMBED_LINKS,
