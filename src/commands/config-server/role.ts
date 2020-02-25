@@ -57,16 +57,16 @@ export default class RoleCommand extends Command {
 		try {
 			let roleMetaData = {};
 
-			if (color !== '') {
+			if (color === '') {
 				roleMetaData = {
 					data: {
-						color,
 						name
 					}
 				};
 			} else {
 				roleMetaData = {
 					data: {
+						color,
 						name
 					}
 				};

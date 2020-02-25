@@ -130,12 +130,12 @@ export default class BattleCommand extends Command {
 					reset(false);
 				} else if (choice === 'special') {
 					const miss = Math.floor(Math.random() * 4);
-					if (!miss) {
+					if (miss) {
+						await msg.sendMessage(`${user}'s attack missed!`);
+					} else {
 						const damage = getRandomInt(100, guard ? 150 : 300);
 						await msg.sendMessage(`${user} deals **${damage}** damage!`);
 						dealDamage(damage);
-					} else {
-						await msg.sendMessage(`${user}'s attack missed!`);
 					}
 					reset();
 				} else if (choice === 'run') {

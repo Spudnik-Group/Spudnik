@@ -53,7 +53,7 @@ export default class PruneCommand extends Command {
 
 		let messages = await msg.channel.messages.fetch({ limit: 100 });
 		if (filter) {
-			const user = typeof filter !== 'string' ? filter : null;
+			const user = typeof filter === 'string' ? null : filter;
 			const type = typeof filter === 'string' ? filter : 'user';
 			messages = messages.filter(this.getFilter(msg, type, user));
 		}
