@@ -14,6 +14,7 @@ import { Permissions } from 'discord.js';
  * @extends {Command}
  */
 export default class DonateCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns options to donate to help support development and hosting of the bot.',
@@ -33,4 +34,5 @@ export default class DonateCommand extends Command {
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		return sendSimpleEmbeddedMessage(msg, "We'd love your help supporting the bot!\nYou can support us on [Patreon](https://www.patreon.com/spudnik)\n\nWe ❤️ You!");
 	}
+
 }

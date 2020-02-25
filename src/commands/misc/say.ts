@@ -12,6 +12,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class SayCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns the text provided.',
@@ -31,4 +32,5 @@ export default class SayCommand extends Command {
 	public async run(msg: KlasaMessage, [text]): Promise<KlasaMessage | KlasaMessage[]> {
 		return msg.sendMessage(text);
 	}
+
 }

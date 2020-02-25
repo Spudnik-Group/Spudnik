@@ -9,6 +9,7 @@ import { stripIndents } from 'common-tags';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 export default class MuteCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Mutes a mentioned member.',
@@ -78,4 +79,4 @@ export default class MuteCommand extends Command {
 		}
 	}
 
-};
+}

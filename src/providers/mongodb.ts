@@ -6,6 +6,7 @@ const { Provider, util: { mergeDefault, mergeObjects, isObject } } = require('kl
 const { MongoClient: Mongo } = require('mongodb');
 
 export default class extends Provider {
+
 	public db: any = undefined;
 
 	constructor(...args: any) {
@@ -90,7 +91,7 @@ export default class extends Provider {
 		return this.db.collection(table).replaceOne(resolveQuery(id), this.parseUpdateInput(doc));
 	}
 
-};
+}
 
 const resolveQuery = (query: any) => isObject(query) ? query : { id: query };
 
@@ -102,8 +103,6 @@ const flatten = (obj: any, path = '') => {
 	}
 
 	return output;
-}
+};
 
-const parseEngineInput = (updated: any) => {
-	return Object.assign({}, ...updated.map((entry: any) => ({ [entry.data[0]]: entry.data[1] })));
-}
+const parseEngineInput = (updated: any) => Object.assign({}, ...updated.map((entry: any) => ({ [entry.data[0]]: entry.data[1] })));

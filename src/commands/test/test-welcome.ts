@@ -1,6 +1,6 @@
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-// import { delay } from '@lib/helpers';
-// import { getEmbedColor } from '@lib/helpers';
+// Import { delay } from '@lib/helpers';
+// Import { getEmbedColor } from '@lib/helpers';
 
 /**
  * Accept the guild rules, and be auto-assigned the default role.
@@ -10,10 +10,11 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 
- export default class TestWelcomeCommand extends Command {
+export default class TestWelcomeCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-            aliases: ['tw'],
+			aliases: ['tw'],
 			description: 'Accept the Terms of Use for the current guild.',
 			name: 'test-welcome',
 			requiredSettings: ['tos.channel', 'roles.default']
@@ -29,13 +30,13 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
 	 * @memberof TestWelcomeCommand
 	 */
 	public async run(msg: KlasaMessage) {
-        if(await this.ask(msg, `Welcome <@${msg.author.id}>, do you accept the above terms-of-service?\nReact with ✅ for "yes".\nYou must react to the message with your username mentioned.`)) {
+		if (await this.ask(msg, `Welcome <@${msg.author.id}>, do you accept the above terms-of-service?\nReact with ✅ for "yes".\nYou must react to the message with your username mentioned.`)) {
 			return msg.send('yay');
-		} else {
-			return msg.send('ugh...');
 		}
+		return msg.send('ugh...');
+
 	}
-	
+
 	private ask(msg: KlasaMessage, content: string) {
 		try {
 			return msg.ask(content);
@@ -43,4 +44,5 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
 			return null;
 		}
 	}
+
 }

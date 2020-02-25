@@ -19,6 +19,7 @@ const apikey = SpudConfig.stackoverflowApiKey;
  * @extends {Command}
  */
 export default class StackOverflowCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns results for the supplied query from Stack Overflow.',
@@ -55,7 +56,7 @@ export default class StackOverflowCommand extends Command {
 		try {
 			const { data } = await axios.get(`https://api.stackexchange.com/2.2/search/advanced?${queryParams}`);
 			if (!data.items) {
-				return sendSimpleEmbeddedError(msg, 'Your query did not return any results', 3000)
+				return sendSimpleEmbeddedError(msg, 'Your query did not return any results', 3000);
 			}
 			const firstRes = data.items[0];
 
@@ -69,11 +70,12 @@ export default class StackOverflowCommand extends Command {
 				.addField('❯ Creation Date', new Timestamp('MM/DD/YYYY h:mm A').display(firstRes.creation_date * 1000), true)
 				.addField('❯ Last Activity', new Timestamp('MM/DD/YYYY h:mm A').display(firstRes.last_activity_date * 1000), true);
 
-			return msg.sendEmbed(stackEmbed)
+			return msg.sendEmbed(stackEmbed);
 		} catch (err) {
 			msg.client.emit('warn', `Error in command dev:stack-overflow: ${err}`);
 
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 		}
 	}
+
 }

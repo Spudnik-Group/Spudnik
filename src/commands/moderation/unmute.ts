@@ -9,6 +9,7 @@ import { stripIndents } from 'common-tags';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 export default class UnmuteCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Unmutes a mentioned user.',
@@ -66,4 +67,5 @@ export default class UnmuteCommand extends Command {
 			return sendSimpleEmbeddedError(msg, `UnMuting ${member} for ${reason ? reason : 'no reason'} failed!`, 3000);
 		}
 	}
-};
+
+}

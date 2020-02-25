@@ -16,6 +16,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
  * @extends {Command}
  */
 export default class GoodbyeCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Used to configure the message to be sent when a user leaves your guild.',
@@ -66,7 +67,7 @@ export default class GoodbyeCommand extends Command {
 
 			return this.sendSuccess(msg, goodbyeEmbed);
 		} catch (err) {
-			return this.catchError(msg, { subCommand: 'message', content: content }, err)
+			return this.catchError(msg, { subCommand: 'message', content }, err);
 		}
 	}
 
@@ -91,22 +92,22 @@ export default class GoodbyeCommand extends Command {
 
 		if (goodbyeChannel && goodbyeChannel === channelID) {
 			return sendSimpleEmbeddedMessage(msg, `Goodbye channel already set to <#${channelID}>!`, 3000);
-		} else {
-			try {
-				await msg.guild.settings.update(GuildSettings.Goodbye.Channel, channelID);
+		}
+		try {
+			await msg.guild.settings.update(GuildSettings.Goodbye.Channel, channelID);
 
-				// Set up embed message
-				goodbyeEmbed.setDescription(stripIndents`
+			// Set up embed message
+			goodbyeEmbed.setDescription(stripIndents`
 							**Member:** ${msg.author.tag} (${msg.author.id})
 							**Action:** Goodbye Channel set to <#${channelID}>
 						`);
-				goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
+			goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
 
-				return this.sendSuccess(msg, goodbyeEmbed);
-			} catch (err) {
-				return this.catchError(msg, { subCommand: 'channel', content: content }, err)
-			}
+			return this.sendSuccess(msg, goodbyeEmbed);
+		} catch (err) {
+			return this.catchError(msg, { subCommand: 'channel', content }, err);
 		}
+
 	}
 
 	/**
@@ -130,22 +131,22 @@ export default class GoodbyeCommand extends Command {
 		if (goodbyeChannel) {
 			if (goodbyeEnabled) {
 				return sendSimpleEmbeddedMessage(msg, 'Goodbye message already enabled!', 3000);
-			} else {
-				try {
-					await msg.guild.settings.update(GuildSettings.Goodbye.Enabled, true);
+			}
+			try {
+				await msg.guild.settings.update(GuildSettings.Goodbye.Enabled, true);
 
-					// Set up embed message
-					goodbyeEmbed.setDescription(stripIndents`
+				// Set up embed message
+				goodbyeEmbed.setDescription(stripIndents`
 						**Member:** ${msg.author.tag} (${msg.author.id})
 						**Action:** Goodbye messages set to: _Enabled_
 					`);
-					goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
+				goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
 
-					return this.sendSuccess(msg, goodbyeEmbed);
-				} catch (err) {
-					return this.catchError(msg, { subCommand: 'on' }, err)
-				}
+				return this.sendSuccess(msg, goodbyeEmbed);
+			} catch (err) {
+				return this.catchError(msg, { subCommand: 'on' }, err);
 			}
+
 		} else {
 			return sendSimpleEmbeddedError(msg, 'Please set the channel for the goodbye message before enabling the feature. See `help goodbye` for info.', 3000);
 		}
@@ -181,7 +182,7 @@ export default class GoodbyeCommand extends Command {
 
 				return this.sendSuccess(msg, goodbyeEmbed);
 			} catch (err) {
-				return this.catchError(msg, { subCommand: 'off' }, err)
+				return this.catchError(msg, { subCommand: 'off' }, err);
 			}
 		} else {
 			return sendSimpleEmbeddedMessage(msg, 'Goodbye message already disabled!', 3000);
@@ -228,7 +229,7 @@ export default class GoodbyeCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof GoodbyeCommand
 	 */
-	private catchError(msg: KlasaMessage, args: { subCommand: string, content?: Channel | string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
+	private catchError(msg: KlasaMessage, args: { subCommand: string; content?: Channel | string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Build warning message
 		let goodbyeWarn = stripIndents`
 			Error occurred in \`goodbye\` command!
@@ -277,4 +278,5 @@ export default class GoodbyeCommand extends Command {
 		// Send the success response
 		return msg.sendEmbed(embed);
 	}
+
 }

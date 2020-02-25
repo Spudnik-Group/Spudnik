@@ -15,6 +15,7 @@ import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
  * @extends {Command}
  */
 export default class ClearWarnsCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: [
@@ -57,7 +58,7 @@ export default class ClearWarnsCommand extends Command {
 					if (warning.id === member.id) {
 						memberIndex = index;
 
-						return true
+						return true;
 					}
 
 					return false;
@@ -79,12 +80,12 @@ export default class ClearWarnsCommand extends Command {
 
 					// Send the success response
 					return msg.sendEmbed(warnEmbed);
-				} else {
-					// No previous warnings present
-					return sendSimpleEmbeddedError(msg, 'No warnings present for the supplied member.');
 				}
+				// No previous warnings present
+				return sendSimpleEmbeddedError(msg, 'No warnings present for the supplied member.');
+
 			} catch (err) {
-				this.catchError(msg, { member: member, reason: reason }, err);
+				this.catchError(msg, { member, reason }, err);
 			}
 		} else {
 			// No warnings for current guild
@@ -92,7 +93,7 @@ export default class ClearWarnsCommand extends Command {
 		}
 	}
 
-	private catchError(msg: KlasaMessage, args: { member: GuildMember, reason: string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
+	private catchError(msg: KlasaMessage, args: { member: GuildMember; reason: string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Emit warn event for debugging
 		msg.client.emit('warn', stripIndents`
 		Error occurred in \`clear-warns\` command!
@@ -105,4 +106,5 @@ export default class ClearWarnsCommand extends Command {
 		// Inform the user the command failed
 		return sendSimpleEmbeddedError(msg, `Clearing warnings for ${args.member} failed!`, 3000);
 	}
+
 }

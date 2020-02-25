@@ -8,6 +8,7 @@ import { sendSimpleEmbeddedError, modLogMessage, getEmbedColor } from '@lib/help
 import { stripIndents } from 'common-tags';
 
 export default class SoftbanCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Soft-Bans the user, with a supplied reason',
@@ -50,11 +51,11 @@ export default class SoftbanCommand extends Command {
 			// Send the success response
 			return msg.sendEmbed(banEmbed);
 		} catch (err) {
-			this.catchError(msg, { member: member, reason: reason }, err);
+			this.catchError(msg, { member, reason }, err);
 		}
 	}
 
-	private catchError(msg: KlasaMessage, args: { member: GuildMember, reason: string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
+	private catchError(msg: KlasaMessage, args: { member: GuildMember; reason: string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Emit warn event for debugging
 		msg.client.emit('warn', stripIndents`
 			Error occurred in \`softban\` command!
@@ -68,4 +69,5 @@ export default class SoftbanCommand extends Command {
 		// Inform the user the command failed
 		return sendSimpleEmbeddedError(msg, `Soft-Banning ${args.member} for ${args.reason} failed!`, 3000);
 	}
-};
+
+}

@@ -40,14 +40,14 @@ export default class QuizCommand extends Command {
 		});
 
 		this
-			.createCustomResolver('type', (arg) => {
+			.createCustomResolver('type', arg => {
 				if (types.includes(arg.toLowerCase())) return arg;
 				throw `Please provide a valid quiz type. Options are: ${list(types, 'or')}.`;
 			})
-			.createCustomResolver('difficulty', (arg) => {
+			.createCustomResolver('difficulty', arg => {
 				if (difficulties.includes(arg.toLowerCase())) return arg;
 				throw `Please provide a valid difficulty level. Options are: ${list(difficulties, 'or')}.`;
-			})
+			});
 	}
 
 	/**
@@ -62,9 +62,9 @@ export default class QuizCommand extends Command {
 			const { data: body } = await axios.get('https://opentdb.com/api.php', {
 				params: {
 					amount: 1,
-					difficulty: difficulty,
+					difficulty,
 					encode: 'url3986',
-					type: type
+					type
 				}
 			});
 			if (!body.results) { return msg.sendMessage('Oh no, a question could not be fetched. Try again later!', { reply: msg.author }); }
@@ -91,4 +91,5 @@ export default class QuizCommand extends Command {
 			return msg.sendMessage(`Oh no, an error occurred: \`${err.message}\`. Try again later!`, { reply: msg.author });
 		}
 	}
+
 }

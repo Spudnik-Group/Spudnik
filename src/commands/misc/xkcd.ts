@@ -16,6 +16,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class XkcdCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns a given XKCD comic number (or the latest if nothing specified)',
@@ -40,7 +41,7 @@ export default class XkcdCommand extends Command {
 			description: ''
 		});
 
-		let url: string = 'http://xkcd.com/';
+		let url = 'http://xkcd.com/';
 
 		if (comicNumber) {
 			url += `${comicNumber}/`;
@@ -62,4 +63,5 @@ export default class XkcdCommand extends Command {
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 		}
 	}
+
 }

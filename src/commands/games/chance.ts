@@ -12,6 +12,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class ChanceCommand extends Command {
+
 	/**
 	 * Creates an instance of ChanceCommand.
 	 *
@@ -37,9 +38,10 @@ export default class ChanceCommand extends Command {
 	 * @memberof ChanceCommand
 	 */
 	public async run(msg: KlasaMessage, [chance]): Promise<KlasaMessage | KlasaMessage[]> {
-		const loss = Math.floor(Math.random() * (chance ? +chance : 1000));
+		const loss = Math.floor(Math.random() * (chance ? Number(chance) : 1000));
 		if (!loss) { return msg.sendMessage('Nice job! 10/10! You deserve some cake!', { reply: msg.author }); }
-		
+
 		return msg.sendMessage('Nope, sorry, you lost.', { reply: msg.author });
 	}
+
 }

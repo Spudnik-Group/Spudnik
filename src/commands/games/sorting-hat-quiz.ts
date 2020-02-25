@@ -17,6 +17,7 @@ const { questions, houses, descriptions } = require('../../extras/sorting-hat-qu
  * @extends {Command}
  */
 export default class SortingHatQuizCommand extends Command {
+
 	private playing = new Set();
 
 	/**
@@ -49,7 +50,7 @@ export default class SortingHatQuizCommand extends Command {
 				h: 0,
 				r: 0,
 				s: 0
-			}
+			};
 
 			const blacklist: any[] = [];
 			const questionNums = ['2', '3', '4', '5', '6', '7'];
@@ -63,7 +64,7 @@ export default class SortingHatQuizCommand extends Command {
 				} else if (turn === 8) {
 					question = questions.last[Math.floor(Math.random() * questions.last.length)];
 				} else {
-					const possible = questionNums.filter((num) => !blacklist.includes(num));
+					const possible = questionNums.filter(num => !blacklist.includes(num));
 					const value = possible[Math.floor(Math.random() * possible.length)];
 					const group = questions[value];
 					blacklist.push(value);
@@ -106,4 +107,5 @@ export default class SortingHatQuizCommand extends Command {
 			throw err;
 		}
 	}
+
 }

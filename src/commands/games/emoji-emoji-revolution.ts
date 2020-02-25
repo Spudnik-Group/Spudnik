@@ -15,6 +15,7 @@ const emojis = ['⬆', '↗', '➡', '↘', '⬇', '↙', '⬅', '↖'];
  * @extends {Command}
  */
 export default class EmojiEmojiRevolutionCommand extends Command {
+
 	private playing = new Set();
 
 	/**
@@ -104,4 +105,5 @@ export default class EmojiEmojiRevolutionCommand extends Command {
 			throw err;
 		}
 	}
+
 }

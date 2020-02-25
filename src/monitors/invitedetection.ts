@@ -7,6 +7,7 @@ import { Message, MessageEmbed } from 'discord.js';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 export default class extends Monitor {
+
 	constructor(store: MonitorStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			enabled: true,
@@ -32,6 +33,7 @@ export default class extends Monitor {
 			if (rejectMessage.deletable) {
 				rejectMessage.delete({ timeout: 3000 });
 			}
-		};
+		}
 	}
-};
+
+}

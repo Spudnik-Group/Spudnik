@@ -16,6 +16,7 @@ const { smiff }: { smiff: string[] } = require('../../extras/data.json');
  * @extends {Command}
  */
 export default class SmiffFactCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['smith-fact', 'willsmith'],
@@ -43,4 +44,5 @@ export default class SmiffFactCommand extends Command {
 		// Send the success response
 		return msg.sendEmbed(responseEmbed);
 	}
+
 }

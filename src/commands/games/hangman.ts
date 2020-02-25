@@ -15,6 +15,7 @@ const words = require('../../extras/hangman');
  * @extends {Command}
  */
 export default class HangmanCommand extends Command {
+
 	private playing = new Set();
 
 	/**
@@ -71,7 +72,7 @@ export default class HangmanCommand extends Command {
 					const choice = res.content.toLowerCase();
 
 					return res.author.id === msg.author.id && !confirmation.includes(choice) && !incorrect.includes(choice);
-				}
+				};
 
 				const guess: any = await msg.channel.awaitMessages(filter, {
 					max: 1,
@@ -115,4 +116,5 @@ export default class HangmanCommand extends Command {
 			return msg.sendMessage(`Oh no, an error occurred: \`${err.message}\`. Try again later!`, { reply: msg.author });
 		}
 	}
+
 }

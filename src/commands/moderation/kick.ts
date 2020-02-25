@@ -15,6 +15,7 @@ import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
  * @extends {Command}
  */
 export default class KickCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Kicks a user.',
@@ -77,4 +78,5 @@ export default class KickCommand extends Command {
 			return sendSimpleEmbeddedError(msg, `Kicking ${member} for ${reason} failed!`, 3000);
 		}
 	}
+
 }

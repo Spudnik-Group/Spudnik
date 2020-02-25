@@ -16,6 +16,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
  * @extends {Command}
  */
 export default class CommandsCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns a list of command groups, or all commands in a given group.',
@@ -55,18 +56,19 @@ export default class CommandsCommand extends Command {
 					.addField('❯ Want the complete list of commands?', 'Visit [the website](https://spudnik.io) and check out the commands page: https://docs.spudnik.io/commands/');
 
 				return msg.sendEmbed(commandsEmbed);
-			} else {
-				return sendSimpleEmbeddedMessage(msg, `No groups matching that name. Use \`${msg.guild.settings.get(GuildSettings.Prefix)}commands\` to view a list of command groups.`, 3000);
 			}
-		} else {
-			commandsEmbed
-				.setTitle('List of Command Groups')
-				.setDescription(`Run \`${msg.guild.settings.get(GuildSettings.Prefix)}commands <groupName>\` to view all the commands in the given group.`)
-				.addField('❯ Command Groups', `\`\`\`css\n${groups.join('\n')}\`\`\``)
-				.addField('❯ Need more details?', `Run \`${msg.guild.settings.get(GuildSettings.Prefix)}help <commandName>\``)
-				.addField('❯ Want the complete list of commands?', 'Visit [the website](https://spudnik.io) and check out the commands page: https://docs.spudnik.io/commands/');
+			return sendSimpleEmbeddedMessage(msg, `No groups matching that name. Use \`${msg.guild.settings.get(GuildSettings.Prefix)}commands\` to view a list of command groups.`, 3000);
 
-			return msg.sendEmbed(commandsEmbed);
 		}
+		commandsEmbed
+			.setTitle('List of Command Groups')
+			.setDescription(`Run \`${msg.guild.settings.get(GuildSettings.Prefix)}commands <groupName>\` to view all the commands in the given group.`)
+			.addField('❯ Command Groups', `\`\`\`css\n${groups.join('\n')}\`\`\``)
+			.addField('❯ Need more details?', `Run \`${msg.guild.settings.get(GuildSettings.Prefix)}help <commandName>\``)
+			.addField('❯ Want the complete list of commands?', 'Visit [the website](https://spudnik.io) and check out the commands page: https://docs.spudnik.io/commands/');
+
+		return msg.sendEmbed(commandsEmbed);
+
 	}
+
 }

@@ -14,6 +14,7 @@ import { Permissions } from 'discord.js';
  * @extends {Command}
  */
 export default class UnshortCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['unshorten'],
@@ -47,4 +48,5 @@ export default class UnshortCommand extends Command {
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. The url may not be valid. Try again?', 3000);
 		}
 	}
+
 }

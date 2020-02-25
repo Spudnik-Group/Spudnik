@@ -14,6 +14,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class BattleCommand extends Command {
+
 	/**
 	 * Creates an instance of BattleCommand.
 	 *
@@ -39,7 +40,7 @@ export default class BattleCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage, [opp]): Promise<KlasaMessage | KlasaMessage[]> {
 		const fighting = new Set();
-		const opponent = opp ? opp : this.client.user
+		const opponent = opp ? opp : this.client.user;
 
 		if (opponent.id === msg.author.id) {
 			return msg.sendMessage('You may not fight yourself.', { reply: msg.author });
@@ -73,7 +74,7 @@ export default class BattleCommand extends Command {
 				if (changeGuard && guard) {
 					guard = false;
 				}
-			}
+			};
 
 			const dealDamage = (damage: any) => {
 				if (userTurn) {
@@ -81,7 +82,7 @@ export default class BattleCommand extends Command {
 				} else {
 					userHP -= damage;
 				}
-			}
+			};
 
 			const forfeit = () => {
 				if (userTurn) {
@@ -89,7 +90,7 @@ export default class BattleCommand extends Command {
 				} else {
 					oppoHP = 0;
 				}
-			}
+			};
 
 			while (userHP > 0 && oppoHP > 0) {
 				const user = userTurn ? msg.author : opponent;
@@ -156,4 +157,5 @@ export default class BattleCommand extends Command {
 			throw err;
 		}
 	}
+
 }

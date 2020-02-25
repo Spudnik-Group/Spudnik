@@ -13,6 +13,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class Bin2DecCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Converts binary to decimal',
@@ -31,4 +32,5 @@ export default class Bin2DecCommand extends Command {
 	public async run(msg: KlasaMessage, [numberToConvert]): Promise<KlasaMessage | KlasaMessage[]> {
 		return sendSimpleEmbeddedMessageWithAuthor(msg, `${numberToConvert} = ${Convert.bin2dec(numberToConvert)}`, { name: 'Binary to Decimal Conversion:' });
 	}
+
 }

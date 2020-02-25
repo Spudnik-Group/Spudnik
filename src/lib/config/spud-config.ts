@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-// tslint:disable
+// Tslint:disable
 export const SpudConfig = {
 	'token': process.env.SPUD_TOKEN,
 	'port': process.env.PORT || 1337,

@@ -28,7 +28,7 @@ export const sendSimpleEmbeddedMessage = (msg: KlasaMessage, text: string, timeo
 	if (timeout) {
 		promise.then((reply: Message | Message[]) => {
 			if (reply instanceof Message) {
-				reply.delete({ timeout: timeout }).catch(() => undefined);
+				reply.delete({ timeout }).catch(() => undefined);
 			} else if (reply instanceof Array) {
 				msg.channel.bulkDelete(reply);
 			}
@@ -36,7 +36,7 @@ export const sendSimpleEmbeddedMessage = (msg: KlasaMessage, text: string, timeo
 	}
 
 	return promise;
-}
+};
 
 /**
  * Post a simple embedded message, with supplied author details.
@@ -50,7 +50,7 @@ export const sendSimpleEmbeddedMessage = (msg: KlasaMessage, text: string, timeo
  */
 export const sendSimpleEmbeddedMessageWithAuthor = (msg: KlasaMessage, text: string, author: MessageEmbed['author'], timeout?: number): Promise<KlasaMessage | KlasaMessage[]> => {
 	const promise: Promise<KlasaMessage | KlasaMessage[]> = msg.sendEmbed(new MessageEmbed({
-		author: author,
+		author,
 		color: getEmbedColor(msg),
 		description: `${text}`
 	}));
@@ -58,7 +58,7 @@ export const sendSimpleEmbeddedMessageWithAuthor = (msg: KlasaMessage, text: str
 	if (timeout) {
 		promise.then((reply: Message | Message[]) => {
 			if (reply instanceof Message) {
-				reply.delete({ timeout: timeout }).catch(() => undefined);
+				reply.delete({ timeout }).catch(() => undefined);
 			} else if (reply instanceof Array) {
 				msg.channel.bulkDelete(reply);
 			}
@@ -66,7 +66,7 @@ export const sendSimpleEmbeddedMessageWithAuthor = (msg: KlasaMessage, text: str
 	}
 
 	return promise;
-}
+};
 
 /**
  * Post a simple embedded message, with supplied title.
@@ -92,7 +92,7 @@ export const sendSimpleEmbeddedMessageWithTitle = (msg: KlasaMessage, text: stri
 	if (timeout) {
 		promise.then((reply: Message | Message[]) => {
 			if (reply instanceof Message) {
-				reply.delete({ timeout: timeout }).catch(() => undefined);
+				reply.delete({ timeout }).catch(() => undefined);
 			} else if (reply instanceof Array) {
 				msg.channel.bulkDelete(reply);
 			}
@@ -100,7 +100,7 @@ export const sendSimpleEmbeddedMessageWithTitle = (msg: KlasaMessage, text: stri
 	}
 
 	return promise;
-}
+};
 
 /**
  * Post a simple embedded error message.
@@ -124,7 +124,7 @@ export const sendSimpleEmbeddedError = (msg: KlasaMessage, text: string, timeout
 	if (timeout) {
 		promise.then((reply: Message | Message[]) => {
 			if (reply instanceof Message) {
-				reply.delete({ timeout: timeout }).catch(() => undefined);
+				reply.delete({ timeout }).catch(() => undefined);
 			} else if (reply instanceof Array) {
 				msg.channel.bulkDelete(reply);
 			}
@@ -132,7 +132,7 @@ export const sendSimpleEmbeddedError = (msg: KlasaMessage, text: string, timeout
 	}
 
 	return promise;
-}
+};
 
 /**
  * Send a simple embedded success message.
@@ -156,7 +156,7 @@ export const sendSimpleEmbeddedSuccess = (msg: KlasaMessage, text: string, timeo
 	if (timeout) {
 		promise.then((reply: Message | Message[]) => {
 			if (reply instanceof Message) {
-				reply.delete({ timeout: timeout }).catch(() => undefined);
+				reply.delete({ timeout }).catch(() => undefined);
 			} else if (reply instanceof Array) {
 				msg.channel.bulkDelete(reply);
 			}
@@ -164,7 +164,7 @@ export const sendSimpleEmbeddedSuccess = (msg: KlasaMessage, text: string, timeo
 	}
 
 	return promise;
-}
+};
 
 /**
  * Post a simple embedded image.
@@ -175,14 +175,12 @@ export const sendSimpleEmbeddedSuccess = (msg: KlasaMessage, text: string, timeo
  * @param {string} [description]
  * @returns Promise<KlasaMessage | KlasaMessage[]>
  */
-export const sendSimpleEmbeddedImage = (msg: KlasaMessage, url: string, description?: string): Promise<KlasaMessage | KlasaMessage[]> => {
-	return msg.sendEmbed(new MessageEmbed({
-		author: {
-			iconURL: msg.client.user.displayAvatarURL(),
-			name: `${msg.client.user.username}`
-		},
-		color: 3447003,
-		description: description,
-		image: { url: url }
-	}));
-}
+export const sendSimpleEmbeddedImage = (msg: KlasaMessage, url: string, description?: string): Promise<KlasaMessage | KlasaMessage[]> => msg.sendEmbed(new MessageEmbed({
+	author: {
+		iconURL: msg.client.user.displayAvatarURL(),
+		name: `${msg.client.user.username}`
+	},
+	color: 3447003,
+	description,
+	image: { url }
+}));

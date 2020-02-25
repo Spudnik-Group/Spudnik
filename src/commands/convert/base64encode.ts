@@ -14,6 +14,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class Base64EncodeCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Base64 encodes a string',
@@ -44,4 +45,5 @@ export default class Base64EncodeCommand extends Command {
 
 		return msg.sendEmbed(returnMessage);
 	}
+
 }

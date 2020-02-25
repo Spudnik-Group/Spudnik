@@ -14,6 +14,7 @@ import { MessageEmbed } from 'discord.js';
  * @extends {Command}
  */
 export default class ChooseCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Have the bot choose something for you.',
@@ -47,4 +48,5 @@ export default class ChooseCommand extends Command {
 			title: ':thinking:'
 		}), '', { reply: msg.author });
 	}
+
 }

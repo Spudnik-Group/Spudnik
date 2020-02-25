@@ -16,6 +16,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class GithubCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['gh'],
@@ -78,11 +79,12 @@ export default class GithubCommand extends Command {
 					❯ **Clone Size:** ${size}${footer.length ? `${footer.join('\n')}` : ''}
 				`);
 
-			return msg.sendEmbed(githubEmbed)
+			return msg.sendEmbed(githubEmbed);
 		} catch (err) {
 			msg.client.emit('warn', `Error in command dev:github: ${err}`);
 
 			return sendSimpleEmbeddedError(msg, 'Could not fetch that repo, are you sure it exists?', 3000);
 		}
 	}
+
 }

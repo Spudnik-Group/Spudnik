@@ -15,6 +15,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
  * @extends {Command}
  */
 export default class IAmNotCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Used to add a self-assignable role to yourself.',
@@ -52,13 +53,14 @@ export default class IAmNotCommand extends Command {
 				roleEmbed.description = `<@${msg.member.id}>, you now have the ${role.name} role.`;
 
 				return msg.sendEmbed(roleEmbed);
-			} else {
-
-				return sendSimpleEmbeddedError(msg, `<@${msg.member.id}>, you already have the role ${role.name}.`, 3000);
 			}
-		} else {
 
-			return sendSimpleEmbeddedError(msg, `Cannot find ${role} in list of assignable roles.`, 3000);
+			return sendSimpleEmbeddedError(msg, `<@${msg.member.id}>, you already have the role ${role.name}.`, 3000);
+
 		}
+
+		return sendSimpleEmbeddedError(msg, `Cannot find ${role} in list of assignable roles.`, 3000);
+
 	}
+
 }

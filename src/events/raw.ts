@@ -10,23 +10,23 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
 export default class extends Event {
 
 	async run(event, ...args) {
-		if (!event.d || !event.d.guild_id) { return; } //Ignore non-guild events
-		if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(event.t)) { return; } //Ignore non-emoji related actions
-		
+		if (!event.d || !event.d.guild_id) { return; } // Ignore non-guild events
+		if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(event.t)) { return; } // Ignore non-emoji related actions
+
 		const { d: data } = event;
 		const guild: Guild = await this.client.guilds.get(data.guild_id);
 		const channel: GuildChannel = await guild.channels.get(data.channel_id);
 
-		if (SpudConfig.botListGuilds.includes(guild.id)) { return; } //Guild is on Blacklist, ignore.
-		if ((channel as TextChannel).nsfw) { return; } //Ignore NSFW channels
-		if (!(channel as TextChannel).permissionsFor(this.client.user.id).has('READ_MESSAGE_HISTORY')) { return; } //Bot doesn't have the right permissions to retrieve the message
+		if (SpudConfig.botListGuilds.includes(guild.id)) { return; } // Guild is on Blacklist, ignore.
+		if ((channel as TextChannel).nsfw) { return; } // Ignore NSFW channels
+		if (!(channel as TextChannel).permissionsFor(this.client.user.id).has('READ_MESSAGE_HISTORY')) { return; } // Bot doesn't have the right permissions to retrieve the message
 
 		const message: Message = await (channel as TextChannel).messages.fetch(data.message_id);
 		const starboardEnabled: boolean = guild.settings.get(GuildSettings.Starboard.Enabled);
-		
+
 		if (message.author.id === data.user_id) { return; } // You can't star your own messages
 		if (message.author.bot) { return; } // You can't star bot messages
-		if (!starboardEnabled) { return; } //Ignore if starboard isn't set up
+		if (!starboardEnabled) { return; } // Ignore if starboard isn't set up
 
 		const currentEmojiKey: any = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
 		const starboardTrigger: string = guild.settings.get(GuildSettings.Starboard.Trigger);
@@ -36,12 +36,12 @@ export default class extends Event {
 			const starboardChannel = guild.settings.get(GuildSettings.Starboard.Channel);
 			const starboard: GuildChannel = guild.channels.get(starboardChannel);
 
-			if (!starboard || !starboardChannel) { return; } //Ignore if starboard isn't set up
-			if (starboard === channel) { return; } //Can't star items in starboard channel
-			if (!starboard.permissionsFor(this.client.user.id).has('SEND_MESSAGES') ||
-				!starboard.permissionsFor(this.client.user.id).has('EMBED_LINKS') ||
-				!starboard.permissionsFor(this.client.user.id).has('ATTACH_FILES')) {
-				//Bot doesn't have the right permissions in the starboard channel
+			if (!starboard || !starboardChannel) { return; } // Ignore if starboard isn't set up
+			if (starboard === channel) { return; } // Can't star items in starboard channel
+			if (!starboard.permissionsFor(this.client.user.id).has('SEND_MESSAGES')
+				|| !starboard.permissionsFor(this.client.user.id).has('EMBED_LINKS')
+				|| !starboard.permissionsFor(this.client.user.id).has('ATTACH_FILES')) {
+				// Bot doesn't have the right permissions in the starboard channel
 				// TODO: add a modlog error message here, this shouldn't silently fail
 				return;
 			}
@@ -64,10 +64,10 @@ export default class extends Event {
 					// And remove it
 					existingStar.delete();
 
-					return;
+
 				}
 
-				return;
+
 			} else {
 				const stars = reaction.count;
 				const starboardEmbed: MessageEmbed = new MessageEmbed()
@@ -89,18 +89,18 @@ export default class extends Event {
 				if (existingStar) {
 					// Old star, update star count
 					existingStar.edit({ embed: starboardEmbed })
-						.catch((err) => {
+						.catch(err => {
 							this.client.emit('warn', `Failed to edit starboard embed. Message ID: ${message.id}\nError: ${err}`);
 
-							return;
+
 						});
 				} else {
 					// Fresh star, add to starboard
 					(starboard as TextChannel).send({ embed: starboardEmbed })
-						.catch((err) => {
+						.catch(err => {
 							this.client.emit('warn', `Failed to send new starboard embed. Message ID: ${message.id}\nError: ${err}`);
 
-							return;
+
 						});
 				}
 			}

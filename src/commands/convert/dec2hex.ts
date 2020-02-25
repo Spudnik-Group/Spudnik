@@ -13,6 +13,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class Dec2HexCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Converts decimal to hexadecimal',
@@ -31,4 +32,5 @@ export default class Dec2HexCommand extends Command {
 	public async run(msg: KlasaMessage, [numberToConvert]): Promise<KlasaMessage | KlasaMessage[]> {
 		return sendSimpleEmbeddedMessageWithAuthor(msg, `${numberToConvert} = 0x${Convert.dec2hex(numberToConvert).toUpperCase()}`, { name: 'Decimal to Hexadecimal Conversion:' });
 	}
+
 }

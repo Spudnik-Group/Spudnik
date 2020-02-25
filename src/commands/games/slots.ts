@@ -15,6 +15,7 @@ const slots = ['🍇', '🍊', '🍐', '🍒', '🍋'];
  * @extends {Command}
  */
 export default class SlotsCommand extends Command {
+
 	/**
 	 * Creates an instance of SlotsCommand.
 	 *
@@ -52,4 +53,5 @@ export default class SlotsCommand extends Command {
 			Aww... You lost... Guess it's just bad luck, huh?
 		`, { reply: msg.author });
 	}
+
 }

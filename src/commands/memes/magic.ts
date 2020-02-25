@@ -14,6 +14,7 @@ import { Permissions } from 'discord.js';
  * @extends {Command}
  */
 export default class MagicCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Displays a magical gif of Shia Labeouf.',
@@ -32,4 +33,5 @@ export default class MagicCommand extends Command {
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		return sendSimpleEmbeddedImage(msg, 'https://media.giphy.com/media/12NUbkX6p4xOO4/giphy.gif');
 	}
+
 }

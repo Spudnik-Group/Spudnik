@@ -49,8 +49,9 @@ export default class CommandSearchCommand extends Command {
 				.addField('❯ Want the complete list of commands?', 'Visit [the website](https://spudnik.io) and check out the commands page: https://docs.spudnik.io/commands/');
 
 			return msg.sendEmbed(commandsEmbed);
-		} else {
-			return sendSimpleEmbeddedMessage(msg, `No commands found containing that text. Use \`${msg.guild.settings.get(GuildSettings.Prefix)}commands\` to view a list of command groups.`, 3000);
 		}
+		return sendSimpleEmbeddedMessage(msg, `No commands found containing that text. Use \`${msg.guild.settings.get(GuildSettings.Prefix)}commands\` to view a list of command groups.`, 3000);
+
 	}
+
 }

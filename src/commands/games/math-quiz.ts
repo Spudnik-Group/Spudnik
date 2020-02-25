@@ -14,7 +14,7 @@ const maxValues: any = {
 	hard: 500,
 	impossible: 1000000,
 	medium: 100
-}
+};
 
 /**
  * Starts a game of Math Quiz.
@@ -46,7 +46,7 @@ export default class MathQuizCommand extends Command {
 		this.createCustomResolver('difficulty', (arg: string) => {
 			if (difficulties.includes(arg.toLowerCase())) return arg;
 			throw `Please provide a valid difficulty level. Options are: ${list(difficulties, 'or')}.`;
-		})
+		});
 	}
 
 	/**
@@ -73,7 +73,7 @@ export default class MathQuizCommand extends Command {
 			${value1} ${operation} ${value2}
 		`);
 
-		const msgs: any = await msg.channel.awaitMessages((res) => res.author.id === msg.author.id, {
+		const msgs: any = await msg.channel.awaitMessages(res => res.author.id === msg.author.id, {
 			max: 1,
 			time: 10000
 		});
@@ -83,4 +83,5 @@ export default class MathQuizCommand extends Command {
 
 		return msg.sendMessage('Nice job! 10/10! You deserve some cake!', { reply: msg.author });
 	}
+
 }

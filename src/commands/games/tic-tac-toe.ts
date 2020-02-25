@@ -14,6 +14,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class TicTacToeCommand extends Command {
+
 	private playing = new Set();
 
 	/**
@@ -81,7 +82,7 @@ export default class TicTacToeCommand extends Command {
 					const choice = res.content;
 
 					return res.author.id === user.id && sides.includes(choice) && !taken.includes(choice);
-				}
+				};
 
 				const turn: any = await msg.channel.awaitMessages(filter, {
 					max: 1,
@@ -122,4 +123,5 @@ export default class TicTacToeCommand extends Command {
 			throw err;
 		}
 	}
+
 }

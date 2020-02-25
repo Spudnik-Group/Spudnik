@@ -6,7 +6,7 @@ import { stripIndents } from 'common-tags';
 import { Collection } from 'discord.js';
 import { awaitPlayers, delay, sendSimpleEmbeddedError, shuffle } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-// tslint:disable-next-line:no-var-requires
+// Tslint:disable-next-line:no-var-requires
 const data = require('../../extras/wizard-convention');
 
 /**
@@ -17,6 +17,7 @@ const data = require('../../extras/wizard-convention');
  * @extends {Command}
  */
 export default class WizardConventionCommand extends Command {
+
 	private playing = new Set();
 
 	/**
@@ -150,7 +151,7 @@ export default class WizardConventionCommand extends Command {
 					voted.push(res.author.id);
 
 					return true;
-				}
+				};
 
 				const votes = await msg.channel.awaitMessages(filter, {
 					max: players.size,
@@ -199,7 +200,7 @@ export default class WizardConventionCommand extends Command {
 			players.set(user.id, {
 				id: user.id,
 				role: roles[i],
-				user: user
+				user
 			});
 			await user.send(`Your role will be: ${roles[i]}!`);
 			i++;
@@ -225,4 +226,5 @@ export default class WizardConventionCommand extends Command {
 
 		return counts.sort((a: any, b: any) => b.votes - a.votes).first();
 	}
+
 }

@@ -14,6 +14,7 @@ const words = ['fire', 'draw', 'shoot', 'bang', 'pull'];
  * @extends {Command}
  */
 export default class GunFightCommand extends Command {
+
 	private fighting = new Set();
 
 	/**
@@ -54,7 +55,7 @@ export default class GunFightCommand extends Command {
 
 			if (!verification) {
 				this.fighting.delete(msg.channel.id);
-				
+
 				return msg.sendMessage('Looks like they declined...');
 			}
 
@@ -73,11 +74,12 @@ export default class GunFightCommand extends Command {
 
 			this.fighting.delete(msg.channel.id);
 			if (!winner.size) { return msg.sendMessage('Oh... No one won.'); }
-			
+
 			return msg.sendMessage(`The winner is ${winner.first().author}!`);
 		} catch (err) {
 			this.fighting.delete(msg.channel.id);
 			throw err;
 		}
 	}
+
 }

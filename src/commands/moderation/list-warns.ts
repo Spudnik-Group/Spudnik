@@ -15,6 +15,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class ListWarnsCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: [
@@ -59,9 +60,10 @@ export default class ListWarnsCommand extends Command {
 
 			// Send the success response
 			return msg.sendEmbed(warnEmbed);
-		} else {
-			// No warnings for current guild
-			return sendSimpleEmbeddedError(msg, 'No warnings for current guild', 3000);
 		}
+		// No warnings for current guild
+		return sendSimpleEmbeddedError(msg, 'No warnings for current guild', 3000);
+
 	}
+
 }

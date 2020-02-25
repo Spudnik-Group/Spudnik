@@ -3,11 +3,11 @@
  */
 
 export interface Configuration {
-	'bfdApiKey': string,
-	'bodApiKey': string,
+	'bfdApiKey': string;
+	'bodApiKey': string;
 	'botListUpdateInterval': string;
-	'botsggApiKey': string,
-	'dbApiKey': string,
+	'botsggApiKey': string;
+	'dbApiKey': string;
 	'dblApiKey': string;
 	'debug': boolean;
 	'spudStatsDB': string;

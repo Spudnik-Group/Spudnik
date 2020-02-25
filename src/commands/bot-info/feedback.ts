@@ -14,6 +14,7 @@ import { Permissions } from 'discord.js';
  * @extends {Command}
  */
 export default class FeedbackCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Provides links to suggest features, submit bugs, or email the devs.',
@@ -39,4 +40,5 @@ export default class FeedbackCommand extends Command {
 			Email the Devs: comrades@spudnik.io
 		`);
 	}
+
 }

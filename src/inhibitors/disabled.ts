@@ -13,4 +13,5 @@ export default class CommandOrCategoryEnabled extends Inhibitor {
 
 		return commandDisabled || categoryDisabled;
 	}
-};
+
+}

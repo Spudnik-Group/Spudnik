@@ -6,6 +6,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed } from 'discord.js';
 
 export default class AvatarCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows a user\'s avatar',
@@ -20,4 +21,5 @@ export default class AvatarCommand extends Command {
 			.setAuthor(user.username, avatar)
 			.setImage(avatar));
 	}
-};
+
+}

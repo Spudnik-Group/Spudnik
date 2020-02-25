@@ -17,6 +17,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
  * @extends {Command}
  */
 export default class DisableCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['disable-command', 'cmd-off', 'command-off'],
@@ -27,7 +28,7 @@ export default class DisableCommand extends Command {
 			usage: '<cmdOrCat:command|cmdOrCat:string>'
 		});
 
-		this.createCustomResolver('cmdOrCat', commandOrCategory)
+		this.createCustomResolver('cmdOrCat', commandOrCategory);
 	}
 
 	/**
@@ -66,28 +67,28 @@ export default class DisableCommand extends Command {
 				modLogMessage(msg, disableEmbed);
 
 				return msg.sendEmbed(disableEmbed);
-			} else {
-				return sendSimpleEmbeddedMessage(msg, `No groups matching that name. Use \`${msg.guild.settings.get(GuildSettings.Prefix)}commands\` to view a list of command groups.`, 3000);
 			}
-		} else {
-			// Command
-			if (!isCommandEnabled(msg, cmdOrCat)) {
-				return sendSimpleEmbeddedError(msg, `The \`${cmdOrCat.name}\` command is already disabled.`, 3000);
-			} else {
-				if (cmdOrCat.guarded) {
-					return sendSimpleEmbeddedError(msg,
-						`You cannot disable the \`${cmdOrCat.name}\` command.`, 3000
-					);
-				}
-				await msg.guild.settings.update(GuildSettings.Commands.Disabled, cmdOrCat.name.toLowerCase());
+			return sendSimpleEmbeddedMessage(msg, `No groups matching that name. Use \`${msg.guild.settings.get(GuildSettings.Prefix)}commands\` to view a list of command groups.`, 3000);
 
-				disableEmbed.setDescription(stripIndents`
+		}
+		// Command
+		if (!isCommandEnabled(msg, cmdOrCat)) {
+			return sendSimpleEmbeddedError(msg, `The \`${cmdOrCat.name}\` command is already disabled.`, 3000);
+		}
+		if (cmdOrCat.guarded) {
+			return sendSimpleEmbeddedError(msg,
+				`You cannot disable the \`${cmdOrCat.name}\` command.`, 3000);
+		}
+		await msg.guild.settings.update(GuildSettings.Commands.Disabled, cmdOrCat.name.toLowerCase());
+
+		disableEmbed.setDescription(stripIndents`
 				**Moderator:** ${msg.author.tag} (${msg.author.id})
 				**Action:** Disabled the \`${cmdOrCat.name}\` command.`);
-				modLogMessage(msg, disableEmbed);
+		modLogMessage(msg, disableEmbed);
 
-				return msg.sendEmbed(disableEmbed);
-			}
-		}
+		return msg.sendEmbed(disableEmbed);
+
+
 	}
+
 }

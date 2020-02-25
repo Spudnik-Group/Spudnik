@@ -14,6 +14,7 @@ import { MessageEmbed } from 'discord.js';
  * @extends {Command}
  */
 export default class GitGudCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Informs someone that they should "git gud".',
@@ -37,8 +38,9 @@ export default class GitGudCommand extends Command {
 			return msg.sendEmbed(new MessageEmbed({ image: { url: gitgudImageURL } }), '', {
 				reply: mention
 			});
-		} else {
-			return sendSimpleEmbeddedImage(msg, gitgudImageURL);
 		}
+		return sendSimpleEmbeddedImage(msg, gitgudImageURL);
+
 	}
+
 }

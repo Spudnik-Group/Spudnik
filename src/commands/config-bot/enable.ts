@@ -17,6 +17,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
  * @extends {Command}
  */
 export default class EnableCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['enable-command', 'cmd-off', 'command-off'],
@@ -27,7 +28,7 @@ export default class EnableCommand extends Command {
 			usage: '<cmdOrCat:command|cmdOrCat:string>'
 		});
 
-		this.createCustomResolver('cmdOrCat', commandOrCategory)
+		this.createCustomResolver('cmdOrCat', commandOrCategory);
 	}
 
 	/**
@@ -66,24 +67,25 @@ export default class EnableCommand extends Command {
 				modLogMessage(msg, enableEmbed);
 
 				return msg.sendEmbed(enableEmbed);
-			} else {
-				return sendSimpleEmbeddedMessage(msg, `No groups matching that name. Use \`${msg.guild.settings.get(GuildSettings.Prefix)}commands\` to view a list of command groups.`, 3000);
 			}
-		} else {
-			// Command
-			if (isCommandEnabled(msg, cmdOrCat)) {
-				return sendSimpleEmbeddedError(msg, `The \`${cmdOrCat.name}\` command is already enabled.`, 3000);
-			} else {
-				await msg.guild.settings.update(GuildSettings.Commands.Disabled, cmdOrCat.name.toLowerCase());
+			return sendSimpleEmbeddedMessage(msg, `No groups matching that name. Use \`${msg.guild.settings.get(GuildSettings.Prefix)}commands\` to view a list of command groups.`, 3000);
 
-				enableEmbed.setDescription(stripIndents`
+		}
+		// Command
+		if (isCommandEnabled(msg, cmdOrCat)) {
+			return sendSimpleEmbeddedError(msg, `The \`${cmdOrCat.name}\` command is already enabled.`, 3000);
+		}
+		await msg.guild.settings.update(GuildSettings.Commands.Disabled, cmdOrCat.name.toLowerCase());
+
+		enableEmbed.setDescription(stripIndents`
 				**Moderator:** ${msg.author.tag} (${msg.author.id})
 				**Action:** Enabled the \`${cmdOrCat.name}\` command${
-					!isCommandCategoryEnabled(msg, cmdOrCat.category) ? `, but the \`${cmdOrCat.category}\` category is disabled, so it still can't be used` : ''}.`);
-				modLogMessage(msg, enableEmbed);
+	!isCommandCategoryEnabled(msg, cmdOrCat.category) ? `, but the \`${cmdOrCat.category}\` category is disabled, so it still can't be used` : ''}.`);
+		modLogMessage(msg, enableEmbed);
 
-				return msg.sendEmbed(enableEmbed);
-			}
-		}
+		return msg.sendEmbed(enableEmbed);
+
+
 	}
+
 }

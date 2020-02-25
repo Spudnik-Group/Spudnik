@@ -16,6 +16,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
  * @extends {Command}
  */
 export default class SelfAssignableRolesCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: [
@@ -66,7 +67,7 @@ export default class SelfAssignableRolesCommand extends Command {
 
 					return this.sendSuccess(msg, roleEmbed);
 				})
-				.catch((err: Error) => this.catchError(msg, { subCommand: 'add', role: role }, err));
+				.catch((err: Error) => this.catchError(msg, { subCommand: 'add', role }, err));
 		} else {
 
 			return sendSimpleEmbeddedError(msg, `${role.name} is already in the list of assignable roles for this guild.`, 3000);
@@ -102,7 +103,7 @@ export default class SelfAssignableRolesCommand extends Command {
 
 					return this.sendSuccess(msg, roleEmbed);
 				})
-				.catch((err: Error) => this.catchError(msg, { subCommand: 'remove', role: role }, err));
+				.catch((err: Error) => this.catchError(msg, { subCommand: 'remove', role }, err));
 		} else {
 
 			return sendSimpleEmbeddedError(msg, `Could not find role with name ${role.name} in the list of assignable roles for this guild.`, 3000);
@@ -147,4 +148,5 @@ export default class SelfAssignableRolesCommand extends Command {
 		// Send the success response
 		return msg.sendEmbed(embed);
 	}
+
 }

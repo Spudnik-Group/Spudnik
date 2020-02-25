@@ -16,6 +16,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class MdnReferenceCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['jsdocs'],
@@ -49,10 +50,10 @@ export default class MdnReferenceCommand extends Command {
 		});
 
 		try {
-			const { data: response } = await axios.get(`https://developer.mozilla.org/en-US/search.json?q=${encodeURIComponent(query)}`)
+			const { data: response } = await axios.get(`https://developer.mozilla.org/en-US/search.json?q=${encodeURIComponent(query)}`);
 			if (!response.documents.length) {
 
-				return sendSimpleEmbeddedError(msg, 'Your query did not return any results', 3000)
+				return sendSimpleEmbeddedError(msg, 'Your query did not return any results', 3000);
 			}
 			const firstRes = response.documents[0];
 
@@ -71,7 +72,7 @@ export default class MdnReferenceCommand extends Command {
 					${firstRes.tags ? `__Tag${firstRes.tags.length === 1 ? '' : 's'}__:
 					${firstRes.tags.join(', ')}` : ''}
 				`)
-				.setFooter(`${response.count} documents found for "${query}". ${response.count < 1 ? '' : `Showing results 1 to ${response.documents.length < 5 ? response.documents.length : '4'}`} | Article ID: ${response.documents[0].id}`)
+				.setFooter(`${response.count} documents found for "${query}". ${response.count < 1 ? '' : `Showing results 1 to ${response.documents.length < 5 ? response.documents.length : '4'}`} | Article ID: ${response.documents[0].id}`);
 
 			return msg.sendEmbed(mdnEmbed);
 		} catch (err) {
@@ -80,4 +81,5 @@ export default class MdnReferenceCommand extends Command {
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 		}
 	}
+
 }

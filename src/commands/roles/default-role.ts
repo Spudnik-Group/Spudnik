@@ -16,6 +16,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
  * @extends {Command}
  */
 export default class DefaultRoleCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: [
@@ -99,7 +100,7 @@ export default class DefaultRoleCommand extends Command {
 			${action === 'set' ? `**Input:** \`Role name: ${role}` : ''}
 			**Error Message:** ${action === 'set' ? 'Setting' : 'Resetting'} default role failed!\n
 			`;
-		let roleUserWarn = `${action === 'set' ? 'Setting' : 'Resetting'} default role failed!`;
+		const roleUserWarn = `${action === 'set' ? 'Setting' : 'Resetting'} default role failed!`;
 
 		// Emit warn event for debugging
 		msg.client.emit('warn', roleWarn);
@@ -114,4 +115,5 @@ export default class DefaultRoleCommand extends Command {
 		// Send the success response
 		return msg.sendEmbed(embed);
 	}
+
 }

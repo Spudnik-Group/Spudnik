@@ -16,6 +16,7 @@ const events = require('../../extras/hunger-games');
  * @extends {Command}
  */
 export default class HungerGamesCommand extends Command {
+
 	private playing = new Set();
 
 	/**
@@ -137,4 +138,5 @@ export default class HungerGamesCommand extends Command {
 			}
 		}
 	}
+
 }

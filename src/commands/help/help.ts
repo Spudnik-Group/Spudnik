@@ -16,6 +16,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
  * @extends {Command}
  */
 export default class HelpCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Used to return helpful information on the bot, or detailed information for a specified command.',
@@ -53,20 +54,21 @@ export default class HelpCommand extends Command {
 				`, true);
 
 			return msg.sendEmbed(helpEmbed);
-		} else {
-			helpEmbed
-				.setTitle('**Help**')
-				.setThumbnail(`${this.client.user.avatarURL()}`)
-				.setDescription(stripIndents`
+		}
+		helpEmbed
+			.setTitle('**Help**')
+			.setThumbnail(`${this.client.user.avatarURL()}`)
+			.setDescription(stripIndents`
 					To get the list of command categories, type \`${msg.guild.settings.get(GuildSettings.Prefix)}commands\`.
 					To get the list of commands in a specific category, type \`${msg.guild.settings.get(GuildSettings.Prefix)}commands <categoryName>\`.
 					To get help with a specific command, type \`${msg.guild.settings.get(GuildSettings.Prefix)}help <commandName>\`.
 				`)
-				.addField('❯ Spudnik Command', '[Join](https://spudnik.io/support)', true)
-				.addField('❯ Invite to Your Server!', '[Invite](https://spudnik.io/invite)', true)
-				.setFooter(`Server Prefix: ${msg.guild.settings.get(GuildSettings.Prefix)} • Total Commands: ${this.client.commands.size}`);
+			.addField('❯ Spudnik Command', '[Join](https://spudnik.io/support)', true)
+			.addField('❯ Invite to Your Server!', '[Invite](https://spudnik.io/invite)', true)
+			.setFooter(`Server Prefix: ${msg.guild.settings.get(GuildSettings.Prefix)} • Total Commands: ${this.client.commands.size}`);
 
-			return msg.sendEmbed(helpEmbed);
-		}
+		return msg.sendEmbed(helpEmbed);
+
 	}
+
 }

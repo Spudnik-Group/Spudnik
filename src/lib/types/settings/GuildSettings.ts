@@ -6,13 +6,13 @@ export namespace GuildSettings {
 	export const Prefix = T<string>('prefix');
 	export const EmbedColor = T<string>('embedColor');
 	export const AdblockEnabled = T<boolean>('adblockEnabled');
-	
+
 	export namespace Commands {
 		export const DeleteCommandMessages = T<boolean>('commands.deleteMessages');
 		export const Disabled = T<string[]>('commands.disabled');
 		export const DisabledCategories = T<string[]>('commands.disabledCategories');
 	}
-	
+
 	export namespace Roles {
 		export const Default = T<string>('roles.default');
 		export const Muted = T<string>('roles.muted');
@@ -47,10 +47,17 @@ export namespace GuildSettings {
 		export const Channel = T<string>('tos.channel');
 		export const Messages = T<TosMessage[]>('tos.messages');
 	}
+
+	export const Warnings = T<Warning[]>('warnings');
 }
 
 export interface TosMessage {
 	id: number;
 	title: string;
 	body: string;
+}
+
+export interface Warning {
+	id: string;
+	points: number;
 }

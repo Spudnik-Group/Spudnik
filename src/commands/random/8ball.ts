@@ -16,6 +16,7 @@ const { eightBall }: { eightBall: string[] } = require('../../extras/data');
  * @extends {Command}
  */
 export default class EightBallCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Ask the magic 8 ball a question.',
@@ -42,8 +43,9 @@ export default class EightBallCommand extends Command {
 				description: `:8ball: **${response}**`,
 				title: query
 			}), '', { reply: msg.author });
-		} else {
-			return sendSimpleEmbeddedError(msg, response, 3000);
 		}
+		return sendSimpleEmbeddedError(msg, response, 3000);
+
 	}
+
 }

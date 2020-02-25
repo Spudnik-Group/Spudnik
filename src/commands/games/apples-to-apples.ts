@@ -6,7 +6,7 @@ import { stripIndents } from 'common-tags';
 import { Collection } from 'discord.js';
 import { awaitPlayers, shuffle } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-// tslint:disable-next-line:no-var-requires
+// Tslint:disable-next-line:no-var-requires
 const data = require('../../extras/apples-to-apples');
 
 /**
@@ -17,6 +17,7 @@ const data = require('../../extras/apples-to-apples');
  * @extends {Command}
  */
 export default class ApplesToApplesCommand extends Command {
+
 	private playing = new Set();
 
 	/**
@@ -109,7 +110,7 @@ export default class ApplesToApplesCommand extends Command {
 						chosen = existing;
 
 						return true;
-					}
+					};
 
 					const choice = await player.user.dmChannel.awaitMessages(filter, {
 						max: 1,
@@ -160,7 +161,7 @@ export default class ApplesToApplesCommand extends Command {
 					if (!cards[Number.parseInt(res.content, 10) - 1]) { return false; }
 
 					return true;
-				}
+				};
 
 				const chosen = await msg.channel.awaitMessages(filter, {
 					max: 1,
@@ -208,7 +209,7 @@ export default class ApplesToApplesCommand extends Command {
 				hand: cards,
 				id: user.id,
 				points: 0,
-				user: user
+				user
 			});
 
 			await user.send('Hi! Waiting for your turn to start...');
@@ -230,4 +231,5 @@ export default class ApplesToApplesCommand extends Command {
 
 		return blank.first().content;
 	}
+
 }

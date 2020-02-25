@@ -14,6 +14,7 @@ import { Permissions } from 'discord.js';
  * @extends {Command}
  */
 export default class SupportCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns a link to my support server!',
@@ -33,4 +34,5 @@ export default class SupportCommand extends Command {
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		return sendSimpleEmbeddedMessage(msg, '<https://spudnik.io/support>');
 	}
+
 }

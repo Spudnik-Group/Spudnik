@@ -15,6 +15,7 @@ import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
  * @extends {Command}
  */
 export default class BanCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Bans the member, with a supplied reason',
@@ -46,40 +47,40 @@ export default class BanCommand extends Command {
 		try {
 			// Check if user is a guild member
 			const memberToBan: GuildMember = msg.guild.member(member);
-	
+
 			if (memberToBan) {
 				// User is a guild member
 				const highestRoleOfCallingMember: Role = msg.member.roles.highest;
-	
+
 				// Check if user is able to ban the mentioned user
 				if (!memberToBan.bannable || !(highestRoleOfCallingMember.comparePositionTo(memberToBan.roles.highest) > 0)) {
 					return sendSimpleEmbeddedError(msg, `I can't ban <@${memberToBan.id}>. Do they have the same or a higher role than me or you?`, 3000);
 				}
-	
+
 				// Ban
 				await memberToBan.ban({ reason: `Banned by: ${msg.author.tag} (${msg.author.id}) for: ${reason}` });
 			} else {
 				// User is not a guild member
 				await msg.guild.members.ban(member, { reason: `Banned by: ${msg.author.tag} (${msg.author.id}) for: ${reason}` });
 			}
-	
+
 			// Set up embed message
 			banEmbed.setDescription(stripIndents`
 				**Moderator:** ${msg.author.tag} (${msg.author.id})
 				**Member:** ${member.user ? member.user.tag : member.tag} (${member.id})
 				**Action:** Ban
 				**Reason:** ${reason}`);
-	
+
 			modLogMessage(msg, banEmbed);
-	
+
 			// Send the success response
 			return msg.sendEmbed(banEmbed);
 		} catch (err) {
-			this.catchError(msg, { member: member, reason: reason }, err);
+			this.catchError(msg, { member, reason }, err);
 		}
 	}
 
-	private catchError(msg: KlasaMessage, args: { member: any, reason: string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
+	private catchError(msg: KlasaMessage, args: { member: any; reason: string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Emit warn event for debugging
 		msg.client.emit('warn', stripIndents`
 			Error occurred in \`ban\` command!
@@ -93,4 +94,5 @@ export default class BanCommand extends Command {
 		// Inform the user the command failed
 		return sendSimpleEmbeddedError(msg, `Banning ${args.member} for ${args.reason} failed!`, 3000);
 	}
+
 }

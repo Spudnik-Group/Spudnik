@@ -14,6 +14,7 @@ const prizes = ['$0', '$2', '$4', '$10', '$500', '$1,000,000', 'the Jackpot'];
  * @extends {Command}
  */
 export default class LotteryCommand extends Command {
+
 	/**
 	 * Creates an instance of LotteryCommand.
 	 *
@@ -46,4 +47,5 @@ export default class LotteryCommand extends Command {
 			You matched **${similarities}** numbers, which gives you **${prizes[similarities]}**! Congrats!
 		`, { reply: msg.author });
 	}
+
 }

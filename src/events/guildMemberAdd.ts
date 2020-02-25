@@ -4,14 +4,14 @@
 
 import { Event } from 'klasa';
 import { SpudConfig } from '@lib//config/spud-config';
-import { TextChannel, GuildMember, Guild } from 'discord.js';
+import { TextChannel, GuildMember } from 'discord.js';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 export default class extends Event {
 
 	async run(member: GuildMember) {
-		const guild: Guild = member.guild;
-		if (SpudConfig.botListGuilds.includes(guild.id)) { return; } //Guild is on Blacklist, ignore.
+		const { guild } = member;
+		if (SpudConfig.botListGuilds.includes(guild.id)) { return; } // Guild is on Blacklist, ignore.
 		const welcomeEnabled = guild.settings.get(GuildSettings.Welcome.Enabled);
 		const welcomeChannel = guild.settings.get(GuildSettings.Welcome.Channel);
 
@@ -28,4 +28,4 @@ export default class extends Event {
 		}
 	}
 
-};
+}

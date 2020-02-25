@@ -15,6 +15,7 @@ import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
  * @extends {Command}
  */
 export default class PruneCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: [
@@ -77,10 +78,10 @@ export default class PruneCommand extends Command {
 
 			return sendSimpleEmbeddedMessage(msg, `Pruned ${limit} messages`, 5000);
 		} catch (err) {
-			this.catchError(msg, { limit: limit, filter: filter }, err);
+			this.catchError(msg, { limit, filter }, err);
 		}
 		await msg.channel.bulkDelete(messagesToDelete);
-		
+
 		return msg.sendMessage(`Successfully deleted ${messagesToDelete.length} messages from ${limit}.`);
 	}
 
@@ -96,7 +97,7 @@ export default class PruneCommand extends Command {
 		}
 	}
 
-	private catchError(msg: KlasaMessage, args: { limit: number, filter: string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
+	private catchError(msg: KlasaMessage, args: { limit: number; filter: string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Emit warn event for debugging
 		msg.client.emit('warn', stripIndents`
 		Error occurred in \`prune\` command!
@@ -109,4 +110,5 @@ export default class PruneCommand extends Command {
 		// Inform the user the command failed
 		return sendSimpleEmbeddedError(msg, `Pruning ${args.limit} messages failed!`, 3000);
 	}
+
 }

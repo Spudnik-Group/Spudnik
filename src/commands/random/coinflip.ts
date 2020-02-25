@@ -16,6 +16,7 @@ const { coinflip }: { coinflip: any[] } = require('../../extras/data');
  * @extends {Command}
  */
 export default class CoinFlipCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Flips a coin for you.',
@@ -34,4 +35,5 @@ export default class CoinFlipCommand extends Command {
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		return sendSimpleEmbeddedImage(msg, coinflip[getRandomInt(0, 1)].image);
 	}
+
 }

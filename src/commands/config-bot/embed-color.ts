@@ -16,6 +16,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
  * @extends {Command}
  */
 export default class EmbedColorCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Used to change the default embed color the bot uses for responses, or reset it.',
@@ -59,7 +60,7 @@ export default class EmbedColorCommand extends Command {
 
 				return this.sendSuccess(msg, embedColorEmbed);
 			} catch (err) {
-				return this.catchError(msg, { color: color }, err)
+				return this.catchError(msg, { color }, err);
 			}
 		} else {
 			try {
@@ -73,7 +74,7 @@ export default class EmbedColorCommand extends Command {
 
 				return this.sendSuccess(msg, embedColorEmbed);
 			} catch (err) {
-				return this.catchError(msg, { color: null }, err)
+				return this.catchError(msg, { color: null }, err);
 			}
 		}
 	}
@@ -91,13 +92,14 @@ export default class EmbedColorCommand extends Command {
 
 		// Inform the user the command failed
 		if (args.color) {
-			return sendSimpleEmbeddedError(msg, `There was an error setting the embed color to ${args.color}`)
-		} else {
-			return sendSimpleEmbeddedError(msg, 'There was an error resetting the embed color.');
+			return sendSimpleEmbeddedError(msg, `There was an error setting the embed color to ${args.color}`);
 		}
+		return sendSimpleEmbeddedError(msg, 'There was an error resetting the embed color.');
+
 	}
 
 	private sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
 		return msg.sendEmbed(embed);
 	}
+
 }

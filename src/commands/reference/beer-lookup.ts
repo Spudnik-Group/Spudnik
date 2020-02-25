@@ -8,7 +8,7 @@ import { getEmbedColor, sendSimpleEmbeddedError } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { SpudConfig } from '@lib/config';
 
-const breweryDbApiKey: string = SpudConfig.breweryDbApiKey;
+const { breweryDbApiKey } = SpudConfig;
 
 /**
  * Post information about an alcoholic brew.
@@ -18,6 +18,7 @@ const breweryDbApiKey: string = SpudConfig.breweryDbApiKey;
  * @extends {Command}
  */
 export default class BrewCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns information about a brewery or brew. Uses the BreweryDB API.',
@@ -52,7 +53,7 @@ export default class BrewCommand extends Command {
 		});
 
 		try {
-			const { data: response } = await axios(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(query)}&key=${breweryDbApiKey}`)
+			const { data: response } = await axios(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(query)}&key=${breweryDbApiKey}`);
 
 			if (response.data) {
 				const result = response.data[0];
@@ -119,7 +120,7 @@ export default class BrewCommand extends Command {
 					if (thumbnail !== '') {
 						brewEmbed.thumbnail = {
 							url: thumbnail
-						}
+						};
 					}
 
 					brewEmbed.setDescription(`\n${result.description}\n\n`);
@@ -138,4 +139,5 @@ export default class BrewCommand extends Command {
 		// Send the success response
 		return msg.sendEmbed(brewEmbed);
 	}
+
 }

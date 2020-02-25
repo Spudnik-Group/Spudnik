@@ -15,6 +15,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
  * @extends {Command}
  */
 export default class RolesCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Lists default, muted, and self-assignable roles.',
@@ -41,19 +42,19 @@ export default class RolesCommand extends Command {
 			}
 		});
 
-		let guildAssignableRoles: string[] = await msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);
-		let guildDefaultRole: string = await msg.guild.settings.get(GuildSettings.Roles.Default);
-		let guildMutedRole: string = await msg.guild.settings.get(GuildSettings.Roles.Muted);
+		const guildAssignableRoles: string[] = await msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);
+		const guildDefaultRole: string = await msg.guild.settings.get(GuildSettings.Roles.Default);
+		const guildMutedRole: string = await msg.guild.settings.get(GuildSettings.Roles.Muted);
 
 		if (guildAssignableRoles.length) {
 			const rolesListOut: string[] = [];
 
 			guildAssignableRoles.forEach(role => {
 				const r: Role = msg.guild.roles.find((r: Role) => r.id === role.toString());
-				if(r) rolesListOut.push(`* <@&${r.id}> - ${r.members.size} members`);
+				if (r) rolesListOut.push(`* <@&${r.id}> - ${r.members.size} members`);
 			});
 
-			if(rolesListOut.length) {
+			if (rolesListOut.length) {
 				roleEmbed.fields.push({
 					inline: true,
 					name: 'Assignable Roles',
@@ -85,4 +86,5 @@ export default class RolesCommand extends Command {
 		// Send the response
 		return msg.sendEmbed(roleEmbed);
 	}
+
 }

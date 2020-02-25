@@ -15,6 +15,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class StrawpollCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['poll'],
@@ -37,7 +38,7 @@ export default class StrawpollCommand extends Command {
 			const { data: res } = await axios.post('https://www.strawpoll.me/api/v2/polls', {
 				captcha: true,
 				options: options.slice(0, 10),
-				title: title
+				title
 			});
 
 			return sendSimpleEmbeddedMessage(msg, stripIndents`
@@ -50,4 +51,5 @@ export default class StrawpollCommand extends Command {
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 		}
 	}
+
 }

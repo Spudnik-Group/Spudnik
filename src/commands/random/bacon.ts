@@ -16,6 +16,7 @@ const { bacon }: { bacon: string[] } = require('../../extras/data');
  * @extends {Command}
  */
 export default class BaconCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Blesses you with a random bacon gif.',
@@ -34,4 +35,5 @@ export default class BaconCommand extends Command {
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		return sendSimpleEmbeddedImage(msg, bacon[getRandomInt(0, bacon.length)]);
 	}
+
 }

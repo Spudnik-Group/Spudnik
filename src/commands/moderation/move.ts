@@ -15,6 +15,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class MoveCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Moves a message to a different channel.',
@@ -75,7 +76,7 @@ export default class MoveCommand extends Command {
 
 				// Add attachments, if any
 				if (originalMessage.attachments.some(attachment => attachment.url !== '')) {
-					moveMessage.image = { url: originalMessage.attachments.first().url }
+					moveMessage.image = { url: originalMessage.attachments.first().url };
 				}
 
 				if (originalMessage.embeds.length === 0) {
@@ -83,7 +84,7 @@ export default class MoveCommand extends Command {
 					await (destinationChannel as TextChannel).send(moveMessage);
 				} else {
 					// Build the messages array
-					const messages: MessageEmbed[] = new Array();
+					const messages: MessageEmbed[] = [];
 					messages.push(moveMessage);
 					messages.concat(originalMessage.embeds);
 
@@ -118,4 +119,5 @@ export default class MoveCommand extends Command {
 			return sendSimpleEmbeddedError(msg, `Could not find the message with supplied id (${message}) in this channel.`, 3000);
 		}
 	}
+
 }

@@ -157,10 +157,10 @@ export const KlasaConfig: KlasaClientOptions = {
 	/**
 	 * Custom Setting Gateway Options
 	 */
-	// gateways: {
-	// 	clientStorage: {},
-	// 	guilds: {},
-	// 	users: {}
+	// Gateways: {
+	// ClientStorage: {},
+	// Guilds: {},
+	// Users: {}
 	// },
 
 	/**

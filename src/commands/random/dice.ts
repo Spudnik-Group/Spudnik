@@ -15,6 +15,7 @@ import { stripIndents } from 'common-tags';
  * @extends {Command}
  */
 export default class RollCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Roll one die with x sides + any modifiers, with an optional reason.',
@@ -55,4 +56,5 @@ export default class RollCommand extends Command {
 		// Send the success response
 		return msg.sendEmbed(diceEmbed, '', { reply: msg.author });
 	}
+
 }

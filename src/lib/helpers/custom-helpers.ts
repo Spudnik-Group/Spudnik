@@ -23,18 +23,18 @@ export const getEmbedColor = (msg: KlasaMessage): number => {
 	}
 
 	return embedColor;
-}
+};
 
 /**
  * Log the message to the corresponding guild's mod log channel
- * 
+ *
  * @export
  * @param {KlasaMessage} msg
  * @param {MessageEmbed} embed
  * @returns Promise<KlasaMessage | KlasaMessage[]>
  */
 export const modLogMessage = (msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> | null => {
-	const guild = msg.guild;
+	const { guild } = msg;
 	const outChannelID = guild.settings.get(GuildSettings.Modlog.Channel);
 	const outChannel = (msg.guild.channels.get(outChannelID) as TextChannel);
 
@@ -49,7 +49,7 @@ export const modLogMessage = (msg: KlasaMessage, embed: MessageEmbed): Promise<K
 	return outChannelID && guild.settings.get(GuildSettings.Modlog.Enabled)
 		? outChannel.sendEmbed(new MessageEmbed(embed))
 		: null;
-}
+};
 
 export const getPermissionsFromLevel = (permissionsLevel: number): string => {
 	const permissionLevels = [
@@ -67,19 +67,15 @@ export const getPermissionsFromLevel = (permissionsLevel: number): string => {
 	];
 
 	return permissionLevels[permissionsLevel];
-}
+};
 
-export const isCommandCategoryEnabled = (msg: KlasaMessage, commandCategory: string): boolean => {
-	return !msg.guild.settings.get(GuildSettings.Commands.DisabledCategories).includes(commandCategory.toLowerCase());
-}
+export const isCommandCategoryEnabled = (msg: KlasaMessage, commandCategory: string): boolean => !msg.guild.settings.get(GuildSettings.Commands.DisabledCategories).includes(commandCategory.toLowerCase());
 
-export const isCommandEnabled = (msg: KlasaMessage, command: Command): boolean => {
-	return !msg.guild.settings.get(GuildSettings.Commands.Disabled).includes(command.name.toLowerCase())
-}
+export const isCommandEnabled = (msg: KlasaMessage, command: Command): boolean => !msg.guild.settings.get(GuildSettings.Commands.Disabled).includes(command.name.toLowerCase());
 
 export const canCommandBeUsed = (msg: KlasaMessage, command: Command): boolean => {
 	if (!isCommandCategoryEnabled(msg, command.category)) return false;
 	if (!isCommandEnabled(msg, command)) return false;
 
 	return true;
-}
+};

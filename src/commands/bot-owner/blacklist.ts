@@ -13,6 +13,7 @@ import { User } from 'discord.js';
  * @extends {Command}
  */
 export default class BlacklistCommand extends Command {
+
 	private terms = ['usersAdded', 'usersRemoved', 'guildsAdded', 'guildsRemoved'];
 
 	constructor(store: CommandStore, file: string[], directory: string) {
@@ -54,4 +55,5 @@ export default class BlacklistCommand extends Command {
 
 		return message.sendLocale('COMMAND_BLACKLIST_SUCCESS', changes);
 	}
-};
+
+}

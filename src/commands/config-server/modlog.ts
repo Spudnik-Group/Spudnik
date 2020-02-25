@@ -16,6 +16,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
  * @extends {Command}
  */
 export default class ModlogCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Enable or disable the modlog feature.',
@@ -54,22 +55,22 @@ export default class ModlogCommand extends Command {
 		if (modlogChannel) {
 			if (modlogEnabled) {
 				return sendSimpleEmbeddedMessage(msg, 'Modlog feature already enabled!', 3000);
-			} else {
-				try {
-					await msg.guild.settings.update(GuildSettings.Modlog.Enabled, true);
+			}
+			try {
+				await msg.guild.settings.update(GuildSettings.Modlog.Enabled, true);
 
-					// Set up embed message
-					modlogEmbed.setDescription(stripIndents`
+				// Set up embed message
+				modlogEmbed.setDescription(stripIndents`
 								**Member:** ${msg.author.tag} (${msg.author.id})
 								**Action:** Modlog set to: _Enabled_
 							`);
-					modlogEmbed.setFooter('Use the `modlog status` command to see the details of this feature');
+				modlogEmbed.setFooter('Use the `modlog status` command to see the details of this feature');
 
-					return this.sendSuccess(msg, modlogEmbed);
-				} catch (err) {
-					return this.catchError(msg, { subCommand: 'enable' }, err);
-				}
+				return this.sendSuccess(msg, modlogEmbed);
+			} catch (err) {
+				return this.catchError(msg, { subCommand: 'enable' }, err);
 			}
+
 		} else {
 			return sendSimpleEmbeddedError(msg, 'Please set the channel for the modlog before enabling the feature. See `!help modlog` for info.', 3000);
 		}
@@ -122,22 +123,22 @@ export default class ModlogCommand extends Command {
 
 			if (modlogChannel && modlogChannel === channelID) {
 				return sendSimpleEmbeddedMessage(msg, `Modlog channel already set to <#${channelID}>!`, 3000);
-			} else {
-				try {
-					await msg.guild.settings.update(GuildSettings.Modlog.Channel, channelID);
+			}
+			try {
+				await msg.guild.settings.update(GuildSettings.Modlog.Channel, channelID);
 
-					// Set up embed message
-					modlogEmbed.setDescription(stripIndents`
+				// Set up embed message
+				modlogEmbed.setDescription(stripIndents`
 								**Member:** ${msg.author.tag} (${msg.author.id})
 								**Action:** Modlog Channel set to <#${channelID}>
 							`);
-					modlogEmbed.setFooter('Use the `modlog status` command to see the details of this feature');
+				modlogEmbed.setFooter('Use the `modlog status` command to see the details of this feature');
 
-					return this.sendSuccess(msg, modlogEmbed);
-				} catch (err) {
-					return this.catchError(msg, { subCommand: 'channel', channel: channel }, err);
-				}
+				return this.sendSuccess(msg, modlogEmbed);
+			} catch (err) {
+				return this.catchError(msg, { subCommand: 'channel', channel }, err);
 			}
+
 		} else {
 			return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
 		}
@@ -171,14 +172,14 @@ export default class ModlogCommand extends Command {
 		return msg.sendEmbed(modlogEmbed);
 	}
 
-	private catchError(msg: KlasaMessage, args: { subCommand: string, channel?: Channel }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
+	private catchError(msg: KlasaMessage, args: { subCommand: string; channel?: Channel }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Build warning message
 		let modlogWarn = stripIndents`
 			Error occurred in \`accept\` command!
 			**Server:** ${msg.guild.name} (${msg.guild.id})
 			**Author:** ${msg.author.tag} (${msg.author.id})
 			**Time:** ${new Timestamp('MMMM D YYYY [at] HH:mm:ss [UTC]Z').display(msg.createdTimestamp)}
-			**Input:** \`Modlog ${args.subCommand.toLowerCase()} ${'| channel:' + args.channel}\`
+			**Input:** \`Modlog ${args.subCommand.toLowerCase()} ${`| channel:${args.channel}`}\`
 		`;
 		let modlogUserWarn = '';
 
@@ -214,4 +215,5 @@ export default class ModlogCommand extends Command {
 		// Send the success response
 		return msg.sendEmbed(embed);
 	}
+
 }

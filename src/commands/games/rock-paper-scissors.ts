@@ -60,4 +60,5 @@ export default class RockPaperScissorsCommand extends Command {
 
 		return msg.sendMessage('I win by default, you little cheater.', { reply: msg.author });
 	}
+
 }

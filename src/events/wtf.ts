@@ -10,7 +10,7 @@ import { TextChannel } from 'discord.js';
 
 export default class extends Event {
 
-	run(failure) {
+	public run(failure) {
 		if (process.env.NODE_ENV !== 'development') {
 			const rollbar = new Rollbar({
 				accessToken: SpudConfig.rollbarApiKey,
@@ -28,10 +28,11 @@ export default class extends Event {
 
 		if (SpudConfig.issueLogChannel) {
 			const channel = this.client.channels.get(SpudConfig.issueLogChannel) as TextChannel;
+			// eslint-disable-next-line @typescript-eslint/no-floating-promises
 			channel.send(message);
 		}
 
 		this.client.console.wtf(failure);
 	}
 
-};
+}

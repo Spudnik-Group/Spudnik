@@ -7,6 +7,7 @@ import axios from 'axios';
 import { sendSimpleEmbeddedError } from '@lib/helpers';
 
 export default class HastebinCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['hb'],
@@ -18,7 +19,7 @@ export default class HastebinCommand extends Command {
 	async run(msg, [code]) {
 		try {
 			const { data } = await axios.post('https://hastebin.com/documents', code);
-	
+
 			return msg.sendMessage(`https://hastebin.com/${data.key}`);
 		} catch (err) {
 			msg.client.emit('warn', `Error in command dev:hastebin: ${err}`);
@@ -26,4 +27,5 @@ export default class HastebinCommand extends Command {
 			return sendSimpleEmbeddedError(msg, 'Couldn\'t create the hastebin post, the post body may have been invalid. Try again?');
 		}
 	}
-};
+
+}

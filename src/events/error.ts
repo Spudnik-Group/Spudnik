@@ -34,4 +34,4 @@ export default class extends Event {
 		this.client.console.error(err);
 	}
 
-};
+}

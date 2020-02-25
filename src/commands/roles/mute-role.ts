@@ -16,6 +16,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
  * @extends {Command}
  */
 export default class MuteRoleCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: [
@@ -51,7 +52,7 @@ export default class MuteRoleCommand extends Command {
 			}
 		}).setTimestamp();
 
-		let guildMuteRole: string = msg.guild.settings.get(GuildSettings.Roles.Muted);
+		const guildMuteRole: string = msg.guild.settings.get(GuildSettings.Roles.Muted);
 
 		if (!role) {
 			try {
@@ -95,7 +96,7 @@ export default class MuteRoleCommand extends Command {
 			${action === 'set' ? `**Input:** \`Role name: ${role}` : ''}
 			**Error Message:** ${action === 'set' ? 'Setting' : 'Resetting'} muted role failed!\n
 			`;
-		let roleUserWarn = `${action === 'set' ? 'Setting' : 'Resetting'} muted role failed!`;
+		const roleUserWarn = `${action === 'set' ? 'Setting' : 'Resetting'} muted role failed!`;
 
 		// Emit warn event for debugging
 		msg.client.emit('warn', roleWarn);
@@ -110,4 +111,5 @@ export default class MuteRoleCommand extends Command {
 		// Send the success response
 		return msg.sendEmbed(embed);
 	}
+
 }

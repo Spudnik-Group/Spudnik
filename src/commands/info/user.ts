@@ -28,6 +28,7 @@ const statuses = {
  * @extends {Command}
  */
 export default class UserCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['user-stats'],
@@ -82,4 +83,5 @@ export default class UserCommand extends Command {
 			return msg.sendEmbed(userEmbed);
 		}
 	}
+
 }

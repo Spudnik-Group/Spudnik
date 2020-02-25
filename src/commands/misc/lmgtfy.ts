@@ -14,6 +14,7 @@ import { Permissions } from 'discord.js';
  * @extends {Command}
  */
 export default class LmgtfyCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns a Let Me Google That For You link, so you can school a n00b.',
@@ -34,4 +35,5 @@ export default class LmgtfyCommand extends Command {
 	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
 		return sendSimpleEmbeddedMessage(msg, `<http://lmgtfy.com/?q=${encodeURI(query)}>`);
 	}
+
 }

@@ -15,6 +15,7 @@ const questions = require('../../extras/google-feud');
  * @extends {Command}
  */
 export default class GoogleFeudCommand extends Command {
+
 	private playing = new Set();
 
 	/**
@@ -31,9 +32,7 @@ export default class GoogleFeudCommand extends Command {
 			usage: '<question:...string>'
 		});
 
-		this.createCustomResolver('question', (arg) => {
-			return arg ? arg : questions[Math.floor(Math.random() * questions.length)];
-		})
+		this.createCustomResolver('question', arg => arg ? arg : questions[Math.floor(Math.random() * questions.length)]);
 	}
 
 	/**
@@ -66,7 +65,7 @@ export default class GoogleFeudCommand extends Command {
 
 				await msg.sendEmbed(embed);
 
-				const msgs: any = await msg.channel.awaitMessages((res) => res.author.id === msg.author.id, {
+				const msgs: any = await msg.channel.awaitMessages(res => res.author.id === msg.author.id, {
 					max: 1,
 					time: 30000
 				});
@@ -110,4 +109,5 @@ export default class GoogleFeudCommand extends Command {
 
 		return suggestions.map((suggestion: any) => suggestion.toLowerCase().replace(question.toLowerCase(), '').trim());
 	}
+
 }

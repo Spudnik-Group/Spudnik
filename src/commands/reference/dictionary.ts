@@ -9,7 +9,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { SpudConfig } from '@lib/config';
 import * as mw from 'mw-dict';
 
-const dictionaryApiKey: string = SpudConfig.dictionaryApiKey;
+const { dictionaryApiKey } = SpudConfig;
 const dict = new mw.CollegiateDictionary(dictionaryApiKey);
 
 /**
@@ -20,6 +20,7 @@ const dict = new mw.CollegiateDictionary(dictionaryApiKey);
  * @extends {Command}
  */
 export default class DefineCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns the definition of a supplied word. Uses the Merriam-Webster Collegiate Dictionary API.',
@@ -52,7 +53,7 @@ export default class DefineCommand extends Command {
 		});
 
 		try {
-			const result = await dict.lookup(word)
+			const result = await dict.lookup(word);
 			if (result[0].functional_label) {
 				dictionaryEmbed.addField('Functional Label:', result[0].functional_label);
 			}
@@ -83,12 +84,13 @@ export default class DefineCommand extends Command {
 	private renderDefinition(sensesIn: any): string {
 		return sensesIn
 			.map((def: any) => oneLine`
-				${def.number ? '*' + def.number + '.*' : ''}
+				${def.number ? `*${def.number}.*` : ''}
 				${def.meanings && def.meanings.length ? def.meanings.join(' ') : ''}
-				${def.synonyms && def.synonyms.length ? def.synonyms.map((s: any) => '_' + s + '_').join(', ') : ''}
-				${def.illustrations && def.illustrations.length ? def.illustrations.map((i: any) => '* ' + i).join('\n') : ''}
+				${def.synonyms && def.synonyms.length ? def.synonyms.map((s: any) => `_${s}_`).join(', ') : ''}
+				${def.illustrations && def.illustrations.length ? def.illustrations.map((i: any) => `* ${i}`).join('\n') : ''}
 				${def.senses && def.senses.length ? this.renderDefinition(def.senses) : ''}
 			`)
 			.join('\n');
 	}
+
 }

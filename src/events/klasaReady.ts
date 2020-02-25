@@ -32,4 +32,5 @@ export default class extends Event {
 			await this.client.schedule.create('status', SpudConfig.statusUpdateInterval, {});
 		}
 	}
-};
+
+}

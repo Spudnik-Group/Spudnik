@@ -17,6 +17,7 @@ const { version, dependencies } = require('../../../package');
  * @extends {Command}
  */
 export default class StatsCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['statistics'],
@@ -33,7 +34,7 @@ export default class StatsCommand extends Command {
 	 * @memberof StatsCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		let statsEmbed = new MessageEmbed()
+		const statsEmbed = new MessageEmbed()
 			.setColor(getEmbedColor(msg))
 			.setDescription('**Spudnik Statistics**')
 			.addField('❯ Uptime', Duration.toNow(Date.now() - (process.uptime() * 1000)), true)
@@ -44,7 +45,7 @@ export default class StatsCommand extends Command {
 			.addField('❯ General Stats', stripIndents`
 						• Guilds: ${this.client.guilds.size}
 						• Channels: ${this.client.channels.size}
-						• Users: ${this.client.guilds.map((guild) => guild.memberCount).reduce((a, b) => a + b)}
+						• Users: ${this.client.guilds.map(guild => guild.memberCount).reduce((a, b) => a + b)}
 						• Commands: ${this.client.commands.size}`, true)
 			.addField('❯ Spudnik Command', '[Join](https://spudnik.io/support)', true)
 			.addField('❯ Source Code', '[View](https://github.com/Spudnik-Group/Spudnik)', true)
@@ -68,4 +69,5 @@ export default class StatsCommand extends Command {
 			})
 			.join(', ');
 	}
+
 }

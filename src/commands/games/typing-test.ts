@@ -14,7 +14,7 @@ const times: any = {
 	hard: 15000,
 	impossible: 5000,
 	medium: 20000
-}
+};
 
 /**
  * Starts a game of Typing Test.
@@ -24,6 +24,7 @@ const times: any = {
  * @extends {Command}
  */
 export default class TypingTestCommand extends Command {
+
 	/**
 	 * Creates an instance of TypingTestCommand.
 	 *
@@ -45,7 +46,7 @@ export default class TypingTestCommand extends Command {
 		this.createCustomResolver('difficulty', (arg: string) => {
 			if (difficulties.includes(arg.toLowerCase())) return arg;
 			throw `Please provide a valid difficulty level. Options are: ${list(difficulties, 'or')}.`;
-		})
+		});
 	}
 
 	/**
@@ -65,10 +66,11 @@ export default class TypingTestCommand extends Command {
 		const now = Date.now();
 		const msgs: any = await msg.channel.awaitMessages((res: any) => res.author.id === msg.author.id, {
 			max: 1,
-			time: time
+			time
 		});
 		if (!msgs.size || msgs.first().content !== sentence) { return msg.sendMessage('Sorry! You lose!', { reply: msg.author }); }
 
 		return msg.sendMessage(`Nice job! 10/10! You deserve some cake! (Took ${(Date.now() - now) / 1000} seconds)`, { reply: msg.author });
 	}
+
 }

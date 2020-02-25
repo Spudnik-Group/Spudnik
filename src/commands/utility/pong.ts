@@ -14,6 +14,7 @@ import { delay } from '@lib/helpers';
  * @extends {Command}
  */
 export default class PongCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Used to return the ping.',
@@ -35,12 +36,13 @@ export default class PongCommand extends Command {
 		`);
 
 		await delay(3000);
-		
+
 		return msg.sendMessage(stripIndents`
 			${msg.author},
 			In Soviet Russia: Pong pings you!
-			The message round-trip took ${(pingMsg as KlasaMessage).createdTimestamp - msg.createdTimestamp}ms.
+			The message round-trip took ${(pingMsg).createdTimestamp - msg.createdTimestamp}ms.
 			${msg.client.ws.ping ? `The heartbeat ping is ${Math.round(msg.client.ws.ping)}ms.` : ''}
 		`);
 	}
+
 }

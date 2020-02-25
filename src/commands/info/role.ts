@@ -38,6 +38,7 @@ const perms = {
 };
 
 export default class RoleComand extends Command {
+
 	private timestamp: Timestamp;
 
 	constructor(store: CommandStore, file: string[], directory: string) {
@@ -50,7 +51,8 @@ export default class RoleComand extends Command {
 	}
 
 	public async run(msg: KlasaMessage, [role]): Promise<KlasaMessage | KlasaMessage[]> {
-		const allPermissions = Object.entries(role.permissions.serialize()).filter(perm => perm[1]).map(([perm]) => perms[perm]).join(', ');
+		const allPermissions = Object.entries(role.permissions.serialize()).filter(perm => perm[1]).map(([perm]) => perms[perm])
+			.join(', ');
 		const defaultRole = msg.guild.settings.get(GuildSettings.Roles.Default);
 
 		return msg.sendEmbed(new MessageEmbed()
@@ -64,4 +66,5 @@ export default class RoleComand extends Command {
 			.addField('❯ Mentionable', role.mentionable ? 'Yes' : 'No', true)
 			.addField('❯ Permissions', allPermissions || 'None'));
 	}
-};
+
+}

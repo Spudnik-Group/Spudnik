@@ -11,4 +11,4 @@ export default class extends Event {
 		process.exit();
 	}
 
-};
+}

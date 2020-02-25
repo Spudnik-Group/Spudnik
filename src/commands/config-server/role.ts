@@ -15,6 +15,7 @@ import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
  * @extends {Command}
  */
 export default class RoleCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Used to add or remove roles from your server.',
@@ -59,22 +60,22 @@ export default class RoleCommand extends Command {
 			if (color !== '') {
 				roleMetaData = {
 					data: {
-						color: color,
-						name: name
+						color,
+						name
 					}
 				};
 			} else {
 				roleMetaData = {
 					data: {
-						name: name
+						name
 					}
 				};
 			}
 
-			//TODO: add a reason
+			// TODO: add a reason
 			await msg.guild.roles.create(roleMetaData);
 		} catch (err) {
-			return this.catchError(msg, { subCommand: 'add', name: name, arg3: color }, err);
+			return this.catchError(msg, { subCommand: 'add', name, arg3: color }, err);
 		}
 
 		roleEmbed.setDescription(stripIndents`
@@ -118,15 +119,13 @@ export default class RoleCommand extends Command {
 
 			await msg.sendEmbed(roleEmbed);
 
-			const filter = (res: Message) => {
-				return (res.author.id === msg.author.id);
-			}
+			const filter = (res: Message) => (res.author.id === msg.author.id);
 
 			try {
 				const responses = await msg.channel.awaitMessages(filter, { max: 1 });
 				const response = responses.first();
 
-				if (isNormalInteger(response.content) && ((-1 < Number(response.content)) && (Number(response.content) < rolesFoundArray.length))) {
+				if (isNormalInteger(response.content) && ((Number(response.content) > -1) && (Number(response.content) < rolesFoundArray.length))) {
 					try {
 						await rolesFoundArray[Number(response.content) - 1].delete().then(deletedRole => {
 							roleEmbed.setDescription(stripIndents`
@@ -137,18 +136,16 @@ export default class RoleCommand extends Command {
 							modLogMessage(msg, roleEmbed);
 
 							return msg.sendEmbed(roleEmbed);
-						}).catch(err => {
-							return this.catchError(msg, { subCommand: 'remove', name: name }, err);
-						});
+						}).catch(err => this.catchError(msg, { subCommand: 'remove', name }, err));
 
 					} catch (err) {
-						return this.catchError(msg, { subCommand: 'remove', name: name }, err);
+						return this.catchError(msg, { subCommand: 'remove', name }, err);
 					}
 				} else {
 					return sendSimpleEmbeddedError(msg, 'Please supply a row number corresponding to the role you want to delete.');
 				}
 			} catch (err) {
-				return this.catchError(msg, { subCommand: 'remove', name: name }, err);
+				return this.catchError(msg, { subCommand: 'remove', name }, err);
 			}
 		} else if (rolesFound.size === 1) {
 			const roleToDelete = rolesFound.first();
@@ -163,18 +160,16 @@ export default class RoleCommand extends Command {
 					modLogMessage(msg, roleEmbed);
 
 					return msg.sendEmbed(roleEmbed);
-				}).catch(err => {
-					return this.catchError(msg, { subCommand: 'remove', name: name }, err);
-				});
+				}).catch(err => this.catchError(msg, { subCommand: 'remove', name }, err));
 			} catch (err) {
-				return this.catchError(msg, { subCommand: 'remove', name: name }, err);
+				return this.catchError(msg, { subCommand: 'remove', name }, err);
 			}
 		} else {
 			return sendSimpleEmbeddedError(msg, `A role with the supplied name \`${name}\` was not found on this guild.`);
 		}
 	}
 
-	private catchError(msg: KlasaMessage, args: { subCommand: string, name: string, arg3?: string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
+	private catchError(msg: KlasaMessage, args: { subCommand: string; name: string; arg3?: string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Build warning message
 		let roleWarn = stripIndents`
 			Error occurred in \`role\` command!
@@ -203,4 +198,5 @@ export default class RoleCommand extends Command {
 		// Inform the user the command failed
 		return sendSimpleEmbeddedError(msg, roleUserWarn);
 	}
+
 }

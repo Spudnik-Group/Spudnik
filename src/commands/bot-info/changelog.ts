@@ -15,6 +15,7 @@ import axios, { AxiosResponse } from 'axios';
  * @extends {Command}
  */
 export default class changelogCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns GitHub release notes for the 3 most recent releases.',
@@ -70,4 +71,5 @@ export default class changelogCommand extends Command {
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 		}
 	}
+
 }

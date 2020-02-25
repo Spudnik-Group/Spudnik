@@ -11,4 +11,4 @@ export default class extends Finalizer {
 		if (msg.guild && msg.guild.settings.get(GuildSettings.Commands.DeleteCommandMessages) && msg.deletable) await msg.delete();
 	}
 
-};
+}

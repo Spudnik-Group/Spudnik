@@ -16,6 +16,7 @@ import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
  * @extends {Command}
  */
 export default class NPMCommand extends Command {
+
 	/**
 	 * Creates an instance of NPMCommand.
 	 *
@@ -85,11 +86,12 @@ export default class NPMCommand extends Command {
 					❯ **Dependencies:** ${deps && deps.length ? deps.join(', ') : 'None'}
 				`);
 
-			return msg.sendEmbed(npmEmbed)
+			return msg.sendEmbed(npmEmbed);
 		} catch (err) {
 			msg.client.emit('warn', `Error in command dev:npm: ${err}`);
 
 			return sendSimpleEmbeddedError(msg, 'Could not fetch that package, are you sure it exists?', 3000);
 		}
 	}
+
 }

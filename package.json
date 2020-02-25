@@ -19,7 +19,7 @@
     "main": "dist/launch.js",
     "scripts": {
         "preinstall": "npm i -g node-gyp typescript@3.6.5",
-        "lint": "eslint --ext ts src/*",
+        "lint": "eslint --ext ts src/**",
         "test": "npm run lint",
         "prestart": "rimraf ./dist && tsc",
         "start": "node ./node_modules/nodemon/bin/nodemon.js",

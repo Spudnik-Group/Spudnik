@@ -16,6 +16,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
  * @extends {Command}
  */
 export default class StarboardCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Used to configure the :star: Star Board feature.',
@@ -65,22 +66,22 @@ export default class StarboardCommand extends Command {
 
 		if (starboard && starboard === channelID) {
 			return sendSimpleEmbeddedMessage(msg, `Star Board channel already set to <#${channelID}>!`, 3000);
-		} else {
-			try {
-				await msg.guild.settings.update(GuildSettings.Starboard.Channel, channelID);
+		}
+		try {
+			await msg.guild.settings.update(GuildSettings.Starboard.Channel, channelID);
 
-				// Set up embed message
-				starboardEmbed.setDescription(stripIndents`
+			// Set up embed message
+			starboardEmbed.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
 					**Action:** Star Board Channel set to <#${channelID}>
 				`);
-				starboardEmbed.setFooter('Use the `starboard status` command to see the details of this feature');
+			starboardEmbed.setFooter('Use the `starboard status` command to see the details of this feature');
 
-				return this.sendSuccess(msg, starboardEmbed);
-			} catch (err) {
-				return this.catchError(msg, { subCommand: 'channel', content: content }, err);
-			}
+			return this.sendSuccess(msg, starboardEmbed);
+		} catch (err) {
+			return this.catchError(msg, { subCommand: 'channel', content }, err);
 		}
+
 	}
 
 	/**
@@ -112,7 +113,7 @@ export default class StarboardCommand extends Command {
 
 			return this.sendSuccess(msg, starboardEmbed);
 		} catch (err) {
-			return this.catchError(msg, { subCommand: 'trigger', content: content }, err);
+			return this.catchError(msg, { subCommand: 'trigger', content }, err);
 		}
 	}
 
@@ -137,22 +138,22 @@ export default class StarboardCommand extends Command {
 		if (starboard) {
 			if (starboardEnabled) {
 				return sendSimpleEmbeddedMessage(msg, 'Star Board already enabled!', 3000);
-			} else {
-				try {
-					await msg.guild.settings.update(GuildSettings.Starboard.Enabled, true);
+			}
+			try {
+				await msg.guild.settings.update(GuildSettings.Starboard.Enabled, true);
 
-					// Set up embed message
-					starboardEmbed.setDescription(stripIndents`
+				// Set up embed message
+				starboardEmbed.setDescription(stripIndents`
 						**Member:** ${msg.author.tag} (${msg.author.id})
 						**Action:** Star Board set to: _Enabled_
 					`);
-					starboardEmbed.setFooter('Use the `starboard status` command to see the details of this feature');
+				starboardEmbed.setFooter('Use the `starboard status` command to see the details of this feature');
 
-					return this.sendSuccess(msg, starboardEmbed);
-				} catch (err) {
-					return this.catchError(msg, { subCommand: 'enable' }, err);
-				}
+				return this.sendSuccess(msg, starboardEmbed);
+			} catch (err) {
+				return this.catchError(msg, { subCommand: 'enable' }, err);
 			}
+
 		} else {
 			return sendSimpleEmbeddedError(msg, 'Please set the channel for the Star Board before enabling the feature. See `!help starboard` for info.', 3000);
 		}
@@ -194,7 +195,7 @@ export default class StarboardCommand extends Command {
 			return sendSimpleEmbeddedMessage(msg, 'Star Board already disabled!', 3000);
 		}
 	}
-	
+
 	/**
 	 * Return the status of the feature
 	 *
@@ -231,7 +232,7 @@ export default class StarboardCommand extends Command {
 						Permissions:
 						* READ_MESSAGE_HISTORY: ${botCanRead}
 						* EMBED_LINKS: ${botCanPostLinks}
-						* ATTACH_FILES: ${botCanPostAttachments}`
+						* ATTACH_FILES: ${botCanPostAttachments}`;
 		}
 
 		// Send the success response
@@ -246,7 +247,7 @@ export default class StarboardCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof StarboardCommand
 	 */
-	private catchError(msg: KlasaMessage, args: { subCommand: string, content?: Channel | string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
+	private catchError(msg: KlasaMessage, args: { subCommand: string; content?: Channel | string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Build warning message
 		let starboardWarn = stripIndents`
 		Error occurred in \`starboard\` command!
@@ -293,4 +294,5 @@ export default class StarboardCommand extends Command {
 		// Send the success response
 		return msg.sendEmbed(embed);
 	}
+
 }

@@ -15,6 +15,7 @@ import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
  * @extends {Command}
  */
 export default class UnBanCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Un-Bans the user.',
@@ -45,24 +46,24 @@ export default class UnBanCommand extends Command {
 
 		try {
 			await msg.guild.members.unban(user, `Un-Banned by: ${msg.author.tag} (${msg.author.id}) for: ${reason}`);
-	
+
 			// Set up embed message
 			unbanEmbed.setDescription(stripIndents`
 				**Moderator:** ${msg.author.tag} (${msg.author.id})
 				**User:** ${user.tag} (${user.id})
 				**Action:** UnBan
 				**Reason:** ${reason}`);
-	
+
 			modLogMessage(msg, unbanEmbed);
-	
+
 			// Send the success response
 			return msg.sendEmbed(unbanEmbed);
 		} catch (err) {
-			this.catchError(msg, { user: user, reason: reason }, err);
+			this.catchError(msg, { user, reason }, err);
 		}
 	}
 
-	private catchError(msg: KlasaMessage, args: { user: User, reason: string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
+	private catchError(msg: KlasaMessage, args: { user: User; reason: string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Emit warn event for debugging
 		msg.client.emit('warn', stripIndents`
 		Error occurred in \`unban\` command!
@@ -75,4 +76,5 @@ export default class UnBanCommand extends Command {
 		// Inform the user the command failed
 		return sendSimpleEmbeddedError(msg, `Unbanning ${args.user} for ${args.reason} failed!`, 3000);
 	}
+
 }

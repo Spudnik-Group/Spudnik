@@ -16,6 +16,7 @@ import * as UD from 'urban-dictionary';
  * @extends {Command}
  */
 export default class UrbanCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns the Urban Dictionary result of the supplied query. If no query is supplied, returns a random thing.',
@@ -69,4 +70,5 @@ export default class UrbanCommand extends Command {
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 		}
 	}
+
 }

@@ -6,7 +6,7 @@ import { stripIndents } from 'common-tags';
 import { Collection } from 'discord.js';
 import { awaitPlayers, escapeMarkdown, shuffle } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-// tslint:disable-next-line
+// Tslint:disable-next-line
 const { blackCards, whiteCards } = require('../../extras/cards-against-humanity');
 
 /**
@@ -17,6 +17,7 @@ const { blackCards, whiteCards } = require('../../extras/cards-against-humanity'
  * @extends {Command}
  */
 export default class CardsAgainstHumanityCommand extends Command {
+
 	private playing = new Set();
 
 	/**
@@ -111,7 +112,7 @@ export default class CardsAgainstHumanityCommand extends Command {
 					if (!cards[Number.parseInt(res.content, 10) - 1]) { return false; }
 
 					return true;
-				}
+				};
 
 				const chosen = await msg.channel.awaitMessages(filter, {
 					max: 1,
@@ -121,9 +122,9 @@ export default class CardsAgainstHumanityCommand extends Command {
 				if (!chosen.size) {
 					await msg.sendMessage('Hmm... No one wins. Dealing back cards...');
 					for (const pick of cards) {
-						for (const card of pick.cards) { (players.get(pick.id) as any).hand.add(card); }
+						for (const card of pick.cards) { (players.get(pick.id)).hand.add(card); }
 					}
-					(players.get(czar.id) as any).strikes++;
+					(players.get(czar.id)).strikes++;
 					continue;
 				}
 
@@ -156,9 +157,9 @@ export default class CardsAgainstHumanityCommand extends Command {
 		} catch (err) {
 			this.playing.delete(msg.channel.id);
 
-			if (joinLeaveCollector) { (joinLeaveCollector as any).stop(); }
+			if (joinLeaveCollector) { (joinLeaveCollector).stop(); }
 
-			if (pointViewCollector) { (pointViewCollector as any).stop(); }
+			if (pointViewCollector) { (pointViewCollector).stop(); }
 
 			return msg.sendMessage(`Oh no, an error occurred: \`${err.message}\`. Try again later!`, { reply: msg.author });
 		}
@@ -176,7 +177,7 @@ export default class CardsAgainstHumanityCommand extends Command {
 			id: user.id,
 			points: 0,
 			strikes: 0,
-			user: user
+			user
 		});
 
 		return players;
@@ -214,12 +215,12 @@ export default class CardsAgainstHumanityCommand extends Command {
 				chosen.push(existing);
 
 				return true;
-			}
+			};
 
 			const choices = await player.user.dmChannel.awaitMessages(filter, {
 				max: black.pick,
 				time: 60000
-			})
+			});
 
 			if (choices.first().content.toLowerCase() === 'swap') {
 				player.points--;
@@ -255,7 +256,7 @@ export default class CardsAgainstHumanityCommand extends Command {
 
 			await player.user.send(`Nice! Return to ${channel} to await the results!`);
 		} catch (err) {
-			return;
+
 		}
 	}
 
@@ -288,7 +289,7 @@ export default class CardsAgainstHumanityCommand extends Command {
 			res.react('✅').catch((): void => null);
 
 			return true;
-		}
+		};
 
 		const collector = channel.createMessageCollector(filter);
 
@@ -327,4 +328,5 @@ export default class CardsAgainstHumanityCommand extends Command {
 		players.delete(player.id);
 		czars.splice(czars.indexOf(player.id), 1);
 	}
+
 }

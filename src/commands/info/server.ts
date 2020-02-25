@@ -17,6 +17,7 @@ const verificationLevels = ['None', 'Low', 'Medium', '(╯°□°）╯︵ ┻�
  * @extends {Command}
  */
 export default class ServerCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['server-stats'],
@@ -33,7 +34,7 @@ export default class ServerCommand extends Command {
 	 * @memberof ServerCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		let serverEmbed: MessageEmbed = new MessageEmbed()
+		const serverEmbed: MessageEmbed = new MessageEmbed()
 			.setColor(getEmbedColor(msg))
 			.setDescription('**Server Statistics**')
 			.setThumbnail(msg.guild.iconURL({ format: 'png' }))
@@ -47,7 +48,8 @@ export default class ServerCommand extends Command {
 			.addField('❯ Members', msg.guild.memberCount, true)
 			.addField('❯ Roles', msg.guild.roles.size, true)
 			.addField('❯ Channels', msg.guild.channels.filter((channel: Channel) => channel.type !== 'category').size, true);
-		
+
 		return msg.sendEmbed(serverEmbed);
 	}
+
 }

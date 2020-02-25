@@ -49,7 +49,7 @@ export default class RouletteCommand extends Command {
 				Invalid space, please enter either a specific number from 0-36, a range of dozens (e.g. 1-12), a range of
 				halves (e.g. 1-18), a column (e.g. 1st), a color (e.g. black), or a parity (e.g. even).
 			`;
-		})
+		});
 	}
 
 	/**
@@ -85,4 +85,5 @@ export default class RouletteCommand extends Command {
 
 		return false;
 	}
+
 }

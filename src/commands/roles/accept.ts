@@ -3,11 +3,11 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { MessageEmbed } from 'discord.js';
+import { MessageEmbed, Role } from 'discord.js';
 import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
-import { Role } from 'discord.js';
+
 
 /**
  * Accept the guild rules, and be auto-assigned the default role.
@@ -17,6 +17,7 @@ import { Role } from 'discord.js';
  * @extends {Command}
  */
 export default class AcceptCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Accept the Terms of Use for the current guild.',
@@ -84,4 +85,5 @@ export default class AcceptCommand extends Command {
 		// Inform the user the command failed
 		return sendSimpleEmbeddedError(msg, 'An error occured, an admin will need to assign the default role');
 	}
+
 }

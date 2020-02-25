@@ -16,4 +16,4 @@ export default class extends Event {
 		this.client.emit('error', `Uncaught Promise Error: \n${err.stack || err}`);
 	}
 
-};
+}

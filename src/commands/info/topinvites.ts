@@ -6,6 +6,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { Permissions } from 'discord.js';
 
 export default class TopInvitesCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['ti'],
@@ -23,4 +24,5 @@ export default class TopInvitesCommand extends Command {
 			topTen.map(inv => `**${inv.inviter.username}**'s invite **${inv.code}** has **${inv.uses.toLocaleString()}** uses.`)
 		);
 	}
-};
+
+}

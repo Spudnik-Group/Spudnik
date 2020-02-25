@@ -4,81 +4,55 @@
 
 import { Task, Colors } from 'klasa';
 import axios from 'axios';
-import { stripIndents } from 'common-tags';
 import { SpudConfig } from '@lib//config';
+
+enum Lists {
+	BotsForDiscord = 'botsfordiscord.com',
+	DiscordBotList = 'discordbotlist.com',
+	DiscordBotsOrg = 'discordbots.org',
+	DiscordBotsGG = 'discord.bots.gg',
+	BotsOnDiscord = 'bots.ondiscord.xyz'
+}
 
 export default class extends Task {
 
-    public async run() {
-        this.client.emit('verbose', new Colors({ text: 'lightblue' }).format('[BOTLIST UPDATE]'));
+	public async run() {
+		this.client.emit('verbose', new Colors({ text: 'lightblue' }).format('[BOTLIST UPDATE]'));
 
-        try {
-            // DISCORD.BOTS.gg
-            if (SpudConfig.botsggApiKey) {
-                await axios.post(`https://discord.bots.gg/api/v1/bots/${this.client.user.id}/stats`, { guildCount: Number(this.client.guilds.size) },
-                    {
-                        headers: { Authorization: SpudConfig.botsggApiKey }
-                    })
-                    .then(() => console.log('- Posted statistics successfully: discord.bots.gg'))
-                    .catch((err) => console.log(stripIndents`- Failed to post statistics: discord.bots.gg
-                        Error: ${err}
-                    `))
-            }
+		const guilds = this.client.guilds.size.toString();
+		const users = this.client.guilds.reduce((acc, val) => acc + val.memberCount, 0).toString();
 
-            // BOTS.ONDISCORD.xyz
-            if (SpudConfig.bodApiKey) {
-                await axios.post(`https://bots.ondiscord.xyz/bot-api/bots/${this.client.user.id}/guilds`, { guildCount: Number(this.client.guilds.size) },
-                    {
-                        headers: { Authorization: SpudConfig.bodApiKey }
-                    })
-                    .then(() => console.log('- Posted statistics successfully: bots.ondiscord.xyz'))
-                    .catch((err) => console.log(stripIndents`- Failed to post statistics: bots.ondiscord.xyz
-                        Error: ${err}
-                    `))
-            }
+		await Promise.all([
+			this.query(`https://discordbots.org/api/bots/${this.client.user!.id}/stats`,
+				`{"server_count":${guilds}}`, SpudConfig.dbApiKey, Lists.DiscordBotsOrg),
+			this.query(`https://discord.bots.gg/api/v1/bots/${this.client.user!.id}/stats`,
+				`{"guildCount":${guilds}}`, SpudConfig.botsggApiKey, Lists.DiscordBotsGG),
+			this.query(`https://botsfordiscord.com/api/bot/${this.client.user!.id}`,
+				`{"server_count":${guilds}}`, SpudConfig.bfdApiKey, Lists.BotsForDiscord),
+			this.query(`https://discordbotlist.com/api/bots/${this.client.user!.id}/stats`,
+				`{"guilds":${guilds},"users":${users}}`, SpudConfig.dblApiKey ? `Bot ${SpudConfig.dblApiKey}` : null, Lists.DiscordBotList),
+			this.query(`https://bots.ondiscord.xyz/bot-api/bots/${this.client.user!.id}/guilds`,
+				`{"guildCount":${guilds}}`, SpudConfig.bodApiKey, Lists.BotsOnDiscord)
+		]);
+	}
 
-            // DISCORDBOTS.org
-            if (SpudConfig.dbApiKey) {
-                await axios.post(`https://discordbots.org/api/bots/${this.client.user.id}/stats`, { server_count: Number(this.client.guilds.size) },
-                    {
-                        headers: { Authorization: SpudConfig.dbApiKey }
-                    })
-                    .then(() => console.log('- Posted statistics successfully: discordbots.org'))
-                    .catch((err) => console.log(stripIndents`- Failed to post statistics: discordbots.org
-                        Error: ${err}
-                    `))
-            }
+	public async init() {
+		return this.run();
+	}
 
-            // BOTSFORDISCORD.com
-            if (SpudConfig.bfdApiKey) {
-                await axios.post(`https://botsfordiscord.com/api/bot/${this.client.user.id}`, { server_count: Number(this.client.guilds.size) },
-                    {
-                        headers: { Authorization: SpudConfig.bfdApiKey }
-                    })
-                    .then(() => console.log('- Posted statistics successfully: botsfordiscord.com'))
-                    .catch((err) => console.log(stripIndents`- Failed to post statistics: botsfordiscord.com
-                        Error: ${err}
-                    `))
-            }
+	private async query(url: string, body: string, token: string | null, list: Lists) {
+		try {
+			if (!token) throw new Error(`No token for ${list}`);
 
-            // DISCORDBOTLIST.com
-            if (SpudConfig.dblApiKey) {
-                await axios.post(`https://discordbotlist.com/api/bots/${this.client.user.id}/stats`, { guilds: Number(this.client.guilds.size), users: Number(this.client.users.size) },
-                    {
-                        headers: { Authorization: `Bot ${SpudConfig.dblApiKey}` }
-                    })
-                    .then(() => console.log('- Posted statistics successfully: discordbotlist.com'))
-                    .catch((err) => console.log(stripIndents`- Failed to post statistics: discordbotlist.com
-                        Error: ${err}
-                    `))
-            }
-        } catch(error) {
-            this.client.emit('wtf', error);
-        }
-    }
-    
-    public async init() {
-        this.run();
-    }
+			await axios.post(url, body, {
+				headers: { 'Content-Type': 'application/json', 'Authorization': token },
+				method: 'POST'
+			}).then(() => this.client.emit('verbose', `Posted statistics successfully to ${list}`));
 
-};
+			return list;
+		} catch (err) {
+			return this.client.emit('warn', `Failed to post statistics to ${list} - ${err}`);
+		}
+	}
+
+}

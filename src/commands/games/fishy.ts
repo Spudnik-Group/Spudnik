@@ -15,6 +15,7 @@ const fishes = require('../../extras/fish');
  * @extends {Command}
  */
 export default class SlotsCommand extends Command {
+
 	/**
 	 * Creates an instance of SlotsCommand.
 	 *
@@ -55,4 +56,5 @@ export default class SlotsCommand extends Command {
 
 		return msg.sendMessage(`You caught a ${fish.symbol}. I bet it'd sell for around $${worth}.`, { reply: msg.author });
 	}
+
 }

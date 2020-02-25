@@ -17,6 +17,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
  * @extends {Command}
  */
 export default class TermsOfServiceCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Used to configure the Terms of Service for a guild.',
@@ -68,24 +69,24 @@ export default class TermsOfServiceCommand extends Command {
 
 		if (tosChannel && newTosChannel && tosChannel === newTosChannel.id) {
 			return sendSimpleEmbeddedMessage(msg, `Terms of Service channel already set to ${item}!`, 3000);
-		} else {
-			try {
-				await msg.guild.settings.update(GuildSettings.Tos.Channel, newTosChannel.id);
+		}
+		try {
+			await msg.guild.settings.update(GuildSettings.Tos.Channel, newTosChannel.id);
 
-				// Set up embed message
-				tosEmbed
-					.setDescription(stripIndents`
+			// Set up embed message
+			tosEmbed
+				.setDescription(stripIndents`
 						**Member:** ${msg.author.tag} (${msg.author.id})
 						**Action:** Terms of Service Channel set to <#${newTosChannel.id}>
 					`)
-					.setFooter('Use the `tos status` command to see the details of this feature')
-					.setTimestamp();
+				.setFooter('Use the `tos status` command to see the details of this feature')
+				.setTimestamp();
 
-				return this.sendSuccess(msg, tosEmbed);
-			} catch (err) {
-				return this.catchError(msg, { subCommand: 'channel', item: item }, err);
-			}
+			return this.sendSuccess(msg, tosEmbed);
+		} catch (err) {
+			return this.catchError(msg, { subCommand: 'channel', item }, err);
 		}
+
 	}
 
 	public async title(msg: KlasaMessage, [item, text]): Promise<KlasaMessage | KlasaMessage[]> {
@@ -99,7 +100,7 @@ export default class TermsOfServiceCommand extends Command {
 
 		const tosMessages = msg.guild.settings.get(GuildSettings.Tos.Messages);
 		let existingTosMessage = tosMessages.find((message, index) => {
-			if(Number(message.id) === Number(item)) {
+			if (Number(message.id) === Number(item)) {
 				return true;
 			}
 
@@ -115,12 +116,12 @@ export default class TermsOfServiceCommand extends Command {
 				body: '',
 				id: item,
 				title: text
-			}
+			};
 		}
 
 		try {
 			await msg.guild.settings.update(GuildSettings.Tos.Messages, existingTosMessage, { arrayAction: 'add' });
-			
+
 			tosEmbed
 				.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
@@ -131,7 +132,7 @@ export default class TermsOfServiceCommand extends Command {
 
 			return this.sendSuccess(msg, tosEmbed);
 		} catch (err) {
-			return this.catchError(msg, { subCommand: 'title', item: item, ...text }, err);
+			return this.catchError(msg, { subCommand: 'title', item, ...text }, err);
 		}
 	}
 
@@ -146,7 +147,7 @@ export default class TermsOfServiceCommand extends Command {
 
 		const tosMessages = msg.guild.settings.get(GuildSettings.Tos.Messages);
 		let existingTosMessage = tosMessages.find((message, index) => {
-			if(Number(message.id) === Number(item)) {
+			if (Number(message.id) === Number(item)) {
 				return true;
 			}
 
@@ -162,12 +163,12 @@ export default class TermsOfServiceCommand extends Command {
 				body: text.join(),
 				id: item,
 				title: ''
-			}
+			};
 		}
 
 		try {
 			await msg.guild.settings.update(GuildSettings.Tos.Messages, existingTosMessage, { arrayAction: 'add' });
-			
+
 			tosEmbed
 				.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
@@ -178,7 +179,7 @@ export default class TermsOfServiceCommand extends Command {
 
 			return this.sendSuccess(msg, tosEmbed);
 		} catch (err) {
-			return this.catchError(msg, { subCommand: 'title', item: item, ...text }, err);
+			return this.catchError(msg, { subCommand: 'title', item, ...text }, err);
 		}
 	}
 
@@ -194,10 +195,11 @@ export default class TermsOfServiceCommand extends Command {
 			if (Number(message.id) === Number(item)) {
 				return true;
 			}
+
 			return false;
 		});
 
-		if(tosMessage) {
+		if (tosMessage) {
 			tosEmbed
 				.setDescription(stripIndents`
 					**ID:** ${tosMessage.id}
@@ -208,9 +210,9 @@ export default class TermsOfServiceCommand extends Command {
 				.setTimestamp();
 
 			return this.sendSuccess(msg, tosEmbed);
-		} else {
-			// TODO?
 		}
+		// TODO?
+
 	}
 
 	public async list(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
@@ -221,12 +223,12 @@ export default class TermsOfServiceCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		});
-		const tosChannel= msg.guild.settings.get(GuildSettings.Tos.Channel);
+		const tosChannel = msg.guild.settings.get(GuildSettings.Tos.Channel);
 		const tosMessages = msg.guild.settings.get(GuildSettings.Tos.Messages).sort((a, b) => a.id - b.id);
 
 		if (tosChannel && tosChannel === msg.channel.id) {
 			if (tosMessages && tosMessages.length > 0) {
-				tosMessages.forEach((message) => {
+				tosMessages.forEach(message => {
 					tosEmbed.author.name = `${message.title}`;
 					tosEmbed.description = `${message.body}`;
 
@@ -261,13 +263,13 @@ export default class TermsOfServiceCommand extends Command {
 		} else {
 			tosEmbed.description += 'No Messages.';
 		}
-		tosEmbed.setFooter('Use the `tos get` command to see the full message content')
+		tosEmbed.setFooter('Use the `tos get` command to see the full message content');
 
 		// Send the success response
 		return msg.sendEmbed(tosEmbed);
 	}
 
-	private catchError(msg: KlasaMessage, args: { subCommand: string, item: Channel | number, text?: string, raw?: string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
+	private catchError(msg: KlasaMessage, args: { subCommand: string; item: Channel | number; text?: string; raw?: string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Build warning message
 		let tosWarn = stripIndents`
 			Error occurred in \`tos\` command!
@@ -280,7 +282,7 @@ export default class TermsOfServiceCommand extends Command {
 
 		switch (args.subCommand.toLowerCase()) {
 			case 'get': {
-				tosUserWarn = `Failed getting tos message #${args.item}`
+				tosUserWarn = `Failed getting tos message #${args.item}`;
 				break;
 			}
 			case 'channel': {
@@ -312,4 +314,5 @@ export default class TermsOfServiceCommand extends Command {
 		// Send the success response
 		return msg.sendEmbed(embed);
 	}
+
 }

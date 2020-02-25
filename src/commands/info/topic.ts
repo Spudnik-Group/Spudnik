@@ -14,6 +14,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class TopicCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns the purpose of the chat channel.',
@@ -46,4 +47,5 @@ export default class TopicCommand extends Command {
 			title: channel.name
 		}));
 	}
+
 }

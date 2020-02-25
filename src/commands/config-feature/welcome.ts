@@ -16,6 +16,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
  * @extends {Command}
  */
 export default class WelcomeCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Used to configure the message to be sent when a new user join your guild.',
@@ -66,7 +67,7 @@ export default class WelcomeCommand extends Command {
 
 			return this.sendSuccess(msg, welcomeEmbed);
 		} catch (err) {
-			return this.catchError(msg, { subCommand: 'message', content: content }, err);
+			return this.catchError(msg, { subCommand: 'message', content }, err);
 		}
 	}
 
@@ -91,22 +92,22 @@ export default class WelcomeCommand extends Command {
 
 		if (welcomeChannel && welcomeChannel === channelID) {
 			return sendSimpleEmbeddedMessage(msg, `Welcome channel already set to <#${channelID}>!`, 3000);
-		} else {
-			try {
-				await msg.guild.settings.update(GuildSettings.Welcome.Channel, channelID);
+		}
+		try {
+			await msg.guild.settings.update(GuildSettings.Welcome.Channel, channelID);
 
-				// Set up embed message
-				welcomeEmbed.setDescription(stripIndents`
+			// Set up embed message
+			welcomeEmbed.setDescription(stripIndents`
 							**Member:** ${msg.author.tag} (${msg.author.id})
 							**Action:** Welcome Channel set to <#${channelID}>
 						`);
-				welcomeEmbed.setFooter('Use the `welcome status` command to see the details of this feature');
+			welcomeEmbed.setFooter('Use the `welcome status` command to see the details of this feature');
 
-				return this.sendSuccess(msg, welcomeEmbed);
-			} catch (err) {
-				return this.catchError(msg, { subCommand: 'channel', content: content }, err);
-			}
+			return this.sendSuccess(msg, welcomeEmbed);
+		} catch (err) {
+			return this.catchError(msg, { subCommand: 'channel', content }, err);
 		}
+
 	}
 
 	/**
@@ -130,22 +131,22 @@ export default class WelcomeCommand extends Command {
 		if (welcomeChannel) {
 			if (welcomeEnabled) {
 				return sendSimpleEmbeddedMessage(msg, 'Welcome message already enabled!', 3000);
-			} else {
-				try {
-					await msg.guild.settings.update(GuildSettings.Welcome.Enabled, true);
+			}
+			try {
+				await msg.guild.settings.update(GuildSettings.Welcome.Enabled, true);
 
-					// Set up embed message
-					welcomeEmbed.setDescription(stripIndents`
+				// Set up embed message
+				welcomeEmbed.setDescription(stripIndents`
 						**Member:** ${msg.author.tag} (${msg.author.id})
 						**Action:** Welcome messages set to: _Enabled_
 					`);
-					welcomeEmbed.setFooter('Use the `welcome status` command to see the details of this feature');
+				welcomeEmbed.setFooter('Use the `welcome status` command to see the details of this feature');
 
-					return this.sendSuccess(msg, welcomeEmbed);
-				} catch (err) {
-					return this.catchError(msg, { subCommand: 'enable' }, err);
-				}
+				return this.sendSuccess(msg, welcomeEmbed);
+			} catch (err) {
+				return this.catchError(msg, { subCommand: 'enable' }, err);
 			}
+
 		} else {
 			return sendSimpleEmbeddedError(msg, 'Please set the channel for the welcome message before enabling the feature. See `help welcome` for info.', 3000);
 		}
@@ -227,7 +228,7 @@ export default class WelcomeCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof WelcomeCommand
 	 */
-	private catchError(msg: KlasaMessage, args: { subCommand: string, content?: Channel | string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
+	private catchError(msg: KlasaMessage, args: { subCommand: string; content?: Channel | string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Build warning message
 		let welcomeWarn = stripIndents`
 		Error occurred in \`welcome\` command!
@@ -271,8 +272,9 @@ export default class WelcomeCommand extends Command {
 
 	private sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
 		modLogMessage(msg, embed);
-		
+
 		// Send the success response
 		return msg.sendEmbed(embed);
 	}
+
 }

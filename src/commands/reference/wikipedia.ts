@@ -15,6 +15,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class WikiCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns the summary of the first matching search result from Wikipedia.',
@@ -52,7 +53,7 @@ export default class WikiCommand extends Command {
 				paragraph = paragraph.replace(' ()', '').replace('()', '');
 				paragraph = `${shorten(paragraph)}...`;
 
-				messageOut.setThumbnail((page.thumbnail && page.thumbnail.source) || 'https://i.imgur.com/fnhlGh5.png')
+				messageOut.setThumbnail((page.thumbnail && page.thumbnail.source) || 'https://i.imgur.com/fnhlGh5.png');
 				messageOut.setDescription(`${paragraph}\n\n${page.raw.fullurl}`);
 				messageOut.setTitle(page.raw.title);
 			} else {
@@ -67,4 +68,5 @@ export default class WikiCommand extends Command {
 			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
 		}
 	}
+
 }

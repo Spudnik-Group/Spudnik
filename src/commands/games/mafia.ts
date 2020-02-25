@@ -17,6 +17,7 @@ const { questions, stories } = require('../../extras/mafia');
  * @extends {Command}
  */
 export default class MafiaCommand extends Command {
+
 	private playing = new Set();
 
 	/**
@@ -138,7 +139,7 @@ export default class MafiaCommand extends Command {
 					voted.push(res.author.id);
 
 					return true;
-				}
+				};
 
 				const votes = await msg.channel.awaitMessages(filter, {
 					max: players.size,
@@ -176,7 +177,7 @@ export default class MafiaCommand extends Command {
 			players.set(user.id, {
 				id: user.id,
 				role: roles[i],
-				user: user
+				user
 			});
 			await user.send(`Your role will be: ${roles[i]}!`);
 			i++;
@@ -201,4 +202,5 @@ export default class MafiaCommand extends Command {
 
 		return counts.sort((a: any, b: any) => b.votes - a.votes).first();
 	}
+
 }

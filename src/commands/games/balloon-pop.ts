@@ -13,6 +13,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class BalloonPopCommand extends Command {
+
 	private playing = new Set();
 
 	/**
@@ -49,7 +50,7 @@ export default class BalloonPopCommand extends Command {
 				const verification = await verify(msg.channel, opponent);
 				if (!verification) {
 					this.playing.delete(msg.channel.id);
-					
+
 					return msg.sendMessage('Looks like they declined...');
 				}
 			}
@@ -87,11 +88,12 @@ export default class BalloonPopCommand extends Command {
 				}
 			}
 			this.playing.delete(msg.channel.id);
-			
+
 			return msg.sendMessage(`And the winner is... ${winner}! Great job!`);
 		} catch (err) {
 			this.playing.delete(msg.channel.id);
 			throw err;
 		}
 	}
+
 }

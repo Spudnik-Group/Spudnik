@@ -16,6 +16,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
  * @extends {Command}
  */
 export default class PrefixCommand extends Command {
+
 	constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns or sets the command prefix.',
@@ -97,4 +98,5 @@ export default class PrefixCommand extends Command {
 
 		return msg.sendEmbed(prefixEmbed);
 	}
+
 }
