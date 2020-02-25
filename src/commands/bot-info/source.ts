@@ -3,7 +3,6 @@
  */
 
 import { CommandStore, KlasaMessage, Command } from 'klasa';
-import { sendSimpleEmbeddedMessage } from '@lib/helpers';
 import { Permissions } from 'discord.js';
 
 /**
@@ -15,7 +14,7 @@ import { Permissions } from 'discord.js';
  */
 export default class SourceCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns a link to my source code!',
 			guarded: true,
@@ -32,7 +31,7 @@ export default class SourceCommand extends Command {
 	 * @memberof SourceCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		return sendSimpleEmbeddedMessage(msg, '<https://github.com/Spudnik-Group/Spudnik>');
+		return msg.sendSimpleEmbed('<https://github.com/Spudnik-Group/Spudnik>');
 	}
 
 }

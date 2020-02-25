@@ -3,8 +3,8 @@
  */
 
 import { CommandStore, KlasaMessage, Command } from 'klasa';
-import { sendSimpleEmbeddedMessage } from '@lib/helpers';
 import { Permissions } from 'discord.js';
+import { stripIndents } from 'common-tags';
 
 /**
  * Provides links to suggest features, submit bugs, or email the devs.
@@ -15,7 +15,7 @@ import { Permissions } from 'discord.js';
  */
 export default class FeedbackCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Provides links to suggest features, submit bugs, or email the devs.',
 			guarded: true,
@@ -32,7 +32,7 @@ export default class FeedbackCommand extends Command {
 	 * @memberof FeedbackCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		return sendSimpleEmbeddedMessage(msg, `
+		return msg.sendSimpleEmbed(stripIndents`
 			*Give us Feedback!*
 			
 			Make a [Feature Suggestion](<https://feathub.com/Spudnik-Group/Spudnik>)

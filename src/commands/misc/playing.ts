@@ -4,7 +4,6 @@
 
 import { stripIndents } from 'common-tags';
 import { GuildMember } from 'discord.js';
-import { sendSimpleEmbeddedMessage } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
@@ -16,7 +15,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  */
 export default class PlayingCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns a list of people playing games. Allows filtering.',
 			extendedHelp: stripIndents`
@@ -66,10 +65,7 @@ export default class PlayingCommand extends Command {
 					.join('\n')}`)
 			.join('\n\n');
 
-		return sendSimpleEmbeddedMessage(
-			msg,
-			sortedMessage || (gameSearch ? `Looks like nobody is playing anything like \`${gameSearch}\`.` : 'Nobody is playing anything right now.')
-		);
+		return msg.sendSimpleEmbed(sortedMessage || (gameSearch ? `Looks like nobody is playing anything like \`${gameSearch}\`.` : 'Nobody is playing anything right now.'));
 	}
 
 }

@@ -2,7 +2,6 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { sendSimpleEmbeddedMessage } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { Permissions } from 'discord.js';
 
@@ -15,7 +14,7 @@ import { Permissions } from 'discord.js';
  */
 export default class SupportCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns a link to my support server!',
 			guarded: true,
@@ -32,7 +31,7 @@ export default class SupportCommand extends Command {
 	 * @memberof SupportCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		return sendSimpleEmbeddedMessage(msg, '<https://spudnik.io/support>');
+		return msg.sendSimpleEmbed('<https://spudnik.io/support>');
 	}
 
 }

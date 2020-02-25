@@ -4,7 +4,6 @@
 
 import { stripIndents } from 'common-tags';
 import { GuildMember, Permissions } from 'discord.js';
-import { sendSimpleEmbeddedMessage } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
@@ -16,7 +15,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  */
 export default class NickCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Used to change the bot\'s nickname on your server, or reset it.',
 			extendedHelp: stripIndents`
@@ -39,13 +38,13 @@ export default class NickCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage, [nickName]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (nickName === '' || nickName === undefined) {
-			(msg.guild.me).setNickname('Spudnik', `${msg.author.username} used Spudnik to reset it.`);
+			await (msg.guild.me).setNickname('Spudnik', `${msg.author.username} used Spudnik to reset it.`);
 
-			return sendSimpleEmbeddedMessage(msg, 'Bot nickname cleared.');
+			return msg.sendSimpleEmbed('Bot nickname cleared.');
 		}
-		(msg.guild.me).setNickname(nickName, `${msg.author.username} used Spudnik to set it.`);
+		await (msg.guild.me).setNickname(nickName, `${msg.author.username} used Spudnik to set it.`);
 
-		return sendSimpleEmbeddedMessage(msg, 'Bot nickname set.');
+		return msg.sendSimpleEmbed('Bot nickname set.');
 
 	}
 

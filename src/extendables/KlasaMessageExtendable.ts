@@ -1,4 +1,4 @@
-import { Message, MessageEmbed, MessageOptions } from 'discord.js';
+import { Message, MessageEmbed, MessageEmbedAuthor, MessageOptions } from 'discord.js';
 import { KlasaMessage, MessageAskOptions, KlasaClient, Extendable, ExtendableStore } from 'klasa';
 
 export default class extends Extendable {
@@ -20,14 +20,24 @@ export default class extends Extendable {
 			: awaitMessage(this, promptOptions);
 	}
 
-	public async sendSimpleEmbed(this: Message, content: string, timeout?: number | null): Promise<KlasaMessage | KlasaMessage[]> {
+	public async sendSimpleEmbed(this: KlasaMessage, description: string, timeout?: number | null): Promise<KlasaMessage | KlasaMessage[]> {
+		return this.sendSimpleEmbedWithAuthorAndTitle(description, null, null, timeout);
+	}
+
+	public async sendSimpleEmbedWithAuthor(this: KlasaMessage, description: string, author?: MessageEmbedAuthor | null, timeout?: number | null): Promise<KlasaMessage | KlasaMessage[]> {
+		return this.sendSimpleEmbedWithAuthorAndTitle(description, author, null, timeout);
+	}
+
+	public async sendSimpleEmbedWithTitle(this: KlasaMessage, description: string, title: string, timeout?: number | null): Promise<KlasaMessage | KlasaMessage[]> {
+		return this.sendSimpleEmbedWithAuthorAndTitle(description, null, title, timeout);
+	}
+
+	public async sendSimpleEmbedWithAuthorAndTitle(this: KlasaMessage, description: string, author?: MessageEmbedAuthor | null, title?: string | null, timeout?: number | null): Promise<KlasaMessage | KlasaMessage[]> {
 		const promise: Promise<KlasaMessage | KlasaMessage[]> = this.sendEmbed(new MessageEmbed({
-			author: {
-				iconURL: this.client.user.displayAvatarURL(),
-				name: `${this.client.user.username}`
-			},
-			color: getEmbedColor(msg),
-			description: `${content}`
+			author,
+			// color
+			description,
+			title
 		}));
 
 		if (timeout) {
@@ -43,6 +53,67 @@ export default class extends Extendable {
 		}
 
 		return promise;
+	}
+
+	public async sendSimpleError(this: KlasaMessage, description: string, timeout?: number | null): Promise<KlasaMessage | KlasaMessage[]> {
+		const promise: Promise<KlasaMessage | KlasaMessage[]> = this.sendEmbed(new MessageEmbed({
+			author: {
+				iconURL: this.client.user.displayAvatarURL(),
+				name: `${this.client.user.username}`
+			},
+			color: 16711680,
+			description
+		}));
+
+		if (timeout) {
+			promise.then((reply: Message | Message[]) => {
+				if (reply instanceof Message) {
+					reply.delete({ timeout }).catch(() => undefined);
+				} else if (reply instanceof Array) {
+					this.channel.bulkDelete(reply).catch(() => undefined);
+				}
+			}).catch(err => {
+				this.client.emit('api', err);
+			});
+		}
+
+		return promise;
+	}
+
+	public async sendSimpleSuccess(this: KlasaMessage, description: string, timeout?: number | null): Promise<KlasaMessage | KlasaMessage[]> {
+		const promise: Promise<KlasaMessage | KlasaMessage[]> = this.sendEmbed(new MessageEmbed({
+			author: {
+				iconURL: this.client.user.displayAvatarURL(),
+				name: `${this.client.user.username}`
+			},
+			color: 3447003,
+			description
+		}));
+
+		if (timeout) {
+			promise.then((reply: Message | Message[]) => {
+				if (reply instanceof Message) {
+					reply.delete({ timeout }).catch(() => undefined);
+				} else if (reply instanceof Array) {
+					this.channel.bulkDelete(reply).catch(() => undefined);
+				}
+			}).catch(err => {
+				this.client.emit('api', err);
+			});
+		}
+
+		return promise;
+	}
+
+	public async sendSimpleImage(this: KlasaMessage, description: string, url: string): Promise<KlasaMessage | KlasaMessage[]> {
+		return this.sendEmbed(new MessageEmbed({
+			author: {
+				iconURL: this.client.user.displayAvatarURL(),
+				name: `${this.client.user.username}`
+			},
+			description,
+			image: { url }
+		}));
 	}
 
 }

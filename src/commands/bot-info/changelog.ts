@@ -3,7 +3,7 @@
  */
 
 import { CommandStore, KlasaMessage, Command } from 'klasa';
-import { getEmbedColor, sendSimpleEmbeddedError } from '@lib/helpers';
+import { getEmbedColor } from '@lib/helpers';
 import { MessageEmbed, Permissions } from 'discord.js';
 import axios, { AxiosResponse } from 'axios';
 
@@ -14,9 +14,9 @@ import axios, { AxiosResponse } from 'axios';
  * @class changelogCommand
  * @extends {Command}
  */
-export default class changelogCommand extends Command {
+export default class ChangelogCommand extends Command {
 
-	constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns GitHub release notes for the 3 most recent releases.',
 			name: 'changelog',
@@ -68,7 +68,7 @@ export default class changelogCommand extends Command {
 		} catch (err) {
 			msg.client.emit('warn', `Error in command dev:changelog: ${err}`);
 
-			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+			return msg.sendSimpleError('There was an error with the request. Try again?', 3000);
 		}
 	}
 
