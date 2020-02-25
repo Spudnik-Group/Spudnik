@@ -4,7 +4,7 @@
 
 import { Command, CommandStore, Duration, KlasaMessage, Timestamp } from 'klasa';
 import { MessageEmbed, Permissions } from 'discord.js';
-import { getEmbedColor, sendSimpleEmbeddedError, modLogMessage } from '@lib/helpers';
+import { getEmbedColor, modLogMessage } from '@lib/helpers';
 import { stripIndents } from 'common-tags';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
@@ -32,11 +32,11 @@ export default class MuteCommand extends Command {
 
 		// Check if user is able to mute the mentioned user
 		if (member.roles.highest.position >= msg.member.roles.highest.position) {
-			return sendSimpleEmbeddedError(msg, 'You cannot mute this user. Do they have the same or higher role than you?', 3000);
+			return msg.sendSimpleError('You cannot mute this user. Do they have the same or higher role than you?', 3000);
 		}
 		// Check if the mentioned user is already muted
 		if (member.roles.has(msg.guild.settings.get(GuildSettings.Roles.Muted))) {
-			return sendSimpleEmbeddedError(msg, 'The member is already muted.', 3000);
+			return msg.sendSimpleError('The member is already muted.', 3000);
 		}
 
 		try {
@@ -57,7 +57,7 @@ export default class MuteCommand extends Command {
 					**Reason:** ${reason ? reason : 'no reason'}
 				`);
 
-				modLogMessage(msg, muteEmbed);
+				await modLogMessage(msg, muteEmbed);
 
 				// Send the success response
 				return msg.sendEmbed(muteEmbed);
@@ -75,7 +75,7 @@ export default class MuteCommand extends Command {
 			**Error Message:** ${err}`);
 
 			// Inform the user the command failed
-			return sendSimpleEmbeddedError(msg, `Muting ${member} for ${reason ? reason : 'no reason'} failed!`, 3000);
+			return msg.sendSimpleError(`Muting ${member} for ${reason ? reason : 'no reason'} failed!`, 3000);
 		}
 	}
 

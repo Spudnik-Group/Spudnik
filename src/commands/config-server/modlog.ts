@@ -4,7 +4,7 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, Channel } from 'discord.js';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, getEmbedColor, modLogMessage, resolveChannel } from '@lib/helpers';
+import { getEmbedColor, modLogMessage, resolveChannel } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, Possible, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
@@ -34,7 +34,7 @@ export default class ModlogCommand extends Command {
 		});
 
 		this.createCustomResolver('channel', (arg: string, possible: Possible, message: KlasaMessage, [subCommand]) => {
-			if (subCommand === 'channel' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw 'Please provide a channel for the modlog messages to be displayed in.';
+			if (subCommand === 'channel' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw new Error('Please provide a channel for the modlog messages to be displayed in.');
 
 			return resolveChannel(arg);
 		});
@@ -54,7 +54,7 @@ export default class ModlogCommand extends Command {
 
 		if (modlogChannel) {
 			if (modlogEnabled) {
-				return sendSimpleEmbeddedMessage(msg, 'Modlog feature already enabled!', 3000);
+				return msg.sendSimpleEmbed('Modlog feature already enabled!', 3000);
 			}
 			try {
 				await msg.guild.settings.update(GuildSettings.Modlog.Enabled, true);
@@ -72,7 +72,7 @@ export default class ModlogCommand extends Command {
 			}
 
 		} else {
-			return sendSimpleEmbeddedError(msg, 'Please set the channel for the modlog before enabling the feature. See `!help modlog` for info.', 3000);
+			return msg.sendSimpleError('Please set the channel for the modlog before enabling the feature. See `!help modlog` for info.', 3000);
 		}
 	}
 
@@ -103,7 +103,7 @@ export default class ModlogCommand extends Command {
 				return this.catchError(msg, { subCommand: 'disable' }, err);
 			}
 		} else {
-			return sendSimpleEmbeddedMessage(msg, 'Modlog feature already disabled!', 3000);
+			return msg.sendSimpleEmbed('Modlog feature already disabled!', 3000);
 		}
 	}
 
@@ -122,7 +122,7 @@ export default class ModlogCommand extends Command {
 			const channelID = msg.guild.channels.get(channel).id;
 
 			if (modlogChannel && modlogChannel === channelID) {
-				return sendSimpleEmbeddedMessage(msg, `Modlog channel already set to <#${channelID}>!`, 3000);
+				return msg.sendSimpleEmbed(`Modlog channel already set to <#${channelID}>!`, 3000);
 			}
 			try {
 				await msg.guild.settings.update(GuildSettings.Modlog.Channel, channelID);
@@ -140,7 +140,7 @@ export default class ModlogCommand extends Command {
 			}
 
 		} else {
-			return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
+			return msg.sendSimpleError('Invalid channel provided.', 3000);
 		}
 	}
 
@@ -206,11 +206,11 @@ export default class ModlogCommand extends Command {
 		msg.client.emit('warn', modlogWarn);
 
 		// Inform the user the command failed
-		return sendSimpleEmbeddedError(msg, modlogUserWarn);
+		return msg.sendSimpleError(modlogUserWarn);
 	}
 
-	private sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
-		modLogMessage(msg, embed);
+	private async sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
+		await modLogMessage(msg, embed);
 
 		// Send the success response
 		return msg.sendEmbed(embed);

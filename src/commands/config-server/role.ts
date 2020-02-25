@@ -4,7 +4,7 @@
 
 import { stripIndents } from 'common-tags';
 import { Collection, Message, MessageEmbed, Role, Permissions } from 'discord.js';
-import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, isNormalInteger, hexColor } from '@lib/helpers';
+import { getEmbedColor, modLogMessage, isNormalInteger, hexColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
 /**
@@ -83,7 +83,7 @@ export default class RoleCommand extends Command {
 					**Action:** Added role '${name}' to the guild.
 				`);
 
-		modLogMessage(msg, roleEmbed);
+		await modLogMessage(msg, roleEmbed);
 
 		return msg.sendEmbed(roleEmbed);
 	}
@@ -127,22 +127,24 @@ export default class RoleCommand extends Command {
 
 				if (isNormalInteger(response.content) && ((Number(response.content) > -1) && (Number(response.content) < rolesFoundArray.length))) {
 					try {
-						await rolesFoundArray[Number(response.content) - 1].delete().then(deletedRole => {
-							roleEmbed.setDescription(stripIndents`
-											**Member:** ${msg.author.tag} (${msg.author.id})
-											**Action:** Removed role \`${deletedRole.name}\` from the guild.
-										`);
+						await rolesFoundArray[Number(response.content) - 1].delete()
+							.then(async deletedRole => {
+								roleEmbed.setDescription(stripIndents`
+												**Member:** ${msg.author.tag} (${msg.author.id})
+												**Action:** Removed role \`${deletedRole.name}\` from the guild.
+											`);
 
-							modLogMessage(msg, roleEmbed);
+								await modLogMessage(msg, roleEmbed);
 
-							return msg.sendEmbed(roleEmbed);
-						}).catch(err => this.catchError(msg, { subCommand: 'remove', name }, err));
+								return msg.sendEmbed(roleEmbed);
+							})
+							.catch(err => this.catchError(msg, { subCommand: 'remove', name }, err));
 
 					} catch (err) {
 						return this.catchError(msg, { subCommand: 'remove', name }, err);
 					}
 				} else {
-					return sendSimpleEmbeddedError(msg, 'Please supply a row number corresponding to the role you want to delete.');
+					return msg.sendSimpleError('Please supply a row number corresponding to the role you want to delete.');
 				}
 			} catch (err) {
 				return this.catchError(msg, { subCommand: 'remove', name }, err);
@@ -151,21 +153,23 @@ export default class RoleCommand extends Command {
 			const roleToDelete = rolesFound.first();
 
 			try {
-				await roleToDelete.delete().then(deletedRole => {
-					roleEmbed.setDescription(stripIndents`
-								**Member:** ${msg.author.tag} (${msg.author.id})
-								**Action:** Removed role \`${deletedRole.name}\` from the guild.
-							`);
+				await roleToDelete.delete()
+					.then(async deletedRole => {
+						roleEmbed.setDescription(stripIndents`
+									**Member:** ${msg.author.tag} (${msg.author.id})
+									**Action:** Removed role \`${deletedRole.name}\` from the guild.
+								`);
 
-					modLogMessage(msg, roleEmbed);
+						await modLogMessage(msg, roleEmbed);
 
-					return msg.sendEmbed(roleEmbed);
-				}).catch(err => this.catchError(msg, { subCommand: 'remove', name }, err));
+						return msg.sendEmbed(roleEmbed);
+					})
+					.catch(err => this.catchError(msg, { subCommand: 'remove', name }, err));
 			} catch (err) {
 				return this.catchError(msg, { subCommand: 'remove', name }, err);
 			}
 		} else {
-			return sendSimpleEmbeddedError(msg, `A role with the supplied name \`${name}\` was not found on this guild.`);
+			return msg.sendSimpleError(`A role with the supplied name \`${name}\` was not found on this guild.`);
 		}
 	}
 
@@ -196,7 +200,7 @@ export default class RoleCommand extends Command {
 		msg.client.emit('warn', roleWarn);
 
 		// Inform the user the command failed
-		return sendSimpleEmbeddedError(msg, roleUserWarn);
+		return msg.sendSimpleError(roleUserWarn);
 	}
 
 }

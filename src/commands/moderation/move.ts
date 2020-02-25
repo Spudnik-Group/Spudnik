@@ -3,7 +3,7 @@
  */
 
 import { GuildMember, Message, MessageEmbed, TextChannel, Permissions } from 'discord.js';
-import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '@lib/helpers';
+import { getEmbedColor, modLogMessage } from '@lib/helpers';
 import { stripIndents } from 'common-tags';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
@@ -93,7 +93,7 @@ export default class MoveCommand extends Command {
 				}
 
 				// Delete the original message, now that it's been moved
-				originalMessage.delete();
+				await originalMessage.delete();
 
 				// Log the event in the mod log
 				const moveModMessage: MessageEmbed = new MessageEmbed({
@@ -111,12 +111,12 @@ export default class MoveCommand extends Command {
 					`
 				}).setTimestamp();
 
-				modLogMessage(msg, moveModMessage);
+				await modLogMessage(msg, moveModMessage);
 			} else {
-				return sendSimpleEmbeddedError(msg, 'Cannot move a text message to a non-text channel.', 3000);
+				return msg.sendSimpleError('Cannot move a text message to a non-text channel.', 3000);
 			}
 		} else {
-			return sendSimpleEmbeddedError(msg, `Could not find the message with supplied id (${message}) in this channel.`, 3000);
+			return msg.sendSimpleError(`Could not find the message with supplied id (${message}) in this channel.`, 3000);
 		}
 	}
 

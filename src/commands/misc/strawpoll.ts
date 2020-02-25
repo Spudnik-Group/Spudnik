@@ -47,7 +47,7 @@ export default class StrawpollCommand extends Command {
 		} catch (err) {
 			msg.client.emit('warn', `Error in command misc:strawpoll: ${err}`);
 
-			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+			return msg.sendSimpleError('There was an error with the request. Try again?', 3000);
 		}
 	}
 

@@ -2,11 +2,10 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { getRandomInt, sendSimpleEmbeddedImage } from '@lib/helpers';
+import { getRandomInt } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { Permissions } from 'discord.js';
-
-const { bacon }: { bacon: string[] } = require('../../extras/data');
+import { bacon } from '../../extras/data.json';
 
 /**
  * Post a random bacon gif.
@@ -32,8 +31,8 @@ export default class BaconCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof BaconCommand
 	 */
-	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		return sendSimpleEmbeddedImage(msg, bacon[getRandomInt(0, bacon.length)]);
+	public run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+		return msg.sendSimpleImage(null, bacon[getRandomInt(0, bacon.length)]);
 	}
 
 }

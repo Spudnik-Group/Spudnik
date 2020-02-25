@@ -4,7 +4,7 @@
 
 import { stripIndents } from 'common-tags';
 import { GuildMember, MessageEmbed, Role, Permissions } from 'discord.js';
-import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '@lib/helpers';
+import { getEmbedColor, modLogMessage } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
 /**
@@ -54,7 +54,7 @@ export default class BanCommand extends Command {
 
 				// Check if user is able to ban the mentioned user
 				if (!memberToBan.bannable || !(highestRoleOfCallingMember.comparePositionTo(memberToBan.roles.highest) > 0)) {
-					return sendSimpleEmbeddedError(msg, `I can't ban <@${memberToBan.id}>. Do they have the same or a higher role than me or you?`, 3000);
+					return msg.sendSimpleError(`I can't ban <@${memberToBan.id}>. Do they have the same or a higher role than me or you?`, 3000);
 				}
 
 				// Ban
@@ -71,12 +71,12 @@ export default class BanCommand extends Command {
 				**Action:** Ban
 				**Reason:** ${reason}`);
 
-			modLogMessage(msg, banEmbed);
+			await modLogMessage(msg, banEmbed);
 
 			// Send the success response
 			return msg.sendEmbed(banEmbed);
 		} catch (err) {
-			this.catchError(msg, { member, reason }, err);
+			return this.catchError(msg, { member, reason }, err);
 		}
 	}
 
@@ -92,7 +92,7 @@ export default class BanCommand extends Command {
 		`);
 
 		// Inform the user the command failed
-		return sendSimpleEmbeddedError(msg, `Banning ${args.member} for ${args.reason} failed!`, 3000);
+		return msg.sendSimpleError(`Banning ${args.member} for ${args.reason} failed!`, 3000);
 	}
 
 }

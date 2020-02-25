@@ -3,10 +3,9 @@
  */
 
 import { MessageEmbed } from 'discord.js';
-import { getEmbedColor, getRandomInt, sendSimpleEmbeddedError } from '@lib/helpers';
+import { getEmbedColor, getRandomInt } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-
-const { eightBall }: { eightBall: string[] } = require('../../extras/data');
+import { eightBall } from '../../extras/data.json';
 
 /**
  * Post a random "Magic 8-ball" response to a question.
@@ -44,7 +43,7 @@ export default class EightBallCommand extends Command {
 				title: query
 			}), '', { reply: msg.author });
 		}
-		return sendSimpleEmbeddedError(msg, response, 3000);
+		return msg.sendSimpleError(response, 3000);
 
 	}
 

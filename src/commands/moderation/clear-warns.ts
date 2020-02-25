@@ -4,8 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { GuildMember, MessageEmbed } from 'discord.js';
-import { sendSimpleEmbeddedError, getEmbedColor } from '@lib/helpers';
+import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 /**
  * Clears warns for a member of the guild.
@@ -47,7 +48,7 @@ export default class ClearWarnsCommand extends Command {
 			description: ''
 		}).setTimestamp();
 		let previousPoints = 0;
-		const guildWarnings = await msg.guild.settings.get('warnings');
+		const guildWarnings = await msg.guild.settings.get(GuildSettings.Warnings);
 
 		if (guildWarnings.length) {
 			// Warnings present for current guild
@@ -68,7 +69,7 @@ export default class ClearWarnsCommand extends Command {
 					// Previous warnings present for supplied member
 					previousPoints = currentWarnings.points;
 
-					msg.guild.settings.update('warnings', currentWarnings, null, { arrayPosition: memberIndex });
+					await msg.guild.settings.update(GuildSettings.Warnings, currentWarnings, { arrayAction: 'overwrite' });
 					// Set up embed message
 					warnEmbed.setDescription(stripIndents`
 						**Moderator:** ${msg.author.tag} (${msg.author.id})
@@ -82,14 +83,14 @@ export default class ClearWarnsCommand extends Command {
 					return msg.sendEmbed(warnEmbed);
 				}
 				// No previous warnings present
-				return sendSimpleEmbeddedError(msg, 'No warnings present for the supplied member.');
+				return msg.sendSimpleError('No warnings present for the supplied member.');
 
 			} catch (err) {
-				this.catchError(msg, { member, reason }, err);
+				return this.catchError(msg, { member, reason }, err);
 			}
 		} else {
 			// No warnings for current guild
-			return sendSimpleEmbeddedError(msg, 'No warnings for current guild', 3000);
+			return msg.sendSimpleError('No warnings for current guild', 3000);
 		}
 	}
 
@@ -104,7 +105,7 @@ export default class ClearWarnsCommand extends Command {
 		**Error Message:** ${err}`);
 
 		// Inform the user the command failed
-		return sendSimpleEmbeddedError(msg, `Clearing warnings for ${args.member} failed!`, 3000);
+		return msg.sendSimpleError(`Clearing warnings for ${args.member} failed!`, 3000);
 	}
 
 }

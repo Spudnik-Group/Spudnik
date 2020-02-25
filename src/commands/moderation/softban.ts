@@ -4,7 +4,7 @@
 
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildMember, MessageEmbed, Permissions } from 'discord.js';
-import { sendSimpleEmbeddedError, modLogMessage, getEmbedColor } from '@lib/helpers';
+import { modLogMessage, getEmbedColor } from '@lib/helpers';
 import { stripIndents } from 'common-tags';
 
 export default class SoftbanCommand extends Command {
@@ -30,7 +30,7 @@ export default class SoftbanCommand extends Command {
 
 		// Check if user is able to ban the mentioned user
 		if (!member.bannable || member.roles.highest.position >= msg.member.roles.highest.position) {
-			return sendSimpleEmbeddedError(msg, `I can't soft-ban <@${member.id}>. Do they have the same or a higher role than me or you?`, 3000);
+			return msg.sendSimpleError(`I can't soft-ban <@${member.id}>. Do they have the same or a higher role than me or you?`, 3000);
 		}
 
 		try {
@@ -46,12 +46,12 @@ export default class SoftbanCommand extends Command {
 			**Action:** Soft Ban
 			**Reason:** ${reason}`);
 
-			modLogMessage(msg, banEmbed);
+			await modLogMessage(msg, banEmbed);
 
 			// Send the success response
 			return msg.sendEmbed(banEmbed);
 		} catch (err) {
-			this.catchError(msg, { member, reason }, err);
+			return this.catchError(msg, { member, reason }, err);
 		}
 	}
 
@@ -67,7 +67,7 @@ export default class SoftbanCommand extends Command {
 		`);
 
 		// Inform the user the command failed
-		return sendSimpleEmbeddedError(msg, `Soft-Banning ${args.member} for ${args.reason} failed!`, 3000);
+		return msg.sendSimpleError(`Soft-Banning ${args.member} for ${args.reason} failed!`, 3000);
 	}
 
 }

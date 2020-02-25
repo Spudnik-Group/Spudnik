@@ -5,8 +5,7 @@
 import { MessageEmbed } from 'discord.js';
 import { getRandomInt, getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-
-const { smiff }: { smiff: string[] } = require('../../extras/data.json');
+import { smiff } from '../../extras/data.json';
 
 /**
  * Post a random Will Smith fact.

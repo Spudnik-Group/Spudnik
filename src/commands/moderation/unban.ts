@@ -4,7 +4,7 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, User, Permissions } from 'discord.js';
-import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '@lib/helpers';
+import { getEmbedColor, modLogMessage } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
 /**
@@ -54,12 +54,12 @@ export default class UnBanCommand extends Command {
 				**Action:** UnBan
 				**Reason:** ${reason}`);
 
-			modLogMessage(msg, unbanEmbed);
+			await modLogMessage(msg, unbanEmbed);
 
 			// Send the success response
 			return msg.sendEmbed(unbanEmbed);
 		} catch (err) {
-			this.catchError(msg, { user, reason }, err);
+			return this.catchError(msg, { user, reason }, err);
 		}
 	}
 
@@ -74,7 +74,7 @@ export default class UnBanCommand extends Command {
 		**Error Message:** ${err}`);
 
 		// Inform the user the command failed
-		return sendSimpleEmbeddedError(msg, `Unbanning ${args.user} for ${args.reason} failed!`, 3000);
+		return msg.sendSimpleError(`Unbanning ${args.user} for ${args.reason} failed!`, 3000);
 	}
 
 }

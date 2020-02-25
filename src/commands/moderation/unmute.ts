@@ -4,7 +4,7 @@
 
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { MessageEmbed, Permissions } from 'discord.js';
-import { getEmbedColor, sendSimpleEmbeddedError, modLogMessage } from '@lib/helpers';
+import { getEmbedColor, modLogMessage } from '@lib/helpers';
 import { stripIndents } from 'common-tags';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
@@ -20,7 +20,7 @@ export default class UnmuteCommand extends Command {
 		});
 	}
 
-	async run(msg: KlasaMessage, [member, reason]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [member, reason]): Promise<KlasaMessage | KlasaMessage[]> {
 		const muteEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/google/223/speaker-with-cancellation-stroke_1f507.png',
@@ -32,11 +32,11 @@ export default class UnmuteCommand extends Command {
 
 		// Check if user is able to mute the mentioned user
 		if (member.roles.highest.position >= msg.member.roles.highest.position) {
-			return sendSimpleEmbeddedError(msg, 'You cannot unmute this user. Do they have the same or higher role than you?', 3000);
+			return msg.sendSimpleError('You cannot unmute this user. Do they have the same or higher role than you?', 3000);
 		}
 		// Check if the mentioned user is already muted
 		if (!member.roles.has(msg.guild.settings.get(GuildSettings.Roles.Muted))) {
-			return sendSimpleEmbeddedError(msg, 'The member is not muted.', 3000);
+			return msg.sendSimpleError('The member is not muted.', 3000);
 		}
 
 		try {
@@ -49,7 +49,7 @@ export default class UnmuteCommand extends Command {
 					**Reason:** ${reason ? reason : 'no reason'}
 				`);
 
-			modLogMessage(msg, muteEmbed);
+			await modLogMessage(msg, muteEmbed);
 
 			// Send the success response
 			return msg.sendEmbed(muteEmbed);
@@ -64,7 +64,7 @@ export default class UnmuteCommand extends Command {
 				**Error Message:** ${err}`);
 
 			// Inform the user the command failed
-			return sendSimpleEmbeddedError(msg, `UnMuting ${member} for ${reason ? reason : 'no reason'} failed!`, 3000);
+			return msg.sendSimpleError(`UnMuting ${member} for ${reason ? reason : 'no reason'} failed!`, 3000);
 		}
 	}
 

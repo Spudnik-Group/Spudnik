@@ -4,7 +4,7 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, Permissions } from 'discord.js';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, getEmbedColor, modLogMessage } from '@lib/helpers';
+import { getEmbedColor, modLogMessage } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
@@ -53,7 +53,7 @@ export default class AdblockCommand extends Command {
 				return this.catchError(msg, { subCommand: 'disable' }, err);
 			}
 		} else {
-			return sendSimpleEmbeddedMessage(msg, 'Adblock feature already disabled!', 3000);
+			return msg.sendSimpleEmbed('Adblock feature already disabled!', 3000);
 		}
 	}
 
@@ -68,7 +68,7 @@ export default class AdblockCommand extends Command {
 		}).setTimestamp();
 
 		if (adblockEnabled) {
-			return sendSimpleEmbeddedMessage(msg, 'Adblock feature already enabled!', 3000);
+			return msg.sendSimpleEmbed('Adblock feature already enabled!', 3000);
 		}
 		try {
 			await msg.guild.settings.update(GuildSettings.AdblockEnabled, true);
@@ -99,14 +99,14 @@ export default class AdblockCommand extends Command {
 
 		// Inform the user the command failed
 		if (args.subCommand.toLowerCase() === 'enable') {
-			return sendSimpleEmbeddedError(msg, 'Enabling adblock feature failed!');
+			return msg.sendSimpleError('Enabling adblock feature failed!');
 		}
-		return sendSimpleEmbeddedError(msg, 'Disabling adblock feature failed!');
+		return msg.sendSimpleError('Disabling adblock feature failed!');
 
 	}
 
-	private sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
-		modLogMessage(msg, embed);
+	private async sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
+		await modLogMessage(msg, embed);
 
 		// Send the success response
 		return msg.sendEmbed(embed);

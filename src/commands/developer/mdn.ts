@@ -63,14 +63,20 @@ export default class MdnReferenceCommand extends Command {
 				.setURL(firstRes.url)
 				.setDescription(stripIndents`
 					${firstRes.excerpt.replace(/<[^>]*>/g, '`').replace(/``/g, '')}...
-					${response.documents[1] ? `
+					${response.documents[1]
+		? `
 
 					__Similar related pages__:
-					${response.documents.slice(1, 4).map(({ url, slug }: any, index: any) => `${index + 1}) [${slug}](${url})`).join('\n')}` : ''}
+					${response.documents.slice(1, 4).map(({ url, slug }, index: number) => `${index + 1}) [${slug}](${url})`).join('\n')}`
+		: ''}
 
 
-					${firstRes.tags ? `__Tag${firstRes.tags.length === 1 ? '' : 's'}__:
-					${firstRes.tags.join(', ')}` : ''}
+					${firstRes.tags
+		? `__Tag${firstRes.tags.length === 1
+			? ''
+			: 's'}__:
+					${firstRes.tags.join(', ')}`
+		: ''}
 				`)
 				.setFooter(`${response.count} documents found for "${query}". ${response.count < 1 ? '' : `Showing results 1 to ${response.documents.length < 5 ? response.documents.length : '4'}`} | Article ID: ${response.documents[0].id}`);
 

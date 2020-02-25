@@ -4,7 +4,7 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, Permissions } from 'discord.js';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, getEmbedColor, modLogMessage } from '@lib/helpers';
+import { getEmbedColor, modLogMessage } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
 /**
@@ -74,15 +74,12 @@ export default class PruneCommand extends Command {
 					${filter ? `**Filter:** ${filter}` : ''}
 				`
 			}).setTimestamp();
-			modLogMessage(msg, modlogEmbed);
+			await modLogMessage(msg, modlogEmbed);
 
-			return sendSimpleEmbeddedMessage(msg, `Pruned ${limit} messages`, 5000);
+			return msg.sendSimpleEmbed(`Pruned ${limit} messages`, 5000);
 		} catch (err) {
-			this.catchError(msg, { limit, filter }, err);
+			return this.catchError(msg, { limit, filter }, err);
 		}
-		await msg.channel.bulkDelete(messagesToDelete);
-
-		return msg.sendMessage(`Successfully deleted ${messagesToDelete.length} messages from ${limit}.`);
 	}
 
 	private getFilter(msg, filter, user) {
@@ -108,7 +105,7 @@ export default class PruneCommand extends Command {
 		**Error Message:** ${err}`);
 
 		// Inform the user the command failed
-		return sendSimpleEmbeddedError(msg, `Pruning ${args.limit} messages failed!`, 3000);
+		return msg.sendSimpleError(`Pruning ${args.limit} messages failed!`, 3000);
 	}
 
 }

@@ -4,7 +4,7 @@
 
 import { stripIndents } from 'common-tags';
 import { GuildMember, MessageEmbed, Permissions } from 'discord.js';
-import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '@lib/helpers';
+import { getEmbedColor, modLogMessage } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
 /**
@@ -47,7 +47,7 @@ export default class KickCommand extends Command {
 
 		// Check if user is able to kick the mentioned user
 		if (!memberToKick.kickable || !(msg.member.roles.highest.comparePositionTo(memberToKick.roles.highest) > 0)) {
-			return sendSimpleEmbeddedError(msg, `I can't kick ${memberToKick}. Do they have the same or a higher role than me or you?`, 3000);
+			return msg.sendSimpleError(`I can't kick ${memberToKick}. Do they have the same or a higher role than me or you?`, 3000);
 		}
 
 		try {
@@ -60,7 +60,7 @@ export default class KickCommand extends Command {
 				**Reason:** ${reason}
 			`);
 
-			modLogMessage(msg, kickEmbed);
+			await modLogMessage(msg, kickEmbed);
 
 			// Send the success response
 			return msg.sendEmbed(kickEmbed);
@@ -75,7 +75,7 @@ export default class KickCommand extends Command {
 			**Error Message:** ${err}`);
 
 			// Inform the user the command failed
-			return sendSimpleEmbeddedError(msg, `Kicking ${member} for ${reason} failed!`, 3000);
+			return msg.sendSimpleError(`Kicking ${member} for ${reason} failed!`, 3000);
 		}
 	}
 

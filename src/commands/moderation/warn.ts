@@ -3,8 +3,8 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { GuildMember, MessageEmbed, User } from 'discord.js';
-import { sendSimpleEmbeddedError, getEmbedColor } from '@lib/helpers';
+import { GuildMember, MessageEmbed } from 'discord.js';
+import { getEmbedColor } from '@lib/helpers';
 import { CommandStore, Command, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
@@ -35,7 +35,7 @@ export default class WarnCommand extends Command {
 	 * @memberof WarnCommand
 	 */
 	public async run(msg: KlasaMessage, [member, points, reason]: [GuildMember, number, string]): Promise<KlasaMessage | KlasaMessage[]> {
-		if (points < 0) return sendSimpleEmbeddedError(msg, 'Points must be a positive number', 3000);
+		if (points < 0) return msg.sendSimpleError('Points must be a positive number', 3000);
 		const warnEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/warning-sign_26a0.png',
@@ -108,7 +108,7 @@ export default class WarnCommand extends Command {
 		**Error Message:** ${err}`);
 
 		// Inform the user the command failed
-		return sendSimpleEmbeddedError(msg, `Warning ${args.member} failed!`, 3000);
+		return msg.sendSimpleError(`Warning ${args.member} failed!`, 3000);
 	}
 
 }

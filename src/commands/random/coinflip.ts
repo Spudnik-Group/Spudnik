@@ -2,11 +2,10 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { getRandomInt, sendSimpleEmbeddedImage } from '@lib/helpers';
+import { getRandomInt } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { Permissions } from 'discord.js';
-
-const { coinflip }: { coinflip: any[] } = require('../../extras/data');
+import { coinflip } from '../../extras/data.json';
 
 /**
  * Simulate a coin flip.
@@ -32,8 +31,8 @@ export default class CoinFlipCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof CoinFlipCommand
 	 */
-	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		return sendSimpleEmbeddedImage(msg, coinflip[getRandomInt(0, 1)].image);
+	public run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+		return msg.sendSimpleImage(null, coinflip[getRandomInt(0, 1)].image);
 	}
 
 }

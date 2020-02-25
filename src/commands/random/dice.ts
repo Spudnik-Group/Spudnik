@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { getEmbedColor, sendSimpleEmbeddedError } from '@lib/helpers';
+import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
@@ -42,12 +42,14 @@ export default class RollCommand extends Command {
 		});
 
 		if (!result) {
-			return sendSimpleEmbeddedError(msg, 'Invalid roll attempt. Try again with d20 syntax or a valid number.');
+			return msg.sendSimpleError('Invalid roll attempt. Try again with d20 syntax or a valid number.');
 		}
 		diceEmbed.description = stripIndents`
-			Roll: ${roll}${reason ? `
+			Roll: ${roll}${reason
+	? `
 
-			For: ${reason.replace('for ', '')}` : ''}
+			For: ${reason.replace('for ', '')}`
+	: ''}
 
 			--
 			Result: ${result}
