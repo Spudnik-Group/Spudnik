@@ -1,24 +1,39 @@
 module.exports = {
     "env": {
         "browser": true,
-        "es6": true,
         "node": true
     },
     "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "project": "tsconfig.json",
-        "sourceType": "module"
-    },
     "plugins": [
-        "@typescript-eslint",
-        "@typescript-eslint/tslint"
-    ],
+		"@typescript-eslint",
+		"unicorn",
+		"prefer-arrow",
+	],
+	"extends": [
+		"eslint:recommended",
+		"plugin:@typescript-eslint/eslint-recommended",
+		"plugin:@typescript-eslint/recommended",
+		"plugin:@typescript-eslint/recommended-requiring-type-checking",
+		"plugin:import/errors",
+		"plugin:import/warnings",
+		"plugin:import/typescript",
+		"plugin:node/recommended",
+		"plugin:node/recommended-module"
+	],
+	"parserOptions": {
+		"ecmaVersion": 11,
+		"sourceType": "module",
+		"ecmaFeatures": {
+			"modules": true
+		},
+		"tsconfigRootDir": __dirname,
+		"project": ['./tsconfig.json']
+	},
     "rules": {
-        "@typescript-eslint/indent": [
-            "error",
-            "tabs"
-        ],
-        "@typescript-eslint/promise-function-async": "off",
+		"indent": "off",
+    	"@typescript-eslint/indent": ["error", "tab"],
+		"@typescript-eslint/promise-function-async": "off",
+		"quotes": "off",
         "@typescript-eslint/quotes": [
             "error",
             "single",
@@ -80,10 +95,7 @@ module.exports = {
                 "hoist": "all"
             }
         ],
-        "no-underscore-dangle": [
-            "error",
-            "off"
-        ],
+        "no-underscore-dangle": "error",
         "no-unused-labels": "error",
         "no-var": "error",
         "object-shorthand": [
@@ -91,7 +103,6 @@ module.exports = {
             "never"
         ],
         "padding-line-between-statements": [
-            "error",
             "error",
             {
                 "blankLine": "always",
@@ -106,31 +117,6 @@ module.exports = {
             "never"
         ],
         "unicorn/filename-case": "error",
-        "use-isnan": "error",
-        "@typescript-eslint/tslint/config": [
-            "error",
-            {
-                "rules": {
-                    "jsdoc-require": [
-                        true,
-                        "no-private",
-                        "no-private-properties"
-                    ],
-                    "object-literal-sort-keys": [
-                        true,
-                        "ignore-case"
-                    ],
-                    "one-line": [
-                        true,
-                        "check-catch",
-                        "check-finally",
-                        "check-else",
-                        "check-open-brace",
-                        "check-whitespace"
-					],
-					"comment-format": false
-                }
-            }
-        ]
+        "use-isnan": "error"
     }
 };
