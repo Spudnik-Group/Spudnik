@@ -3,7 +3,7 @@
  */
 
 import { MessageEmbed, Permissions } from 'discord.js';
-import { getEmbedColor, sendSimpleEmbeddedMessage } from '@lib/helpers';
+import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import * as fs from 'fs';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
@@ -57,7 +57,7 @@ export default class CommandsCommand extends Command {
 
 				return msg.sendEmbed(commandsEmbed);
 			}
-			return sendSimpleEmbeddedMessage(msg, `No groups matching that name. Use \`${msg.guild.settings.get(GuildSettings.Prefix)}commands\` to view a list of command groups.`, 3000);
+			return msg.sendSimpleEmbed(`No groups matching that name. Use \`${msg.guild.settings.get(GuildSettings.Prefix)}commands\` to view a list of command groups.`, 3000);
 
 		}
 		commandsEmbed

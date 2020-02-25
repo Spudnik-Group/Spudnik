@@ -4,7 +4,7 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { sendSimpleEmbeddedError, getEmbedColor } from '@lib/helpers';
+import { getEmbedColor } from '@lib/helpers';
 import axios from 'axios';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
@@ -53,7 +53,7 @@ export default class MdnReferenceCommand extends Command {
 			const { data: response } = await axios.get(`https://developer.mozilla.org/en-US/search.json?q=${encodeURIComponent(query)}`);
 			if (!response.documents.length) {
 
-				return sendSimpleEmbeddedError(msg, 'Your query did not return any results', 3000);
+				return msg.sendSimpleError('Your query did not return any results', 3000);
 			}
 			const firstRes = response.documents[0];
 
@@ -64,11 +64,11 @@ export default class MdnReferenceCommand extends Command {
 				.setDescription(stripIndents`
 					${firstRes.excerpt.replace(/<[^>]*>/g, '`').replace(/``/g, '')}...
 					${response.documents[1] ? `
-					
+
 					__Similar related pages__:
 					${response.documents.slice(1, 4).map(({ url, slug }: any, index: any) => `${index + 1}) [${slug}](${url})`).join('\n')}` : ''}
-	
-	
+
+
 					${firstRes.tags ? `__Tag${firstRes.tags.length === 1 ? '' : 's'}__:
 					${firstRes.tags.join(', ')}` : ''}
 				`)
@@ -78,7 +78,7 @@ export default class MdnReferenceCommand extends Command {
 		} catch (err) {
 			msg.client.emit('warn', `Error in command dev:mdn: ${err}`);
 
-			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+			return msg.sendSimpleError('There was an error with the request. Try again?', 3000);
 		}
 	}
 

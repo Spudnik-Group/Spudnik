@@ -62,9 +62,10 @@ export default class DisableCommand extends Command {
 				await msg.guild.settings.update(GuildSettings.Commands.DisabledCategories, cmdOrCat.toLowerCase());
 
 				disableEmbed.setDescription(stripIndents`
-				**Moderator:** ${msg.author.tag} (${msg.author.id})
-				**Action:** Disabled the \`${cmdOrCat}\` category.`);
-				modLogMessage(msg, disableEmbed);
+					**Moderator:** ${msg.author.tag} (${msg.author.id})
+					**Action:** Disabled the \`${cmdOrCat}\` category.`);
+
+				await modLogMessage(msg, disableEmbed);
 
 				return msg.sendEmbed(disableEmbed);
 			}
@@ -84,7 +85,7 @@ export default class DisableCommand extends Command {
 		disableEmbed.setDescription(stripIndents`
 				**Moderator:** ${msg.author.tag} (${msg.author.id})
 				**Action:** Disabled the \`${cmdOrCat.name}\` command.`);
-		modLogMessage(msg, disableEmbed);
+		await modLogMessage(msg, disableEmbed);
 
 		return msg.sendEmbed(disableEmbed);
 

@@ -4,7 +4,7 @@
 
 import { stripIndents } from 'common-tags';
 import { Channel, MessageEmbed } from 'discord.js';
-import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, resolveChannel, basicFeatureContent } from '@lib/helpers';
+import { getEmbedColor, modLogMessage, resolveChannel, basicFeatureContent } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
@@ -91,7 +91,7 @@ export default class GoodbyeCommand extends Command {
 		const channelID = msg.guild.channels.get(resolveChannel(content)).id;
 
 		if (goodbyeChannel && goodbyeChannel === channelID) {
-			return sendSimpleEmbeddedMessage(msg, `Goodbye channel already set to <#${channelID}>!`, 3000);
+			return msg.sendSimpleEmbed(`Goodbye channel already set to <#${channelID}>!`, 3000);
 		}
 		try {
 			await msg.guild.settings.update(GuildSettings.Goodbye.Channel, channelID);
@@ -130,7 +130,7 @@ export default class GoodbyeCommand extends Command {
 
 		if (goodbyeChannel) {
 			if (goodbyeEnabled) {
-				return sendSimpleEmbeddedMessage(msg, 'Goodbye message already enabled!', 3000);
+				return msg.sendSimpleEmbed('Goodbye message already enabled!', 3000);
 			}
 			try {
 				await msg.guild.settings.update(GuildSettings.Goodbye.Enabled, true);
@@ -148,7 +148,7 @@ export default class GoodbyeCommand extends Command {
 			}
 
 		} else {
-			return sendSimpleEmbeddedError(msg, 'Please set the channel for the goodbye message before enabling the feature. See `help goodbye` for info.', 3000);
+			return msg.sendSimpleError('Please set the channel for the goodbye message before enabling the feature. See `help goodbye` for info.', 3000);
 		}
 	}
 
@@ -185,7 +185,7 @@ export default class GoodbyeCommand extends Command {
 				return this.catchError(msg, { subCommand: 'off' }, err);
 			}
 		} else {
-			return sendSimpleEmbeddedMessage(msg, 'Goodbye message already disabled!', 3000);
+			return msg.sendSimpleError('Goodbye message already disabled!', 3000);
 		}
 	}
 
@@ -269,11 +269,11 @@ export default class GoodbyeCommand extends Command {
 		msg.client.emit('warn', goodbyeWarn);
 
 		// Inform the user the command failed
-		return sendSimpleEmbeddedError(msg, goodbyeUserWarn);
+		return msg.sendSimpleError(goodbyeUserWarn);
 	}
 
-	private sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
-		modLogMessage(msg, embed);
+	private async sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
+		await modLogMessage(msg, embed);
 
 		// Send the success response
 		return msg.sendEmbed(embed);

@@ -4,7 +4,7 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, Permissions } from 'discord.js';
-import { sendSimpleEmbeddedError, getEmbedColor } from '@lib/helpers';
+import { getEmbedColor } from '@lib/helpers';
 import axios from 'axios';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
@@ -39,7 +39,7 @@ export default class GithubCommand extends Command {
 	 * @memberof GithubCommand
 	 */
 	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
-		if (query.indexOf('/') === -1) return sendSimpleEmbeddedError(msg, 'Invalid repository, it must be in the format: `username/repositoryname`');
+		if (query.indexOf('/') === -1) return msg.sendSimpleError('Invalid repository, it must be in the format: `username/repositoryname`');
 
 		const githubEmbed: MessageEmbed = new MessageEmbed({
 			author: {
@@ -59,7 +59,7 @@ export default class GithubCommand extends Command {
 				}
 			});
 			const size = res.size <= 1024 ? `${res.size} KB` : Math.floor(res.size / 1024) > 1024 ? `${(res.size / 1024 / 1024).toFixed(2)} GB` : `${(res.size / 1024).toFixed(2)} MB`;
-			const license = res.license && res.license.name && res.license.url ? `[${res.license.name}](${res.license.url})` : res.license && res.license.name || 'None';
+			const license = res.license && res.license.name && res.license.url ? `[${res.license.name}](${res.license.url})` : (res.license && res.license.name) || 'None';
 			const footer = [];
 			if (res.fork) footer.push(`❯ **Forked** from [${res.parent.full_name}](${res.parent.html_url})`);
 			if (res.archived) footer.push('❯ This repository is **Archived**');
@@ -83,7 +83,7 @@ export default class GithubCommand extends Command {
 		} catch (err) {
 			msg.client.emit('warn', `Error in command dev:github: ${err}`);
 
-			return sendSimpleEmbeddedError(msg, 'Could not fetch that repo, are you sure it exists?', 3000);
+			return msg.sendSimpleError('Could not fetch that repo, are you sure it exists?', 3000);
 		}
 	}
 

@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { sendSimpleEmbeddedMessageWithAuthor, Convert } from '@lib/helpers';
+import { Convert } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
@@ -30,7 +30,7 @@ export default class Dec2BinCommand extends Command {
 	 * @memberof Dec2BinCommand
 	 */
 	public async run(msg: KlasaMessage, [numberToConvert]): Promise<KlasaMessage | KlasaMessage[]> {
-		return sendSimpleEmbeddedMessageWithAuthor(msg, `${numberToConvert} = ${Convert.dec2bin(numberToConvert)}`, { name: 'Decimal to Binary Conversion:' });
+		return msg.sendSimpleEmbedWithAuthor(`${numberToConvert} = ${Convert.dec2bin(numberToConvert)}`, { name: 'Decimal to Binary Conversion:' });
 	}
 
 }

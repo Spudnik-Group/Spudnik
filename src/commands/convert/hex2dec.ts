@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { sendSimpleEmbeddedMessageWithAuthor, Convert } from '@lib/helpers';
+import { Convert } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
@@ -31,9 +31,9 @@ export default class Hex2DecCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage, [numberToConvert]): Promise<KlasaMessage | KlasaMessage[]> {
 		numberToConvert = numberToConvert.input;
-		numberToConvert = !numberToConvert.toLowerCase().startsWith('0x') ? `0x${numberToConvert.toUpperCase()}` : `0x${numberToConvert.toLowerCase().replace('0x', '').toUpperCase()}`;
+		numberToConvert = numberToConvert.toLowerCase().startsWith('0x') ? `0x${numberToConvert.toLowerCase().replace('0x', '').toUpperCase()}` : `0x${numberToConvert.toUpperCase()}`;
 
-		return sendSimpleEmbeddedMessageWithAuthor(msg, `${numberToConvert} = ${Convert.hex2dec(numberToConvert)}`, { name: 'Hexadecimal to Decimal Conversion:' });
+		return msg.sendSimpleEmbedWithAuthor(`${numberToConvert} = ${Convert.hex2dec(numberToConvert)}`, { name: 'Hexadecimal to Decimal Conversion:' });
 	}
 
 }

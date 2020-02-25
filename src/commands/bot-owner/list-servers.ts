@@ -68,8 +68,9 @@ export default class ListServersCommand extends Command {
 			});
 		}
 
-		// @ts-ignore // RichDisplay doesn't like this syntax in TS, but it works.
-		return display.run(await msg.send('Loading server list...'), { filter: (reaction: any, user: any) => user === msg.author });
+		await display.run(await msg.send('Loading server list...'), { filter: (_reaction: any, user: any) => user === msg.author });
+
+		return null;
 	}
 
 }

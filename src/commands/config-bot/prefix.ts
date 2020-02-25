@@ -4,7 +4,7 @@
 
 import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
-import { sendSimpleEmbeddedError, getEmbedColor } from '@lib/helpers';
+import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
@@ -64,7 +64,7 @@ export default class PrefixCommand extends Command {
 
 		// Check the user's permission before changing anything
 		if (!msg.guild && !this.client.owners.has(msg.author)) {
-			return sendSimpleEmbeddedError(msg, 'Only the bot owner(s) may change the global command prefix.', 3000);
+			return msg.sendSimpleError('Only the bot owner(s) may change the global command prefix.', 3000);
 		}
 
 		// Save the prefix
@@ -74,7 +74,7 @@ export default class PrefixCommand extends Command {
 
 		if (lowercase === 'default') {
 			if (msg.guild) {
-				msg.guild.settings.reset('prefix');
+				await msg.guild.settings.reset(GuildSettings.Prefix);
 			} else {
 				this.client.options.prefix = '!';
 			}
@@ -84,7 +84,7 @@ export default class PrefixCommand extends Command {
 			response = `Reset the command prefix to the default (currently ${current}).`;
 		} else {
 			if (msg.guild) {
-				msg.guild.settings.update(GuildSettings.Prefix, newPrefix);
+				await msg.guild.settings.update(GuildSettings.Prefix, newPrefix);
 			} else {
 				this.client.options.prefix = newPrefix;
 			}

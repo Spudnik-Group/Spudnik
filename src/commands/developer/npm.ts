@@ -4,7 +4,7 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { sendSimpleEmbeddedError, getEmbedColor } from '@lib/helpers';
+import { getEmbedColor } from '@lib/helpers';
 import axios from 'axios';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
@@ -90,7 +90,7 @@ export default class NPMCommand extends Command {
 		} catch (err) {
 			msg.client.emit('warn', `Error in command dev:npm: ${err}`);
 
-			return sendSimpleEmbeddedError(msg, 'Could not fetch that package, are you sure it exists?', 3000);
+			return msg.sendSimpleError('Could not fetch that package, are you sure it exists?', 3000);
 		}
 	}
 

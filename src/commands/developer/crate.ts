@@ -3,10 +3,9 @@
  */
 
 import axios from 'axios';
-import { Command, CommandStore } from 'klasa';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed, Permissions } from 'discord.js';
 import { stripIndents } from 'common-tags';
-import { sendSimpleEmbeddedError } from '@lib/helpers';
 
 const suffixes = ['Bytes', 'KB', 'MB'];
 const getBytes = bytes => {
@@ -25,11 +24,11 @@ export default class CrateCommand extends Command {
 		});
 	}
 
-	async run(msg, [name]) {
+	public async run(msg: KlasaMessage, [name]: [string]) {
 		try {
 			const { data } = await axios(`https://crates.io/api/v1/crates/${encodeURIComponent(name)}`);
 			const { crate, versions: [latest] } = data;
-			if (!crate) throw 'That crate doesn\'t exist.';
+			if (!crate) throw new Error('That crate doesn\'t exist.');
 
 			const embed = new MessageEmbed()
 				.setColor(15051318)
@@ -60,7 +59,7 @@ export default class CrateCommand extends Command {
 		} catch (err) {
 			msg.client.emit('warn', `Error in command dev:crate: ${err}`);
 
-			return sendSimpleEmbeddedError(msg, 'Could not fetch that crate, are you sure it exists?', 3000);
+			return msg.sendSimpleError('Could not fetch that crate, are you sure it exists?', 3000);
 		}
 	}
 

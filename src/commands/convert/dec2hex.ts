@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { sendSimpleEmbeddedMessageWithAuthor, Convert } from '@lib/helpers';
+import { Convert } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
@@ -30,7 +30,7 @@ export default class Dec2HexCommand extends Command {
 	 * @memberof Dec2HexCommand
 	 */
 	public async run(msg: KlasaMessage, [numberToConvert]): Promise<KlasaMessage | KlasaMessage[]> {
-		return sendSimpleEmbeddedMessageWithAuthor(msg, `${numberToConvert} = 0x${Convert.dec2hex(numberToConvert).toUpperCase()}`, { name: 'Decimal to Hexadecimal Conversion:' });
+		return msg.sendSimpleEmbedWithAuthor(`${numberToConvert} = 0x${Convert.dec2hex(numberToConvert).toUpperCase()}`, { name: 'Decimal to Hexadecimal Conversion:' });
 	}
 
 }

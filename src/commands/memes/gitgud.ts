@@ -3,7 +3,6 @@
  */
 
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-import { sendSimpleEmbeddedImage } from '@lib/helpers';
 import { MessageEmbed } from 'discord.js';
 
 /**
@@ -39,7 +38,7 @@ export default class GitGudCommand extends Command {
 				reply: mention
 			});
 		}
-		return sendSimpleEmbeddedImage(msg, gitgudImageURL);
+		return msg.sendSimpleImage(gitgudImageURL);
 
 	}
 

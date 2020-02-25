@@ -2,9 +2,8 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Command, CommandStore } from 'klasa';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 import axios from 'axios';
-import { sendSimpleEmbeddedError } from '@lib/helpers';
 
 export default class HastebinCommand extends Command {
 
@@ -16,7 +15,7 @@ export default class HastebinCommand extends Command {
 		});
 	}
 
-	async run(msg, [code]) {
+	public async run(msg: KlasaMessage, [code]: [string]) {
 		try {
 			const { data } = await axios.post('https://hastebin.com/documents', code);
 
@@ -24,7 +23,7 @@ export default class HastebinCommand extends Command {
 		} catch (err) {
 			msg.client.emit('warn', `Error in command dev:hastebin: ${err}`);
 
-			return sendSimpleEmbeddedError(msg, 'Couldn\'t create the hastebin post, the post body may have been invalid. Try again?');
+			return msg.sendSimpleError('Couldn\'t create the hastebin post, the post body may have been invalid. Try again?');
 		}
 	}
 

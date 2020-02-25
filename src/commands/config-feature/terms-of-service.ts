@@ -4,7 +4,7 @@
 
 import { stripIndents } from 'common-tags';
 import { Channel, MessageEmbed } from 'discord.js';
-import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, resolveChannel } from '@lib/helpers';
+import { getEmbedColor, modLogMessage, resolveChannel } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, Possible, Timestamp } from 'klasa';
 import * as markdownescape from 'markdown-escape';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
@@ -38,19 +38,19 @@ export default class TermsOfServiceCommand extends Command {
 
 		this
 			.createCustomResolver('item', (arg: string, possible: Possible, message: KlasaMessage, [subCommand]) => {
-				if (subCommand === 'channel' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw 'Please provide a channel for the TOS message to be displayed in.';
-				if (['title', 'body'].includes(subCommand) && !arg) throw 'Please include the index of the TOS message you would like to update.';
-				if (subCommand === 'get' && !arg) throw 'Please include the index of the TOS message you would like to view.';
+				if (subCommand === 'channel' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw new Error('Please provide a channel for the TOS message to be displayed in.');
+				if (['title', 'body'].includes(subCommand) && !arg) throw new Error('Please include the index of the TOS message you would like to update.');
+				if (subCommand === 'get' && !arg) throw new Error('Please include the index of the TOS message you would like to view.');
 
 				return arg;
 			})
 			.createCustomResolver('text', (arg: string, possible: Possible, message: KlasaMessage, [subCommand]) => {
-				if (['title', 'body'].includes(subCommand) && !arg) throw 'Please include the new text.';
-				if (subCommand === 'get' && (['true', 'false', 't', 'f'].includes(arg))) throw 'Please supply a valid boolean option for `raw` option.';
+				if (['title', 'body'].includes(subCommand) && !arg) throw new Error('Please include the new text.');
+				if (subCommand === 'get' && (['true', 'false', 't', 'f'].includes(arg))) throw new Error('Please supply a valid boolean option for `raw` option.');
 
 				// Check text length against Discord embed limits
-				if (subCommand === 'title' && arg.length > 256) throw 'Discord message embed titles are limited to 256 characters; please supply a shorter title.';
-				if (subCommand === 'body' && arg.length > 2048) throw 'Discord message embed bodies are limited to 2048 characters; please supply a shorter body.';
+				if (subCommand === 'title' && arg.length > 256) throw new Error('Discord message embed titles are limited to 256 characters; please supply a shorter title.');
+				if (subCommand === 'body' && arg.length > 2048) throw new Error('Discord message embed bodies are limited to 2048 characters; please supply a shorter body.');
 
 				return arg;
 			});
@@ -68,7 +68,7 @@ export default class TermsOfServiceCommand extends Command {
 		const newTosChannel = msg.guild.channels.get(resolveChannel(item));
 
 		if (tosChannel && newTosChannel && tosChannel === newTosChannel.id) {
-			return sendSimpleEmbeddedMessage(msg, `Terms of Service channel already set to ${item}!`, 3000);
+			return msg.sendSimpleEmbed(`Terms of Service channel already set to ${item}!`, 3000);
 		}
 		try {
 			await msg.guild.settings.update(GuildSettings.Tos.Channel, newTosChannel.id);
@@ -99,7 +99,7 @@ export default class TermsOfServiceCommand extends Command {
 		});
 
 		const tosMessages = msg.guild.settings.get(GuildSettings.Tos.Messages);
-		let existingTosMessage = tosMessages.find((message, index) => {
+		let existingTosMessage = tosMessages.find(message => {
 			if (Number(message.id) === Number(item)) {
 				return true;
 			}
@@ -146,7 +146,7 @@ export default class TermsOfServiceCommand extends Command {
 		});
 
 		const tosMessages = msg.guild.settings.get(GuildSettings.Tos.Messages);
-		let existingTosMessage = tosMessages.find((message, index) => {
+		let existingTosMessage = tosMessages.find(message => {
 			if (Number(message.id) === Number(item)) {
 				return true;
 			}
@@ -191,7 +191,7 @@ export default class TermsOfServiceCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		});
-		const tosMessage = msg.guild.settings.get(GuildSettings.Tos.Messages).find((message, index) => {
+		const tosMessage = msg.guild.settings.get(GuildSettings.Tos.Messages).find(message => {
 			if (Number(message.id) === Number(item)) {
 				return true;
 			}
@@ -235,7 +235,7 @@ export default class TermsOfServiceCommand extends Command {
 					return msg.sendEmbed(tosEmbed);
 				});
 			} else {
-				return sendSimpleEmbeddedError(msg, 'There are no terms of service messages set.', 3000);
+				return msg.sendSimpleError('There are no terms of service messages set.', 3000);
 			}
 		}
 	}
@@ -255,7 +255,7 @@ export default class TermsOfServiceCommand extends Command {
 		if (tosMessages.length) {
 			let tosList = '';
 
-			tosMessages.forEach((message, index) => {
+			tosMessages.forEach(message => {
 				tosList += `${message.id} - ${message.title}\n`;
 			});
 			// TODO: change this to better output messages, this could overload the embed character limit
@@ -305,11 +305,11 @@ export default class TermsOfServiceCommand extends Command {
 		msg.client.emit('warn', tosWarn);
 
 		// Inform the user the command failed
-		return sendSimpleEmbeddedError(msg, tosUserWarn);
+		return msg.sendSimpleError(tosUserWarn);
 	}
 
-	private sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
-		modLogMessage(msg, embed);
+	private async sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
+		await modLogMessage(msg, embed);
 
 		// Send the success response
 		return msg.sendEmbed(embed);

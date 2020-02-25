@@ -4,7 +4,7 @@
 
 import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
-import { getEmbedColor, sendSimpleEmbeddedError } from '@lib/helpers';
+import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { SteamGames } from '@lib/constants';
 
@@ -41,7 +41,7 @@ export default class GoCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage, [game]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (!Object.keys(SteamGames).includes(game.toUpperCase())) {
-			return sendSimpleEmbeddedError(msg, `Sorry, only a few games are supported at this time: \n ${steamGameNames}`, 5000);
+			return msg.sendSimpleError(`Sorry, only a few games are supported at this time: \n ${steamGameNames}`, 5000);
 		}
 		const gameID = SteamGames[game.toUpperCase()];
 

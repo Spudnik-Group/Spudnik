@@ -62,9 +62,10 @@ export default class EnableCommand extends Command {
 				await msg.guild.settings.update(GuildSettings.Commands.DisabledCategories, cmdOrCat.toLowerCase());
 
 				enableEmbed.setDescription(stripIndents`
-				**Moderator:** ${msg.author.tag} (${msg.author.id})
-				**Action:** Enabled the \`${cmdOrCat}\` category.`);
-				modLogMessage(msg, enableEmbed);
+					**Moderator:** ${msg.author.tag} (${msg.author.id})
+					**Action:** Enabled the \`${cmdOrCat}\` category.`);
+
+				await modLogMessage(msg, enableEmbed);
 
 				return msg.sendEmbed(enableEmbed);
 			}
@@ -79,13 +80,11 @@ export default class EnableCommand extends Command {
 
 		enableEmbed.setDescription(stripIndents`
 				**Moderator:** ${msg.author.tag} (${msg.author.id})
-				**Action:** Enabled the \`${cmdOrCat.name}\` command${
-	!isCommandCategoryEnabled(msg, cmdOrCat.category) ? `, but the \`${cmdOrCat.category}\` category is disabled, so it still can't be used` : ''}.`);
-		modLogMessage(msg, enableEmbed);
+				**Action:** Enabled the \`${cmdOrCat.name}\` command${isCommandCategoryEnabled(msg, cmdOrCat.category) ? '' : `, but the \`${cmdOrCat.category}\` category is disabled, so it still can't be used`}.`);
+
+		await modLogMessage(msg, enableEmbed);
 
 		return msg.sendEmbed(enableEmbed);
-
-
 	}
 
 }

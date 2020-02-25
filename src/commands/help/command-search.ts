@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { getEmbedColor, sendSimpleEmbeddedMessage } from '@lib/helpers';
+import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed, Permissions } from 'discord.js';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
@@ -50,7 +50,7 @@ export default class CommandSearchCommand extends Command {
 
 			return msg.sendEmbed(commandsEmbed);
 		}
-		return sendSimpleEmbeddedMessage(msg, `No commands found containing that text. Use \`${msg.guild.settings.get(GuildSettings.Prefix)}commands\` to view a list of command groups.`, 3000);
+		return msg.sendSimpleEmbed(`No commands found containing that text. Use \`${msg.guild.settings.get(GuildSettings.Prefix)}commands\` to view a list of command groups.`, 3000);
 
 	}
 

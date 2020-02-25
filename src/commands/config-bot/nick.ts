@@ -3,7 +3,7 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { GuildMember, Permissions } from 'discord.js';
+import { Permissions } from 'discord.js';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
