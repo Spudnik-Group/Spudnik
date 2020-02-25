@@ -36,7 +36,7 @@ export const KlasaConfig: KlasaClientOptions = {
 	disableEveryone: false,
 	language: 'en-US',
 	prefix: '!',
-	production: !!SpudConfig.debug,
+	production: Boolean(SpudConfig.debug),
 	readyMessage: (client: Client) => `Successfully initialized. Ready to serve ${client.guilds.size} guild${client.guilds.size === 1 ? '' : 's'}.`,
 	restTimeOffset: 500,
 
@@ -61,8 +61,8 @@ export const KlasaConfig: KlasaClientOptions = {
 	 * Database Options
 	 */
 	providers: {
-		default: 'mongodb',
-		mongodb: {
+		'default': 'mongodb',
+		'mongodb': {
 			db: SpudConfig.spudCoreDB,
 			connectionString: SpudConfig.spudCoreDBConnection
 		}
