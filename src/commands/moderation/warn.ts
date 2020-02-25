@@ -33,6 +33,7 @@ export default class WarnCommand extends Command {
 	 * @memberof WarnCommand
 	 */
 	public async run(msg: KlasaMessage, [member, points, reason]): Promise<KlasaMessage | KlasaMessage[]> {
+		if (points < 0) return sendSimpleEmbeddedError(msg, 'Points must be a positive number', 3000);
 		const warnEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/warning-sign_26a0.png',
