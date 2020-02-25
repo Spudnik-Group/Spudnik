@@ -38,7 +38,7 @@ export default class GitGudCommand extends Command {
 				reply: mention
 			});
 		}
-		return msg.sendSimpleImage(gitgudImageURL);
+		return msg.sendSimpleImage(null, gitgudImageURL);
 
 	}
 

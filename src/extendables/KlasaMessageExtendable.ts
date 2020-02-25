@@ -24,7 +24,7 @@ export default class extends Extendable {
 		return this.sendSimpleEmbedWithAuthorAndTitle(description, null, null, timeout);
 	}
 
-	public async sendSimpleEmbedWithAuthor(this: KlasaMessage, description: string, author?: MessageEmbedAuthor | null, timeout?: number | null): Promise<KlasaMessage | KlasaMessage[]> {
+	public async sendSimpleEmbedWithAuthor(this: KlasaMessage, description: string, author: MessageEmbedAuthor, timeout?: number | null): Promise<KlasaMessage | KlasaMessage[]> {
 		return this.sendSimpleEmbedWithAuthorAndTitle(description, author, null, timeout);
 	}
 
@@ -32,7 +32,7 @@ export default class extends Extendable {
 		return this.sendSimpleEmbedWithAuthorAndTitle(description, null, title, timeout);
 	}
 
-	public async sendSimpleEmbedWithAuthorAndTitle(this: KlasaMessage, description: string, author?: MessageEmbedAuthor | null, title?: string | null, timeout?: number | null): Promise<KlasaMessage | KlasaMessage[]> {
+	public async sendSimpleEmbedWithAuthorAndTitle(this: KlasaMessage, description: string, author: MessageEmbedAuthor | null, title: string | null, timeout?: number | null): Promise<KlasaMessage | KlasaMessage[]> {
 		const promise: Promise<KlasaMessage | KlasaMessage[]> = this.sendEmbed(new MessageEmbed({
 			author,
 			// color
@@ -105,7 +105,7 @@ export default class extends Extendable {
 		return promise;
 	}
 
-	public async sendSimpleImage(this: KlasaMessage, description: string, url: string): Promise<KlasaMessage | KlasaMessage[]> {
+	public async sendSimpleImage(this: KlasaMessage, description: string | null, url: string): Promise<KlasaMessage | KlasaMessage[]> {
 		return this.sendEmbed(new MessageEmbed({
 			author: {
 				iconURL: this.client.user.displayAvatarURL(),

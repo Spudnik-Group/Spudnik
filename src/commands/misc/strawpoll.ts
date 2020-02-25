@@ -4,7 +4,6 @@
 
 import { stripIndents } from 'common-tags';
 import axios from 'axios';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
@@ -41,7 +40,7 @@ export default class StrawpollCommand extends Command {
 				title
 			});
 
-			return sendSimpleEmbeddedMessage(msg, stripIndents`
+			return msg.sendSimpleEmbed(stripIndents`
 				${res.title}
 				http://www.strawpoll.me/${res.id}
 			`);

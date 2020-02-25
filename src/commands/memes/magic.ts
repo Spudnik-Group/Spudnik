@@ -2,7 +2,6 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { sendSimpleEmbeddedImage } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { Permissions } from 'discord.js';
 
@@ -31,7 +30,7 @@ export default class MagicCommand extends Command {
 	 * @memberof MagicCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		return sendSimpleEmbeddedImage(msg, 'https://media.giphy.com/media/12NUbkX6p4xOO4/giphy.gif');
+		return msg.sendSimpleImage(null, 'https://media.giphy.com/media/12NUbkX6p4xOO4/giphy.gif');
 	}
 
 }
