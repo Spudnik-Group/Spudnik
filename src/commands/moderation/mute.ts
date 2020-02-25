@@ -6,6 +6,7 @@ import { Command, CommandStore, Duration, KlasaMessage, Timestamp } from 'klasa'
 import { MessageEmbed, Permissions } from 'discord.js';
 import { getEmbedColor, sendSimpleEmbeddedError, modLogMessage } from '@lib/helpers';
 import { stripIndents } from 'common-tags';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 export default class MuteCommand extends Command {
 	constructor(store: CommandStore, file: string[], directory: string) {
@@ -33,12 +34,12 @@ export default class MuteCommand extends Command {
 			return sendSimpleEmbeddedError(msg, 'You cannot mute this user. Do they have the same or higher role than you?', 3000);
 		}
 		// Check if the mentioned user is already muted
-		if (member.roles.has(msg.guild.settings.get('roles.muted'))) {
+		if (member.roles.has(msg.guild.settings.get(GuildSettings.Roles.Muted))) {
 			return sendSimpleEmbeddedError(msg, 'The member is already muted.', 3000);
 		}
 
 		try {
-			await member.roles.add(msg.guild.settings.get('roles.muted'));
+			await member.roles.add(msg.guild.settings.get(GuildSettings.Roles.Muted));
 			if (when) {
 				await this.client.schedule.create('unmute', when, {
 					data: {

@@ -6,6 +6,7 @@ import { stripIndents } from 'common-tags';
 import { MessageEmbed, Permissions } from 'discord.js';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 /**
  * Enable or disable the DeleteCommandMessages feature.
@@ -37,7 +38,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 	 * @memberof DeleteCommandMessagesCommand
 	 */
 	public async on(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const deleteCommandMessagesEnabled = await msg.guild.settings.get('deleteCommandMessages');
+		const deleteCommandMessagesEnabled = await msg.guild.settings.get(GuildSettings.Commands.DeleteCommandMessages);
 		const deleteCommandMessagesEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				name: '🛑 DeleteCommandMessages'
@@ -50,7 +51,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 			return sendSimpleEmbeddedMessage(msg, 'DeleteCommandMessages feature already enabled!', 3000);
 		} else {
 			try {
-				await msg.guild.settings.update('deleteCommandMessages', true, msg.guild);
+				await msg.guild.settings.update(GuildSettings.Commands.DeleteCommandMessages, true);
 
 				// Set up embed message
 				deleteCommandMessagesEmbed.setDescription(stripIndents`
@@ -73,7 +74,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 	 * @memberof DeleteCommandMessagesCommand
 	 */
 	public async off(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const deleteCommandMessagesEnabled = await msg.guild.settings.get('deleteCommandMessages');
+		const deleteCommandMessagesEnabled = await msg.guild.settings.get(GuildSettings.Commands.DeleteCommandMessages);
 		const deleteCommandMessagesEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				name: '🛑 DeleteCommandMessages'
@@ -84,7 +85,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 
 		if (deleteCommandMessagesEnabled) {
 			try {
-				await msg.guild.settings.update('deleteCommandMessages', false, msg.guild);
+				await msg.guild.settings.update(GuildSettings.Commands.DeleteCommandMessages, false);
 
 				// Set up embed message
 				deleteCommandMessagesEmbed.setDescription(stripIndents`

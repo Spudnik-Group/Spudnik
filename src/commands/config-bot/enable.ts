@@ -7,6 +7,7 @@ import { stripIndents } from 'common-tags';
 import { modLogMessage, getEmbedColor, sendSimpleEmbeddedError, commandOrCategory, isCommandCategoryEnabled, isCommandEnabled, sendSimpleEmbeddedMessage } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import * as fs from 'fs';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 /**
  * Enables a command or command group.
@@ -57,7 +58,7 @@ export default class EnableCommand extends Command {
 				return sendSimpleEmbeddedError(msg,
 					`The \`${cmdOrCat}\` category is already enabled.`, 3000);
 			} else if (groups.find((g: string) => g === parsedGroup)) {
-				await msg.guild.settings.update('disabledCommandCategories', cmdOrCat.toLowerCase(), msg.guild);
+				await msg.guild.settings.update(GuildSettings.Commands.DisabledCategories, cmdOrCat.toLowerCase());
 
 				enableEmbed.setDescription(stripIndents`
 				**Moderator:** ${msg.author.tag} (${msg.author.id})
@@ -66,14 +67,14 @@ export default class EnableCommand extends Command {
 
 				return msg.sendEmbed(enableEmbed);
 			} else {
-				return sendSimpleEmbeddedMessage(msg, `No groups matching that name. Use \`${msg.guild.settings.get('prefix')}commands\` to view a list of command groups.`, 3000);
+				return sendSimpleEmbeddedMessage(msg, `No groups matching that name. Use \`${msg.guild.settings.get(GuildSettings.Prefix)}commands\` to view a list of command groups.`, 3000);
 			}
 		} else {
 			// Command
 			if (isCommandEnabled(msg, cmdOrCat)) {
 				return sendSimpleEmbeddedError(msg, `The \`${cmdOrCat.name}\` command is already enabled.`, 3000);
 			} else {
-				await msg.guild.settings.update('disabledCommands', cmdOrCat.name.toLowerCase(), msg.guild);
+				await msg.guild.settings.update(GuildSettings.Commands.Disabled, cmdOrCat.name.toLowerCase());
 
 				enableEmbed.setDescription(stripIndents`
 				**Moderator:** ${msg.author.tag} (${msg.author.id})

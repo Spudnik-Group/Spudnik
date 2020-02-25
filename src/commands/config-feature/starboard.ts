@@ -6,6 +6,7 @@ import { stripIndents } from 'common-tags';
 import { Channel, MessageEmbed, Permissions } from 'discord.js';
 import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, resolveChannel } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, Possible, Timestamp } from 'klasa';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 /**
  * Adjusts starboard settings.
@@ -59,14 +60,14 @@ export default class StarboardCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const starboard = await msg.guild.settings.get('starboard.channel');
+		const starboard = msg.guild.settings.get(GuildSettings.Starboard.Channel);
 		const channelID = msg.guild.channels.get(resolveChannel(content)).id;
 
 		if (starboard && starboard === channelID) {
 			return sendSimpleEmbeddedMessage(msg, `Star Board channel already set to <#${channelID}>!`, 3000);
 		} else {
 			try {
-				await msg.guild.settings.update('starboard.channel', channelID, msg.guild);
+				await msg.guild.settings.update(GuildSettings.Starboard.Channel, channelID);
 
 				// Set up embed message
 				starboardEmbed.setDescription(stripIndents`
@@ -100,7 +101,7 @@ export default class StarboardCommand extends Command {
 		}).setTimestamp();
 
 		try {
-			await msg.guild.settings.update('starboard.trigger', content, msg.guild);
+			await msg.guild.settings.update(GuildSettings.Starboard.Trigger, content);
 
 			// Set up embed message
 			starboardEmbed.setDescription(stripIndents`
@@ -130,15 +131,15 @@ export default class StarboardCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const starboard = await msg.guild.settings.get('starboard.channel');
-		const starboardEnabled: boolean = await msg.guild.settings.get('starboard.enabled');
+		const starboard = msg.guild.settings.get(GuildSettings.Starboard.Channel);
+		const starboardEnabled = msg.guild.settings.get(GuildSettings.Starboard.Enabled);
 
 		if (starboard) {
 			if (starboardEnabled) {
 				return sendSimpleEmbeddedMessage(msg, 'Star Board already enabled!', 3000);
 			} else {
 				try {
-					await msg.guild.settings.update('starboard.enabled', true, msg.guild);
+					await msg.guild.settings.update(GuildSettings.Starboard.Enabled, true);
 
 					// Set up embed message
 					starboardEmbed.setDescription(stripIndents`
@@ -172,11 +173,11 @@ export default class StarboardCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const starboardEnabled: boolean = await msg.guild.settings.get('starboard.enabled');
+		const starboardEnabled: boolean = msg.guild.settings.get(GuildSettings.Starboard.Enabled);
 
 		if (starboardEnabled) {
 			try {
-				await msg.guild.settings.update('starboard.enabled', false, msg.guild);
+				await msg.guild.settings.update(GuildSettings.Starboard.Enabled, false);
 
 				// Set up embed message
 				starboardEmbed.setDescription(stripIndents`
@@ -210,9 +211,9 @@ export default class StarboardCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const starboard = await msg.guild.settings.get('starboard.channel');
-		const starboardTrigger: string = await msg.guild.settings.get('starboard.trigger');
-		const starboardEnabled: boolean = await msg.guild.settings.get('starboard.enabled');
+		const starboard = msg.guild.settings.get(GuildSettings.Starboard.Channel);
+		const starboardTrigger: string = msg.guild.settings.get(GuildSettings.Starboard.Trigger);
+		const starboardEnabled: boolean = msg.guild.settings.get(GuildSettings.Starboard.Enabled);
 
 		// Set up embed message
 		starboardEmbed.setDescription(stripIndents`Star Board feature: ${starboardEnabled ? '_Enabled_' : '_Disabled_'}
@@ -221,9 +222,9 @@ export default class StarboardCommand extends Command {
 		`);
 
 		if (starboard) {
-			const botCanRead: boolean = await msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('READ_MESSAGE_HISTORY');
-			const botCanPostLinks: boolean = await msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('EMBED_LINKS');
-			const botCanPostAttachments: boolean = await msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('ATTACH_FILES');
+			const botCanRead: boolean = msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('READ_MESSAGE_HISTORY');
+			const botCanPostLinks: boolean = msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('EMBED_LINKS');
+			const botCanPostAttachments: boolean = msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('ATTACH_FILES');
 
 			starboardEmbed.description += stripIndents`
 

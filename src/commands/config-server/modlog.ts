@@ -6,6 +6,7 @@ import { stripIndents } from 'common-tags';
 import { MessageEmbed, Channel } from 'discord.js';
 import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, getEmbedColor, modLogMessage, resolveChannel } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, Possible, Timestamp } from 'klasa';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 /**
  * Enable or disable the Modlog feature.
@@ -47,15 +48,15 @@ export default class ModlogCommand extends Command {
 			color: getEmbedColor(msg),
 			description: ''
 		}).setTimestamp();
-		const modlogChannel = await msg.guild.settings.get('modlog.channel');
-		const modlogEnabled = await msg.guild.settings.get('modlog.enabled');
+		const modlogChannel = msg.guild.settings.get(GuildSettings.Modlog.Channel);
+		const modlogEnabled = msg.guild.settings.get(GuildSettings.Modlog.Enabled);
 
 		if (modlogChannel) {
 			if (modlogEnabled) {
 				return sendSimpleEmbeddedMessage(msg, 'Modlog feature already enabled!', 3000);
 			} else {
 				try {
-					await msg.guild.settings.update('modlog.enabled', true, msg.guild);
+					await msg.guild.settings.update(GuildSettings.Modlog.Enabled, true);
 
 					// Set up embed message
 					modlogEmbed.setDescription(stripIndents`
@@ -83,11 +84,11 @@ export default class ModlogCommand extends Command {
 			color: getEmbedColor(msg),
 			description: ''
 		}).setTimestamp();
-		const modlogEnabled = await msg.guild.settings.get('modlog.enabled');
+		const modlogEnabled = await msg.guild.settings.get(GuildSettings.Modlog.Enabled);
 
 		if (modlogEnabled) {
 			try {
-				await msg.guild.settings.update('modlog.enabled', false, msg.guild);
+				await msg.guild.settings.update('modlog.enabled', false);
 
 				// Set up embed message
 				modlogEmbed.setDescription(stripIndents`
@@ -114,7 +115,7 @@ export default class ModlogCommand extends Command {
 			color: getEmbedColor(msg),
 			description: ''
 		}).setTimestamp();
-		const modlogChannel = await msg.guild.settings.get('modlog.channel');
+		const modlogChannel = await msg.guild.settings.get(GuildSettings.Modlog.Channel);
 
 		if (channel) {
 			const channelID = msg.guild.channels.get(channel).id;
@@ -123,7 +124,7 @@ export default class ModlogCommand extends Command {
 				return sendSimpleEmbeddedMessage(msg, `Modlog channel already set to <#${channelID}>!`, 3000);
 			} else {
 				try {
-					await msg.guild.settings.update('modlog.channel', channelID, msg.guild);
+					await msg.guild.settings.update(GuildSettings.Modlog.Channel, channelID);
 
 					// Set up embed message
 					modlogEmbed.setDescription(stripIndents`
@@ -159,8 +160,8 @@ export default class ModlogCommand extends Command {
 			color: getEmbedColor(msg),
 			description: ''
 		}).setTimestamp();
-		const modlogChannel = await msg.guild.settings.get('modlog.channel');
-		const modlogEnabled = await msg.guild.settings.get('modlog.enabled');
+		const modlogChannel = await msg.guild.settings.get(GuildSettings.Modlog.Channel);
+		const modlogEnabled = await msg.guild.settings.get(GuildSettings.Modlog.Enabled);
 
 		// Set up embed message
 		modlogEmbed.setDescription(stripIndents`Modlog feature: ${modlogEnabled ? '_Enabled_' : '_Disabled_'}

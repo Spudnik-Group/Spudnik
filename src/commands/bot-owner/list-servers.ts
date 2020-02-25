@@ -6,6 +6,7 @@ import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
 import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, RichDisplay, Timestamp } from 'klasa';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 /**
  * Returns a list of servers the bot is in.
@@ -56,7 +57,7 @@ export default class ListServersCommand extends Command {
 							**Bot Invited**: ${new Timestamp('MMMM d YYYY [at] HH:mm').display(guild.joinedTimestamp)}
 							**Owner**: ${guild.owner.user.tag} (${guild.ownerID})
 							**Region**: ${guild.region}
-							**Prefix**: ${msg.guildSettings.get('prefix') ? msg.guildSettings.get('prefix') : '!'}
+							**Prefix**: ${msg.guildSettings.get(GuildSettings.Prefix) ? msg.guildSettings.get(GuildSettings.Prefix) : '!'}
 		
 							--
 						`

@@ -6,6 +6,7 @@ import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
 import { sendSimpleEmbeddedError, getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 /**
  * Returns or sets the command prefix.
@@ -50,7 +51,7 @@ export default class PrefixCommand extends Command {
 
 		// Just output the prefix
 		if (!prefix) {
-			const currentPrefix = msg.guild ? msg.guild.settings.get('prefix') : this.client.options.prefix;
+			const currentPrefix = msg.guild ? msg.guild.settings.get(GuildSettings.Prefix) : this.client.options.prefix;
 
 			prefixEmbed.setDescription(stripIndents`
 				${currentPrefix ? `The command prefix is \`\`${currentPrefix}\`\`.` : 'There is no command prefix.'}

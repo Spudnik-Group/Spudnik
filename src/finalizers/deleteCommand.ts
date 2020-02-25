@@ -3,11 +3,12 @@
  */
 
 import { Finalizer, KlasaMessage } from 'klasa';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 export default class extends Finalizer {
 
 	async run(msg: KlasaMessage) {
-		if (msg.guild && msg.guild.settings.get('deleteCommandMessages') && msg.deletable) await msg.delete();
+		if (msg.guild && msg.guild.settings.get(GuildSettings.Commands.DeleteCommandMessages) && msg.deletable) await msg.delete();
 	}
 
 };

@@ -5,7 +5,8 @@
 import { stripIndents } from 'common-tags';
 import { Channel, MessageEmbed } from 'discord.js';
 import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, resolveChannel, sendSimpleEmbeddedMessage, basicFeatureContent } from '@lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 /**
  * Manage notifications when someone joins the guild.
@@ -53,7 +54,7 @@ export default class WelcomeCommand extends Command {
 		}).setTimestamp();
 
 		try {
-			await msg.guild.settings.update('welcome.message', content, msg.guild);
+			await msg.guild.settings.update(GuildSettings.Welcome.Message, content);
 
 			// Set up embed message
 			welcomeEmbed.setDescription(stripIndents`
@@ -85,14 +86,14 @@ export default class WelcomeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const welcomeChannel = await msg.guild.settings.get('welcome.channel');
+		const welcomeChannel = await msg.guild.settings.get(GuildSettings.Welcome.Channel);
 		const channelID = msg.guild.channels.get(resolveChannel(content)).id;
 
 		if (welcomeChannel && welcomeChannel === channelID) {
 			return sendSimpleEmbeddedMessage(msg, `Welcome channel already set to <#${channelID}>!`, 3000);
 		} else {
 			try {
-				await msg.guild.settings.update('welcome.channel', channelID, msg.guild);
+				await msg.guild.settings.update(GuildSettings.Welcome.Channel, channelID);
 
 				// Set up embed message
 				welcomeEmbed.setDescription(stripIndents`
@@ -123,15 +124,15 @@ export default class WelcomeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const welcomeChannel = await msg.guild.settings.get('welcome.channel');
-		const welcomeEnabled = await msg.guild.settings.get('welcome.enabled');
+		const welcomeChannel = await msg.guild.settings.get(GuildSettings.Welcome.Channel);
+		const welcomeEnabled = await msg.guild.settings.get(GuildSettings.Welcome.Enabled);
 
 		if (welcomeChannel) {
 			if (welcomeEnabled) {
 				return sendSimpleEmbeddedMessage(msg, 'Welcome message already enabled!', 3000);
 			} else {
 				try {
-					await msg.guild.settings.update('welcome.enabled', true, msg.guild);
+					await msg.guild.settings.update(GuildSettings.Welcome.Enabled, true);
 
 					// Set up embed message
 					welcomeEmbed.setDescription(stripIndents`
@@ -165,11 +166,11 @@ export default class WelcomeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const welcomeEnabled = await msg.guild.settings.get('welcome.enabled');
+		const welcomeEnabled = await msg.guild.settings.get(GuildSettings.Welcome.Enabled);
 
 		if (welcomeEnabled) {
 			try {
-				await msg.guild.settings.update('welcome.enabled', false, msg.guild);
+				await msg.guild.settings.update(GuildSettings.Welcome.Enabled, false);
 
 				// Set up embed message
 				welcomeEmbed.setDescription(stripIndents`
@@ -202,9 +203,9 @@ export default class WelcomeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const welcomeChannel = await msg.guild.settings.get('welcome.channel');
-		const welcomeMessage = await msg.guild.settings.get('welcome.message');
-		const welcomeEnabled = await msg.guild.settings.get('welcome.enabled');
+		const welcomeChannel = await msg.guild.settings.get(GuildSettings.Welcome.Channel);
+		const welcomeMessage = await msg.guild.settings.get(GuildSettings.Welcome.Message);
+		const welcomeEnabled = await msg.guild.settings.get(GuildSettings.Welcome.Enabled);
 
 		// Set up embed message
 		welcomeEmbed.setDescription(stripIndents`

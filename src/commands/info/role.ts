@@ -4,6 +4,7 @@
 
 import { Command, CommandStore, Timestamp, KlasaMessage } from 'klasa';
 import { MessageEmbed } from 'discord.js';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 const perms = {
 	ADD_REACTIONS: 'Add Reactions',
@@ -50,7 +51,7 @@ export default class RoleComand extends Command {
 
 	public async run(msg: KlasaMessage, [role]): Promise<KlasaMessage | KlasaMessage[]> {
 		const allPermissions = Object.entries(role.permissions.serialize()).filter(perm => perm[1]).map(([perm]) => perms[perm]).join(', ');
-		const defaultRole = await msg.guild.settings.get('roles.default');
+		const defaultRole = msg.guild.settings.get(GuildSettings.Roles.Default);
 
 		return msg.sendEmbed(new MessageEmbed()
 			.setColor(role.hexColor || 0xFFFFFF)

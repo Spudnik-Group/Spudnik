@@ -3,7 +3,7 @@
  */
 
 import { sendSimpleEmbeddedMessageWithAuthor, Convert } from '@lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Converts Hexadecimal to Binary

@@ -3,7 +3,7 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { MessageEmbed, Role } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';

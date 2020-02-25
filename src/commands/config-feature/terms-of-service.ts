@@ -7,6 +7,7 @@ import { Channel, MessageEmbed } from 'discord.js';
 import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, resolveChannel } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, Possible, Timestamp } from 'klasa';
 import * as markdownescape from 'markdown-escape';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 /**
  * Sets/Shows the terms of service for a guild.
@@ -62,14 +63,14 @@ export default class TermsOfServiceCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		});
-		const tosChannel: string = await msg.guild.settings.get('tos.channel');
+		const tosChannel: string = msg.guild.settings.get(GuildSettings.Tos.Channel);
 		const newTosChannel = msg.guild.channels.get(resolveChannel(item));
 
 		if (tosChannel && newTosChannel && tosChannel === newTosChannel.id) {
 			return sendSimpleEmbeddedMessage(msg, `Terms of Service channel already set to ${item}!`, 3000);
 		} else {
 			try {
-				await msg.guild.settings.update('tos.channel', newTosChannel.id, msg.guild);
+				await msg.guild.settings.update(GuildSettings.Tos.Channel, newTosChannel.id);
 
 				// Set up embed message
 				tosEmbed
@@ -96,7 +97,7 @@ export default class TermsOfServiceCommand extends Command {
 			color: getEmbedColor(msg)
 		});
 		let itemIndex: number = null;
-		const tosMessages = await msg.guild.settings.get('tos.messages');
+		const tosMessages = msg.guild.settings.get(GuildSettings.Tos.Messages);
 		let existingTosMessage = tosMessages.find((message, index) => {
 			if(Number(message.id) === Number(item)) {
 				itemIndex = index;
@@ -120,7 +121,7 @@ export default class TermsOfServiceCommand extends Command {
 		}
 
 		try {
-			await msg.guild.settings.update('tos.messages', existingTosMessage, null, { arrayPosition: itemIndex });
+			await msg.guild.settings.update(GuildSettings.Tos.Messages, existingTosMessage, { arrayAction: 'add' });
 			
 			tosEmbed
 				.setDescription(stripIndents`
@@ -145,7 +146,7 @@ export default class TermsOfServiceCommand extends Command {
 			color: getEmbedColor(msg)
 		});
 		let itemIndex: number = null;
-		const tosMessages = await msg.guild.settings.get('tos.messages');
+		const tosMessages = msg.guild.settings.get(GuildSettings.Tos.Messages);
 		let existingTosMessage = tosMessages.find((message, index) => {
 			if(Number(message.id) === Number(item)) {
 				itemIndex = index;
@@ -169,7 +170,7 @@ export default class TermsOfServiceCommand extends Command {
 		}
 
 		try {
-			await msg.guild.settings.update('tos.messages', existingTosMessage, null, { arrayPosition: itemIndex });
+			await msg.guild.settings.update(GuildSettings.Tos.Messages, existingTosMessage, { arrayAction: 'add' });
 			
 			tosEmbed
 				.setDescription(stripIndents`
@@ -193,11 +194,10 @@ export default class TermsOfServiceCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		});
-		const tosMessage = await msg.guild.settings.get('tos.messages').find((message, index) => {
-			if(Number(message.id) === Number(item)) {
+		const tosMessage = msg.guild.settings.get(GuildSettings.Tos.Messages).find((message, index) => {
+			if (Number(message.id) === Number(item)) {
 				return true;
 			}
-
 			return false;
 		});
 
@@ -225,8 +225,8 @@ export default class TermsOfServiceCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		});
-		const tosChannel: string = await msg.guild.settings.get('tos.channel');
-		const tosMessages: ITOSMessage[] = await msg.guild.settings.get('tos.messages').sort((a, b) => a.id - b.id);
+		const tosChannel= msg.guild.settings.get(GuildSettings.Tos.Channel);
+		const tosMessages = msg.guild.settings.get(GuildSettings.Tos.Messages).sort((a, b) => a.id - b.id);
 
 		if (tosChannel && tosChannel === msg.channel.id) {
 			if (tosMessages && tosMessages.length > 0) {
@@ -250,8 +250,8 @@ export default class TermsOfServiceCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		});
-		const tosChannel: string = await msg.guild.settings.get('tos.channel');
-		const tosMessages: ITOSMessage[] = await msg.guild.settings.get('tos.messages').sort((a, b) => a.id - b.id);
+		const tosChannel = msg.guild.settings.get(GuildSettings.Tos.Channel);
+		const tosMessages = msg.guild.settings.get(GuildSettings.Tos.Messages).sort((a, b) => a.id - b.id);
 
 		tosEmbed.description = `Channel: ${tosChannel ? `<#${tosChannel}>` : 'None set.'}\nMessage List:\n`;
 		if (tosMessages.length) {

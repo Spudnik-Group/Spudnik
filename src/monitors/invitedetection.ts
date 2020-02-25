@@ -4,6 +4,7 @@
 
 import { Monitor, MonitorStore } from 'klasa';
 import { Message, MessageEmbed } from 'discord.js';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 export default class extends Monitor {
 	constructor(store: MonitorStore, file: string[], directory: string) {
@@ -16,7 +17,7 @@ export default class extends Monitor {
 	}
 
 	async run(msg) {
-		if (!msg.guild || !msg.guild.settings.get('adblockEnabled')) return null;
+		if (!msg.guild || !msg.guild.settings.get(GuildSettings.AdblockEnabled)) return null;
 		if (await msg.hasAtLeastPermissionLevel(6)) return null;
 		if (!/(https?:\/\/)?(www\.)?(discord\.(gg|li|me|io)|discordapp\.com\/invite)\/.+/.test(msg.content)) return null;
 		await msg.delete()
