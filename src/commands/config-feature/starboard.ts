@@ -17,7 +17,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
  */
 export default class StarboardCommand extends Command {
 
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Used to configure the :star: Star Board feature.',
 			extendedHelp: stripIndents`

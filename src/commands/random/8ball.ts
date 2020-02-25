@@ -17,7 +17,7 @@ const { eightBall }: { eightBall: string[] } = require('../../extras/data');
  */
 export default class EightBallCommand extends Command {
 
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Ask the magic 8 ball a question.',
 			name: '8ball',

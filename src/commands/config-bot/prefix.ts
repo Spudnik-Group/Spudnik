@@ -17,7 +17,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
  */
 export default class PrefixCommand extends Command {
 
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns or sets the command prefix.',
 			extendedHelp: stripIndents`

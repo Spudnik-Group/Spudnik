@@ -16,7 +16,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  */
 export default class MathFactCommand extends Command {
 
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns a random math fact.',
 			name: 'math-fact'

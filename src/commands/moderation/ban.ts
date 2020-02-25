@@ -16,7 +16,7 @@ import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
  */
 export default class BanCommand extends Command {
 
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Bans the member, with a supplied reason',
 			name: 'ban',

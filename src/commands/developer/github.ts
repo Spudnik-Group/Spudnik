@@ -17,7 +17,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  */
 export default class GithubCommand extends Command {
 
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['gh'],
 			description: 'Returns details for a GitHub repository.',

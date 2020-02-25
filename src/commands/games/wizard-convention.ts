@@ -26,7 +26,7 @@ export default class WizardConventionCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof WizardConventionCommand
 	 */
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['wiz-convention'],
 			description: 'Who is the Dragon? Who is the healer? Who is the mind reader? Will the Dragon eat them all?',

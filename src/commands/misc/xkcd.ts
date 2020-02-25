@@ -17,7 +17,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  */
 export default class XkcdCommand extends Command {
 
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns a given XKCD comic number (or the latest if nothing specified)',
 			extendedHelp: stripIndents`

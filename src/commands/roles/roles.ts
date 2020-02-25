@@ -16,7 +16,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
  */
 export default class RolesCommand extends Command {
 
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Lists default, muted, and self-assignable roles.',
 			name: 'roles'

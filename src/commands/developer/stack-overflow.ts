@@ -20,7 +20,7 @@ const apikey = SpudConfig.stackoverflowApiKey;
  */
 export default class StackOverflowCommand extends Command {
 
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns results for the supplied query from Stack Overflow.',
 			extendedHelp: stripIndents`

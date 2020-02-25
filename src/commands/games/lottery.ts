@@ -21,7 +21,7 @@ export default class LotteryCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof LotteryCommand
 	 */
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['lotto'],
 			description: 'Attempt to win the lottery with 6 numbers.',

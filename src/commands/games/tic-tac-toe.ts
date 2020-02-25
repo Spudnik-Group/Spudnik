@@ -23,7 +23,7 @@ export default class TicTacToeCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof TicTacToeCommand
 	 */
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Play a game of tic-tac-toe with another user.',
 			extendedHelp: stripIndents`

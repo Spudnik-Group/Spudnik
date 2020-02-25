@@ -15,7 +15,7 @@ import { MessageEmbed } from 'discord.js';
  */
 export default class GitGudCommand extends Command {
 
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Informs someone that they should "git gud".',
 			name: 'gitgud',

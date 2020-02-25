@@ -23,7 +23,7 @@ export default class NPMCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof NPMCommand
 	 */
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['npmpackage', 'npmpkg', 'nodepackagemanager'],
 			description: 'Returns details for an NPM package.',

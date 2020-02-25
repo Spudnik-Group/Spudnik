@@ -16,7 +16,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
  */
 export default class IAmNotCommand extends Command {
 
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Used to add a self-assignable role to yourself.',
 			name: 'iam',

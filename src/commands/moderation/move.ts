@@ -16,7 +16,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  */
 export default class MoveCommand extends Command {
 
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Moves a message to a different channel.',
 			name: 'move',

@@ -41,7 +41,7 @@ export default class RoleComand extends Command {
 
 	private timestamp: Timestamp;
 
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Get information on a role with an id or a mention.',
 			name: 'role-info',

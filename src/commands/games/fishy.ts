@@ -22,7 +22,7 @@ export default class SlotsCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof SlotsCommand
 	 */
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['fish', 'fishing'],
 			description: 'Go fishing.',

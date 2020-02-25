@@ -19,7 +19,7 @@ const { breweryDbApiKey } = SpudConfig;
  */
 export default class BrewCommand extends Command {
 
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns information about a brewery or brew. Uses the BreweryDB API.',
 			name: 'brew',

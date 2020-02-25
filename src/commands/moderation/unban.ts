@@ -16,7 +16,7 @@ import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
  */
 export default class UnBanCommand extends Command {
 
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Un-Bans the user.',
 			name: 'unban',

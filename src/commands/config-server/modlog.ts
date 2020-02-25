@@ -17,7 +17,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
  */
 export default class ModlogCommand extends Command {
 
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Enable or disable the modlog feature.',
 			extendedHelp: stripIndents`

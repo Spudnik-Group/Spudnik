@@ -17,7 +17,7 @@ const { bacon }: { bacon: string[] } = require('../../extras/data');
  */
 export default class BaconCommand extends Command {
 
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Blesses you with a random bacon gif.',
 			name: 'bacon',

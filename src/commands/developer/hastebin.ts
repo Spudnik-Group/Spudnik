@@ -8,7 +8,7 @@ import { sendSimpleEmbeddedError } from '@lib/helpers';
 
 export default class HastebinCommand extends Command {
 
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['hb'],
 			description: 'Upload code or text to hastebin.',

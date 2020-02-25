@@ -17,7 +17,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
  */
 export default class WelcomeCommand extends Command {
 
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Used to configure the message to be sent when a new user join your guild.',
 			extendedHelp: stripIndents`

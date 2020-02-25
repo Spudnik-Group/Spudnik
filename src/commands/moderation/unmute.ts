@@ -10,7 +10,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 export default class UnmuteCommand extends Command {
 
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Unmutes a mentioned user.',
 			permissionLevel: 6, // MANAGE_GUILD

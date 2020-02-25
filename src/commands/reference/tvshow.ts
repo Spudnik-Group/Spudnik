@@ -12,7 +12,7 @@ const { tmdbAPIkey } = SpudConfig;
 
 export default class TVShowCommand extends Command {
 
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['tvshows', 'tv', 'tvseries', 'tv-show'],
 			description: 'Finds a TV show on TMDB.org',

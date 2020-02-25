@@ -15,7 +15,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  */
 export default class TopicCommand extends Command {
 
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns the purpose of the chat channel.',
 			name: 'topic'

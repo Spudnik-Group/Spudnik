@@ -16,7 +16,7 @@ export default class BlacklistCommand extends Command {
 
 	private terms = ['usersAdded', 'usersRemoved', 'guildsAdded', 'guildsRemoved'];
 
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: (language: any) => language.get('COMMAND_BLACKLIST_DESCRIPTION'),
 			guarded: true,

@@ -24,7 +24,7 @@ export default class GoogleFeudCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof GoogleFeudCommand
 	 */
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Attempt to determine the top suggestions for a Google search.',
 			extendedHelp: 'syntax: \`!google-feud (question)\`',

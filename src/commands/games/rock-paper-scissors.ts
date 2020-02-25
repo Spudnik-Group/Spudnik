@@ -20,7 +20,7 @@ export default class RockPaperScissorsCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof RockPaperScissorsCommand
 	 */
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['rps'],
 			description: 'Play Rock-Paper-Scissors.',

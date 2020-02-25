@@ -24,7 +24,7 @@ export default class HangmanCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof HangmanCommand
 	 */
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Prevent a man from being hanged by guessing a word as fast as you can.',
 			name: 'hangman'

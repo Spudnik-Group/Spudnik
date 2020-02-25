@@ -14,7 +14,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  */
 export default class Bin2HexCommand extends Command {
 
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Converts binary to decimal',
 			name: 'bin2hex',

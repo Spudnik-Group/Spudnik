@@ -12,7 +12,7 @@ const wolframAppID = SpudConfig.wolframApiKey;
 
 export default class WolframCommand extends Command {
 
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['wa'],
 			description: 'Query Wolfram Alpha with any mathematical question.',

@@ -16,7 +16,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
  */
 export default class CommandSearchCommand extends Command {
 
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Search for a command with the given text.',
 			guarded: true,

@@ -17,7 +17,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
  */
 export default class CommandsCommand extends Command {
 
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns a list of command groups, or all commands in a given group.',
 			guarded: true,

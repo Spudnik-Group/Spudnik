@@ -26,7 +26,7 @@ export default class CardsAgainstHumanityCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof CardsAgainstHumanityCommand
 	 */
-public constructor(store: CommandStore, file: string[], directory: string) {
+	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['crude-cards', 'pretend-youre-xyzzy', 'cah'],
 			description: 'Compete to see who can come up with the best card to fill in the blank.',
