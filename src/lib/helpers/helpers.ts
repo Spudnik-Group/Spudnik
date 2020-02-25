@@ -201,11 +201,11 @@ export const awaitPlayers = async (msg: KlasaMessage, max: number, min: number, 
 	joined.push(msg.author.id);
 
 	const verify = await msg.channel.awaitMessages((res: Message) => {
-		if (res.author.bot) { return false; }
+		if (res.author.bot) return false;
 
-		if (joined.includes(res.author.id)) { return false; }
+		if (joined.includes(res.author.id)) return false;
 
-		if (res.content.toLowerCase() !== text.toLowerCase()) { return false; }
+		if (res.content.toLowerCase() !== text.toLowerCase()) return false;
 
 		joined.push(res.author.id);
 		res.react('✅').catch((): void => null);
@@ -225,7 +225,7 @@ export const awaitPlayers = async (msg: KlasaMessage, max: number, min: number, 
 		}
 	}
 
-	if (verify.size < min) { return false; }
+	if (verify.size < min) return false;
 
 	return verify.map((message: KlasaMessage) => message.author);
 };
@@ -248,12 +248,12 @@ export const verify = async (channel: Channel, user: User, time = 30000): Promis
 		time
 	});
 
-	if (!verify.size) { return 0; }
+	if (!verify.size) return 0;
 
 	const choice = verify.first().content.toLowerCase();
 
-	if (yes.includes(choice)) { return true; }
-	if (no.includes(choice)) { return false; }
+	if (yes.includes(choice)) return true;
+	if (no.includes(choice)) return false;
 
 	return false;
 };
@@ -268,8 +268,8 @@ export const verify = async (channel: Channel, user: User, time = 30000): Promis
  * @returns string
  */
 export const escapeMarkdown = (text: string, onlyCodeBlock = false, onlyInlineCode = false): string => {
-	if (onlyCodeBlock) { return text.replace(/```/g, '`\u200b``'); }
-	if (onlyInlineCode) { return text.replace(/\\(`|\\)/g, '$1').replace(/(`|\\)/g, '\\$1'); }
+	if (onlyCodeBlock) return text.replace(/```/g, '`\u200b``');
+	if (onlyInlineCode) return text.replace(/\\(`|\\)/g, '$1').replace(/(`|\\)/g, '\\$1');
 
 	return text.replace(/\\(\*|_|`|~|\\)/g, '$1').replace(/(\*|_|`|~|\\)/g, '\\$1');
 };

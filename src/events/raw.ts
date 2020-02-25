@@ -9,24 +9,24 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 export default class extends Event {
 
-	async run(event, ...args) {
-		if (!event.d || !event.d.guild_id) { return; } // Ignore non-guild events
-		if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(event.t)) { return; } // Ignore non-emoji related actions
+	public async run(event, ...args) {
+		if (!event.d || !event.d.guild_id) return; // Ignore non-guild events
+		if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(event.t)) return; // Ignore non-emoji related actions
 
 		const { d: data } = event;
 		const guild: Guild = await this.client.guilds.get(data.guild_id);
 		const channel: GuildChannel = await guild.channels.get(data.channel_id);
 
-		if (SpudConfig.botListGuilds.includes(guild.id)) { return; } // Guild is on Blacklist, ignore.
-		if ((channel as TextChannel).nsfw) { return; } // Ignore NSFW channels
-		if (!(channel as TextChannel).permissionsFor(this.client.user.id).has('READ_MESSAGE_HISTORY')) { return; } // Bot doesn't have the right permissions to retrieve the message
+		if (SpudConfig.botListGuilds.includes(guild.id)) return; // Guild is on Blacklist, ignore.
+		if ((channel as TextChannel).nsfw) return; // Ignore NSFW channels
+		if (!(channel as TextChannel).permissionsFor(this.client.user.id).has('READ_MESSAGE_HISTORY')) return; // Bot doesn't have the right permissions to retrieve the message
 
 		const message: Message = await (channel as TextChannel).messages.fetch(data.message_id);
 		const starboardEnabled: boolean = guild.settings.get(GuildSettings.Starboard.Enabled);
 
-		if (message.author.id === data.user_id) { return; } // You can't star your own messages
-		if (message.author.bot) { return; } // You can't star bot messages
-		if (!starboardEnabled) { return; } // Ignore if starboard isn't set up
+		if (message.author.id === data.user_id) return; // You can't star your own messages
+		if (message.author.bot) return; // You can't star bot messages
+		if (!starboardEnabled) return; // Ignore if starboard isn't set up
 
 		const currentEmojiKey: any = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
 		const starboardTrigger: string = guild.settings.get(GuildSettings.Starboard.Trigger);
@@ -36,8 +36,8 @@ export default class extends Event {
 			const starboardChannel = guild.settings.get(GuildSettings.Starboard.Channel);
 			const starboard: GuildChannel = guild.channels.get(starboardChannel);
 
-			if (!starboard || !starboardChannel) { return; } // Ignore if starboard isn't set up
-			if (starboard === channel) { return; } // Can't star items in starboard channel
+			if (!starboard || !starboardChannel) return; // Ignore if starboard isn't set up
+			if (starboard === channel) return; // Can't star items in starboard channel
 			if (!starboard.permissionsFor(this.client.user.id).has('SEND_MESSAGES')
 				|| !starboard.permissionsFor(this.client.user.id).has('EMBED_LINKS')
 				|| !starboard.permissionsFor(this.client.user.id).has('ATTACH_FILES')) {
@@ -58,16 +58,13 @@ export default class extends Event {
 				}
 			});
 			// If all of the starboard trigger emojis were removed from this message
+			// eslint-disable-next-line no-negated-condition
 			if (!reaction) {
 				// Check if message is in the starboard
 				if (existingStar) {
 					// And remove it
-					existingStar.delete();
-
-
+					await existingStar.delete();
 				}
-
-
 			} else {
 				const stars = reaction.count;
 				const starboardEmbed: MessageEmbed = new MessageEmbed()
@@ -80,10 +77,8 @@ export default class extends Event {
 					.setTimestamp(message.createdTimestamp)
 					.setFooter(`⭐ ${stars} | ${message.id} `);
 
-				if (message.content.length > 1) { starboardEmbed.addField('Message', message.content); } // Add message
-				if (message.attachments.size > 0) {
-					starboardEmbed.setImage((message.attachments as any).first().attachment); // Add attachments
-				}
+				if (message.content.length > 1) starboardEmbed.addField('Message', message.content); // Add message
+				if (message.attachments.size > 0) starboardEmbed.setImage((message.attachments as any).first().attachment); // Add attachments
 
 				// Check for presence of post in starboard channel
 				if (existingStar) {
@@ -99,8 +94,6 @@ export default class extends Event {
 					(starboard as TextChannel).send({ embed: starboardEmbed })
 						.catch(err => {
 							this.client.emit('warn', `Failed to send new starboard embed. Message ID: ${message.id}\nError: ${err}`);
-
-
 						});
 				}
 			}
