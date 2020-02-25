@@ -13,7 +13,7 @@ export const hexColor = color => {
 		return color;
 	}
 
-	throw 'Please provide a valid color hex number.';
+	throw new Error('Please provide a valid color hex number.');
 };
 
 export const commandOrCategory = cmdOrCategory => {

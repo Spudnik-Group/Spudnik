@@ -3,15 +3,16 @@
  */
 
 /* eslint-disable @typescript-eslint/no-use-before-define */
-const { Provider, util: { mergeDefault, mergeObjects, isObject } } = require('klasa');
-const { MongoClient: Mongo } = require('mongodb');
+import { mergeDefault, mergeObjects, isObject } from 'klasa/src/lib/util/util';
+import { Provider, ProviderStore } from 'klasa';
+import { MongoClient as Mongo } from 'mongodb';
 
 export default class extends Provider {
 
 	public db: any = undefined;
 
-	public constructor(...args: any) {
-		super(...args, { description: 'Allows use of MongoDB functionality throughout Klasa' });
+	public constructor(store: ProviderStore, file: string[], directory: string) {
+		super(store, file, directory);
 		this.db = null;
 	}
 

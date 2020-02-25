@@ -9,9 +9,9 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 export default class extends Event {
 
-	async run(member: GuildMember) {
+	public async run(member: GuildMember) {
 		const { guild } = member;
-		if (SpudConfig.botListGuilds.includes(guild.id)) { return; } // Guild is on Blacklist, ignore.
+		if (SpudConfig.botListGuilds.includes(guild.id)) return; // Guild is on Blacklist, ignore.
 		const goodbyeEnabled = guild.settings.get(GuildSettings.Goodbye.Enabled);
 		const goodbyeChannel = guild.settings.get(GuildSettings.Goodbye.Channel);
 
@@ -21,7 +21,7 @@ export default class extends Event {
 			const channel = guild.channels.get(goodbyeChannel);
 
 			if (channel) {
-				(channel as TextChannel).send(message);
+				await (channel as TextChannel).send(message);
 			} else {
 				this.client.emit('warn', `There was an error trying to say goodbye a former guild member in ${guild}, the channel may not exist or was set to a non-text channel`);
 			}

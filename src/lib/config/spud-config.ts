@@ -22,7 +22,6 @@ export const SpudConfig = {
 	tmdbAPIkey: process.env.SPUD_MOVIEDBAPI || '',
 	dictionaryApiKey: process.env.SPUD_DICTIONARYAPI || '',
 	breweryDbApiKey: process.env.SPUD_BREWDBAPI || '',
-	trackerApiKey: process.env.SPUD_TRACKERAPI || '',
 	stackoverflowApiKey: process.env.SPUD_STACKOVERFLOWAPI || '',
 	// Bot List API Keys
 	bfdApiKey: process.env.SPUD_BFDAPI || '',

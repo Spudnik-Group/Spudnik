@@ -9,7 +9,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 export default class extends Event {
 
-	public async run(event, ...args) {
+	public async run(event) {
 		if (!event.d || !event.d.guild_id) return; // Ignore non-guild events
 		if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(event.t)) return; // Ignore non-emoji related actions
 
@@ -48,7 +48,8 @@ export default class extends Event {
 
 			const reaction: any = message.reactions.get(currentEmojiKey);
 			const starboardMessages = await (starboard as TextChannel).messages.fetch({ limit: 100 });
-			const existingStar = starboardMessages.find(m => {
+			// eslint-disable-next-line array-callback-return
+			const existingStar = starboardMessages.find((m): boolean => {
 				// Need this filter if there are non-starboard posts in the starboard channel.
 				if (m.embeds.length > 0) {
 					if (m.embeds[0].footer) {

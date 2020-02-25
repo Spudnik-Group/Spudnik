@@ -140,8 +140,8 @@ export default class SelfAssignableRolesCommand extends Command {
 		return msg.sendSimpleError(roleUserWarn);
 	}
 
-	private sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
-		modLogMessage(msg, embed);
+	private async sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
+		await modLogMessage(msg, embed);
 
 		// Send the success response
 		return msg.sendEmbed(embed);

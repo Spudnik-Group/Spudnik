@@ -4,7 +4,7 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, Role, Permissions } from 'discord.js';
-import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '@lib/helpers';
+import { getEmbedColor, modLogMessage } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
@@ -65,10 +65,10 @@ export default class MuteRoleCommand extends Command {
 
 				return this.sendSuccess(msg, roleEmbed);
 			} catch (err) {
-				this.catchError(msg, role, 'reset', err);
+				return this.catchError(msg, role, 'reset', err);
 			}
 		} else if (guildMuteRole === role) {
-			return sendSimpleEmbeddedError(msg, `Muted role already set to <@${role.id}>`, 3000);
+			return msg.sendSimpleError(`Muted role already set to <@${role.id}>`, 3000);
 		} else {
 			try {
 				await msg.guild.settings.update(GuildSettings.Roles.Muted, role);
@@ -81,7 +81,7 @@ export default class MuteRoleCommand extends Command {
 
 				return this.sendSuccess(msg, roleEmbed);
 			} catch (err) {
-				this.catchError(msg, role, 'set', err);
+				return this.catchError(msg, role, 'set', err);
 			}
 		}
 	}
@@ -94,7 +94,7 @@ export default class MuteRoleCommand extends Command {
 			**Author:** ${msg.author.tag} (${msg.author.id})
 			**Time:** ${new Timestamp('MMMM D YYYY [at] HH:mm:ss [UTC]Z').display(msg.createdTimestamp)}
 			${action === 'set' ? `**Input:** \`Role name: ${role}` : ''}
-			**Error Message:** ${action === 'set' ? 'Setting' : 'Resetting'} muted role failed!\n
+			**Error Message:** ${err}\n
 			`;
 		const roleUserWarn = `${action === 'set' ? 'Setting' : 'Resetting'} muted role failed!`;
 
@@ -102,11 +102,11 @@ export default class MuteRoleCommand extends Command {
 		msg.client.emit('warn', roleWarn);
 
 		// Inform the user the command failed
-		return sendSimpleEmbeddedError(msg, roleUserWarn);
+		return msg.sendSimpleError(roleUserWarn);
 	}
 
-	private sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
-		modLogMessage(msg, embed);
+	private async sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
+		await modLogMessage(msg, embed);
 
 		// Send the success response
 		return msg.sendEmbed(embed);

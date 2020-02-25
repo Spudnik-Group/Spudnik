@@ -33,17 +33,17 @@ export const getEmbedColor = (msg: KlasaMessage): number => {
  * @param {MessageEmbed} embed
  * @returns Promise<KlasaMessage | KlasaMessage[]>
  */
-export const modLogMessage = (msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> | null => {
+export const modLogMessage = async (msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> | null => {
 	const { guild } = msg;
 	const outChannelID = guild.settings.get(GuildSettings.Modlog.Channel);
 	const outChannel = (msg.guild.channels.get(outChannelID) as TextChannel);
 
 	if (!guild.settings.get(GuildSettings.Modlog.InitialMessageSent)) {
-		msg.reply(oneLine`
+		await msg.reply(oneLine`
 			📃 I can keep a log of moderator actions if you create a channel named \'mod-logs\'
 			(or some other name configured by the ${guild.settings.get(GuildSettings.Prefix)}modlog command) and give me access to it.
 			This message will only show up this one time and never again after this so if you desire to set up mod logs make sure to do so now.`);
-		guild.settings.update(GuildSettings.Modlog.InitialMessageSent, true);
+		await guild.settings.update(GuildSettings.Modlog.InitialMessageSent, true);
 	}
 
 	return outChannelID && guild.settings.get(GuildSettings.Modlog.Enabled)

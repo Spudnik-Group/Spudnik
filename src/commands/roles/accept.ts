@@ -4,7 +4,7 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, Role } from 'discord.js';
-import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '@lib/helpers';
+import { getEmbedColor, modLogMessage } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
@@ -61,7 +61,7 @@ export default class AcceptCommand extends Command {
 				**Action:** The default role of ${role.name} has been applied.
 			`);
 
-			modLogMessage(msg, acceptEmbed);
+			await modLogMessage(msg, acceptEmbed);
 		}
 
 		return null;
@@ -83,7 +83,7 @@ export default class AcceptCommand extends Command {
 		msg.client.emit('warn', acceptWarn);
 
 		// Inform the user the command failed
-		return sendSimpleEmbeddedError(msg, 'An error occured, an admin will need to assign the default role');
+		return msg.sendSimpleError('An error occured, an admin will need to assign the default role');
 	}
 
 }

@@ -7,11 +7,11 @@ import { SpudConfig } from '@lib/config';
 
 export default class extends Event {
 
-	constructor(client: KlasaClient, store: EventStore, file: string[], directory: string) {
+	public constructor(client: KlasaClient, store: EventStore, file: string[], directory: string) {
 		super(store, file, directory, { once: true });
 	}
 
-	async run() {
+	public async run() {
 		this.client.emit('verbose', new Colors({ text: 'magenta' }).format(`Logged into Discord! Serving in ${this.client.guilds.array().length} Discord servers`));
 		this.client.emit('verbose', new Colors({ text: 'blue' }).format('---Spudnik Launch Success---'));
 

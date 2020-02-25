@@ -126,7 +126,7 @@ async function awaitReaction(message: Message, messageSent: Message, promptOptio
 	await messageSent.react(REACTIONS.YES);
 	await messageSent.react(REACTIONS.NO);
 
-	const filter = (_, __) => true; // (reaction, user) => user === message.author && Object.keys(REACTIONS).indexOf(reaction.emoji.name) !== -1;
+	const filter = () => true; // (reaction, user) => user === message.author && Object.keys(REACTIONS).indexOf(reaction.emoji.name) !== -1;
 	const reactions = await messageSent.awaitReactions(filter, promptOptions);
 
 	return Boolean(reactions.size) && reactions.firstKey() === REACTIONS.YES;

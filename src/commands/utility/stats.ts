@@ -6,8 +6,7 @@ import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
 import { KlasaMessage, Command, CommandStore, Duration } from 'klasa';
 import { getEmbedColor } from '@lib/helpers';
-
-const { version, dependencies } = require('../../../package');
+import { version, dependencies } from '../../../package.json';
 
 /**
  * Returns statistics about the bot.

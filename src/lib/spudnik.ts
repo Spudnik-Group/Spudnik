@@ -55,25 +55,15 @@ Client.defaultClientSchema
  */
 export default class Spudnik extends Client {
 
-	/**
-	 * @name Spudnik#Config
-	 * @type Configuration
-	 */
 	public Config: Configuration;
 
-	/**
-	 * Creates an instance of Spudnik.
-	 *
-	 * @param {Configuration} config
-	 * @memberof Spudnik
-	 */
-	constructor(options: KlasaClientOptions, config: Configuration) {
+	public constructor(options: KlasaClientOptions, config: Configuration) {
 		super(options);
 
 		console.log(chalk.blue('---Spudnik Stage 2 Engaged.---'));
 
 		this.Config = config;
-		this.login(config.token);
+		this.login(config.token).catch(() => process.exit());
 		this.startHeart();
 
 		console.log(chalk.blue('---Spudnik MECO---'));

@@ -5,8 +5,7 @@
 import { Task, Colors } from 'klasa';
 import { Guild, PresenceData } from 'discord.js';
 import { createPick } from '@lib//utils/util';
-// eslint-disable @typescript-eslint/no-var-requires
-const { version }: { version: string } = require('../../package');
+import { version } from '../../package.json';
 
 export default class extends Task {
 
