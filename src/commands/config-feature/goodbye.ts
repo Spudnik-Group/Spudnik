@@ -132,7 +132,7 @@ export default class GoodbyeCommand extends Command {
 				return sendSimpleEmbeddedMessage(msg, 'Goodbye message already enabled!', 3000);
 			} else {
 				try {
-					await msg.guild.settings.update('goodbye.enabled', true, msg.guild);
+					await msg.guild.settings.update(GuildSettings.Goodbye.Enabled, true);
 
 					// Set up embed message
 					goodbyeEmbed.setDescription(stripIndents`

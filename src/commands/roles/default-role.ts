@@ -54,7 +54,8 @@ export default class DefaultRoleCommand extends Command {
 			}
 		}).setTimestamp();
 
-		let guildDefaultRole: string = await msg.guild.settings.get(GuildSettings.Roles.Default);
+		const guildDefaultRoleId: string = msg.guild.settings.get(GuildSettings.Roles.Default);
+		const guildDefaultRole: Role = msg.guild.roles.get(guildDefaultRoleId);
 
 		if (!role) {
 			try {

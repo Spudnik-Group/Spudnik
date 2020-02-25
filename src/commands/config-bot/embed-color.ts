@@ -6,6 +6,7 @@ import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
 import { sendSimpleEmbeddedError, hexColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 /**
  * Change the default embed color for the server.
@@ -48,7 +49,7 @@ export default class EmbedColorCommand extends Command {
 
 		if (color) {
 			try {
-				await msg.guild.settings.update('embedColor', color, msg.guild);
+				await msg.guild.settings.update(GuildSettings.EmbedColor, color);
 
 				// Set up embed message
 				embedColorEmbed.setDescription(stripIndents`

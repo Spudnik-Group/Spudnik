@@ -3,7 +3,7 @@
  */
 
 import { Task } from 'klasa';
-import { Guild, GuildMember, Role } from 'discord.js';
+import { Guild, GuildMember } from 'discord.js';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 export default class extends Task {

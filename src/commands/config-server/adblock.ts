@@ -39,7 +39,7 @@ export default class AdblockCommand extends Command {
 
 		if (adblockEnabled) {
 			try {
-				await msg.guild.settings.update('adblockEnabled', false, msg.guild);
+				await msg.guild.settings.update(GuildSettings.AdblockEnabled, false);
 
 				// Set up embed message
 				adblockEmbed.setDescription(stripIndents`

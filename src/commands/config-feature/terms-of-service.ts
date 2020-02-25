@@ -96,12 +96,10 @@ export default class TermsOfServiceCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		});
-		let itemIndex: number = null;
+
 		const tosMessages = msg.guild.settings.get(GuildSettings.Tos.Messages);
 		let existingTosMessage = tosMessages.find((message, index) => {
 			if(Number(message.id) === Number(item)) {
-				itemIndex = index;
-
 				return true;
 			}
 
@@ -145,12 +143,10 @@ export default class TermsOfServiceCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		});
-		let itemIndex: number = null;
+
 		const tosMessages = msg.guild.settings.get(GuildSettings.Tos.Messages);
 		let existingTosMessage = tosMessages.find((message, index) => {
 			if(Number(message.id) === Number(item)) {
-				itemIndex = index;
-
 				return true;
 			}
 

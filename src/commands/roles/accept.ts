@@ -7,6 +7,7 @@ import { MessageEmbed } from 'discord.js';
 import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import { Role } from 'discord.js';
 
 /**
  * Accept the guild rules, and be auto-assigned the default role.
@@ -42,11 +43,13 @@ export default class AcceptCommand extends Command {
 		}).setTimestamp();
 
 		const defaultRole: string = msg.guild.settings.get(GuildSettings.Roles.Default);
+		const role: Role = msg.guild.roles.get(defaultRole);
 		const acceptChannel: string = msg.guild.settings.get(GuildSettings.Tos.Channel);
 
-		if (defaultRole && msg.channel.id === acceptChannel) {
+
+		if (role && msg.channel.id === acceptChannel) {
 			try {
-				await msg.member.roles.add(defaultRole);
+				await msg.member.roles.add(role);
 			} catch (err) {
 				return this.catchError(msg, err);
 			}
@@ -54,7 +57,7 @@ export default class AcceptCommand extends Command {
 			// Set up embed message
 			acceptEmbed.setDescription(stripIndents`
 				**Member:** ${msg.author.tag} (${msg.author.id})
-				**Action:** The default role of ${defaultRole.name} has been applied.
+				**Action:** The default role of ${role.name} has been applied.
 			`);
 
 			modLogMessage(msg, acceptEmbed);

@@ -62,7 +62,7 @@ export default class PrefixCommand extends Command {
 		}
 
 		// Check the user's permission before changing anything
-		if (!msg.guild && this.client.owner !== msg.author) {
+		if (!msg.guild && !this.client.owners.has(msg.author)) {
 			return sendSimpleEmbeddedError(msg, 'Only the bot owner(s) may change the global command prefix.', 3000);
 		}
 
@@ -83,7 +83,7 @@ export default class PrefixCommand extends Command {
 			response = `Reset the command prefix to the default (currently ${current}).`;
 		} else {
 			if (msg.guild) {
-				msg.guild.settings.update('prefix', newPrefix, msg.guild);
+				msg.guild.settings.update(GuildSettings.Prefix, newPrefix);
 			} else {
 				this.client.options.prefix = newPrefix;
 			}
