@@ -5,7 +5,6 @@
 import axios from 'axios';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed } from 'discord.js';
-import { sendSimpleEmbeddedError } from '@lib/helpers';
 import { SpudConfig } from '@lib/config';
 
 const { tmdbAPIkey } = SpudConfig;
@@ -24,7 +23,7 @@ export default class TVShowCommand extends Command {
 	}
 
 	public async run(msg: KlasaMessage, [query, page = 1]): Promise<KlasaMessage | KlasaMessage[]> {
-		if (!tmdbAPIkey) return sendSimpleEmbeddedError(msg, 'No API Key has been set up. This feature is unusable', 3000);
+		if (!tmdbAPIkey) return msg.sendSimpleError('No API Key has been set up. This feature is unusable', 3000);
 
 		try {
 			const { data: body } = await axios.get('https://api.themoviedb.org/3/search/tv', {
@@ -34,7 +33,7 @@ export default class TVShowCommand extends Command {
 				}
 			});
 			const show = body.results[page - 1];
-			if (!show) sendSimpleEmbeddedError(msg, `I couldn't find a TV show with title **${query}** in page ${page}.`, 3000);
+			if (!show) return msg.sendSimpleError(`I couldn't find a TV show with title **${query}** in page ${page}.`, 3000);
 
 			const embed = new MessageEmbed()
 				.setColor('RANDOM')
@@ -54,7 +53,7 @@ export default class TVShowCommand extends Command {
 		} catch (err) {
 			msg.client.emit('warn', `Error in command reference:tvshow: ${err}`);
 
-			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+			return msg.sendSimpleError('There was an error with the request. Try again?', 3000);
 		}
 	}
 

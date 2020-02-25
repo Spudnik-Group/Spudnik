@@ -4,7 +4,7 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { getEmbedColor, sendSimpleEmbeddedError } from '@lib/helpers';
+import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import * as UD from 'urban-dictionary';
 
@@ -67,7 +67,7 @@ export default class UrbanCommand extends Command {
 		} catch (err) {
 			msg.client.emit('warn', `Error in command ref:urban: ${err}`);
 
-			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+			return msg.sendSimpleError('There was an error with the request. Try again?', 3000);
 		}
 	}
 

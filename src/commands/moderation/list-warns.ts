@@ -4,8 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { sendSimpleEmbeddedError, getEmbedColor } from '@lib/helpers';
+import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 /**
  * List warns for the guild.
@@ -45,7 +46,7 @@ export default class ListWarnsCommand extends Command {
 			color: getEmbedColor(msg),
 			description: ''
 		});
-		const guildWarnings = await msg.guild.settings.get('warnings');
+		const guildWarnings = await msg.guild.settings.get(GuildSettings.Warnings);
 
 		if (guildWarnings.length) {
 			// Warnings present for current guild
@@ -62,7 +63,7 @@ export default class ListWarnsCommand extends Command {
 			return msg.sendEmbed(warnEmbed);
 		}
 		// No warnings for current guild
-		return sendSimpleEmbeddedError(msg, 'No warnings for current guild', 3000);
+		return msg.sendSimpleError('No warnings for current guild', 3000);
 
 	}
 

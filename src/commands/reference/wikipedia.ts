@@ -3,7 +3,7 @@
  */
 
 import { MessageEmbed } from 'discord.js';
-import { getEmbedColor, sendSimpleEmbeddedError, shorten } from '@lib/helpers';
+import { getEmbedColor, shorten } from '@lib/helpers';
 import * as WikiJS from 'wikijs';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
@@ -65,7 +65,7 @@ export default class WikiCommand extends Command {
 		} catch (err) {
 			msg.client.emit('warn', `Error in command ref:wiki: ${err}`);
 
-			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+			return msg.sendSimpleError('There was an error with the request. Try again?', 3000);
 		}
 	}
 

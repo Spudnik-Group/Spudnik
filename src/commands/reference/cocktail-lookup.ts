@@ -4,7 +4,7 @@
 
 import { MessageEmbed } from 'discord.js';
 import axios from 'axios';
-import { getEmbedColor, sendSimpleEmbeddedError } from '@lib/helpers';
+import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
@@ -109,7 +109,7 @@ export default class CocktailCommand extends Command {
 		} catch (err) {
 			msg.client.emit('warn', `Error in command ref:cocktail: ${err}`);
 
-			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+			return msg.sendSimpleError('There was an error with the request. Try again?', 3000);
 		}
 	}
 

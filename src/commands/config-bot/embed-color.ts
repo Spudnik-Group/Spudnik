@@ -4,7 +4,7 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { sendSimpleEmbeddedError, hexColor } from '@lib/helpers';
+import { hexColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
@@ -92,9 +92,9 @@ export default class EmbedColorCommand extends Command {
 
 		// Inform the user the command failed
 		if (args.color) {
-			return sendSimpleEmbeddedError(msg, `There was an error setting the embed color to ${args.color}`);
+			return msg.sendSimpleError(`There was an error setting the embed color to ${args.color}`);
 		}
-		return sendSimpleEmbeddedError(msg, 'There was an error resetting the embed color.');
+		return msg.sendSimpleError('There was an error resetting the embed color.');
 
 	}
 

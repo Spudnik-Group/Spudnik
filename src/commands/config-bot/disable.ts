@@ -4,7 +4,7 @@
 
 import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
-import { getEmbedColor, sendSimpleEmbeddedError, modLogMessage, isCommandCategoryEnabled, isCommandEnabled, commandOrCategory, sendSimpleEmbeddedMessage } from '@lib/helpers';
+import { getEmbedColor, modLogMessage, isCommandCategoryEnabled, isCommandEnabled, commandOrCategory } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import * as fs from 'fs';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
@@ -56,8 +56,7 @@ export default class DisableCommand extends Command {
 			const parsedGroup: string = cmdOrCat.toLowerCase();
 
 			if (!isCommandCategoryEnabled(msg, cmdOrCat)) {
-				return sendSimpleEmbeddedError(msg,
-					`The \`${cmdOrCat}\` category is already disabled.`, 3000);
+				return msg.sendSimpleError(`The \`${cmdOrCat}\` category is already disabled.`, 3000);
 			} else if (groups.find((g: string) => g === parsedGroup)) {
 				await msg.guild.settings.update(GuildSettings.Commands.DisabledCategories, cmdOrCat.toLowerCase());
 
@@ -69,16 +68,15 @@ export default class DisableCommand extends Command {
 
 				return msg.sendEmbed(disableEmbed);
 			}
-			return sendSimpleEmbeddedMessage(msg, `No groups matching that name. Use \`${msg.guild.settings.get(GuildSettings.Prefix)}commands\` to view a list of command groups.`, 3000);
+			return msg.sendSimpleEmbed(`No groups matching that name. Use \`${msg.guild.settings.get(GuildSettings.Prefix)}commands\` to view a list of command groups.`, 3000);
 
 		}
 		// Command
 		if (!isCommandEnabled(msg, cmdOrCat)) {
-			return sendSimpleEmbeddedError(msg, `The \`${cmdOrCat.name}\` command is already disabled.`, 3000);
+			return msg.sendSimpleError(`The \`${cmdOrCat.name}\` command is already disabled.`, 3000);
 		}
 		if (cmdOrCat.guarded) {
-			return sendSimpleEmbeddedError(msg,
-				`You cannot disable the \`${cmdOrCat.name}\` command.`, 3000);
+			return msg.sendSimpleError(`You cannot disable the \`${cmdOrCat.name}\` command.`, 3000);
 		}
 		await msg.guild.settings.update(GuildSettings.Commands.Disabled, cmdOrCat.name.toLowerCase());
 

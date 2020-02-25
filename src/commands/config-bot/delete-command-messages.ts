@@ -4,7 +4,7 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, Permissions } from 'discord.js';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, getEmbedColor } from '@lib/helpers';
+import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
@@ -49,7 +49,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 		}).setTimestamp();
 
 		if (deleteCommandMessagesEnabled) {
-			return sendSimpleEmbeddedMessage(msg, 'DeleteCommandMessages feature already enabled!', 3000);
+			return msg.sendSimpleEmbed('DeleteCommandMessages feature already enabled!', 3000);
 		}
 		try {
 			await msg.guild.settings.update(GuildSettings.Commands.DeleteCommandMessages, true);
@@ -99,7 +99,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 				return this.catchError(msg, { subCommand: 'disable' }, err);
 			}
 		} else {
-			return sendSimpleEmbeddedMessage(msg, 'DeleteCommandMessages feature already disabled!', 3000);
+			return msg.sendSimpleEmbed('DeleteCommandMessages feature already disabled!', 3000);
 		}
 	}
 
@@ -116,9 +116,9 @@ export default class DeleteCommandMessagesCommand extends Command {
 
 		// Inform the user the command failed
 		if (args.subCommand.toLowerCase() === 'enable') {
-			return sendSimpleEmbeddedError(msg, 'Enabling DeleteCommandMessages feature failed!');
+			return msg.sendSimpleError('Enabling DeleteCommandMessages feature failed!');
 		}
-		return sendSimpleEmbeddedError(msg, 'Disabling DeleteCommandMessages feature failed!');
+		return msg.sendSimpleError('Disabling DeleteCommandMessages feature failed!');
 
 	}
 

@@ -3,7 +3,7 @@
  */
 
 import { MessageEmbed, Permissions, Role } from 'discord.js';
-import { getEmbedColor, sendSimpleEmbeddedError } from '@lib/helpers';
+import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
@@ -55,11 +55,11 @@ export default class IAmNotCommand extends Command {
 				return msg.sendEmbed(roleEmbed);
 			}
 
-			return sendSimpleEmbeddedError(msg, `<@${msg.member.id}>, you do not have the role ${role.name}.`, 3000);
+			return msg.sendSimpleError(`<@${msg.member.id}>, you do not have the role ${role.name}.`, 3000);
 
 		}
 
-		return sendSimpleEmbeddedError(msg, `Cannot find ${role} in list of assignable roles.`, 3000);
+		return msg.sendSimpleError(`Cannot find ${role} in list of assignable roles.`, 3000);
 
 	}
 

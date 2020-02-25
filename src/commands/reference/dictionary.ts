@@ -4,7 +4,7 @@
 
 import { oneLine } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { getEmbedColor, sendSimpleEmbeddedError } from '@lib/helpers';
+import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { SpudConfig } from '@lib/config';
 import * as mw from 'mw-dict';
@@ -40,7 +40,7 @@ export default class DefineCommand extends Command {
 	 * @memberof DefineCommand
 	 */
 	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
-		if (!dictionaryApiKey) return sendSimpleEmbeddedError(msg, 'No API Key has been set up. This feature is unusable', 3000);
+		if (!dictionaryApiKey) return msg.sendSimpleError('No API Key has been set up. This feature is unusable', 3000);
 		const word = query;
 		const dictionaryEmbed: MessageEmbed = new MessageEmbed({
 			color: getEmbedColor(msg),
@@ -77,7 +77,7 @@ export default class DefineCommand extends Command {
 		} catch (err) {
 			msg.client.emit('warn', `Error in command ref:define: ${err}`);
 
-			return sendSimpleEmbeddedError(msg, 'Word not found.', 3000);
+			return msg.sendSimpleError('Word not found.', 3000);
 		}
 	}
 
