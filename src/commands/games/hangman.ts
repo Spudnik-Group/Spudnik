@@ -4,8 +4,7 @@
 
 import { stripIndents } from 'common-tags';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-
-const words = require('../../extras/hangman');
+import { data as words } from '../../extras/hangman.json';
 
 /**
  * Starts a game of Hangman.
@@ -87,7 +86,7 @@ export default class HangmanCommand extends Command {
 
 				const choice = guess.first().content.toLowerCase();
 
-				if (choice === 'end') { break; }
+				if (choice === 'end') break;
 
 				if (choice.length > 1 && choice === word) {
 					guessed = true;
@@ -96,18 +95,18 @@ export default class HangmanCommand extends Command {
 				} else if (word.includes(choice)) {
 					displayText = true;
 					for (let i = 0; i < word.length; i++) {
-						if (word.charAt(i) !== choice) { continue; }
+						if (word.charAt(i) !== choice) continue;
 						confirmation.push(word.charAt(i));
 						display[i] = word.charAt(i);
 					}
 				} else {
 					displayText = false;
-					if (choice.length === 1) { incorrect.push(choice); }
+					if (choice.length === 1) incorrect.push(choice);
 					points++;
 				}
 			}
 			this.playing.delete(msg.channel.id);
-			if (word.length === confirmation.length || guessed) { return msg.sendMessage(`You won, it was ${word}!`); }
+			if (word.length === confirmation.length || guessed) return msg.sendMessage(`You won, it was ${word}!`);
 
 			return msg.sendMessage(`Too bad... It was ${word}...`);
 		} catch (err) {

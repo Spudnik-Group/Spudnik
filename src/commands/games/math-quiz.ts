@@ -45,7 +45,7 @@ export default class MathQuizCommand extends Command {
 
 		this.createCustomResolver('difficulty', (arg: string) => {
 			if (difficulties.includes(arg.toLowerCase())) return arg;
-			throw `Please provide a valid difficulty level. Options are: ${list(difficulties, 'or')}.`;
+			throw new Error(`Please provide a valid difficulty level. Options are: ${list(difficulties, 'or')}.`);
 		});
 	}
 
@@ -63,9 +63,15 @@ export default class MathQuizCommand extends Command {
 		let answer: any;
 
 		switch (operation) {
-			case '+': answer = value1 + value2; break;
-			case '-': answer = value1 - value2; break;
-			case '*': answer = value1 * value2; break;
+			case '+':
+				answer = value1 + value2;
+				break;
+			case '-':
+				answer = value1 - value2;
+				break;
+			case '*':
+				answer = value1 * value2;
+				break;
 		}
 
 		await msg.reply(stripIndents`
@@ -78,8 +84,8 @@ export default class MathQuizCommand extends Command {
 			time: 10000
 		});
 
-		if (!msgs.size) { return msg.sendMessage(`Sorry, time is up! It was ${answer}.`, { reply: msg.author }); }
-		if (msgs.first().content !== answer.toString()) { return msg.sendMessage(`Nope, sorry, it's ${answer}.`, { reply: msg.author }); }
+		if (!msgs.size) return msg.sendMessage(`Sorry, time is up! It was ${answer}.`, { reply: msg.author });
+		if (msgs.first().content !== answer.toString()) return msg.sendMessage(`Nope, sorry, it's ${answer}.`, { reply: msg.author });
 
 		return msg.sendMessage('Nice job! 10/10! You deserve some cake!', { reply: msg.author });
 	}

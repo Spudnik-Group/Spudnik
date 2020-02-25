@@ -6,8 +6,7 @@ import { stripIndents } from 'common-tags';
 import { Collection } from 'discord.js';
 import { awaitPlayers, delay, shuffle } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-
-const { questions, stories } = require('../../extras/mafia');
+import { questions, stories } from '../../extras/mafia.json';
 
 /**
  * Starts a game of Mafia.
@@ -42,7 +41,7 @@ export default class MafiaCommand extends Command {
 	 * @memberof MafiaCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		if (this.playing.has(msg.channel.id)) { return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author }); }
+		if (this.playing.has(msg.channel.id)) return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author });
 		this.playing.add(msg.channel.id);
 		try {
 			await msg.sendMessage('You will need at least 2 more players, at maximum 10. To join, type `join game`.');
@@ -61,12 +60,12 @@ export default class MafiaCommand extends Command {
 				await msg.sendMessage(`Night ${turn}, sending DMs...`);
 
 				for (const player of players.values()) {
-					if (player.role.includes('pleb')) { continue; }
+					if (player.role.includes('pleb')) continue;
 					await msg.sendMessage(`The ${player.role} is making their decision...`);
 					const valid = players.filterArray((p: any) => p.role !== player.role);
 					await player.user.send(stripIndents`
 						${questions[player.role]} Please type the number.
-						${valid.map((p: any, i: any) => `**${i + 1}.** ${p.user.tag}`).join('\n')}
+						${valid.map((p: any, i: number) => `**${i + 1}.** ${p.user.tag}`).join('\n')}
 					`);
 					const filter = (res: any) => valid[Number.parseInt(res.content, 10) - 1];
 					const decision = await player.user.dmChannel.awaitMessages(filter, {
@@ -94,7 +93,7 @@ export default class MafiaCommand extends Command {
 				const display = killed ? players.get(killed).user : null;
 				const story = stories[Math.floor(Math.random() * stories.length)];
 
-				if (killed && killed !== saved) { players.delete(killed); }
+				if (killed && killed !== saved) players.delete(killed);
 
 				if (killed && killed === saved) {
 					await msg.sendMessage(stripIndents`
@@ -125,16 +124,16 @@ export default class MafiaCommand extends Command {
 
 				await msg.sendMessage(stripIndents`
 					Who do you think is the Mafia member? Please type the number.
-					${playersArr.map((p: any, i: any) => `**${i + 1}.** ${p.user.tag}`).join('\n')}
+					${playersArr.map((p: any, i: number) => `**${i + 1}.** ${p.user.tag}`).join('\n')}
 				`);
 
 				const voted: any = [];
 				const filter = (res: any) => {
-					if (!players.exists((p: any) => p.user.id === res.author.id)) { return false; }
+					if (!players.exists((p: any) => p.user.id === res.author.id)) return false;
 
-					if (voted.includes(res.author.id)) { return false; }
+					if (voted.includes(res.author.id)) return false;
 
-					if (!playersArr[Number.parseInt(res.content, 10) - 1]) { return false; }
+					if (!playersArr[Number.parseInt(res.content, 10) - 1]) return false;
 
 					voted.push(res.author.id);
 
@@ -156,7 +155,7 @@ export default class MafiaCommand extends Command {
 			}
 			this.playing.delete(msg.channel.id);
 			const mafia = players.find((p: any) => p.role === 'mafia');
-			if (!mafia) { return msg.sendMessage('The Mafia has been hanged! Thanks for playing!'); }
+			if (!mafia) return msg.sendMessage('The Mafia has been hanged! Thanks for playing!');
 
 			return msg.sendMessage(`Oh no, the Mafia wasn't caught in time... Nice job, ${mafia.user}!`);
 		} catch (err) {
@@ -168,7 +167,7 @@ export default class MafiaCommand extends Command {
 
 	private async generatePlayers(list: any) {
 		let roles = ['mafia', 'doctor', 'detective'];
-		for (let i = 0; i < (list.length - 2); i++) { roles.push(`pleb ${i + 1}`); }
+		for (let i = 0; i < (list.length - 2); i++) roles.push(`pleb ${i + 1}`);
 		roles = shuffle(roles);
 		const players = new Collection();
 		let i = 0;

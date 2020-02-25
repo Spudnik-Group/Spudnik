@@ -4,10 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { Collection } from 'discord.js';
-import { awaitPlayers, delay, sendSimpleEmbeddedError, shuffle } from '@lib/helpers';
+import { awaitPlayers, delay, shuffle } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-// Tslint:disable-next-line:no-var-requires
-const data = require('../../extras/wizard-convention');
+import * as data from '../../extras/wizard-convention.json';
 
 /**
  * Starts a game of Wizard Convention.
@@ -43,7 +42,7 @@ export default class WizardConventionCommand extends Command {
 	 * @memberof WizardConventionCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		if (this.playing.has(msg.channel.id)) { return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author }); }
+		if (this.playing.has(msg.channel.id)) return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author });
 		this.playing.add(msg.channel.id);
 
 		try {
@@ -67,7 +66,7 @@ export default class WizardConventionCommand extends Command {
 				await msg.sendMessage(`Night ${turn}, sending DMs...`);
 
 				for (const player of players.values()) {
-					if (player.role.includes('pleb')) { continue; }
+					if (player.role.includes('pleb')) continue;
 
 					await msg.sendMessage(`The ${player.role} is making their decision...`);
 
@@ -75,7 +74,7 @@ export default class WizardConventionCommand extends Command {
 
 					await player.user.send(stripIndents`
 						${data.questions[player.role]} Please type the number.
-						${valid.map((p: any, i: any) => `**${i + 1}.** ${p.user.tag}`).join('\n')}
+						${valid.map((p: any, i: number) => `**${i + 1}.** ${p.user.tag}`).join('\n')}
 					`);
 
 					const filter = (res: any) => valid[Number.parseInt(res.content, 10) - 1];
@@ -106,7 +105,7 @@ export default class WizardConventionCommand extends Command {
 				const display = eaten ? players.get(eaten).user : null;
 				const story = data.stories[Math.floor(Math.random() * data.stories.length)];
 
-				if (eaten && eaten !== healed) { players.delete(eaten); }
+				if (eaten && eaten !== healed) players.delete(eaten);
 
 				if (eaten && eaten === healed) {
 					await msg.sendMessage(stripIndents`
@@ -138,15 +137,15 @@ export default class WizardConventionCommand extends Command {
 
 				await msg.sendMessage(stripIndents`
 					Who do you think is the dragon? Please type the number.
-					${playersArr.map((p: any, i: any) => `**${i + 1}.** ${p.user.tag}`).join('\n')}
+					${playersArr.map((p: any, i: number) => `**${i + 1}.** ${p.user.tag}`).join('\n')}
 				`);
 
 				const voted: any[] = [];
 
 				const filter = (res: any) => {
-					if (!players.exists((p: any) => p.user.id === res.author.id)) { return false; }
-					if (voted.includes(res.author.id)) { return false; }
-					if (!playersArr[Number.parseInt(res.content, 10) - 1]) { return false; }
+					if (!players.exists((p: any) => p.user.id === res.author.id)) return false;
+					if (voted.includes(res.author.id)) return false;
+					if (!playersArr[Number.parseInt(res.content, 10) - 1]) return false;
 
 					voted.push(res.author.id);
 
@@ -176,20 +175,20 @@ export default class WizardConventionCommand extends Command {
 
 			const dragon = players.find((p: any) => p.role === 'dragon');
 
-			if (!dragon) { return msg.sendMessage('The dragon has been vanquished! Thanks for playing!'); }
+			if (!dragon) return msg.sendMessage('The dragon has been vanquished! Thanks for playing!');
 
 			return msg.sendMessage(`Oh no, the dragon wasn't caught in time... Nice job, ${dragon.user}!`);
 		} catch (err) {
 			this.playing.delete(msg.channel.id);
 
-			return sendSimpleEmbeddedError(msg, `Oh no, an error occurred: \`${err.message}\`. Try again later!`);
+			return msg.sendSimpleError(`Oh no, an error occurred: \`${err.message}\`. Try again later!`);
 		}
 	}
 
 	private async generatePlayers(list: any) {
 		let roles = ['dragon', 'healer', 'mind reader'];
 
-		for (let i = 0; i < (list.length - 2); i++) { roles.push(`pleb ${i + 1}`); }
+		for (let i = 0; i < (list.length - 2); i++) roles.push(`pleb ${i + 1}`);
 
 		roles = shuffle(roles);
 

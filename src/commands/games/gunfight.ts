@@ -41,11 +41,11 @@ export default class GunFightCommand extends Command {
 	 * @memberof GunFightCommand
 	 */
 	public async run(msg: KlasaMessage, [opponent]): Promise<KlasaMessage | KlasaMessage[]> {
-		if (opponent.bot) { return msg.sendMessage('Bots may not be fought.', { reply: msg.author }); }
+		if (opponent.bot) return msg.sendMessage('Bots may not be fought.', { reply: msg.author });
 
-		if (opponent.id === msg.author.id) { return msg.sendMessage('You may not fight yourself.', { reply: msg.author }); }
+		if (opponent.id === msg.author.id) return msg.sendMessage('You may not fight yourself.', { reply: msg.author });
 
-		if (this.fighting.has(msg.channel.id)) { return msg.sendMessage('Only one fight may be occurring per channel.', { reply: msg.author }); }
+		if (this.fighting.has(msg.channel.id)) return msg.sendMessage('Only one fight may be occurring per channel.', { reply: msg.author });
 
 		this.fighting.add(msg.channel.id);
 
@@ -73,7 +73,7 @@ export default class GunFightCommand extends Command {
 			});
 
 			this.fighting.delete(msg.channel.id);
-			if (!winner.size) { return msg.sendMessage('Oh... No one won.'); }
+			if (!winner.size) return msg.sendMessage('Oh... No one won.');
 
 			return msg.sendMessage(`The winner is ${winner.first().author}!`);
 		} catch (err) {

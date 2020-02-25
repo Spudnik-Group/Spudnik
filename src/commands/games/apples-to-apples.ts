@@ -6,8 +6,8 @@ import { stripIndents } from 'common-tags';
 import { Collection } from 'discord.js';
 import { awaitPlayers, shuffle } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-// Tslint:disable-next-line:no-var-requires
-const data = require('../../extras/apples-to-apples');
+import * as data from '../../extras/apples-to-apples.json';
+import * as removeMarkdown from 'remove-markdown';
 
 /**
  * Starts a game of Apples To Apples.
@@ -44,7 +44,7 @@ export default class ApplesToApplesCommand extends Command {
 	 * @memberof ApplesToApplesCommand
 	 */
 	public async run(msg: KlasaMessage, [maxPts]): Promise<KlasaMessage | KlasaMessage[]> {
-		if (this.playing.has(msg.channel.id)) { return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author }); }
+		if (this.playing.has(msg.channel.id)) return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author });
 		this.playing.add(msg.channel.id);
 		try {
 			await msg.sendMessage('You will need at least 2 more players, at maximum 10. To join, type `join game`.');
@@ -70,7 +70,7 @@ export default class ApplesToApplesCommand extends Command {
 
 				await msg.sendMessage(stripIndents`
 					The card czar will be ${czar.user}!
-					The Green Card is: **${require('remove-markdown')(green)}**
+					The Green Card is: **${removeMarkdown(green)}**
 
 					Sending DMs...
 				`);
@@ -82,7 +82,7 @@ export default class ApplesToApplesCommand extends Command {
 						player.hand.add(valid[Math.floor(Math.random() * valid.length)]);
 					}
 
-					if (player.user.id === czar.user.id) { return; }
+					if (player.user.id === czar.user.id) return;
 
 					if (!player.hand.size) {
 						await player.user.send('You don\'t have enough cards!');
@@ -105,7 +105,7 @@ export default class ApplesToApplesCommand extends Command {
 					const filter = (res: any) => {
 						const existing = hand[Number.parseInt(res.content, 10) - 1];
 
-						if (!existing) { return false; }
+						if (!existing) return false;
 
 						chosen = existing;
 
@@ -150,15 +150,15 @@ export default class ApplesToApplesCommand extends Command {
 
 				await msg.sendMessage(stripIndents`
 					${czar.user}, which card do you pick?
-					**Green Card**: ${require('remove-markdown')(green)}
+					**Green Card**: ${removeMarkdown(green)}
 
 					${cards.map((card, i) => `**${i + 1}.** ${card.card}`).join('\n')}
 				`);
 
 				const filter = (res: any) => {
-					if (res.author.id !== czar.user.id) { return false; }
+					if (res.author.id !== czar.user.id) return false;
 
-					if (!cards[Number.parseInt(res.content, 10) - 1]) { return false; }
+					if (!cards[Number.parseInt(res.content, 10) - 1]) return false;
 
 					return true;
 				};
@@ -185,7 +185,7 @@ export default class ApplesToApplesCommand extends Command {
 			}
 			this.playing.delete(msg.channel.id);
 
-			if (!winner) { return msg.sendMessage('See you next time!'); }
+			if (!winner) return msg.sendMessage('See you next time!');
 
 			return msg.sendMessage(`And the winner is... ${winner}! Great job!`);
 		} catch (err) {
@@ -227,7 +227,7 @@ export default class ApplesToApplesCommand extends Command {
 
 		player.hand.delete('<Blank>');
 
-		if (!blank.size) { return `A blank card ${player.user.tag} forgot to fill out.`; }
+		if (!blank.size) return `A blank card ${player.user.tag} forgot to fill out.`;
 
 		return blank.first().content;
 	}

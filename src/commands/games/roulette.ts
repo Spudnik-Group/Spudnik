@@ -37,13 +37,13 @@ export default class RouletteCommand extends Command {
 			usage: '<space:string>'
 		});
 
-		this.createCustomResolver('space', (arg, possible, msg, [action]) => {
-			if (numbers.includes(Number.parseInt(arg, 10))) { return arg; }
-			if (dozens.includes(arg)) { return arg; }
-			if (halves.includes(arg)) { return arg; }
-			if (columns.includes(arg.toLowerCase())) { return arg; }
-			if (parity.includes(arg.toLowerCase())) { return arg; }
-			if (colors.includes(arg.toLowerCase())) { return arg; }
+		this.createCustomResolver('space', arg => {
+			if (numbers.includes(Number.parseInt(arg, 10))) return arg;
+			if (dozens.includes(arg)) return arg;
+			if (halves.includes(arg)) return arg;
+			if (columns.includes(arg.toLowerCase())) return arg;
+			if (parity.includes(arg.toLowerCase())) return arg;
+			if (colors.includes(arg.toLowerCase())) return arg;
 
 			throw oneLine`
 				Invalid space, please enter either a specific number from 0-36, a range of dozens (e.g. 1-12), a range of
@@ -74,14 +74,14 @@ export default class RouletteCommand extends Command {
 			return result >= range[0] && range[1] >= result;
 		}
 		if (colors.includes(choice)) {
-			if (choice === 'black') { return black.includes(result); }
-			if (choice === 'red') { return red.includes(result); }
+			if (choice === 'black') return black.includes(result);
+			if (choice === 'red') return red.includes(result);
 		}
-		if (parity.includes(choice)) { return parity[result % 2] === choice; }
-		if (columns.includes(choice)) { return columns[(result - 1) % 3] === choice; }
+		if (parity.includes(choice)) return parity[result % 2] === choice;
+		if (columns.includes(choice)) return columns[(result - 1) % 3] === choice;
 		const num = Number.parseInt(choice, 10);
-		if (numbers.includes(num)) { return result === num; }
-		if (!result) { return false; }
+		if (numbers.includes(num)) return result === num;
+		if (!result) return false;
 
 		return false;
 	}

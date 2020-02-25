@@ -4,8 +4,7 @@
 
 import { getRandomInt } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-
-const fishes = require('../../extras/fish');
+import * as fishes from '../../extras/fish.json';
 
 /**
  * Starts a game of Slots.

@@ -5,9 +5,9 @@
 import { stripIndents } from 'common-tags';
 import { shuffle } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { questions, houses, descriptions } from '../../extras/sorting-hat-quiz.json';
 
 const choices = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'];
-const { questions, houses, descriptions } = require('../../extras/sorting-hat-quiz');
 
 /**
  * Starts a game of Sorting Hats.
@@ -42,7 +42,7 @@ export default class SortingHatQuizCommand extends Command {
 	 * @memberof SortingHatQuizCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		if (this.playing.has(msg.channel.id)) { return msg.sendMessage('Only one quiz may be occurring per channel.', { reply: msg.author }); }
+		if (this.playing.has(msg.channel.id)) return msg.sendMessage('Only one quiz may be occurring per channel.', { reply: msg.author });
 		this.playing.add(msg.channel.id);
 		try {
 			const points: any = {
@@ -84,11 +84,11 @@ export default class SortingHatQuizCommand extends Command {
 					time: 120000
 				});
 
-				if (!choice.size) { return msg.sendMessage('Oh no, you ran out of time! Too bad.'); }
+				if (!choice.size) return msg.sendMessage('Oh no, you ran out of time! Too bad.');
 
 				const answer = answers[choices.indexOf(choice.first().content.toUpperCase())];
 
-				for (const [house, amount] of Object.entries(answer.points)) { points[house] += amount; }
+				for (const [house, amount] of Object.entries(answer.points)) points[house] += amount;
 
 				++turn;
 			}

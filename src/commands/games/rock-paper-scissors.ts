@@ -41,21 +41,21 @@ export default class RockPaperScissorsCommand extends Command {
 		const response = choices[Math.floor(Math.random() * choices.length)];
 
 		if (choice.toLowerCase() === 'rock') {
-			if (response === 'rock') { return msg.sendMessage('Rock! Aw... A tie...', { reply: msg.author }); }
-			if (response === 'paper') { return msg.sendMessage('Paper! Yes! I win!', { reply: msg.author }); }
-			if (response === 'scissors') { return msg.sendMessage('Scissors! Aw... I lose...', { reply: msg.author }); }
+			if (response === 'rock') return msg.sendMessage('Rock! Aw... A tie...', { reply: msg.author });
+			if (response === 'paper') return msg.sendMessage('Paper! Yes! I win!', { reply: msg.author });
+			if (response === 'scissors') return msg.sendMessage('Scissors! Aw... I lose...', { reply: msg.author });
 		}
 
 		if (choice.toLowerCase() === 'paper') {
-			if (response === 'rock') { return msg.sendMessage('Rock! Aw... I lose...', { reply: msg.author }); }
-			if (response === 'paper') { return msg.sendMessage('Paper! Aw... A tie...', { reply: msg.author }); }
-			if (response === 'scissors') { return msg.sendMessage('Scissors! Yes! I win!', { reply: msg.author }); }
+			if (response === 'rock') return msg.sendMessage('Rock! Aw... I lose...', { reply: msg.author });
+			if (response === 'paper') return msg.sendMessage('Paper! Aw... A tie...', { reply: msg.author });
+			if (response === 'scissors') return msg.sendMessage('Scissors! Yes! I win!', { reply: msg.author });
 		}
 
 		if (choice.toLowerCase() === 'scissors') {
-			if (response === 'rock') { return msg.sendMessage('Rock! Yes! I win!', { reply: msg.author }); }
-			if (response === 'paper') { return msg.sendMessage('Paper! Aw... I lose...', { reply: msg.author }); }
-			if (response === 'scissors') { return msg.sendMessage('Scissors! Aw... A tie...', { reply: msg.author }); }
+			if (response === 'rock') return msg.sendMessage('Rock! Yes! I win!', { reply: msg.author });
+			if (response === 'paper') return msg.sendMessage('Paper! Aw... I lose...', { reply: msg.author });
+			if (response === 'scissors') return msg.sendMessage('Scissors! Aw... A tie...', { reply: msg.author });
 		}
 
 		return msg.sendMessage('I win by default, you little cheater.', { reply: msg.author });

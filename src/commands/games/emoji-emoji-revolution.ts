@@ -43,9 +43,9 @@ export default class EmojiEmojiRevolutionCommand extends Command {
 	 * @memberof EmojiEmojiRevolutionCommand
 	 */
 	public async run(msg: KlasaMessage, [opponent]): Promise<KlasaMessage | KlasaMessage[]> {
-		if (opponent.bot) { return msg.sendMessage('Bots may not be played against.', { reply: msg.author }); }
-		if (opponent.id === msg.author.id) { return msg.sendMessage('You may not play against yourself.', { reply: msg.author }); }
-		if (this.playing.has(msg.channel.id)) { return msg.sendMessage('Only one fight may be occurring per channel.', { reply: msg.author }); }
+		if (opponent.bot) return msg.sendMessage('Bots may not be played against.', { reply: msg.author });
+		if (opponent.id === msg.author.id) return msg.sendMessage('You may not play against yourself.', { reply: msg.author });
+		if (this.playing.has(msg.channel.id)) return msg.sendMessage('Only one fight may be occurring per channel.', { reply: msg.author });
 
 		this.playing.add(msg.channel.id);
 
@@ -83,7 +83,11 @@ export default class EmojiEmojiRevolutionCommand extends Command {
 
 				const winner = win.first().author;
 
-				if (winner.id === msg.author.id) { ++aPts; } else { ++oPts; }
+				if (winner.id === msg.author.id) {
+					++aPts;
+				} else {
+				 ++oPts;
+				}
 
 				await msg.sendMessage(stripIndents`
 					${winner} won this round!
@@ -94,7 +98,7 @@ export default class EmojiEmojiRevolutionCommand extends Command {
 
 			this.playing.delete(msg.channel.id);
 
-			if (aPts === oPts) { return msg.sendMessage('It\'s a tie!'); }
+			if (aPts === oPts) return msg.sendMessage('It\'s a tie!');
 
 			const userWin = aPts > oPts;
 

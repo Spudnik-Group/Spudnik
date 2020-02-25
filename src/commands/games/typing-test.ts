@@ -5,8 +5,8 @@
 import { stripIndents } from 'common-tags';
 import { list } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { data as sentences } from '../../extras/typing-test.json';
 
-const sentences = require('../../extras/typing-test');
 const difficulties = ['easy', 'medium', 'hard', 'extreme', 'impossible'];
 const times: any = {
 	easy: 25000,
@@ -45,7 +45,7 @@ export default class TypingTestCommand extends Command {
 
 		this.createCustomResolver('difficulty', (arg: string) => {
 			if (difficulties.includes(arg.toLowerCase())) return arg;
-			throw `Please provide a valid difficulty level. Options are: ${list(difficulties, 'or')}.`;
+			throw new Error(`Please provide a valid difficulty level. Options are: ${list(difficulties, 'or')}.`);
 		});
 	}
 
@@ -68,7 +68,7 @@ export default class TypingTestCommand extends Command {
 			max: 1,
 			time
 		});
-		if (!msgs.size || msgs.first().content !== sentence) { return msg.sendMessage('Sorry! You lose!', { reply: msg.author }); }
+		if (!msgs.size || msgs.first().content !== sentence) return msg.sendMessage('Sorry! You lose!', { reply: msg.author });
 
 		return msg.sendMessage(`Nice job! 10/10! You deserve some cake! (Took ${(Date.now() - now) / 1000} seconds)`, { reply: msg.author });
 	}

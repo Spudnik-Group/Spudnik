@@ -4,8 +4,7 @@
 
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed } from 'discord.js';
-
-const questions = require('../../extras/google-feud');
+import { questions } from '../../extras/google-feud.json';
 
 /**
  * Starts a game of Google Feud.
@@ -43,13 +42,13 @@ export default class GoogleFeudCommand extends Command {
 	 * @memberof GoogleFeudCommand
 	 */
 	public async run(msg: KlasaMessage, [question]): Promise<KlasaMessage | KlasaMessage[]> {
-		if (this.playing.has(msg.channel.id)) { return msg.sendMessage('Only one fight may be occurring per channel.', { reply: msg.author }); }
+		if (this.playing.has(msg.channel.id)) return msg.sendMessage('Only one fight may be occurring per channel.', { reply: msg.author });
 		this.playing.add(msg.channel.id);
 
 		try {
 			const suggestions = await this.fetchSuggestions(question);
 
-			if (!suggestions) { return msg.sendMessage('Could not find any results.'); }
+			if (!suggestions) return msg.sendMessage('Could not find any results.');
 
 			const display = new Array(suggestions.length).fill('???');
 			let tries = 3;
@@ -61,7 +60,7 @@ export default class GoogleFeudCommand extends Command {
 					.setDescription('Type the choice you think is a suggestion _without_ the question.')
 					.setFooter(`${tries} ${tries === 1 ? 'try' : 'tries'} remaining!`);
 
-				for (let i = 0; i < suggestions.length; i++) { embed.addField(`❯ ${10000 - (i * 1000)}`, display[i], true); }
+				for (let i = 0; i < suggestions.length; i++) embed.addField(`❯ ${10000 - (i * 1000)}`, display[i], true);
 
 				await msg.sendEmbed(embed);
 
@@ -86,7 +85,7 @@ export default class GoogleFeudCommand extends Command {
 
 			this.playing.delete(msg.channel.id);
 
-			if (!display.includes('???')) { return msg.sendMessage('You win! Nice job, master of Google!'); }
+			if (!display.includes('???')) return msg.sendMessage('You win! Nice job, master of Google!');
 
 			return msg.sendMessage('Better luck next time!');
 		} catch (err) {
@@ -105,7 +104,7 @@ export default class GoogleFeudCommand extends Command {
 			});
 		const suggestions = JSON.parse(text)[1].filter((suggestion: any) => suggestion.toLowerCase() !== question.toLowerCase());
 
-		if (!suggestions.length) { return null; }
+		if (!suggestions.length) return null;
 
 		return suggestions.map((suggestion: any) => suggestion.toLowerCase().replace(question.toLowerCase(), '').trim());
 	}

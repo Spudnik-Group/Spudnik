@@ -41,8 +41,8 @@ export default class BalloonPopCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage, [opp]): Promise<KlasaMessage | KlasaMessage[]> {
 		const opponent = opp ? opp : this.client.user;
-		if (opponent.id === msg.author.id) { return msg.sendMessage('You may not play against yourself.', { reply: msg.author }); }
-		if (this.playing.has(msg.channel.id)) { return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author }); }
+		if (opponent.id === msg.author.id) return msg.sendMessage('You may not play against yourself.', { reply: msg.author });
+		if (this.playing.has(msg.channel.id)) return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author });
 		this.playing.add(msg.channel.id);
 		try {
 			if (!opponent.bot) {
