@@ -4,8 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, Role, Permissions } from 'discord.js';
-import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 /**
  * Manage setting a default role.
@@ -15,8 +16,8 @@ import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'kla
  * @extends {Command}
  */
 export default class DefaultRoleCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: [
 				'dr'
 			],
@@ -53,11 +54,11 @@ export default class DefaultRoleCommand extends Command {
 			}
 		}).setTimestamp();
 
-		let guildDefaultRole: Role = await msg.guild.settings.get('roles.default');
+		let guildDefaultRole: string = await msg.guild.settings.get(GuildSettings.Roles.Default);
 
 		if (!role) {
 			try {
-				await msg.guild.settings.reset('roles.default');
+				await msg.guild.settings.reset(GuildSettings.Roles.Default);
 				// Set up embed message
 				roleEmbed.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
@@ -70,7 +71,7 @@ export default class DefaultRoleCommand extends Command {
 			}
 		} else if (!guildDefaultRole || guildDefaultRole.id !== role.id) {
 			try {
-				await msg.guild.settings.update('roles.default', role, msg.guild);
+				await msg.guild.settings.update(GuildSettings.Roles.Default, role);
 
 				// Set up embed message
 				roleEmbed.setDescription(stripIndents`

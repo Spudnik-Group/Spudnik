@@ -4,8 +4,8 @@
 
 import { stripIndents } from 'common-tags';
 import axios from 'axios';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Generates a Strawpoll with the provided options.
@@ -15,8 +15,8 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class StrawpollCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['poll'],
 			description: 'Generates a Strawpoll with the provided options.',
 			name: 'strawpoll',

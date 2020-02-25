@@ -4,7 +4,7 @@
 
 import { Client, KlasaClientOptions } from 'klasa';
 import { SpudConfig } from './spud-config';
-import { permissionLevels } from '../schemas/permission-levels';
+import { permissionLevels } from '@lib/schemas/permission-levels';
 
 /**
  * The following are all client options for Klasa/Discord.js.
@@ -48,8 +48,6 @@ export const KlasaConfig: KlasaClientOptions = {
 	prefix: '!',
 	// A presence to login with
 	presence: {},
-	// If custom settings should be preserved when a guild removes your bot
-	preserveSettings: true,
 	// Disables/Enables a process.on('unhandledRejection'...) handler
 	production: !!SpudConfig.debug,
 	// A once ready message for your console

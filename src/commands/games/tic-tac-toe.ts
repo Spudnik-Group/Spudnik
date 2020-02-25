@@ -3,8 +3,8 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { verify } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { verify } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Starts a game of Tic Tac Toe.
@@ -22,8 +22,8 @@ export default class TicTacToeCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof TicTacToeCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Play a game of tic-tac-toe with another user.',
 			extendedHelp: stripIndents`
 				syntax: \`!tic-tac-toe <@userMention>\`

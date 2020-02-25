@@ -4,8 +4,8 @@
 
 import { stripIndents } from 'common-tags';
 import { GuildMember } from 'discord.js';
-import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { sendSimpleEmbeddedMessage } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Identify anyone playing games in the guild.
@@ -15,8 +15,8 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class PlayingCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Returns a list of people playing games. Allows filtering.',
 			extendedHelp: stripIndents`
 				Supplying no game name provides you with a list of all users who are marked with the "Playing" status type.

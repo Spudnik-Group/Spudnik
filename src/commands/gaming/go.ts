@@ -4,9 +4,9 @@
 
 import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
-import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
-import { SteamGames } from '../../lib/constants';
+import { getEmbedColor, sendSimpleEmbeddedError } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { SteamGames } from '@lib/constants';
 
 const steamGameNames = Object.keys(SteamGames).map(item => {
 	return `* ${item}`
@@ -20,8 +20,8 @@ const steamGameNames = Object.keys(SteamGames).map(item => {
  * @extends {Command}
  */
 export default class GoCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['play-game', 'lets-play', 'go-play'],
 			description: 'Displays a link to launch a steam game.',
 			extendedHelp: stripIndents`

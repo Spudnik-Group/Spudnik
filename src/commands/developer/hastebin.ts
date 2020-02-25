@@ -2,13 +2,13 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Command, KlasaClient, CommandStore } from 'klasa';
+import { Command, CommandStore } from 'klasa';
 import axios from 'axios';
-import { sendSimpleEmbeddedError } from '../../lib/helpers';
+import { sendSimpleEmbeddedError } from '@lib/helpers';
 
 export default class HastebinCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['hb'],
 			description: 'Upload code or text to hastebin.',
 			usage: '<code:...string>'

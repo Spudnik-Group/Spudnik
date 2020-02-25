@@ -4,9 +4,9 @@
 
 import { oneLine } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
-import { SpudConfig } from '../../lib/config';
+import { getEmbedColor, sendSimpleEmbeddedError } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { SpudConfig } from '@lib/config';
 import * as mw from 'mw-dict';
 
 const dictionaryApiKey: string = SpudConfig.dictionaryApiKey;
@@ -20,8 +20,8 @@ const dict = new mw.CollegiateDictionary(dictionaryApiKey);
  * @extends {Command}
  */
 export default class DefineCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Returns the definition of a supplied word. Uses the Merriam-Webster Collegiate Dictionary API.',
 			name: 'define',
 			usage: '<query:...string>'

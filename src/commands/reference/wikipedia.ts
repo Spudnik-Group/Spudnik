@@ -3,9 +3,9 @@
  */
 
 import { MessageEmbed } from 'discord.js';
-import { getEmbedColor, sendSimpleEmbeddedError, shorten } from '../../lib/helpers';
+import { getEmbedColor, sendSimpleEmbeddedError, shorten } from '@lib/helpers';
 import * as WikiJS from 'wikijs';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Post a summary from Wikipedia.
@@ -15,8 +15,8 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class WikiCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Returns the summary of the first matching search result from Wikipedia.',
 			name: 'wiki',
 			usage: '<query:string>'

@@ -2,8 +2,8 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { getRandomInt, sendSimpleEmbeddedImage } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { getRandomInt, sendSimpleEmbeddedImage } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { Permissions } from 'discord.js';
 
 const { bacon }: { bacon: string[] } = require('../../extras/data');
@@ -16,8 +16,8 @@ const { bacon }: { bacon: string[] } = require('../../extras/data');
  * @extends {Command}
  */
 export default class BaconCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Blesses you with a random bacon gif.',
 			name: 'bacon',
 			requiredPermissions: Permissions.FLAGS.ATTACH_FILES

@@ -3,8 +3,8 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { list } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { list } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 const sentences = require('../../extras/typing-test');
 const difficulties = ['easy', 'medium', 'hard', 'extreme', 'impossible'];
@@ -30,8 +30,8 @@ export default class TypingTestCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof TypingTestCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['typing-game'],
 			description: 'See how fast you can type a sentence in a given time limit.',
 			extendedHelp: stripIndents`

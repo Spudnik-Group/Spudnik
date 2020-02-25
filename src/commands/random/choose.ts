@@ -2,8 +2,8 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { getEmbedColor, getRandomInt, sendSimpleEmbeddedError } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { getEmbedColor, getRandomInt, sendSimpleEmbeddedError } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed } from 'discord.js';
 
 /**
@@ -14,8 +14,8 @@ import { MessageEmbed } from 'discord.js';
  * @extends {Command}
  */
 export default class ChooseCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Have the bot choose something for you.',
 			name: 'choose',
 			usage: '<choice:string> <choice:string> [...]',

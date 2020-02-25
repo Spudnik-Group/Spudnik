@@ -3,8 +3,8 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { getRandomInt, verify } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { getRandomInt, verify } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Allows users to battle each other or the bot.
@@ -20,8 +20,8 @@ export default class BattleCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof BattleCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['fight', 'death-battle'],
 			description: 'Engage in a turn-based battle against another user or the AI.',
 			extendedHelp: 'syntax: \`!battle (@usermention)\`',

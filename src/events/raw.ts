@@ -4,7 +4,8 @@
 
 import { Event } from 'klasa';
 import { TextChannel, Message, GuildChannel, MessageEmbed, Guild } from 'discord.js';
-import { SpudConfig } from '../lib/config/spud-config';
+import { SpudConfig } from '@lib//config/spud-config';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 export default class extends Event {
 
@@ -21,19 +22,19 @@ export default class extends Event {
 		if (!(channel as TextChannel).permissionsFor(this.client.user.id).has('READ_MESSAGE_HISTORY')) { return; } //Bot doesn't have the right permissions to retrieve the message
 
 		const message: Message = await (channel as TextChannel).messages.fetch(data.message_id);
-		const starboardEnabled: boolean = await guild.settings.get('starboard.enabled');
+		const starboardEnabled: boolean = guild.settings.get(GuildSettings.Starboard.Enabled);
 		
 		if (message.author.id === data.user_id) { return; } // You can't star your own messages
 		if (message.author.bot) { return; } // You can't star bot messages
 		if (!starboardEnabled) { return; } //Ignore if starboard isn't set up
 
 		const currentEmojiKey: any = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
-		const starboardTrigger: string = await guild.settings.get('starboard.trigger');
+		const starboardTrigger: string = guild.settings.get(GuildSettings.Starboard.Trigger);
 
 		// Check for starboard reaction
 		if (starboardTrigger === currentEmojiKey) {
-			const starboardChannel = await guild.settings.get('starboard.channel');
-			const starboard: GuildChannel = await guild.channels.get(starboardChannel);
+			const starboardChannel = guild.settings.get(GuildSettings.Starboard.Channel);
+			const starboard: GuildChannel = guild.channels.get(starboardChannel);
 
 			if (!starboard || !starboardChannel) { return; } //Ignore if starboard isn't set up
 			if (starboard === channel) { return; } //Can't star items in starboard channel
@@ -75,7 +76,7 @@ export default class extends Event {
 					.addField('Author', message.author.toString(), true)
 					.addField('Channel', (channel as TextChannel).toString(), true)
 					.addField('Jump', `[Link](${message.url})`, true)
-					.setColor(await guild.settings.get('embedColor'))
+					.setColor(guild.settings.get(GuildSettings.EmbedColor))
 					.setTimestamp(message.createdTimestamp)
 					.setFooter(`⭐ ${stars} | ${message.id} `);
 

@@ -4,8 +4,8 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { getEmbedColor, sendSimpleEmbeddedError } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 import * as UD from 'urban-dictionary';
 
 /**
@@ -16,8 +16,8 @@ import * as UD from 'urban-dictionary';
  * @extends {Command}
  */
 export default class UrbanCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Returns the Urban Dictionary result of the supplied query. If no query is supplied, returns a random thing.',
 			extendedHelp: stripIndents`
 				Supplying no query will return a random result.

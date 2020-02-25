@@ -2,8 +2,8 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { sendSimpleEmbeddedMessageWithAuthor, Convert } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { sendSimpleEmbeddedMessageWithAuthor, Convert } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Converts Decimal to Binary
@@ -13,8 +13,8 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class Dec2BinCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Converts hexadecimal to decimal',
 			name: 'dec2bin',
 			usage: '<numberToConvert:int>'

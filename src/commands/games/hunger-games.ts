@@ -3,8 +3,8 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { shuffle, verify } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { shuffle, verify } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 const events = require('../../extras/hunger-games');
 
@@ -24,8 +24,8 @@ export default class HungerGamesCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof HungerGamesCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['hunger-games-simulator', 'brant-steele'],
 			description: 'Simulate a Hunger Games match with up to 24 tributes.',
 			name: 'hunger-games',

@@ -3,16 +3,16 @@
  */
 
 import axios from 'axios';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed } from 'discord.js';
-import { sendSimpleEmbeddedError } from '../../lib/helpers';
-import { SpudConfig } from '../../lib/config';
+import { sendSimpleEmbeddedError } from '@lib/helpers';
+import { SpudConfig } from '@lib/config';
 
 const tmdbAPIkey = SpudConfig.tmdbAPIkey;
 
 export default class TVShowCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['tvshows', 'tv', 'tvseries', 'tv-show'],
 			description: 'Finds a TV show on TMDB.org',
 			name: 'tvshow',

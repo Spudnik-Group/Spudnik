@@ -4,8 +4,8 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, User, Permissions } from 'discord.js';
-import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
 /**
  * Unban a member.
@@ -15,8 +15,8 @@ import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'kla
  * @extends {Command}
  */
 export default class UnBanCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Un-Bans the user.',
 			name: 'unban',
 			permissionLevel: 4, // BAN_MEMBERS

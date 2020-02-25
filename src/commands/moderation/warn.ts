@@ -4,8 +4,8 @@
 
 import { stripIndents } from 'common-tags';
 import { GuildMember, MessageEmbed } from 'discord.js';
-import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
-import { KlasaClient, CommandStore, Command, KlasaMessage, Timestamp } from 'klasa';
+import { sendSimpleEmbeddedError, getEmbedColor } from '@lib/helpers';
+import { CommandStore, Command, KlasaMessage, Timestamp } from 'klasa';
 
 /**
  * Warn a member of the guild.
@@ -15,8 +15,8 @@ import { KlasaClient, CommandStore, Command, KlasaMessage, Timestamp } from 'kla
  * @extends {Command}
  */
 export default class WarnCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Warn a member with a specified amount of points',
 			name: 'warn',
 			permissionLevel: 1, // MANAGE_MESSAGES

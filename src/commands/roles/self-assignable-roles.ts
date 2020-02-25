@@ -3,9 +3,10 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { MessageEmbed, Role } from 'discord.js';
-import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { MessageEmbed } from 'discord.js';
+import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 /**
  * Manage self-assignable roles.
@@ -15,8 +16,8 @@ import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'kla
  * @extends {Command}
  */
 export default class SelfAssignableRolesCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: [
 				'sar'
 			],
@@ -48,14 +49,14 @@ export default class SelfAssignableRolesCommand extends Command {
 			}
 		}).setTimestamp();
 
-		let guildAssignableRoles: Role[] = await msg.guild.settings.get('roles.selfAssignable');
+		let guildAssignableRoles: string[] = await msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);
 
 		if (!Array.isArray(guildAssignableRoles)) {
 			guildAssignableRoles = [];
 		}
 
 		if (!guildAssignableRoles.includes(role.id)) {
-			msg.guild.settings.update('roles.selfAssignable', role, msg.guild)
+			msg.guild.settings.update('roles.selfAssignable', role)
 				.then(() => {
 					// Set up embed message
 					roleEmbed.setDescription(stripIndents`
@@ -84,14 +85,14 @@ export default class SelfAssignableRolesCommand extends Command {
 			}
 		}).setTimestamp();
 
-		let guildAssignableRoles: Role[] = await msg.guild.settings.get('roles.selfAssignable');
+		let guildAssignableRoles: string[] = await msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);
 
 		if (!Array.isArray(guildAssignableRoles)) {
 			guildAssignableRoles = [];
 		}
 
 		if (guildAssignableRoles.includes(role.id)) {
-			msg.guild.settings.update('roles.selfAssignable', role, msg.guild)
+			msg.guild.settings.update(GuildSettings.Roles.SelfAssignable, role)
 				.then(() => {
 					// Set up embed message
 					roleEmbed.setDescription(stripIndents`

@@ -4,8 +4,8 @@
 
 import { stripIndents } from 'common-tags';
 import { GuildMember, Permissions } from 'discord.js';
-import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { sendSimpleEmbeddedMessage } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Change the bot's nickname on your server, or reset it.
@@ -16,8 +16,8 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  */
 export default class NickCommand extends Command {
 
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Used to change the bot\'s nickname on your server, or reset it.',
 			extendedHelp: stripIndents`
 				Supplying no nickname resets the nickname to default.

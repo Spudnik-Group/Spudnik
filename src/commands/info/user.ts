@@ -3,9 +3,9 @@
  */
 
 import { MessageEmbed, User, GuildMember } from 'discord.js';
-import { trimArray, getEmbedColor } from '../../lib/helpers';
+import { trimArray, getEmbedColor } from '@lib/helpers';
 import { stripIndents } from 'common-tags';
-import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
 const activities = {
 	LISTENING: 'Listening to',
@@ -28,8 +28,8 @@ const statuses = {
  * @extends {Command}
  */
 export default class UserCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['user-stats'],
 			description: 'Returns statistics about a user.',
 			extendedHelp: stripIndents`

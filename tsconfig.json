@@ -18,6 +18,11 @@
 		"experimentalDecorators": true,
 		"resolveJsonModule": true,
 		"forceConsistentCasingInFileNames": true,
+		"paths": {
+            "@utils/*": ["src/lib/util/*"],
+			"@lib/*": ["src/lib/*"],
+			"@root/*": ["src/*"]
+        }
 	},
 	"include": [
 		"./launch.ts",

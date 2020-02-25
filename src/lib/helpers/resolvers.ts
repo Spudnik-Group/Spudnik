@@ -4,7 +4,7 @@
 
 import { Command, Possible, KlasaMessage } from 'klasa';
 import * as fs from 'fs';
-import { standardPlatforms } from '../constants/game-platforms';
+import { standardPlatforms } from '@lib/constants/game-platforms';
 import { list, resolveChannel } from './helpers';
 
 export const hexColor = (color) => {

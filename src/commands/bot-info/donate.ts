@@ -2,8 +2,8 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { KlasaClient, CommandStore, KlasaMessage, Command } from 'klasa';
-import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { CommandStore, KlasaMessage, Command } from 'klasa';
+import { sendSimpleEmbeddedMessage } from '@lib/helpers';
 import { Permissions } from 'discord.js';
 
 /**
@@ -14,8 +14,8 @@ import { Permissions } from 'discord.js';
  * @extends {Command}
  */
 export default class DonateCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Returns options to donate to help support development and hosting of the bot.',
 			guarded: true,
 			name: 'donate',

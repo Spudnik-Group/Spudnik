@@ -4,8 +4,8 @@
 
 import { stripIndents } from 'common-tags';
 import { GuildMember, MessageEmbed } from 'discord.js';
-import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { sendSimpleEmbeddedError, getEmbedColor } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
 /**
  * Clears warns for a member of the guild.
@@ -15,8 +15,8 @@ import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'kla
  * @extends {Command}
  */
 export default class ClearWarnsCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: [
 				'clear-warn',
 				'warn-clear'

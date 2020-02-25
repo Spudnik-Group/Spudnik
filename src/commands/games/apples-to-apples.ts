@@ -4,8 +4,8 @@
 
 import { stripIndents } from 'common-tags';
 import { Collection } from 'discord.js';
-import { awaitPlayers, shuffle } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { awaitPlayers, shuffle } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 // tslint:disable-next-line:no-var-requires
 const data = require('../../extras/apples-to-apples');
 
@@ -25,8 +25,8 @@ export default class ApplesToApplesCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof ApplesToApplesCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Compete to see who can come up with the best card to match an adjective.',
 			extendedHelp: 'syntax: \`!apples-to-apples <maxpoints>\`',
 			name: 'apples-to-apples',

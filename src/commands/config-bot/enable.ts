@@ -4,8 +4,8 @@
 
 import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
-import { modLogMessage, getEmbedColor, sendSimpleEmbeddedError, commandOrCategory, isCommandCategoryEnabled, isCommandEnabled, sendSimpleEmbeddedMessage } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { modLogMessage, getEmbedColor, sendSimpleEmbeddedError, commandOrCategory, isCommandCategoryEnabled, isCommandEnabled, sendSimpleEmbeddedMessage } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 import * as fs from 'fs';
 
 /**
@@ -16,8 +16,8 @@ import * as fs from 'fs';
  * @extends {Command}
  */
 export default class EnableCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['enable-command', 'cmd-off', 'command-off'],
 			description: 'Enables a command or command group.',
 			guarded: true,

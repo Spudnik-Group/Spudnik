@@ -2,12 +2,12 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Monitor, KlasaClient, MonitorStore } from 'klasa';
+import { Monitor, MonitorStore } from 'klasa';
 import { Message, MessageEmbed } from 'discord.js';
 
 export default class extends Monitor {
-	constructor(client: KlasaClient, store: MonitorStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: MonitorStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			enabled: true,
 			ignoreOthers: false,
 			ignoreSelf: true,

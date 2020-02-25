@@ -4,8 +4,8 @@
 
 import { stripIndents } from 'common-tags';
 import { GuildMember, MessageEmbed, Permissions } from 'discord.js';
-import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
 /**
  * Kick a member from the guild.
@@ -15,8 +15,8 @@ import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'kla
  * @extends {Command}
  */
 export default class KickCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Kicks a user.',
 			name: 'kick',
 			permissionLevel: 3, // KICK_MEMBERS

@@ -2,12 +2,12 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { Permissions } from 'discord.js';
 
 export default class TopInvitesCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['ti'],
 			description: 'Shows the top invites in a server.',
 			requiredPermissions: Permissions.FLAGS.MANAGE_GUILD

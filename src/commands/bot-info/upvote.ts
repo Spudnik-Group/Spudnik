@@ -3,8 +3,8 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { KlasaClient, CommandStore, KlasaMessage, Command } from 'klasa';
-import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { CommandStore, KlasaMessage, Command } from 'klasa';
+import { sendSimpleEmbeddedMessage } from '@lib/helpers';
 import { Permissions } from 'discord.js';
 
 /**
@@ -16,8 +16,8 @@ import { Permissions } from 'discord.js';
  */
 export default class UpvoteCommand extends Command {
 
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Returns links to upvote the bot on bot listing sites.',
 			guarded: true,
 			name: 'upvote',

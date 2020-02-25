@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed } from 'discord.js';
 
 const questions = require('../../extras/google-feud');
@@ -23,8 +23,8 @@ export default class GoogleFeudCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof GoogleFeudCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Attempt to determine the top suggestions for a Google search.',
 			extendedHelp: 'syntax: \`!google-feud (question)\`',
 			name: 'google-feud',

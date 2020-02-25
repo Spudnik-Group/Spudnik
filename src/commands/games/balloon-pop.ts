@@ -2,8 +2,8 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { getRandomInt, verify } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { getRandomInt, verify } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Starts a game of Balloon Pop.
@@ -21,8 +21,8 @@ export default class BalloonPopCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof BalloonPopCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Don\'t let yourself be the last one to pump the balloon before it pops!',
 			extendedHelp: 'syntax: \`!balloon-pop (@usermention)\`',
 			name: 'balloon-pop',

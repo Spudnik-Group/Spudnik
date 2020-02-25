@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { KlasaClient, CommandStore, KlasaMessage, Command } from 'klasa';
+import { CommandStore, KlasaMessage, Command } from 'klasa';
 import { User } from 'discord.js';
 
 /**
@@ -15,8 +15,8 @@ import { User } from 'discord.js';
 export default class BlacklistCommand extends Command {
 	private terms = ['usersAdded', 'usersRemoved', 'guildsAdded', 'guildsRemoved'];
 
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: (language: any) => language.get('COMMAND_BLACKLIST_DESCRIPTION'),
 			guarded: true,
 			hidden: true,

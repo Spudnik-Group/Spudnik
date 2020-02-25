@@ -2,8 +2,8 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { Permissions } from 'discord.js';
 
 /**
@@ -14,8 +14,8 @@ import { Permissions } from 'discord.js';
  * @extends {Command}
  */
 export default class UnshortCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['unshorten'],
 			description: 'Unshorten a link.',
 			name: 'unshort',

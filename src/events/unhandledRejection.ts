@@ -2,12 +2,12 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Event, KlasaClient, EventStore } from 'klasa';
+import { Event, EventStore } from 'klasa';
 
 export default class extends Event {
 
-	constructor(client: KlasaClient, store: EventStore, file: string[], directory: string) {
-		super(client, store, file, directory, { emitter: process });
+	constructor(store: EventStore, file: string[], directory: string) {
+		super(store, file, directory, { emitter: process });
 		if (this.client.options.production) this.unload();
 	}
 

@@ -4,8 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, Role } from 'discord.js';
-import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 /**
  * Accept the guild rules, and be auto-assigned the default role.
@@ -15,8 +16,8 @@ import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'kla
  * @extends {Command}
  */
 export default class AcceptCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Accept the Terms of Use for the current guild.',
 			name: 'accept',
 			requiredSettings: ['tos.channel', 'roles.default']
@@ -40,8 +41,8 @@ export default class AcceptCommand extends Command {
 			color: getEmbedColor(msg)
 		}).setTimestamp();
 
-		const defaultRole: Role = msg.guild.settings.get('roles.default');
-		const acceptChannel: string = msg.guild.settings.get('tos.channel');
+		const defaultRole: string = msg.guild.settings.get(GuildSettings.Roles.Default);
+		const acceptChannel: string = msg.guild.settings.get(GuildSettings.Tos.Channel);
 
 		if (defaultRole && msg.channel.id === acceptChannel) {
 			try {

@@ -2,8 +2,8 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { getRandomInt } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { getRandomInt } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 const fishes = require('../../extras/fish');
 
@@ -21,8 +21,8 @@ export default class SlotsCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof SlotsCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['fish', 'fishing'],
 			description: 'Go fishing.',
 			name: 'fishy'

@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 const choices: string[] = ['rock', 'paper', 'scissors'];
 
 /**
@@ -20,8 +20,8 @@ export default class RockPaperScissorsCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof RockPaperScissorsCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['rps'],
 			description: 'Play Rock-Paper-Scissors.',
 			extendedHelp: 'syntax: \`!rock-paper-scissors <choice>\`',

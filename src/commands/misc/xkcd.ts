@@ -5,8 +5,8 @@
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
 import axios from 'axios';
-import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { getEmbedColor, sendSimpleEmbeddedError } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Post an XKCD comic.
@@ -16,8 +16,8 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class XkcdCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Returns a given XKCD comic number (or the latest if nothing specified)',
 			extendedHelp: stripIndents`
 				Supplying no comic number returns the latest comic.`,

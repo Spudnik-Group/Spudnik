@@ -4,8 +4,8 @@
 
 import { stripIndents } from 'common-tags';
 import { Collection, Message, MessageEmbed, Role, Permissions } from 'discord.js';
-import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, isNormalInteger, hexColor } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, isNormalInteger, hexColor } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
 /**
  * Manage guild roles.
@@ -15,8 +15,8 @@ import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'kla
  * @extends {Command}
  */
 export default class RoleCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Used to add or remove roles from your server.',
 			extendedHelp: stripIndents`
 				**Subcommand Usage**:

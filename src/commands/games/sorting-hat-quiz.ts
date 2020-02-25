@@ -3,8 +3,8 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { shuffle } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { shuffle } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 const choices = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'];
 const { questions, houses, descriptions } = require('../../extras/sorting-hat-quiz');
@@ -25,8 +25,8 @@ export default class SortingHatQuizCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof SortingHatQuizCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['sorting-hat', 'pottermore', 'hogwarts'],
 			description: 'Take a quiz to determine your Hogwarts house.',
 			name: 'sorting-hat-quiz'

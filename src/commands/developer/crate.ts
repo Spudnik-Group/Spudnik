@@ -3,10 +3,10 @@
  */
 
 import axios from 'axios';
-import { Command, KlasaClient, CommandStore } from 'klasa';
+import { Command, CommandStore } from 'klasa';
 import { MessageEmbed, Permissions } from 'discord.js';
 import { stripIndents } from 'common-tags';
-import { sendSimpleEmbeddedError } from '../../lib/helpers';
+import { sendSimpleEmbeddedError } from '@lib/helpers';
 
 const suffixes = ['Bytes', 'KB', 'MB'];
 const getBytes = (bytes) => {
@@ -16,8 +16,8 @@ const getBytes = (bytes) => {
 };
 
 export default class CrateCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Shows the install/publish size of a cargo crate.',
 			requiredPermissions: Permissions.FLAGS.EMBED_LINKS,
 			usage: '<name:string>'

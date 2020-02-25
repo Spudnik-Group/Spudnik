@@ -4,8 +4,8 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { KlasaMessage, Command, KlasaClient, CommandStore, Duration } from 'klasa';
-import { getEmbedColor } from '../../lib/helpers';
+import { KlasaMessage, Command, CommandStore, Duration } from 'klasa';
+import { getEmbedColor } from '@lib/helpers';
 
 const { version, dependencies } = require('../../../package');
 
@@ -17,8 +17,8 @@ const { version, dependencies } = require('../../../package');
  * @extends {Command}
  */
 export default class StatsCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['statistics'],
 			description: 'Returns statistics about the bot.',
 			name: 'stats'

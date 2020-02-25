@@ -2,8 +2,8 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { KlasaClient, CommandStore, KlasaMessage, Command } from 'klasa';
-import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
+import { CommandStore, KlasaMessage, Command } from 'klasa';
+import { getEmbedColor, sendSimpleEmbeddedError } from '@lib/helpers';
 import { MessageEmbed, Permissions } from 'discord.js';
 import axios, { AxiosResponse } from 'axios';
 
@@ -15,8 +15,8 @@ import axios, { AxiosResponse } from 'axios';
  * @extends {Command}
  */
 export default class changelogCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Returns GitHub release notes for the 3 most recent releases.',
 			name: 'changelog',
 			requiredPermissions: Permissions.FLAGS['EMBED_LINKS']

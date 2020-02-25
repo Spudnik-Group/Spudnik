@@ -4,7 +4,7 @@
 
 import { Task, Colors } from 'klasa';
 import { Guild, PresenceData } from 'discord.js';
-import { createPick } from '../lib/utils/util';
+import { createPick } from '@lib//utils/util';
 const { version }: { version: string } = require('../../package');
 
 export default class extends Task {

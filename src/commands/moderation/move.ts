@@ -3,9 +3,9 @@
  */
 
 import { GuildMember, Message, MessageEmbed, TextChannel, Permissions } from 'discord.js';
-import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '../../lib/helpers';
+import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '@lib/helpers';
 import { stripIndents } from 'common-tags';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Moves messages to different channels.
@@ -15,8 +15,8 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class MoveCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Moves a message to a different channel.',
 			name: 'move',
 			permissionLevel: 1, // MANAGE_MESSAGES

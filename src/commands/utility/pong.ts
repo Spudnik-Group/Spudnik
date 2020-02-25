@@ -2,9 +2,9 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { KlasaMessage, Command, KlasaClient, CommandStore } from 'klasa';
+import { KlasaMessage, Command, CommandStore } from 'klasa';
 import { stripIndents } from 'common-tags';
-import { delay } from '../../lib/helpers';
+import { delay } from '@lib/helpers';
 
 /**
  * Returns the bot's ping.
@@ -14,8 +14,8 @@ import { delay } from '../../lib/helpers';
  * @extends {Command}
  */
 export default class PongCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Used to return the ping.',
 			name: 'pong'
 		});

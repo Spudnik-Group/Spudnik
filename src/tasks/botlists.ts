@@ -5,7 +5,7 @@
 import { Task, Colors } from 'klasa';
 import axios from 'axios';
 import { stripIndents } from 'common-tags';
-import { SpudConfig } from '../lib/config';
+import { SpudConfig } from '@lib//config';
 
 export default class extends Task {
 

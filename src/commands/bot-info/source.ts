@@ -2,8 +2,8 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { KlasaClient, CommandStore, KlasaMessage, Command } from 'klasa';
-import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { CommandStore, KlasaMessage, Command } from 'klasa';
+import { sendSimpleEmbeddedMessage } from '@lib/helpers';
 import { Permissions } from 'discord.js';
 
 /**
@@ -15,8 +15,8 @@ import { Permissions } from 'discord.js';
  */
 export default class SourceCommand extends Command {
 
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Returns a link to my source code!',
 			guarded: true,
 			name: 'source',

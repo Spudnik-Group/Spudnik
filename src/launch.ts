@@ -4,9 +4,9 @@
 
 import chalk from 'chalk';
 import * as Discord from 'discord.js';
-import Spudnik from './lib/spudnik';
-import { KlasaConfig } from './lib/config/klasa-config';
-import { SpudConfig } from './lib/config/spud-config';
+import Spudnik from '@lib/spudnik';
+import { KlasaConfig } from '@lib/config/klasa-config';
+import { SpudConfig } from '@lib/config/spud-config';
 
 console.log(chalk.blue('3...\n2...\n1...\nLAUNCH'));
 console.log(chalk.blue('---Spudnik Stage 1 Engaged.---'));

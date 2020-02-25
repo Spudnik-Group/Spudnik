@@ -3,8 +3,9 @@
  */
 
 import { MessageEmbed, Role } from 'discord.js';
-import { getEmbedColor } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { getEmbedColor } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 /**
  * Lists default and self-assignable roles.
@@ -14,8 +15,8 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class RolesCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Lists default, muted, and self-assignable roles.',
 			name: 'roles'
 		});
@@ -40,9 +41,9 @@ export default class RolesCommand extends Command {
 			}
 		});
 
-		let guildAssignableRoles: Role[] = await msg.guild.settings.get('roles.selfAssignable');
-		let guildDefaultRole: Role = await msg.guild.settings.get('roles.default');
-		let guildMutedRole: Role = await msg.guild.settings.get('roles.muted');
+		let guildAssignableRoles: string[] = await msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);
+		let guildDefaultRole: string = await msg.guild.settings.get(GuildSettings.Roles.Default);
+		let guildMutedRole: string = await msg.guild.settings.get(GuildSettings.Roles.Muted);
 
 		if (guildAssignableRoles.length) {
 			const rolesListOut: string[] = [];

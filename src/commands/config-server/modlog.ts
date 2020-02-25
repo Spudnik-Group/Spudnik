@@ -4,8 +4,8 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, Channel } from 'discord.js';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, getEmbedColor, modLogMessage, resolveChannel } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage, Possible, Timestamp } from 'klasa';
+import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, getEmbedColor, modLogMessage, resolveChannel } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage, Possible, Timestamp } from 'klasa';
 
 /**
  * Enable or disable the Modlog feature.
@@ -15,8 +15,8 @@ import { Command, KlasaClient, CommandStore, KlasaMessage, Possible, Timestamp }
  * @extends {Command}
  */
 export default class ModlogCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Enable or disable the modlog feature.',
 			extendedHelp: stripIndents`
 				**Subcommand Usage**:

@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Starts a game of Chance.
@@ -18,8 +18,8 @@ export default class ChanceCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof ChanceCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['1-in', 'one-in', 'lottery-classic'],
 			description: 'Attempt to win with a 1 in 1000 (or your choice) chance of winning.',
 			extendedHelp: 'syntax: \`!chance <chance of winning>\`',

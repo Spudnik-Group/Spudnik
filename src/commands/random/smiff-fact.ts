@@ -3,8 +3,8 @@
  */
 
 import { MessageEmbed } from 'discord.js';
-import { getRandomInt, getEmbedColor } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { getRandomInt, getEmbedColor } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 const { smiff }: { smiff: string[] } = require('../../extras/data.json');
 
@@ -16,8 +16,8 @@ const { smiff }: { smiff: string[] } = require('../../extras/data.json');
  * @extends {Command}
  */
 export default class SmiffFactCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['smith-fact', 'willsmith'],
 			description: 'Returns a random Will Smith fact.',
 			name: 'smiff-fact'

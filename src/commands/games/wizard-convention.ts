@@ -4,8 +4,8 @@
 
 import { stripIndents } from 'common-tags';
 import { Collection } from 'discord.js';
-import { awaitPlayers, delay, sendSimpleEmbeddedError, shuffle } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { awaitPlayers, delay, sendSimpleEmbeddedError, shuffle } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 // tslint:disable-next-line:no-var-requires
 const data = require('../../extras/wizard-convention');
 
@@ -25,8 +25,8 @@ export default class WizardConventionCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof WizardConventionCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['wiz-convention'],
 			description: 'Who is the Dragon? Who is the healer? Who is the mind reader? Will the Dragon eat them all?',
 			name: 'wizard-convention'

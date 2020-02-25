@@ -2,8 +2,8 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { getEmbedColor, sendSimpleEmbeddedError } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
 
@@ -15,8 +15,8 @@ import { stripIndents } from 'common-tags';
  * @extends {Command}
  */
 export default class RollCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Roll one die with x sides + any modifiers, with an optional reason.',
 			extendedHelp: 'syntax: `!roll "[# of sides | [# of dice]d[# of sides]+modifiers]" [reason] >`',
 			name: 'roll',

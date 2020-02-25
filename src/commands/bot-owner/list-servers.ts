@@ -4,8 +4,8 @@
 
 import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
-import { getEmbedColor } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage, RichDisplay, Timestamp } from 'klasa';
+import { getEmbedColor } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage, RichDisplay, Timestamp } from 'klasa';
 
 /**
  * Returns a list of servers the bot is in.
@@ -15,8 +15,8 @@ import { Command, KlasaClient, CommandStore, KlasaMessage, RichDisplay, Timestam
  * @extends {Command}
  */
 export default class ListServersCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['ls'],
 			description: 'Returns a list of servers the bot is in.',
 			guarded: true,

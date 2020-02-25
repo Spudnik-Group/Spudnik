@@ -2,8 +2,8 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { getEmbedColor, sendSimpleEmbeddedMessage } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { getEmbedColor, sendSimpleEmbeddedMessage } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed, Permissions } from 'discord.js';
 
 /**
@@ -15,8 +15,8 @@ import { MessageEmbed, Permissions } from 'discord.js';
  */
 export default class CommandSearchCommand extends Command {
 
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Search for a command with the given text.',
 			guarded: true,
 			name: 'command-search',

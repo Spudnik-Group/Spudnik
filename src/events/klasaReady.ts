@@ -3,12 +3,12 @@
  */
 
 import { Colors, Event, KlasaClient, EventStore } from 'klasa';
-import { SpudConfig } from '../lib/config';
+import { SpudConfig } from '@lib/config';
 
 export default class extends Event {
 
 	constructor(client: KlasaClient, store: EventStore, file: string[], directory: string) {
-		super(client, store, file, directory, { once: true });
+		super(store, file, directory, { once: true });
 	}
 
 	async run() {

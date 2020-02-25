@@ -4,8 +4,8 @@
 
 import { stripIndents } from 'common-tags';
 import { Collection } from 'discord.js';
-import { awaitPlayers, delay, shuffle } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { awaitPlayers, delay, shuffle } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 const { questions, stories } = require('../../extras/mafia');
 
@@ -25,8 +25,8 @@ export default class MafiaCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof MafiaCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['town-of-salem', 'werewolf'],
 			description: 'Who is the Mafia? Who is the doctor? Who is the detective? Will the Mafia kill them all?',
 			name: 'mafia'

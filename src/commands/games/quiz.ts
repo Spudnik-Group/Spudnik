@@ -3,9 +3,10 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { list, shuffle } from '../../lib/helpers';
+import { list, shuffle } from '@lib/helpers';
 import axios from 'axios';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
+
 const types: string[] = ['multiple', 'boolean'];
 const difficulties: string[] = ['easy', 'medium', 'hard'];
 const choices: string[] = ['A', 'B', 'C', 'D'];
@@ -25,8 +26,8 @@ export default class QuizCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof QuizCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['jeopardy'],
 			description: 'Answer a quiz question.',
 			extendedHelp: stripIndents`

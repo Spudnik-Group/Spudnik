@@ -11,5 +11,5 @@ export const permissionLevels = new PermissionLevels()
 	// .add(5, ({ guild, author }) => guild.settings.get('roles.staff').includes(author.id));
 	.add(6, ({ guild, member }) => guild && member.permissions.has(Permissions.FLAGS.MANAGE_GUILD), { fetch: true })
 	.add(7, ({ guild, member }) => guild && member === guild.owner, { fetch: true })
-	.add(9, ({ author, client }) => author === client.owner, { break: true })
-	.add(10, ({ author, client }) => author === client.owner);
+	.add(9, ({ author, client }) => client.owners.has(author), { break: true })
+	.add(10, ({ author, client }) => client.owners.has(author));

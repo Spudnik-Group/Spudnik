@@ -3,8 +3,8 @@
  */
 
 import { MessageEmbed, Channel } from 'discord.js';
-import { getEmbedColor } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { getEmbedColor } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
 const filterLevels = ['Off', 'No Role', 'Everyone'];
 const verificationLevels = ['None', 'Low', 'Medium', '(╯°□°）╯︵ ┻━┻', '┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻'];
@@ -17,8 +17,8 @@ const verificationLevels = ['None', 'Low', 'Medium', '(╯°□°）╯︵ ┻�
  * @extends {Command}
  */
 export default class ServerCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['server-stats'],
 			description: 'Returns statistics about the server.',
 			name: 'server'

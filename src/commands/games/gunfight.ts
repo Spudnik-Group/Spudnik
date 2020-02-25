@@ -2,8 +2,8 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { delay, getRandomInt, verify } from '../../lib/helpers';
-import { KlasaClient, Command, CommandStore, KlasaMessage } from 'klasa';
+import { delay, getRandomInt, verify } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 const words = ['fire', 'draw', 'shoot', 'bang', 'pull'];
 
 /**
@@ -22,8 +22,8 @@ export default class GunFightCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof GunFightCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['western-gunfight'],
 			description: 'Engage in a western gunfight against another user. High noon.',
 			extendedHelp: 'syntax: \`!gunfight <@usermention>\`',

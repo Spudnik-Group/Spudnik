@@ -4,7 +4,7 @@
 
 import { stripIndents } from 'common-tags';
 import { Channel, MessageEmbed } from 'discord.js';
-import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, resolveChannel, sendSimpleEmbeddedMessage, basicFeatureContent } from '../../lib/helpers';
+import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, resolveChannel, sendSimpleEmbeddedMessage, basicFeatureContent } from '@lib/helpers';
 import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
 /**
@@ -15,8 +15,8 @@ import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'kla
  * @extends {Command}
  */
 export default class WelcomeCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Used to configure the message to be sent when a new user join your guild.',
 			extendedHelp: stripIndents`
 				**Subcommand Usage**:

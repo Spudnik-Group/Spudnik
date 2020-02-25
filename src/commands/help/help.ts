@@ -4,8 +4,8 @@
 
 import { MessageEmbed, Permissions } from 'discord.js';
 import { stripIndents } from 'common-tags';
-import { getEmbedColor, getPermissionsFromBitfield, getPermissionsFromLevel, canCommandBeUsed } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { getEmbedColor, getPermissionsFromBitfield, getPermissionsFromLevel, canCommandBeUsed } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Returns helpful information on the bot, or detailed information for a specific command.
@@ -15,8 +15,8 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class HelpCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Used to return helpful information on the bot, or detailed information for a specified command.',
 			guarded: true,
 			name: 'help',

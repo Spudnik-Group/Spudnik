@@ -4,9 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, Permissions } from 'discord.js';
-import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, getEmbedColor } from '@lib/helpers';
 import axios from 'axios';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Returns details for a GitHub repository.
@@ -16,8 +16,8 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class GithubCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['gh'],
 			description: 'Returns details for a GitHub repository.',
 			extendedHelp: stripIndents`

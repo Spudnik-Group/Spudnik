@@ -4,9 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, getEmbedColor } from '@lib/helpers';
 import axios from 'axios';
-import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
 /**
  * Returns details for an NPM package.
@@ -22,8 +22,8 @@ export default class NPMCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof NPMCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['npmpackage', 'npmpkg', 'nodepackagemanager'],
 			description: 'Returns details for an NPM package.',
 			extendedHelp: stripIndents`

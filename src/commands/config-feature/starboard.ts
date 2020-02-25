@@ -4,8 +4,8 @@
 
 import { stripIndents } from 'common-tags';
 import { Channel, MessageEmbed, Permissions } from 'discord.js';
-import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, resolveChannel } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage, Possible, Timestamp } from 'klasa';
+import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, resolveChannel } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage, Possible, Timestamp } from 'klasa';
 
 /**
  * Adjusts starboard settings.
@@ -15,8 +15,8 @@ import { Command, KlasaClient, CommandStore, KlasaMessage, Possible, Timestamp }
  * @extends {Command}
  */
 export default class StarboardCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Used to configure the :star: Star Board feature.',
 			extendedHelp: stripIndents`
 				**Subcommand Usage**:

@@ -4,10 +4,10 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, Permissions } from 'discord.js';
-import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, getEmbedColor } from '@lib/helpers';
 import axios from 'axios';
-import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
-import { SpudConfig } from '../../lib/config';
+import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { SpudConfig } from '@lib/config';
 
 const apikey = SpudConfig.stackoverflowApiKey;
 
@@ -19,8 +19,8 @@ const apikey = SpudConfig.stackoverflowApiKey;
  * @extends {Command}
  */
 export default class StackOverflowCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Returns results for the supplied query from Stack Overflow.',
 			extendedHelp: stripIndents`
 				syntax: \`!stack-overflow <query>\`

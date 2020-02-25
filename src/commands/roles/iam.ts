@@ -3,8 +3,9 @@
  */
 
 import { MessageEmbed, Permissions, Role } from 'discord.js';
-import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { getEmbedColor, sendSimpleEmbeddedError } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 /**
  * Allows a member to assign a role to themselves.
@@ -14,8 +15,8 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class IAmNotCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Used to add a self-assignable role to yourself.',
 			name: 'iam',
 			requiredPermissions: Permissions.FLAGS.MANAGE_ROLES,
@@ -42,7 +43,7 @@ export default class IAmNotCommand extends Command {
 		});
 
 		const role = msg.guild.roles.find((r: Role) => r.name.toLowerCase() === roleName.toLowerCase());
-		const guildAssignableRoles = await msg.guild.settings.get('roles.selfAssignable');
+		const guildAssignableRoles = msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);
 
 		if (role && guildAssignableRoles.includes(role.id)) {
 			if (!msg.member.roles.has(role.id)) {

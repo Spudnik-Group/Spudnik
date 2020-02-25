@@ -3,8 +3,8 @@
  */
 
 import { MessageEmbed } from 'discord.js';
-import { getEmbedColor, getRandomInt, sendSimpleEmbeddedError } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { getEmbedColor, getRandomInt, sendSimpleEmbeddedError } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 const { eightBall }: { eightBall: string[] } = require('../../extras/data');
 
@@ -16,8 +16,8 @@ const { eightBall }: { eightBall: string[] } = require('../../extras/data');
  * @extends {Command}
  */
 export default class EightBallCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Ask the magic 8 ball a question.',
 			name: '8ball',
 			usage: '<query:string>'

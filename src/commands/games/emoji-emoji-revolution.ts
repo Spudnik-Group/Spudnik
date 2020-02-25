@@ -3,8 +3,8 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { verify } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { verify } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 const emojis = ['⬆', '↗', '➡', '↘', '⬇', '↙', '⬅', '↖'];
 
 /**
@@ -23,8 +23,8 @@ export default class EmojiEmojiRevolutionCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof EmojiEmojiRevolutionCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['eer'],
 			description: 'Can you type arrow emoji faster than anyone else has ever typed them before?',
 			extendedHelp: 'syntax: \`!emoji-emoji-revolution <@usermention>\`',

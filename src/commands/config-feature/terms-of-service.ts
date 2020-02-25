@@ -4,10 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { Channel, MessageEmbed } from 'discord.js';
-import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, resolveChannel } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage, Possible, Timestamp } from 'klasa';
+import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, resolveChannel } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage, Possible, Timestamp } from 'klasa';
 import * as markdownescape from 'markdown-escape';
-import { ITOSMessage } from '../../lib/interfaces';
 
 /**
  * Sets/Shows the terms of service for a guild.
@@ -17,8 +16,8 @@ import { ITOSMessage } from '../../lib/interfaces';
  * @extends {Command}
  */
 export default class TermsOfServiceCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Used to configure the Terms of Service for a guild.',
 			extendedHelp: stripIndents`
 				**Subcommand Usage**:
@@ -194,7 +193,7 @@ export default class TermsOfServiceCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		});
-		const tosMessage: ITOSMessage = await msg.guild.settings.get('tos.messages').find((message, index) => {
+		const tosMessage = await msg.guild.settings.get('tos.messages').find((message, index) => {
 			if(Number(message.id) === Number(item)) {
 				return true;
 			}

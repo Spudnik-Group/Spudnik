@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Command, KlasaClient, CommandStore, Timestamp, KlasaMessage } from 'klasa';
+import { Command, CommandStore, Timestamp, KlasaMessage } from 'klasa';
 import { MessageEmbed } from 'discord.js';
 
 const perms = {
@@ -39,8 +39,8 @@ const perms = {
 export default class RoleComand extends Command {
 	private timestamp: Timestamp;
 
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Get information on a role with an id or a mention.',
 			name: 'role-info',
 			usage: '<Role:role>'

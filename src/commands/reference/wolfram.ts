@@ -3,16 +3,16 @@
  */
 
 import axios from 'axios';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
-import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { sendSimpleEmbeddedError, getEmbedColor } from '@lib/helpers';
 import { MessageEmbed } from 'discord.js';
-import { SpudConfig } from '../../lib/config';
+import { SpudConfig } from '@lib/config';
 
 const wolframAppID = SpudConfig.wolframApiKey;
 
 export default class WolframCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['wa'],
 			description: 'Query Wolfram Alpha with any mathematical question.',
 			name: 'wolfram',

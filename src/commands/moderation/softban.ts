@@ -2,14 +2,14 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildMember, MessageEmbed, Permissions } from 'discord.js';
-import { sendSimpleEmbeddedError, modLogMessage, getEmbedColor } from '../../lib/helpers';
+import { sendSimpleEmbeddedError, modLogMessage, getEmbedColor } from '@lib/helpers';
 import { stripIndents } from 'common-tags';
 
 export default class SoftbanCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Soft-Bans the user, with a supplied reason',
 			permissionLevel: 4, // BAN_MEMBERS
 			requiredPermissions: Permissions.FLAGS.BAN_MEMBERS,
