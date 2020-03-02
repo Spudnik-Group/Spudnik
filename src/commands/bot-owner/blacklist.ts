@@ -15,6 +15,7 @@ import { stripIndents } from 'common-tags';
  * @extends {Command}
  */
 export default class BlacklistCommand extends Command {
+
 	private terms = ['usersAdded', 'usersRemoved', 'guildsAdded', 'guildsRemoved'];
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
