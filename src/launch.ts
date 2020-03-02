@@ -2,6 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
+import 'module-alias/register';
 import chalk from 'chalk';
 import * as Discord from 'discord.js';
 import Spudnik from '@lib/spudnik';

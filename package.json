@@ -23,7 +23,7 @@
         "test": "npm run lint",
         "prestart": "rimraf ./dist && tsc",
         "start": "node ./node_modules/nodemon/bin/nodemon.js",
-        "start:prod": "node ./dist/launch.js",
+        "start:prod": "node ./dist/src/launch.js",
         "start:docs": "cd ./docs && bundle exec jekyll serve"
     },
     "dependencies": {
@@ -69,8 +69,8 @@
         "typescript": "3.6.5"
     },
     "_moduleAliases": {
-        "utils": "dist/lib/util",
-        "lib": "dist/lib",
-        "root": "dist"
+        "@utils": "./dist/src/lib/util",
+        "@lib": "./dist/src/lib",
+        "@root": "./dist/src"
     }
 }
