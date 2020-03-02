@@ -38,6 +38,7 @@
         "klasa": "github:dirigeants/klasa#sgn",
         "leet": "^1.3.0",
         "markdown-escape": "1.0.2",
+        "module-alias": "^2.2.2",
         "mongodb": "^3.3.4",
         "mw-dict": "^3.0.0",
         "remove-markdown": "0.3.0",
@@ -68,8 +69,8 @@
         "typescript": "3.6.5"
     },
     "_moduleAliases": {
-        "@utils": "dist/lib/util",
-        "@lib": "dist/lib",
-        "@root": "dist"
+        "utils": "dist/lib/util",
+        "lib": "dist/lib",
+        "root": "dist"
     }
 }
