@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Client, KlasaClientOptions } from 'klasa';
+import { KlasaClientOptions } from 'klasa';
 import { SpudConfig } from './spud-config';
 import { permissionLevels } from '@lib/schemas/permission-levels';
 
@@ -37,7 +37,6 @@ export const KlasaConfig: KlasaClientOptions = {
 	language: 'en-US',
 	prefix: '!',
 	production: Boolean(SpudConfig.debug),
-	readyMessage: (client: Client) => `Successfully initialized. Ready to serve ${client.guilds.size} guild${client.guilds.size === 1 ? '' : 's'}.`,
 	restTimeOffset: 500,
 
 	/**

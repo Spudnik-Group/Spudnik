@@ -1,9 +1,9 @@
 import { Message, MessageEmbed, MessageEmbedAuthor, MessageOptions } from 'discord.js';
-import { KlasaMessage, MessageAskOptions, KlasaClient, Extendable, ExtendableStore } from 'klasa';
+import { KlasaMessage, MessageAskOptions, Extendable, ExtendableStore } from 'klasa';
 
 export default class extends Extendable {
 
-	public constructor(client: KlasaClient, store: ExtendableStore, file: string[], directory: string) {
+	public constructor(store: ExtendableStore, file: string[], directory: string) {
 		super(store, file, directory, { appliesTo: [KlasaMessage] });
 	}
 
