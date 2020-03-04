@@ -107,4 +107,4 @@ const flatten = (obj: any, path = '') => {
 	return output;
 };
 
-const parseEngineInput = (updated: any) => Object.assign({}, ...updated.map((entry: any) => ({ [entry.data[0]]: entry.data[1] })));
+const parseEngineInput = (updated: any) => Object.assign({}, ...updated.map(({ entry, next }) => ({ [entry.path]: next })));
