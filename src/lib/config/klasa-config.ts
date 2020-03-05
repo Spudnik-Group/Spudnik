@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { KlasaClientOptions } from 'klasa';
+import { Client, Colors, KlasaClientOptions } from 'klasa';
 import { SpudConfig } from './spud-config';
 import { permissionLevels } from '@lib/schemas/permission-levels';
 
@@ -37,6 +37,7 @@ export const KlasaConfig: KlasaClientOptions = {
 	language: 'en-US',
 	prefix: '!',
 	production: Boolean(SpudConfig.debug),
+	readyMessage: (client: Client) => new Colors({ text: 'magenta' }).format(`Logged into Discord! Serving in ${client.guilds.array().length} Discord servers`),
 	restTimeOffset: 500,
 
 	/**

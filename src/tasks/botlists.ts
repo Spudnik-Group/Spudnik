@@ -17,6 +17,8 @@ enum Lists {
 export default class extends Task {
 
 	public async run() {
+		if (SpudConfig.debug) return;
+
 		this.client.emit('verbose', new Colors({ text: 'lightblue' }).format('[BOTLIST UPDATE]'));
 
 		const guilds = this.client.guilds.size.toString();

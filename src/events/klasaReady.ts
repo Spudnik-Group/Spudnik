@@ -12,9 +12,7 @@ export default class extends Event {
 	}
 
 	public async run() {
-		this.client.emit('verbose', new Colors({ text: 'magenta' }).format(`Logged into Discord! Serving in ${this.client.guilds.array().length} Discord servers`));
-		this.client.emit('verbose', new Colors({ text: 'blue' }).format('---Spudnik Launch Success---'));
-		this.client.emit('verbose', `Successfully initialized. Ready to serve ${this.client.guilds.size} guild${this.client.guilds.size === 1 ? '' : 's'}.`);
+		this.client.emit('verbose', new Colors({ text: 'blue' }).format('---Spudnik MECO---'));
 
 		await this.initBotListUpdateTask().catch(error => this.client.emit('wtf', error));
 		await this.initStatusUpdateTask().catch(error => this.client.emit('wtf', error));

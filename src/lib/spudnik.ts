@@ -1,50 +1,19 @@
 /**
  * Copyright (c) 2020 Spudnik Group
  */
+/* eslint-disable @typescript-eslint/no-floating-promises */
 
 import chalk from 'chalk';
-import { Client, KlasaClientOptions } from 'klasa';
-import { Configuration } from './interfaces';
+import { Client } from 'klasa';
 import * as http from 'http';
 import { SpudConfig } from './config/spud-config';
+import { KlasaConfig } from './config/klasa-config';
 
 const PORT = SpudConfig.port;
 
 // Define Default Schemas
-Client.defaultGuildSchema
-	.add('warnings', 'any', { array: true })
-	.add('disabledCommands', 'string', { array: true })
-	.add('disabledCommandCategories', 'string', { array: true })
-	.add('roles', folder => folder
-		.add('default', 'Role')
-		.add('muted', 'Role')
-		.add('selfAssignable', 'Role', { array: true }))
-	.add('starboard', folder => folder
-		.add('enabled', 'boolean')
-		.add('channel', 'TextChannel')
-		.add('trigger', 'string', { 'default': '⭐' }))
-	.add('welcome', folder => folder
-		.add('enabled', 'boolean')
-		.add('channel', 'TextChannel')
-		.add('message', 'string', { 'default': '@here, please Welcome {user} to {guild}!' }))
-	.add('goodbye', folder => folder
-		.add('enabled', 'boolean')
-		.add('channel', 'TextChannel')
-		.add('message', 'string', { 'default': '{user} has left the server.' }))
-	.add('modlog', folder => folder
-		.add('initialMessageSent', 'boolean')
-		.add('channel', 'TextChannel')
-		.add('enabled', 'boolean'))
-	.add('tos', folder => folder
-		.add('channel', 'TextChannel')
-		.add('messages', 'any', { array: true }))
-	.add('embedColor', 'string', { 'default': '555555' })
-	.add('adblockEnabled', 'boolean')
-	.add('deleteCommandMessages', 'boolean');
-
-Client.defaultClientSchema
-	.add('guildBlacklist', 'guild', { array: true })
-	.add('userBlacklist', 'user', { array: true });
+import('./schemas/client-schema');
+import('./schemas/guild-schema');
 
 /**
  * The Spudnik Discord Bot.
@@ -55,19 +24,19 @@ Client.defaultClientSchema
  */
 export default class Spudnik extends Client {
 
-	public Config: Configuration;
+	public constructor() {
+		super(KlasaConfig);
 
-	public constructor(options: KlasaClientOptions, config: Configuration) {
-		super(options);
+		this.startBot();
+		this.startHeart();
+	}
+
+	private startBot = () => {
 
 		console.log(chalk.blue('---Spudnik Stage 2 Engaged.---'));
 
-		this.Config = config;
-		this.login(config.token).catch(() => process.exit());
-		this.startHeart();
-
-		console.log(chalk.blue('---Spudnik MECO---'));
-	}
+		this.login(SpudConfig.token).catch(() => process.exit());
+	};
 
 	private startHeart = () => {
 		http.createServer((request, response) => {
