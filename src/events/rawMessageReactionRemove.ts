@@ -2,32 +2,35 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Event } from 'klasa';
+import { Event, EventStore } from 'klasa';
 import { TextChannel, Message, GuildChannel, Guild } from 'discord.js';
 import { SpudConfig } from '@lib//config/spud-config';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 export default class extends Event {
 
-	public async run(event) {
-		if (!event.d || !event.d.guild_id) return; // Ignore non-guild events
+	public constructor(store: EventStore, file: string[], directory: string) {
+		super(store, file, directory, { name: 'MESSAGE_REACTION_REMOVE', emitter: store.client.ws });
+	}
 
-		const { d: data } = event;
-		const guild: Guild = await this.client.guilds.get(data.guild_id);
-		const channel: GuildChannel = await guild.channels.get(data.channel_id);
+	public async run(event) {
+		if (!event.guild_id) return; // Ignore non-guild events
+
+		const guild: Guild = await this.client.guilds.get(event.guild_id);
+		const channel: GuildChannel = await guild.channels.get(event.channel_id);
 
 		if (SpudConfig.botListGuilds.includes(guild.id)) return; // Guild is on Blacklist, ignore.
 		if ((channel as TextChannel).nsfw) return; // Ignore NSFW channels
 		if (!(channel as TextChannel).permissionsFor(this.client.user.id).has('READ_MESSAGE_HISTORY')) return; // Bot doesn't have the right permissions to retrieve the message
 
-		const message: Message = await (channel as TextChannel).messages.fetch(data.message_id);
+		const message: Message = await (channel as TextChannel).messages.fetch(event.message_id);
 		const starboardEnabled: boolean = guild.settings.get(GuildSettings.Starboard.Enabled);
 
-		if (message.author.id === data.user_id) return; // You can't star your own messages
+		if (message.author.id === event.user_id) return; // You can't star your own messages
 		if (message.author.bot) return; // You can't star bot messages
 		if (!starboardEnabled) return; // Ignore if starboard isn't set up
 
-		const currentEmojiKey: any = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
+		const currentEmojiKey: any = (event.emoji.id) ? `${event.emoji.name}:${event.emoji.id}` : event.emoji.name;
 		const starboardTrigger: string = guild.settings.get(GuildSettings.Starboard.Trigger);
 
 		// Check for starboard reaction
