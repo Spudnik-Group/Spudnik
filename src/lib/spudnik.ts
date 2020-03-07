@@ -5,11 +5,9 @@
 
 import chalk from 'chalk';
 import { Client } from 'klasa';
-import * as http from 'http';
+import { Server } from './server';
 import { SpudConfig } from './config/spud-config';
 import { KlasaConfig } from './config/klasa-config';
-
-const PORT = SpudConfig.port;
 
 // Define Default Schemas
 import('./schemas/client-schema');
@@ -24,11 +22,14 @@ import('./schemas/guild-schema');
  */
 export default class Spudnik extends Client {
 
+	public server: Server;
+
 	public constructor() {
 		super(KlasaConfig);
 
+		this.server = new Server(this);
+
 		this.startBot();
-		this.startHeart();
 	}
 
 	private startBot = () => {
@@ -36,16 +37,6 @@ export default class Spudnik extends Client {
 		console.log(chalk.blue('---Spudnik Stage 2 Engaged.---'));
 
 		this.login(SpudConfig.token).catch(() => process.exit());
-	};
-
-	private startHeart = () => {
-		http.createServer((request, response) => {
-			response.writeHead(200, { 'Content-Type': 'text/plain' });
-			response.end('Ok!');
-		}).listen(PORT);
-
-		// Print URL for accessing server
-		console.log(chalk.red(`Heartbeat running on port ${PORT}`));
 	};
 
 }
