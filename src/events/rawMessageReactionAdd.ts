@@ -48,7 +48,7 @@ export default class extends Event {
 				return;
 			}
 
-			const reaction: any = message.reactions.get(currentEmojiKey);
+			const reaction = message.reactions.get(currentEmojiKey);
 			const starboardMessages = await (starboard as TextChannel).messages.fetch({ limit: 100 });
 
 			const stars = reaction.count;

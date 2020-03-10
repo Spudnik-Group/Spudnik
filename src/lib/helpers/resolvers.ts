@@ -36,14 +36,14 @@ export const battletag = tag => {
 };
 
 export const platform = platform => {
-	if (standardPlatforms.includes(platform)) return platform;
+	if (standardPlatforms.includes(platform.toLowerCase())) return platform;
 
 	throw new Error(`Please provide a valid platform. Options are: ${list(standardPlatforms, 'or')}.`);
 };
 
 export const basicFeatureContent = (arg: string, possible: Possible, message: KlasaMessage, [subCommand]) => {
-	if (subCommand === 'channel' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw new Error('Please provide a channel for the Goodbye message to be displayed in.');
-	if (subCommand === 'message' && !arg) throw new Error('Please include the new text for the Goodbye message.');
+	if (subCommand === 'channel' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw new Error('Please provide a channel for the message to be displayed in.');
+	if (subCommand === 'message' && !arg) throw new Error('Please include the new text for the message.');
 
 	return arg;
 };
