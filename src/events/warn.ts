@@ -4,11 +4,11 @@
 
 import { Event } from 'klasa';
 import * as Rollbar from 'rollbar';
-import { SpudConfig } from '../lib/config/spud-config';
+import { SpudConfig } from '@lib//config/spud-config';
 
 export default class extends Event {
 
-	run(warning) {
+	public run(warning) {
 		if (!SpudConfig.debug && process.env.NODE_ENV !== 'development') {
 			const rollbar = new Rollbar({
 				accessToken: SpudConfig.rollbarApiKey,
@@ -22,4 +22,4 @@ export default class extends Event {
 		this.client.console.warn(warning);
 	}
 
-};
+}

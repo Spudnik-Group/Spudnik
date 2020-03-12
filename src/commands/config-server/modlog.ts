@@ -4,8 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, Channel } from 'discord.js';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, getEmbedColor, modLogMessage, resolveChannel } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage, Possible, Timestamp } from 'klasa';
+import { getEmbedColor, modLogMessage, resolveChannel } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage, Possible, Timestamp } from 'klasa';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 /**
  * Enable or disable the Modlog feature.
@@ -15,8 +16,9 @@ import { Command, KlasaClient, CommandStore, KlasaMessage, Possible, Timestamp }
  * @extends {Command}
  */
 export default class ModlogCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Enable or disable the modlog feature.',
 			extendedHelp: stripIndents`
 				**Subcommand Usage**:
@@ -32,7 +34,7 @@ export default class ModlogCommand extends Command {
 		});
 
 		this.createCustomResolver('channel', (arg: string, possible: Possible, message: KlasaMessage, [subCommand]) => {
-			if (subCommand === 'channel' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw 'Please provide a channel for the modlog messages to be displayed in.';
+			if (subCommand === 'channel' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw new Error('Please provide a channel for the modlog messages to be displayed in.');
 
 			return resolveChannel(arg);
 		});
@@ -47,30 +49,30 @@ export default class ModlogCommand extends Command {
 			color: getEmbedColor(msg),
 			description: ''
 		}).setTimestamp();
-		const modlogChannel = await msg.guild.settings.get('modlog.channel');
-		const modlogEnabled = await msg.guild.settings.get('modlog.enabled');
+		const modlogChannel = msg.guild.settings.get(GuildSettings.Modlog.Channel);
+		const modlogEnabled = msg.guild.settings.get(GuildSettings.Modlog.Enabled);
 
 		if (modlogChannel) {
 			if (modlogEnabled) {
-				return sendSimpleEmbeddedMessage(msg, 'Modlog feature already enabled!', 3000);
-			} else {
-				try {
-					await msg.guild.settings.update('modlog.enabled', true, msg.guild);
+				return msg.sendSimpleEmbed('Modlog feature already enabled!', 3000);
+			}
+			try {
+				await msg.guild.settings.update(GuildSettings.Modlog.Enabled, true);
 
-					// Set up embed message
-					modlogEmbed.setDescription(stripIndents`
+				// Set up embed message
+				modlogEmbed.setDescription(stripIndents`
 								**Member:** ${msg.author.tag} (${msg.author.id})
 								**Action:** Modlog set to: _Enabled_
 							`);
-					modlogEmbed.setFooter('Use the `modlog status` command to see the details of this feature');
+				modlogEmbed.setFooter('Use the `modlog status` command to see the details of this feature');
 
-					return this.sendSuccess(msg, modlogEmbed);
-				} catch (err) {
-					return this.catchError(msg, { subCommand: 'enable' }, err);
-				}
+				return this.sendSuccess(msg, modlogEmbed);
+			} catch (err) {
+				return this.catchError(msg, { subCommand: 'enable' }, err);
 			}
+
 		} else {
-			return sendSimpleEmbeddedError(msg, 'Please set the channel for the modlog before enabling the feature. See `!help modlog` for info.', 3000);
+			return msg.sendSimpleError('Please set the channel for the modlog before enabling the feature. See `!help modlog` for info.', 3000);
 		}
 	}
 
@@ -83,11 +85,11 @@ export default class ModlogCommand extends Command {
 			color: getEmbedColor(msg),
 			description: ''
 		}).setTimestamp();
-		const modlogEnabled = await msg.guild.settings.get('modlog.enabled');
+		const modlogEnabled = await msg.guild.settings.get(GuildSettings.Modlog.Enabled);
 
 		if (modlogEnabled) {
 			try {
-				await msg.guild.settings.update('modlog.enabled', false, msg.guild);
+				await msg.guild.settings.update('modlog.enabled', false);
 
 				// Set up embed message
 				modlogEmbed.setDescription(stripIndents`
@@ -101,7 +103,7 @@ export default class ModlogCommand extends Command {
 				return this.catchError(msg, { subCommand: 'disable' }, err);
 			}
 		} else {
-			return sendSimpleEmbeddedMessage(msg, 'Modlog feature already disabled!', 3000);
+			return msg.sendSimpleEmbed('Modlog feature already disabled!', 3000);
 		}
 	}
 
@@ -114,31 +116,31 @@ export default class ModlogCommand extends Command {
 			color: getEmbedColor(msg),
 			description: ''
 		}).setTimestamp();
-		const modlogChannel = await msg.guild.settings.get('modlog.channel');
+		const modlogChannel = await msg.guild.settings.get(GuildSettings.Modlog.Channel);
 
 		if (channel) {
 			const channelID = msg.guild.channels.get(channel).id;
 
 			if (modlogChannel && modlogChannel === channelID) {
-				return sendSimpleEmbeddedMessage(msg, `Modlog channel already set to <#${channelID}>!`, 3000);
-			} else {
-				try {
-					await msg.guild.settings.update('modlog.channel', channelID, msg.guild);
+				return msg.sendSimpleEmbed(`Modlog channel already set to <#${channelID}>!`, 3000);
+			}
+			try {
+				await msg.guild.settings.update(GuildSettings.Modlog.Channel, channelID);
 
-					// Set up embed message
-					modlogEmbed.setDescription(stripIndents`
+				// Set up embed message
+				modlogEmbed.setDescription(stripIndents`
 								**Member:** ${msg.author.tag} (${msg.author.id})
 								**Action:** Modlog Channel set to <#${channelID}>
 							`);
-					modlogEmbed.setFooter('Use the `modlog status` command to see the details of this feature');
+				modlogEmbed.setFooter('Use the `modlog status` command to see the details of this feature');
 
-					return this.sendSuccess(msg, modlogEmbed);
-				} catch (err) {
-					return this.catchError(msg, { subCommand: 'channel', channel: channel }, err);
-				}
+				return this.sendSuccess(msg, modlogEmbed);
+			} catch (err) {
+				return this.catchError(msg, { subCommand: 'channel', channel }, err);
 			}
+
 		} else {
-			return sendSimpleEmbeddedError(msg, 'Invalid channel provided.', 3000);
+			return msg.sendSimpleError('Invalid channel provided.', 3000);
 		}
 	}
 
@@ -159,8 +161,8 @@ export default class ModlogCommand extends Command {
 			color: getEmbedColor(msg),
 			description: ''
 		}).setTimestamp();
-		const modlogChannel = await msg.guild.settings.get('modlog.channel');
-		const modlogEnabled = await msg.guild.settings.get('modlog.enabled');
+		const modlogChannel = await msg.guild.settings.get(GuildSettings.Modlog.Channel);
+		const modlogEnabled = await msg.guild.settings.get(GuildSettings.Modlog.Enabled);
 
 		// Set up embed message
 		modlogEmbed.setDescription(stripIndents`Modlog feature: ${modlogEnabled ? '_Enabled_' : '_Disabled_'}
@@ -170,14 +172,14 @@ export default class ModlogCommand extends Command {
 		return msg.sendEmbed(modlogEmbed);
 	}
 
-	private catchError(msg: KlasaMessage, args: { subCommand: string, channel?: Channel }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
+	private catchError(msg: KlasaMessage, args: { subCommand: string; channel?: Channel }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Build warning message
 		let modlogWarn = stripIndents`
 			Error occurred in \`accept\` command!
 			**Server:** ${msg.guild.name} (${msg.guild.id})
 			**Author:** ${msg.author.tag} (${msg.author.id})
 			**Time:** ${new Timestamp('MMMM D YYYY [at] HH:mm:ss [UTC]Z').display(msg.createdTimestamp)}
-			**Input:** \`Modlog ${args.subCommand.toLowerCase()} ${'| channel:' + args.channel}\`
+			**Input:** \`Modlog ${args.subCommand.toLowerCase()} ${`| channel:${args.channel}`}\`
 		`;
 		let modlogUserWarn = '';
 
@@ -204,13 +206,14 @@ export default class ModlogCommand extends Command {
 		msg.client.emit('warn', modlogWarn);
 
 		// Inform the user the command failed
-		return sendSimpleEmbeddedError(msg, modlogUserWarn);
+		return msg.sendSimpleError(modlogUserWarn);
 	}
 
-	private sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
-		modLogMessage(msg, embed);
+	private async sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
+		await modLogMessage(msg, embed);
 
 		// Send the success response
 		return msg.sendEmbed(embed);
 	}
+
 }

@@ -3,10 +3,9 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { shuffle, verify } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
-
-const events = require('../../extras/hunger-games');
+import { shuffle, verify } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
+import * as events from '../../extras/hunger-games.json';
 
 /**
  * Starts a game of Hunger Games.
@@ -16,6 +15,7 @@ const events = require('../../extras/hunger-games');
  * @extends {Command}
  */
 export default class HungerGamesCommand extends Command {
+
 	private playing = new Set();
 
 	/**
@@ -24,8 +24,8 @@ export default class HungerGamesCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof HungerGamesCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['hunger-games-simulator', 'brant-steele'],
 			description: 'Simulate a Hunger Games match with up to 24 tributes.',
 			name: 'hunger-games',
@@ -41,10 +41,10 @@ export default class HungerGamesCommand extends Command {
 	 * @memberof HungerGamesCommand
 	 */
 	public async run(msg: KlasaMessage, [...tributes]): Promise<KlasaMessage | KlasaMessage[]> {
-		if (tributes.length < 2) { return msg.sendMessage(`...${tributes[0]} wins, as they were the only tribute.`); }
-		if (tributes.length > 24) { return msg.sendMessage('Please do not enter more than 24 tributes.', { reply: msg.author }); }
-		if (new Set(tributes).size !== tributes.length) { return msg.sendMessage('Please do not enter the same tribute twice.', { reply: msg.author }); }
-		if (this.playing.has(msg.channel.id)) { return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author }); }
+		if (tributes.length < 2) return msg.sendMessage(`...${tributes[0]} wins, as they were the only tribute.`);
+		if (tributes.length > 24) return msg.sendMessage('Please do not enter more than 24 tributes.', { reply: msg.author });
+		if (new Set(tributes).size !== tributes.length) return msg.sendMessage('Please do not enter the same tribute twice.', { reply: msg.author });
+		if (this.playing.has(msg.channel.id)) return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author });
 
 		this.playing.add(msg.channel.id);
 
@@ -55,7 +55,7 @@ export default class HungerGamesCommand extends Command {
 			const remaining = new Set(shuffle(tributes));
 
 			while (remaining.size > 1) {
-				if (!bloodbath && sun) { ++turn; }
+				if (!bloodbath && sun) ++turn;
 				const sunEvents = bloodbath ? events.bloodbath : sun ? events.day : events.night;
 				const results: any[] = [];
 				const deaths: any[] = [];
@@ -79,8 +79,8 @@ export default class HungerGamesCommand extends Command {
 
 					return msg.sendMessage('See you next time!');
 				}
-				if (!bloodbath) { sun = !sun; }
-				if (bloodbath) { bloodbath = false; }
+				if (!bloodbath) sun = !sun;
+				if (bloodbath) bloodbath = false;
 			}
 
 			this.playing.delete(msg.channel.id);
@@ -107,7 +107,7 @@ export default class HungerGamesCommand extends Command {
 	private makeEvents(tributes: Set<any>, eventsArr: any[], deaths: string[], results: any[]) {
 		const turn = new Set(tributes);
 		for (const tribute of tributes) {
-			if (!turn.has(tribute)) { continue; }
+			if (!turn.has(tribute)) continue;
 			const valid = eventsArr.filter((event: any) => event.tributes <= turn.size && event.deaths < turn.size);
 			const event = valid[Math.floor(Math.random() * valid.length)];
 			turn.delete(tribute);
@@ -137,4 +137,5 @@ export default class HungerGamesCommand extends Command {
 			}
 		}
 	}
+
 }

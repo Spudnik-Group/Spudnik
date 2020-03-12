@@ -2,22 +2,14 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Client, KlasaClientOptions } from 'klasa';
+import { Client, Colors, KlasaClientOptions } from 'klasa';
 import { SpudConfig } from './spud-config';
-import { permissionLevels } from '../schemas/permission-levels';
+import { permissionLevels } from '@lib/schemas/permission-levels';
 
-/**
- * The following are all client options for Klasa/Discord.js.
- * Any option that you wish to use the default value can be removed from this file.
- * This file is init with defaults from both Klasa and Discord.js.
- */
-
-// tslint:disable
 export const KlasaConfig: KlasaClientOptions = {
 	/**
 	 * General Options
 	 */
-	// Any Websocket Events you don't want to listen to
 	disabledEvents: [
 		'GUILD_INTEGRATIONS_UPDATE',
 		'GUILD_BAN_ADD',
@@ -38,23 +30,14 @@ export const KlasaConfig: KlasaClientOptions = {
 	],
 	disabledCorePieces: [
 		'commands',
-		// 'providers'
+		'providers'
 	],
-	// If your bot should be able to mention @everyone
+	owners: SpudConfig.owners,
 	disableEveryone: false,
-	// The default language that comes with klasa. More base languages can be found on Klasa-Pieces
 	language: 'en-US',
-	// The default configurable prefix for each guild
 	prefix: '!',
-	// A presence to login with
-	presence: {},
-	// If custom settings should be preserved when a guild removes your bot
-	preserveSettings: true,
-	// Disables/Enables a process.on('unhandledRejection'...) handler
-	production: !!SpudConfig.debug,
-	// A once ready message for your console
-	readyMessage: (client: Client) => `Successfully initialized. Ready to serve ${client.guilds.size} guild${client.guilds.size === 1 ? '' : 's'}.`,
-	// The time in ms to add to ratelimits, to ensure you wont hit a 429 response
+	production: Boolean(SpudConfig.debug),
+	readyMessage: (client: Client) => new Colors({ text: 'magenta' }).format(`Logged into Discord! Serving in ${client.guilds.array().length} Discord servers`),
 	restTimeOffset: 500,
 
 	/**
@@ -78,11 +61,8 @@ export const KlasaConfig: KlasaClientOptions = {
 	 * Database Options
 	 */
 	providers: {
-		// Provider Connection object for process based databases:
-		// rethinkdb, mongodb, mssql, mysql, postgresql
-		// default: 'json',
-		default: 'mongodb',
-		mongodb: {
+		'default': 'mongodb',
+		'mongodb': {
 			db: SpudConfig.spudCoreDB,
 			connectionString: SpudConfig.spudCoreDBConnection
 		}
@@ -162,7 +142,6 @@ export const KlasaConfig: KlasaClientOptions = {
 	 * Console Options
 	 */
 	console: {
-		// Alternatively a Moment Timestamp string can be provided to customize the timestamps.
 		colors: {
 			debug: { time: { background: 'magenta' } },
 			error: { time: { background: 'red' } },
@@ -178,10 +157,10 @@ export const KlasaConfig: KlasaClientOptions = {
 	/**
 	 * Custom Setting Gateway Options
 	 */
-	// gateways: {
-	// 	clientStorage: {},
-	// 	guilds: {},
-	// 	users: {}
+	// Gateways: {
+	// ClientStorage: {},
+	// Guilds: {},
+	// Users: {}
 	// },
 
 	/**
@@ -189,4 +168,3 @@ export const KlasaConfig: KlasaClientOptions = {
 	 */
 	schedule: { interval: 60000 }
 };
-// tslint:enable

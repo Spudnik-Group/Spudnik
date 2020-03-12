@@ -2,9 +2,9 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { KlasaClient, CommandStore, KlasaMessage, Command } from 'klasa';
-import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { CommandStore, KlasaMessage, Command } from 'klasa';
 import { Permissions } from 'discord.js';
+import { stripIndents } from 'common-tags';
 
 /**
  * Provides links to suggest features, submit bugs, or email the devs.
@@ -14,8 +14,9 @@ import { Permissions } from 'discord.js';
  * @extends {Command}
  */
 export default class FeedbackCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Provides links to suggest features, submit bugs, or email the devs.',
 			guarded: true,
 			name: 'feedback',
@@ -31,7 +32,7 @@ export default class FeedbackCommand extends Command {
 	 * @memberof FeedbackCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		return sendSimpleEmbeddedMessage(msg, `
+		return msg.sendSimpleEmbed(stripIndents`
 			*Give us Feedback!*
 			
 			Make a [Feature Suggestion](<https://feathub.com/Spudnik-Group/Spudnik>)
@@ -39,4 +40,5 @@ export default class FeedbackCommand extends Command {
 			Email the Devs: comrades@spudnik.io
 		`);
 	}
+
 }

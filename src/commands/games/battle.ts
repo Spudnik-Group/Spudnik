@@ -3,8 +3,8 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { getRandomInt, verify } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { getRandomInt, verify } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Allows users to battle each other or the bot.
@@ -14,14 +14,15 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class BattleCommand extends Command {
+
 	/**
 	 * Creates an instance of BattleCommand.
 	 *
 	 * @param {CommandoClient} client
 	 * @memberof BattleCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['fight', 'death-battle'],
 			description: 'Engage in a turn-based battle against another user or the AI.',
 			extendedHelp: 'syntax: \`!battle (@usermention)\`',
@@ -39,7 +40,7 @@ export default class BattleCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage, [opp]): Promise<KlasaMessage | KlasaMessage[]> {
 		const fighting = new Set();
-		const opponent = opp ? opp : this.client.user
+		const opponent = opp ? opp : this.client.user;
 
 		if (opponent.id === msg.author.id) {
 			return msg.sendMessage('You may not fight yourself.', { reply: msg.author });
@@ -73,7 +74,7 @@ export default class BattleCommand extends Command {
 				if (changeGuard && guard) {
 					guard = false;
 				}
-			}
+			};
 
 			const dealDamage = (damage: any) => {
 				if (userTurn) {
@@ -81,7 +82,7 @@ export default class BattleCommand extends Command {
 				} else {
 					userHP -= damage;
 				}
-			}
+			};
 
 			const forfeit = () => {
 				if (userTurn) {
@@ -89,7 +90,7 @@ export default class BattleCommand extends Command {
 				} else {
 					oppoHP = 0;
 				}
-			}
+			};
 
 			while (userHP > 0 && oppoHP > 0) {
 				const user = userTurn ? msg.author : opponent;
@@ -129,12 +130,12 @@ export default class BattleCommand extends Command {
 					reset(false);
 				} else if (choice === 'special') {
 					const miss = Math.floor(Math.random() * 4);
-					if (!miss) {
+					if (miss) {
+						await msg.sendMessage(`${user}'s attack missed!`);
+					} else {
 						const damage = getRandomInt(100, guard ? 150 : 300);
 						await msg.sendMessage(`${user} deals **${damage}** damage!`);
 						dealDamage(damage);
-					} else {
-						await msg.sendMessage(`${user}'s attack missed!`);
 					}
 					reset();
 				} else if (choice === 'run') {
@@ -156,4 +157,5 @@ export default class BattleCommand extends Command {
 			throw err;
 		}
 	}
+
 }

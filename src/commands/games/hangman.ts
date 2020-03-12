@@ -3,9 +3,8 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
-
-const words = require('../../extras/hangman');
+import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { data as words } from '../../extras/hangman.json';
 
 /**
  * Starts a game of Hangman.
@@ -15,6 +14,7 @@ const words = require('../../extras/hangman');
  * @extends {Command}
  */
 export default class HangmanCommand extends Command {
+
 	private playing = new Set();
 
 	/**
@@ -23,8 +23,8 @@ export default class HangmanCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof HangmanCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Prevent a man from being hanged by guessing a word as fast as you can.',
 			name: 'hangman'
 		});
@@ -71,7 +71,7 @@ export default class HangmanCommand extends Command {
 					const choice = res.content.toLowerCase();
 
 					return res.author.id === msg.author.id && !confirmation.includes(choice) && !incorrect.includes(choice);
-				}
+				};
 
 				const guess: any = await msg.channel.awaitMessages(filter, {
 					max: 1,
@@ -86,7 +86,7 @@ export default class HangmanCommand extends Command {
 
 				const choice = guess.first().content.toLowerCase();
 
-				if (choice === 'end') { break; }
+				if (choice === 'end') break;
 
 				if (choice.length > 1 && choice === word) {
 					guessed = true;
@@ -95,18 +95,18 @@ export default class HangmanCommand extends Command {
 				} else if (word.includes(choice)) {
 					displayText = true;
 					for (let i = 0; i < word.length; i++) {
-						if (word.charAt(i) !== choice) { continue; }
+						if (word.charAt(i) !== choice) continue;
 						confirmation.push(word.charAt(i));
 						display[i] = word.charAt(i);
 					}
 				} else {
 					displayText = false;
-					if (choice.length === 1) { incorrect.push(choice); }
+					if (choice.length === 1) incorrect.push(choice);
 					points++;
 				}
 			}
 			this.playing.delete(msg.channel.id);
-			if (word.length === confirmation.length || guessed) { return msg.sendMessage(`You won, it was ${word}!`); }
+			if (word.length === confirmation.length || guessed) return msg.sendMessage(`You won, it was ${word}!`);
 
 			return msg.sendMessage(`Too bad... It was ${word}...`);
 		} catch (err) {
@@ -115,4 +115,5 @@ export default class HangmanCommand extends Command {
 			return msg.sendMessage(`Oh no, an error occurred: \`${err.message}\`. Try again later!`, { reply: msg.author });
 		}
 	}
+
 }

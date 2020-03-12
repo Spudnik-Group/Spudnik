@@ -2,11 +2,10 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { getRandomInt, sendSimpleEmbeddedImage } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { getRandomInt } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { Permissions } from 'discord.js';
-
-const { coinflip }: { coinflip: any[] } = require('../../extras/data');
+import { coinflip } from '../../extras/data.json';
 
 /**
  * Simulate a coin flip.
@@ -16,8 +15,9 @@ const { coinflip }: { coinflip: any[] } = require('../../extras/data');
  * @extends {Command}
  */
 export default class CoinFlipCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Flips a coin for you.',
 			name: 'coinflip',
 			requiredPermissions: Permissions.FLAGS.ATTACH_FILES
@@ -31,7 +31,8 @@ export default class CoinFlipCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof CoinFlipCommand
 	 */
-	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		return sendSimpleEmbeddedImage(msg, coinflip[getRandomInt(0, 1)].image);
+	public run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+		return msg.sendSimpleImage(null, coinflip[getRandomInt(0, 1)].image);
 	}
+
 }

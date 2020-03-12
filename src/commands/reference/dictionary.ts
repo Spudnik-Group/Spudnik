@@ -4,12 +4,12 @@
 
 import { oneLine } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
-import { SpudConfig } from '../../lib/config';
+import { getEmbedColor } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { SpudConfig } from '@lib/config';
 import * as mw from 'mw-dict';
 
-const dictionaryApiKey: string = SpudConfig.dictionaryApiKey;
+const { dictionaryApiKey } = SpudConfig;
 const dict = new mw.CollegiateDictionary(dictionaryApiKey);
 
 /**
@@ -20,8 +20,9 @@ const dict = new mw.CollegiateDictionary(dictionaryApiKey);
  * @extends {Command}
  */
 export default class DefineCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Returns the definition of a supplied word. Uses the Merriam-Webster Collegiate Dictionary API.',
 			name: 'define',
 			usage: '<query:...string>'
@@ -39,7 +40,7 @@ export default class DefineCommand extends Command {
 	 * @memberof DefineCommand
 	 */
 	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
-		if (!dictionaryApiKey) return sendSimpleEmbeddedError(msg, 'No API Key has been set up. This feature is unusable', 3000);
+		if (!dictionaryApiKey) return msg.sendSimpleError('No API Key has been set up. This feature is unusable', 3000);
 		const word = query;
 		const dictionaryEmbed: MessageEmbed = new MessageEmbed({
 			color: getEmbedColor(msg),
@@ -52,7 +53,7 @@ export default class DefineCommand extends Command {
 		});
 
 		try {
-			const result = await dict.lookup(word)
+			const result = await dict.lookup(word);
 			if (result[0].functional_label) {
 				dictionaryEmbed.addField('Functional Label:', result[0].functional_label);
 			}
@@ -76,19 +77,20 @@ export default class DefineCommand extends Command {
 		} catch (err) {
 			msg.client.emit('warn', `Error in command ref:define: ${err}`);
 
-			return sendSimpleEmbeddedError(msg, 'Word not found.', 3000);
+			return msg.sendSimpleError('Word not found.', 3000);
 		}
 	}
 
 	private renderDefinition(sensesIn: any): string {
 		return sensesIn
 			.map((def: any) => oneLine`
-				${def.number ? '*' + def.number + '.*' : ''}
+				${def.number ? `*${def.number}.*` : ''}
 				${def.meanings && def.meanings.length ? def.meanings.join(' ') : ''}
-				${def.synonyms && def.synonyms.length ? def.synonyms.map((s: any) => '_' + s + '_').join(', ') : ''}
-				${def.illustrations && def.illustrations.length ? def.illustrations.map((i: any) => '* ' + i).join('\n') : ''}
+				${def.synonyms && def.synonyms.length ? def.synonyms.map((s: any) => `_${s}_`).join(', ') : ''}
+				${def.illustrations && def.illustrations.length ? def.illustrations.map((i: any) => `* ${i}`).join('\n') : ''}
 				${def.senses && def.senses.length ? this.renderDefinition(def.senses) : ''}
 			`)
 			.join('\n');
 	}
+
 }

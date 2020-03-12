@@ -2,12 +2,10 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { stripIndents } from 'common-tags';
-import { MessageEmbed } from 'discord.js';
-import { KlasaMessage, Command, KlasaClient, CommandStore, Duration } from 'klasa';
-import { getEmbedColor } from '../../lib/helpers';
-
-const { version, dependencies } = require('../../../package');
+import { KlasaMessage, Command, CommandStore } from 'klasa';
+import { getEmbedColor } from '@lib/helpers';
+import { loadavg, uptime } from 'os';
+import { version, dependencies } from '@root/../package.json';
 
 /**
  * Returns statistics about the bot.
@@ -17,8 +15,9 @@ const { version, dependencies } = require('../../../package');
  * @extends {Command}
  */
 export default class StatsCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['statistics'],
 			description: 'Returns statistics about the bot.',
 			name: 'stats'
@@ -33,29 +32,10 @@ export default class StatsCommand extends Command {
 	 * @memberof StatsCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		let statsEmbed = new MessageEmbed()
-			.setColor(getEmbedColor(msg))
-			.setDescription('**Spudnik Statistics**')
-			.addField('❯ Uptime', Duration.toNow(Date.now() - (process.uptime() * 1000)), true)
-			.addField('❯ Process Stats', stripIndents`
-						• Memory Usage: ${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB
-						• Node Version: ${process.version}
-						• Version: v${version}`, true)
-			.addField('❯ General Stats', stripIndents`
-						• Guilds: ${this.client.guilds.size}
-						• Channels: ${this.client.channels.size}
-						• Users: ${this.client.guilds.map((guild) => guild.memberCount).reduce((a, b) => a + b)}
-						• Commands: ${this.client.commands.size}`, true)
-			.addField('❯ Spudnik Command', '[Join](https://spudnik.io/support)', true)
-			.addField('❯ Source Code', '[View](https://github.com/Spudnik-Group/Spudnik)', true)
-			.addField('❯ Invite to Your Server!', '[Invite](https://spudnik.io/invite)', true)
-			.addField('❯ Dependencies', this.parseDependencies())
-			.setThumbnail(`${this.client.user ? this.client.user.avatarURL() : ''}`);
-
-		return msg.sendEmbed(statsEmbed);
+		return msg.sendLocale('COMMAND_STATS', [getEmbedColor(msg), this.generalStatistics, this.uptimeStatistics, this.usageStatistics, this.parseDependencies]);
 	}
 
-	private parseDependencies(): string {
+	private get parseDependencies(): string[] {
 		return Object.entries(dependencies)
 			.map((dep: any) => {
 				if (dep[1].startsWith('github:')) {
@@ -65,7 +45,54 @@ export default class StatsCommand extends Command {
 				}
 
 				return `[${dep[0]}](https://npmjs.com/${dep[0]})`;
-			})
-			.join(', ');
+			});
 	}
+
+	private get generalStatistics(): StatsGeneral {
+		return {
+			CHANNELS: this.client.channels.size.toLocaleString(),
+			GUILDS: this.client.guilds.size.toLocaleString(),
+			NODE_JS: process.version,
+			USERS: this.client.guilds.reduce((a, b) => a + b.memberCount, 0).toLocaleString(),
+			VERSION: `v${version}`
+		};
+	}
+
+	private get uptimeStatistics(): StatsUptime {
+		return {
+			CLIENT: this.client.uptime!,
+			HOST: uptime() * 1000,
+			TOTAL: process.uptime() * 1000
+		};
+	}
+
+	private get usageStatistics(): StatsUsage {
+		const usage = process.memoryUsage();
+		return {
+			CPU_LOAD: loadavg().map(load => Math.round(load * 10000) / 100) as [number, number, number],
+			RAM_TOTAL: `${Math.round(100 * (usage.heapTotal / 1048576)) / 100}MB`,
+			RAM_USED: `${Math.round(100 * (usage.heapUsed / 1048576)) / 100}MB`
+		};
+	}
+
+}
+
+export interface StatsGeneral {
+	CHANNELS: string;
+	GUILDS: string;
+	NODE_JS: string;
+	USERS: string;
+	VERSION: string;
+}
+
+export interface StatsUptime {
+	CLIENT: number;
+	HOST: number;
+	TOTAL: number;
+}
+
+export interface StatsUsage {
+	CPU_LOAD: [number, number, number];
+	RAM_TOTAL: string;
+	RAM_USED: string;
 }

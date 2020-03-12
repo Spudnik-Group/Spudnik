@@ -4,9 +4,10 @@
 
 import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
-import { modLogMessage, getEmbedColor, sendSimpleEmbeddedError, commandOrCategory, isCommandCategoryEnabled, isCommandEnabled, sendSimpleEmbeddedMessage } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { modLogMessage, getEmbedColor, commandOrCategory, isCommandCategoryEnabled, isCommandEnabled } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 import * as fs from 'fs';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 /**
  * Enables a command or command group.
@@ -16,8 +17,9 @@ import * as fs from 'fs';
  * @extends {Command}
  */
 export default class EnableCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['enable-command', 'cmd-off', 'command-off'],
 			description: 'Enables a command or command group.',
 			guarded: true,
@@ -26,7 +28,7 @@ export default class EnableCommand extends Command {
 			usage: '<cmdOrCat:command|cmdOrCat:string>'
 		});
 
-		this.createCustomResolver('cmdOrCat', commandOrCategory)
+		this.createCustomResolver('cmdOrCat', commandOrCategory);
 	}
 
 	/**
@@ -54,35 +56,34 @@ export default class EnableCommand extends Command {
 			const parsedGroup: string = cmdOrCat.toLowerCase();
 
 			if (isCommandCategoryEnabled(msg, cmdOrCat)) {
-				return sendSimpleEmbeddedError(msg,
-					`The \`${cmdOrCat}\` category is already enabled.`, 3000);
+				return msg.sendSimpleError(`The \`${cmdOrCat}\` category is already enabled.`, 3000);
 			} else if (groups.find((g: string) => g === parsedGroup)) {
-				await msg.guild.settings.update('disabledCommandCategories', cmdOrCat.toLowerCase(), msg.guild);
+				await msg.guild.settings.update(GuildSettings.Commands.DisabledCategories, cmdOrCat.toLowerCase());
 
 				enableEmbed.setDescription(stripIndents`
-				**Moderator:** ${msg.author.tag} (${msg.author.id})
-				**Action:** Enabled the \`${cmdOrCat}\` category.`);
-				modLogMessage(msg, enableEmbed);
+					**Moderator:** ${msg.author.tag} (${msg.author.id})
+					**Action:** Enabled the \`${cmdOrCat}\` category.`);
 
-				return msg.sendEmbed(enableEmbed);
-			} else {
-				return sendSimpleEmbeddedMessage(msg, `No groups matching that name. Use \`${msg.guild.settings.get('prefix')}commands\` to view a list of command groups.`, 3000);
-			}
-		} else {
-			// Command
-			if (isCommandEnabled(msg, cmdOrCat)) {
-				return sendSimpleEmbeddedError(msg, `The \`${cmdOrCat.name}\` command is already enabled.`, 3000);
-			} else {
-				await msg.guild.settings.update('disabledCommands', cmdOrCat.name.toLowerCase(), msg.guild);
-
-				enableEmbed.setDescription(stripIndents`
-				**Moderator:** ${msg.author.tag} (${msg.author.id})
-				**Action:** Enabled the \`${cmdOrCat.name}\` command${
-					!isCommandCategoryEnabled(msg, cmdOrCat.category) ? `, but the \`${cmdOrCat.category}\` category is disabled, so it still can't be used` : ''}.`);
-				modLogMessage(msg, enableEmbed);
+				await modLogMessage(msg, enableEmbed);
 
 				return msg.sendEmbed(enableEmbed);
 			}
+			return msg.sendSimpleEmbed(`No groups matching that name. Use \`${msg.guild.settings.get(GuildSettings.Prefix)}commands\` to view a list of command groups.`, 3000);
+
 		}
+		// Command
+		if (isCommandEnabled(msg, cmdOrCat)) {
+			return msg.sendSimpleError(`The \`${cmdOrCat.name}\` command is already enabled.`, 3000);
+		}
+		await msg.guild.settings.update(GuildSettings.Commands.Disabled, cmdOrCat.name.toLowerCase());
+
+		enableEmbed.setDescription(stripIndents`
+				**Moderator:** ${msg.author.tag} (${msg.author.id})
+				**Action:** Enabled the \`${cmdOrCat.name}\` command${isCommandCategoryEnabled(msg, cmdOrCat.category) ? '' : `, but the \`${cmdOrCat.category}\` category is disabled, so it still can't be used`}.`);
+
+		await modLogMessage(msg, enableEmbed);
+
+		return msg.sendEmbed(enableEmbed);
 	}
+
 }

@@ -2,8 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { KlasaClient, CommandStore, KlasaMessage, Command } from 'klasa';
-import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { CommandStore, KlasaMessage, Command } from 'klasa';
 import { Permissions } from 'discord.js';
 
 /**
@@ -14,8 +13,9 @@ import { Permissions } from 'discord.js';
  * @extends {Command}
  */
 export default class DonateCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Returns options to donate to help support development and hosting of the bot.',
 			guarded: true,
 			name: 'donate',
@@ -31,6 +31,7 @@ export default class DonateCommand extends Command {
 	 * @memberof DonateCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		return sendSimpleEmbeddedMessage(msg, "We'd love your help supporting the bot!\nYou can support us on [Patreon](https://www.patreon.com/spudnik)\n\nWe ❤️ You!");
+		return msg.sendSimpleEmbed(`We'd love your help supporting the bot!\nYou can support us on [Patreon](https://www.patreon.com/spudnik)\n\nWe ❤️ You!`);
 	}
+
 }

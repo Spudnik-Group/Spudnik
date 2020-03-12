@@ -4,8 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { Channel, MessageEmbed } from 'discord.js';
-import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, resolveChannel, basicFeatureContent } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { getEmbedColor, modLogMessage, resolveChannel, basicFeatureContent } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 /**
  * Manage notifications when someone leaves the guild.
@@ -15,8 +16,9 @@ import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'kla
  * @extends {Command}
  */
 export default class GoodbyeCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Used to configure the message to be sent when a user leaves your guild.',
 			extendedHelp: stripIndents`
 				**Subcommand Usage**:
@@ -53,7 +55,7 @@ export default class GoodbyeCommand extends Command {
 		}).setTimestamp();
 
 		try {
-			await msg.guild.settings.update('goodbye.message', content, msg.guild);
+			await msg.guild.settings.update(GuildSettings.Goodbye.Message, content);
 
 			// Set up embed message
 			goodbyeEmbed.setDescription(stripIndents`
@@ -65,7 +67,7 @@ export default class GoodbyeCommand extends Command {
 
 			return this.sendSuccess(msg, goodbyeEmbed);
 		} catch (err) {
-			return this.catchError(msg, { subCommand: 'message', content: content }, err)
+			return this.catchError(msg, { subCommand: 'message', content }, err);
 		}
 	}
 
@@ -85,27 +87,27 @@ export default class GoodbyeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const goodbyeChannel = await msg.guild.settings.get('goodbye.channel');
+		const goodbyeChannel = await msg.guild.settings.get(GuildSettings.Goodbye.Channel);
 		const channelID = msg.guild.channels.get(resolveChannel(content)).id;
 
 		if (goodbyeChannel && goodbyeChannel === channelID) {
-			return sendSimpleEmbeddedMessage(msg, `Goodbye channel already set to <#${channelID}>!`, 3000);
-		} else {
-			try {
-				await msg.guild.settings.update('goodbye.channel', channelID, msg.guild);
+			return msg.sendSimpleEmbed(`Goodbye channel already set to <#${channelID}>!`, 3000);
+		}
+		try {
+			await msg.guild.settings.update(GuildSettings.Goodbye.Channel, channelID);
 
-				// Set up embed message
-				goodbyeEmbed.setDescription(stripIndents`
+			// Set up embed message
+			goodbyeEmbed.setDescription(stripIndents`
 							**Member:** ${msg.author.tag} (${msg.author.id})
 							**Action:** Goodbye Channel set to <#${channelID}>
 						`);
-				goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
+			goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
 
-				return this.sendSuccess(msg, goodbyeEmbed);
-			} catch (err) {
-				return this.catchError(msg, { subCommand: 'channel', content: content }, err)
-			}
+			return this.sendSuccess(msg, goodbyeEmbed);
+		} catch (err) {
+			return this.catchError(msg, { subCommand: 'channel', content }, err);
 		}
+
 	}
 
 	/**
@@ -123,30 +125,30 @@ export default class GoodbyeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const goodbyeChannel = await msg.guild.settings.get('goodbye.channel');
-		const goodbyeEnabled = await msg.guild.settings.get('goodbye.enabled');
+		const goodbyeChannel = await msg.guild.settings.get(GuildSettings.Goodbye.Channel);
+		const goodbyeEnabled = await msg.guild.settings.get(GuildSettings.Goodbye.Enabled);
 
 		if (goodbyeChannel) {
 			if (goodbyeEnabled) {
-				return sendSimpleEmbeddedMessage(msg, 'Goodbye message already enabled!', 3000);
-			} else {
-				try {
-					await msg.guild.settings.update('goodbye.enabled', true, msg.guild);
+				return msg.sendSimpleEmbed('Goodbye message already enabled!', 3000);
+			}
+			try {
+				await msg.guild.settings.update(GuildSettings.Goodbye.Enabled, true);
 
-					// Set up embed message
-					goodbyeEmbed.setDescription(stripIndents`
+				// Set up embed message
+				goodbyeEmbed.setDescription(stripIndents`
 						**Member:** ${msg.author.tag} (${msg.author.id})
 						**Action:** Goodbye messages set to: _Enabled_
 					`);
-					goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
+				goodbyeEmbed.setFooter('Use the `goodbye status` command to see the details of this feature');
 
-					return this.sendSuccess(msg, goodbyeEmbed);
-				} catch (err) {
-					return this.catchError(msg, { subCommand: 'on' }, err)
-				}
+				return this.sendSuccess(msg, goodbyeEmbed);
+			} catch (err) {
+				return this.catchError(msg, { subCommand: 'on' }, err);
 			}
+
 		} else {
-			return sendSimpleEmbeddedError(msg, 'Please set the channel for the goodbye message before enabling the feature. See `help goodbye` for info.', 3000);
+			return msg.sendSimpleError('Please set the channel for the goodbye message before enabling the feature. See `help goodbye` for info.', 3000);
 		}
 	}
 
@@ -165,11 +167,11 @@ export default class GoodbyeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const goodbyeEnabled = await msg.guild.settings.get('goodbye.enabled');
+		const goodbyeEnabled = await msg.guild.settings.get(GuildSettings.Goodbye.Enabled);
 
 		if (goodbyeEnabled) {
 			try {
-				await msg.guild.settings.update('goodbye.enabled', false, msg.guild);
+				await msg.guild.settings.update(GuildSettings.Goodbye.Enabled, false);
 
 				// Set up embed message
 				goodbyeEmbed.setDescription(stripIndents`
@@ -180,10 +182,10 @@ export default class GoodbyeCommand extends Command {
 
 				return this.sendSuccess(msg, goodbyeEmbed);
 			} catch (err) {
-				return this.catchError(msg, { subCommand: 'off' }, err)
+				return this.catchError(msg, { subCommand: 'off' }, err);
 			}
 		} else {
-			return sendSimpleEmbeddedMessage(msg, 'Goodbye message already disabled!', 3000);
+			return msg.sendSimpleError('Goodbye message already disabled!', 3000);
 		}
 	}
 
@@ -203,9 +205,9 @@ export default class GoodbyeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const goodbyeChannel = await msg.guild.settings.get('goodbye.channel');
-		const goodbyeMessage = await msg.guild.settings.get('goodbye.message');
-		const goodbyeEnabled = await msg.guild.settings.get('goodbye.enabled');
+		const goodbyeChannel = msg.guild.settings.get(GuildSettings.Goodbye.Channel);
+		const goodbyeMessage = msg.guild.settings.get(GuildSettings.Goodbye.Message);
+		const goodbyeEnabled = msg.guild.settings.get(GuildSettings.Goodbye.Enabled);
 
 		// Set up embed message
 		goodbyeEmbed.setDescription(stripIndents`
@@ -227,7 +229,7 @@ export default class GoodbyeCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof GoodbyeCommand
 	 */
-	private catchError(msg: KlasaMessage, args: { subCommand: string, content?: Channel | string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
+	private catchError(msg: KlasaMessage, args: { subCommand: string; content?: Channel | string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Build warning message
 		let goodbyeWarn = stripIndents`
 			Error occurred in \`goodbye\` command!
@@ -267,13 +269,14 @@ export default class GoodbyeCommand extends Command {
 		msg.client.emit('warn', goodbyeWarn);
 
 		// Inform the user the command failed
-		return sendSimpleEmbeddedError(msg, goodbyeUserWarn);
+		return msg.sendSimpleError(goodbyeUserWarn);
 	}
 
-	private sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
-		modLogMessage(msg, embed);
+	private async sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
+		await modLogMessage(msg, embed);
 
 		// Send the success response
 		return msg.sendEmbed(embed);
 	}
+
 }

@@ -3,8 +3,8 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { verify } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { verify } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Starts a game of Tic Tac Toe.
@@ -14,6 +14,7 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class TicTacToeCommand extends Command {
+
 	private playing = new Set();
 
 	/**
@@ -22,8 +23,8 @@ export default class TicTacToeCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof TicTacToeCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Play a game of tic-tac-toe with another user.',
 			extendedHelp: stripIndents`
 				syntax: \`!tic-tac-toe <@userMention>\`
@@ -42,9 +43,9 @@ export default class TicTacToeCommand extends Command {
 	 * @memberof TicTacToeCommand
 	 */
 	public async run(msg: KlasaMessage, [opponent]): Promise<KlasaMessage | KlasaMessage[]> {
-		if (opponent.bot) { return msg.sendMessage('Bots may not be played against.', { reply: msg.author }); }
-		if (opponent.id === msg.author.id) { return msg.sendMessage('You may not play against yourself.', { reply: msg.author }); }
-		if (this.playing.has(msg.channel.id)) { return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author }); }
+		if (opponent.bot) return msg.sendMessage('Bots may not be played against.', { reply: msg.author });
+		if (opponent.id === msg.author.id) return msg.sendMessage('You may not play against yourself.', { reply: msg.author });
+		if (this.playing.has(msg.channel.id)) return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author });
 		this.playing.add(msg.channel.id);
 
 		try {
@@ -81,7 +82,7 @@ export default class TicTacToeCommand extends Command {
 					const choice = res.content;
 
 					return res.author.id === user.id && sides.includes(choice) && !taken.includes(choice);
-				}
+				};
 
 				const turn: any = await msg.channel.awaitMessages(filter, {
 					max: 1,
@@ -122,4 +123,5 @@ export default class TicTacToeCommand extends Command {
 			throw err;
 		}
 	}
+
 }

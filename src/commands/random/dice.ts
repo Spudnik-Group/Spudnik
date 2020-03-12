@@ -2,8 +2,8 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { getEmbedColor } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
 
@@ -15,8 +15,9 @@ import { stripIndents } from 'common-tags';
  * @extends {Command}
  */
 export default class RollCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Roll one die with x sides + any modifiers, with an optional reason.',
 			extendedHelp: 'syntax: `!roll "[# of sides | [# of dice]d[# of sides]+modifiers]" [reason] >`',
 			name: 'roll',
@@ -41,12 +42,14 @@ export default class RollCommand extends Command {
 		});
 
 		if (!result) {
-			return sendSimpleEmbeddedError(msg, 'Invalid roll attempt. Try again with d20 syntax or a valid number.');
+			return msg.sendSimpleError('Invalid roll attempt. Try again with d20 syntax or a valid number.');
 		}
 		diceEmbed.description = stripIndents`
-			Roll: ${roll}${reason ? `
+			Roll: ${roll}${reason
+	? `
 
-			For: ${reason.replace('for ', '')}` : ''}
+			For: ${reason.replace('for ', '')}`
+	: ''}
 
 			--
 			Result: ${result}
@@ -55,4 +58,5 @@ export default class RollCommand extends Command {
 		// Send the success response
 		return msg.sendEmbed(diceEmbed, '', { reply: msg.author });
 	}
+
 }

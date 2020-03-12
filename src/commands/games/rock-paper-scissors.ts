@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 const choices: string[] = ['rock', 'paper', 'scissors'];
 
 /**
@@ -20,8 +20,8 @@ export default class RockPaperScissorsCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof RockPaperScissorsCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['rps'],
 			description: 'Play Rock-Paper-Scissors.',
 			extendedHelp: 'syntax: \`!rock-paper-scissors <choice>\`',
@@ -41,23 +41,24 @@ export default class RockPaperScissorsCommand extends Command {
 		const response = choices[Math.floor(Math.random() * choices.length)];
 
 		if (choice.toLowerCase() === 'rock') {
-			if (response === 'rock') { return msg.sendMessage('Rock! Aw... A tie...', { reply: msg.author }); }
-			if (response === 'paper') { return msg.sendMessage('Paper! Yes! I win!', { reply: msg.author }); }
-			if (response === 'scissors') { return msg.sendMessage('Scissors! Aw... I lose...', { reply: msg.author }); }
+			if (response === 'rock') return msg.sendMessage('Rock! Aw... A tie...', { reply: msg.author });
+			if (response === 'paper') return msg.sendMessage('Paper! Yes! I win!', { reply: msg.author });
+			if (response === 'scissors') return msg.sendMessage('Scissors! Aw... I lose...', { reply: msg.author });
 		}
 
 		if (choice.toLowerCase() === 'paper') {
-			if (response === 'rock') { return msg.sendMessage('Rock! Aw... I lose...', { reply: msg.author }); }
-			if (response === 'paper') { return msg.sendMessage('Paper! Aw... A tie...', { reply: msg.author }); }
-			if (response === 'scissors') { return msg.sendMessage('Scissors! Yes! I win!', { reply: msg.author }); }
+			if (response === 'rock') return msg.sendMessage('Rock! Aw... I lose...', { reply: msg.author });
+			if (response === 'paper') return msg.sendMessage('Paper! Aw... A tie...', { reply: msg.author });
+			if (response === 'scissors') return msg.sendMessage('Scissors! Yes! I win!', { reply: msg.author });
 		}
 
 		if (choice.toLowerCase() === 'scissors') {
-			if (response === 'rock') { return msg.sendMessage('Rock! Yes! I win!', { reply: msg.author }); }
-			if (response === 'paper') { return msg.sendMessage('Paper! Aw... I lose...', { reply: msg.author }); }
-			if (response === 'scissors') { return msg.sendMessage('Scissors! Aw... A tie...', { reply: msg.author }); }
+			if (response === 'rock') return msg.sendMessage('Rock! Yes! I win!', { reply: msg.author });
+			if (response === 'paper') return msg.sendMessage('Paper! Aw... I lose...', { reply: msg.author });
+			if (response === 'scissors') return msg.sendMessage('Scissors! Aw... A tie...', { reply: msg.author });
 		}
 
 		return msg.sendMessage('I win by default, you little cheater.', { reply: msg.author });
 	}
+
 }

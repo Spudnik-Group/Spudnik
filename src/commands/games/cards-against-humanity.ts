@@ -4,10 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { Collection } from 'discord.js';
-import { awaitPlayers, escapeMarkdown, shuffle } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
-// tslint:disable-next-line
-const { blackCards, whiteCards } = require('../../extras/cards-against-humanity');
+import { awaitPlayers, escapeMarkdown, shuffle } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { blackCards, whiteCards } from '../../extras/cards-against-humanity.json';
 
 /**
  * Starts a game of Cards Against Humanity.
@@ -17,6 +16,7 @@ const { blackCards, whiteCards } = require('../../extras/cards-against-humanity'
  * @extends {Command}
  */
 export default class CardsAgainstHumanityCommand extends Command {
+
 	private playing = new Set();
 
 	/**
@@ -25,8 +25,8 @@ export default class CardsAgainstHumanityCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof CardsAgainstHumanityCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['crude-cards', 'pretend-youre-xyzzy', 'cah'],
 			description: 'Compete to see who can come up with the best card to fill in the blank.',
 			extendedHelp: 'syntax: \`!cards-against-humanity <maxpoints> (midgamejoin)\`',
@@ -44,7 +44,7 @@ export default class CardsAgainstHumanityCommand extends Command {
 	 * @memberof CardsAgainstHumanityCommand
 	 */
 	public async run(msg: KlasaMessage, [maxPts, noMidJoin]): Promise<KlasaMessage | KlasaMessage[]> {
-		if (this.playing.has(msg.channel.id)) { return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author }); }
+		if (this.playing.has(msg.channel.id)) return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author });
 		const midJoinDisabled = noMidJoin ? noMidJoin : false;
 		this.playing.add(msg.channel.id);
 		let joinLeaveCollector = null;
@@ -58,14 +58,14 @@ export default class CardsAgainstHumanityCommand extends Command {
 				return msg.sendMessage('Game could not be started...');
 			}
 			const players: any = new Collection();
-			for (const user of awaitedPlayers) { this.generatePlayer(user, players); }
+			for (const user of awaitedPlayers) this.generatePlayer(user, players);
 			const czars = players.map((player: any) => player.id);
 			let winner = null;
-			if (!midJoinDisabled) { joinLeaveCollector = this.createJoinLeaveCollector(msg.channel, players, czars); }
+			if (!midJoinDisabled) joinLeaveCollector = this.createJoinLeaveCollector(msg.channel, players, czars);
 			pointViewCollector = this.createPointViewCollector(msg.channel, players);
 			while (!winner) {
 				for (const player of players) {
-					if (player.strikes >= 3) { this.kickPlayer(player, players, czars); }
+					if (player.strikes >= 3) this.kickPlayer(player, players, czars);
 				}
 
 				if (players.size < 3) {
@@ -104,14 +104,14 @@ export default class CardsAgainstHumanityCommand extends Command {
 				`);
 
 				const filter = (res: any) => {
-					if (res.author.id !== czar.user.id) { return false; }
+					if (res.author.id !== czar.user.id) return false;
 
-					if (!/^[0-9]+$/g.test(res.content)) { return false; }
+					if (!/^[0-9]+$/g.test(res.content)) return false;
 
-					if (!cards[Number.parseInt(res.content, 10) - 1]) { return false; }
+					if (!cards[Number.parseInt(res.content, 10) - 1]) return false;
 
 					return true;
-				}
+				};
 
 				const chosen = await msg.channel.awaitMessages(filter, {
 					max: 1,
@@ -121,9 +121,9 @@ export default class CardsAgainstHumanityCommand extends Command {
 				if (!chosen.size) {
 					await msg.sendMessage('Hmm... No one wins. Dealing back cards...');
 					for (const pick of cards) {
-						for (const card of pick.cards) { (players.get(pick.id) as any).hand.add(card); }
+						for (const card of pick.cards) (players.get(pick.id)).hand.add(card);
 					}
-					(players.get(czar.id) as any).strikes++;
+					(players.get(czar.id)).strikes++;
 					continue;
 				}
 
@@ -144,21 +144,21 @@ export default class CardsAgainstHumanityCommand extends Command {
 				}
 			}
 
-			if (joinLeaveCollector) { joinLeaveCollector.stop(); }
+			if (joinLeaveCollector) joinLeaveCollector.stop();
 
 			pointViewCollector.stop();
 
 			this.playing.delete(msg.channel.id);
 
-			if (!winner) { return msg.sendMessage('See you next time!'); }
+			if (!winner) return msg.sendMessage('See you next time!');
 
 			return msg.sendMessage(`And the winner is... ${winner}! Great job!`);
 		} catch (err) {
 			this.playing.delete(msg.channel.id);
 
-			if (joinLeaveCollector) { (joinLeaveCollector as any).stop(); }
+			if (joinLeaveCollector) (joinLeaveCollector).stop();
 
-			if (pointViewCollector) { (pointViewCollector as any).stop(); }
+			if (pointViewCollector) (pointViewCollector).stop();
 
 			return msg.sendMessage(`Oh no, an error occurred: \`${err.message}\`. Try again later!`, { reply: msg.author });
 		}
@@ -176,14 +176,14 @@ export default class CardsAgainstHumanityCommand extends Command {
 			id: user.id,
 			points: 0,
 			strikes: 0,
-			user: user
+			user
 		});
 
 		return players;
 	}
 
 	private async playerTurn(player: any, czar: any, black: any, channel: any, chosenCards: any): Promise<any> {
-		if (player.user.id === czar.user.id) { return; }
+		if (player.user.id === czar.user.id) return;
 		if (player.hand.size < 10) {
 			const valid = whiteCards.filter((card: any) => !player.hand.has(card));
 			player.hand.add(valid[Math.floor(Math.random() * valid.length)]);
@@ -207,24 +207,24 @@ export default class CardsAgainstHumanityCommand extends Command {
 
 			const chosen: any[] = [];
 			const filter = (res: any) => {
-				if (res.content.toLowerCase() === 'swap' && player.points > 0) { return true; }
+				if (res.content.toLowerCase() === 'swap' && player.points > 0) return true;
 				const existing = hand[Number.parseInt(res.content, 10) - 1];
-				if (!existing) { return false; }
-				if (chosen.includes(existing)) { return false; }
+				if (!existing) return false;
+				if (chosen.includes(existing)) return false;
 				chosen.push(existing);
 
 				return true;
-			}
+			};
 
 			const choices = await player.user.dmChannel.awaitMessages(filter, {
 				max: black.pick,
 				time: 60000
-			})
+			});
 
 			if (choices.first().content.toLowerCase() === 'swap') {
 				player.points--;
 				await player.user.send('Swapping cards...');
-				for (const card of player.hand) { player.hand.delete(card); }
+				for (const card of player.hand) player.hand.delete(card);
 				for (let i = 0; i < 10; i++) {
 					const valid = whiteCards.filter((card: any) => !player.hand.has(card));
 					player.hand.add(valid[Math.floor(Math.random() * valid.length)]);
@@ -234,7 +234,7 @@ export default class CardsAgainstHumanityCommand extends Command {
 			}
 
 			if (choices.size < black.pick) {
-				for (let i = 0; i < black.pick; i++) { chosen.push(hand[Math.floor(Math.random() * hand.length)]); }
+				for (let i = 0; i < black.pick; i++) chosen.push(hand[Math.floor(Math.random() * hand.length)]);
 				player.strikes++;
 			}
 
@@ -247,7 +247,7 @@ export default class CardsAgainstHumanityCommand extends Command {
 				}
 			}
 
-			for (const card of chosen) { player.hand.delete(card); }
+			for (const card of chosen) player.hand.delete(card);
 			chosenCards.push({
 				cards: chosen,
 				id: player.id
@@ -255,7 +255,7 @@ export default class CardsAgainstHumanityCommand extends Command {
 
 			await player.user.send(`Nice! Return to ${channel} to await the results!`);
 		} catch (err) {
-			return;
+
 		}
 	}
 
@@ -268,27 +268,27 @@ export default class CardsAgainstHumanityCommand extends Command {
 
 		player.hand.delete('<Blank>');
 
-		if (!blank.size) { return `A blank card ${player.user.tag} forgot to fill out.`; }
+		if (!blank.size) return `A blank card ${player.user.tag} forgot to fill out.`;
 
 		return blank.first().content;
 	}
 
 	private createJoinLeaveCollector(channel: any, players: any, czars: any): any {
 		const filter = (res: any) => {
-			if (res.author.bot) { return false; }
-			if (players.has(res.author.id) && res.content.toLowerCase() !== 'leave game') { return false; }
+			if (res.author.bot) return false;
+			if (players.has(res.author.id) && res.content.toLowerCase() !== 'leave game') return false;
 			if (czars[0] === res.author.id || players.size >= 10) {
 				res.react('❌').catch((): void => null);
 
 				return false;
 			}
 
-			if (!['join game', 'leave game'].includes(res.content.toLowerCase())) { return false; }
+			if (!['join game', 'leave game'].includes(res.content.toLowerCase())) return false;
 
 			res.react('✅').catch((): void => null);
 
 			return true;
-		}
+		};
 
 		const collector = channel.createMessageCollector(filter);
 
@@ -306,11 +306,11 @@ export default class CardsAgainstHumanityCommand extends Command {
 
 	private createPointViewCollector(channel: any, players: any): any {
 		const collector = channel.createMessageCollector((res: any) => {
-			if (res.author.bot) { return false; }
+			if (res.author.bot) return false;
 
-			if (!players.has(res.author.id)) { return false; }
+			if (!players.has(res.author.id)) return false;
 
-			if (res.content.toLowerCase() !== 'view points') { return false; }
+			if (res.content.toLowerCase() !== 'view points') return false;
 
 			return true;
 		});
@@ -327,4 +327,5 @@ export default class CardsAgainstHumanityCommand extends Command {
 		players.delete(player.id);
 		czars.splice(czars.indexOf(player.id), 1);
 	}
+
 }

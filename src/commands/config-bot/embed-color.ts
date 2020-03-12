@@ -4,8 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { sendSimpleEmbeddedError, hexColor } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { hexColor } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 /**
  * Change the default embed color for the server.
@@ -15,8 +16,9 @@ import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'kla
  * @extends {Command}
  */
 export default class EmbedColorCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Used to change the default embed color the bot uses for responses, or reset it.',
 			extendedHelp: stripIndents`
 				Supplying no hex color resets the embed color to default.
@@ -48,7 +50,7 @@ export default class EmbedColorCommand extends Command {
 
 		if (color) {
 			try {
-				await msg.guild.settings.update('embedColor', color, msg.guild);
+				await msg.guild.settings.update(GuildSettings.EmbedColor, color);
 
 				// Set up embed message
 				embedColorEmbed.setDescription(stripIndents`
@@ -58,7 +60,7 @@ export default class EmbedColorCommand extends Command {
 
 				return this.sendSuccess(msg, embedColorEmbed);
 			} catch (err) {
-				return this.catchError(msg, { color: color }, err)
+				return this.catchError(msg, { color }, err);
 			}
 		} else {
 			try {
@@ -72,7 +74,7 @@ export default class EmbedColorCommand extends Command {
 
 				return this.sendSuccess(msg, embedColorEmbed);
 			} catch (err) {
-				return this.catchError(msg, { color: null }, err)
+				return this.catchError(msg, { color: null }, err);
 			}
 		}
 	}
@@ -90,13 +92,14 @@ export default class EmbedColorCommand extends Command {
 
 		// Inform the user the command failed
 		if (args.color) {
-			return sendSimpleEmbeddedError(msg, `There was an error setting the embed color to ${args.color}`)
-		} else {
-			return sendSimpleEmbeddedError(msg, 'There was an error resetting the embed color.');
+			return msg.sendSimpleError(`There was an error setting the embed color to ${args.color}`);
 		}
+		return msg.sendSimpleError('There was an error resetting the embed color.');
+
 	}
 
 	private sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
 		return msg.sendEmbed(embed);
 	}
+
 }

@@ -4,8 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, Role, Permissions } from 'discord.js';
-import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { getEmbedColor, modLogMessage } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 /**
  * Manage setting a mute role.
@@ -15,8 +16,9 @@ import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'kla
  * @extends {Command}
  */
 export default class MuteRoleCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: [
 				'mr'
 			],
@@ -50,11 +52,11 @@ export default class MuteRoleCommand extends Command {
 			}
 		}).setTimestamp();
 
-		let guildMuteRole: Role = await msg.guild.settings.get('roles.muted');
+		const guildMuteRole: string = msg.guild.settings.get(GuildSettings.Roles.Muted);
 
 		if (!role) {
 			try {
-				await msg.guild.settings.reset('roles.muted');
+				await msg.guild.settings.reset(GuildSettings.Roles.Muted);
 				// Set up embed message
 				roleEmbed.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
@@ -63,13 +65,13 @@ export default class MuteRoleCommand extends Command {
 
 				return this.sendSuccess(msg, roleEmbed);
 			} catch (err) {
-				this.catchError(msg, role, 'reset', err);
+				return this.catchError(msg, role, 'reset', err);
 			}
 		} else if (guildMuteRole === role) {
-			return sendSimpleEmbeddedError(msg, `Muted role already set to <@${role.id}>`, 3000);
+			return msg.sendSimpleError(`Muted role already set to <@${role.id}>`, 3000);
 		} else {
 			try {
-				await msg.guild.settings.update('roles.muted', role, msg.guild);
+				await msg.guild.settings.update(GuildSettings.Roles.Muted, role);
 
 				// Set up embed message
 				roleEmbed.setDescription(stripIndents`
@@ -79,7 +81,7 @@ export default class MuteRoleCommand extends Command {
 
 				return this.sendSuccess(msg, roleEmbed);
 			} catch (err) {
-				this.catchError(msg, role, 'set', err);
+				return this.catchError(msg, role, 'set', err);
 			}
 		}
 	}
@@ -92,21 +94,22 @@ export default class MuteRoleCommand extends Command {
 			**Author:** ${msg.author.tag} (${msg.author.id})
 			**Time:** ${new Timestamp('MMMM D YYYY [at] HH:mm:ss [UTC]Z').display(msg.createdTimestamp)}
 			${action === 'set' ? `**Input:** \`Role name: ${role}` : ''}
-			**Error Message:** ${action === 'set' ? 'Setting' : 'Resetting'} muted role failed!\n
+			**Error Message:** ${err}\n
 			`;
-		let roleUserWarn = `${action === 'set' ? 'Setting' : 'Resetting'} muted role failed!`;
+		const roleUserWarn = `${action === 'set' ? 'Setting' : 'Resetting'} muted role failed!`;
 
 		// Emit warn event for debugging
 		msg.client.emit('warn', roleWarn);
 
 		// Inform the user the command failed
-		return sendSimpleEmbeddedError(msg, roleUserWarn);
+		return msg.sendSimpleError(roleUserWarn);
 	}
 
-	private sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
-		modLogMessage(msg, embed);
+	private async sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
+		await modLogMessage(msg, embed);
 
 		// Send the success response
 		return msg.sendEmbed(embed);
 	}
+
 }

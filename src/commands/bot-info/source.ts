@@ -2,8 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { KlasaClient, CommandStore, KlasaMessage, Command } from 'klasa';
-import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
+import { CommandStore, KlasaMessage, Command } from 'klasa';
 import { Permissions } from 'discord.js';
 
 /**
@@ -15,8 +14,8 @@ import { Permissions } from 'discord.js';
  */
 export default class SourceCommand extends Command {
 
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Returns a link to my source code!',
 			guarded: true,
 			name: 'source',
@@ -32,6 +31,7 @@ export default class SourceCommand extends Command {
 	 * @memberof SourceCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		return sendSimpleEmbeddedMessage(msg, '<https://github.com/Spudnik-Group/Spudnik>');
+		return msg.sendSimpleEmbed('<https://github.com/Spudnik-Group/Spudnik>');
 	}
+
 }

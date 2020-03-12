@@ -4,9 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
+import { getEmbedColor } from '@lib/helpers';
 import axios from 'axios';
-import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
 /**
  * Returns details for an NPM package.
@@ -16,14 +16,15 @@ import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'kla
  * @extends {Command}
  */
 export default class NPMCommand extends Command {
+
 	/**
 	 * Creates an instance of NPMCommand.
 	 *
 	 * @param {CommandoClient} client
 	 * @memberof NPMCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['npmpackage', 'npmpkg', 'nodepackagemanager'],
 			description: 'Returns details for an NPM package.',
 			extendedHelp: stripIndents`
@@ -85,11 +86,12 @@ export default class NPMCommand extends Command {
 					❯ **Dependencies:** ${deps && deps.length ? deps.join(', ') : 'None'}
 				`);
 
-			return msg.sendEmbed(npmEmbed)
+			return msg.sendEmbed(npmEmbed);
 		} catch (err) {
 			msg.client.emit('warn', `Error in command dev:npm: ${err}`);
 
-			return sendSimpleEmbeddedError(msg, 'Could not fetch that package, are you sure it exists?', 3000);
+			return msg.sendSimpleError('Could not fetch that package, are you sure it exists?', 3000);
 		}
 	}
+
 }

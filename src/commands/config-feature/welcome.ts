@@ -4,8 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { Channel, MessageEmbed } from 'discord.js';
-import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError, resolveChannel, sendSimpleEmbeddedMessage, basicFeatureContent } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { getEmbedColor, modLogMessage, resolveChannel, basicFeatureContent } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 /**
  * Manage notifications when someone joins the guild.
@@ -15,8 +16,9 @@ import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'kla
  * @extends {Command}
  */
 export default class WelcomeCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Used to configure the message to be sent when a new user join your guild.',
 			extendedHelp: stripIndents`
 				**Subcommand Usage**:
@@ -53,7 +55,7 @@ export default class WelcomeCommand extends Command {
 		}).setTimestamp();
 
 		try {
-			await msg.guild.settings.update('welcome.message', content, msg.guild);
+			await msg.guild.settings.update(GuildSettings.Welcome.Message, content);
 
 			// Set up embed message
 			welcomeEmbed.setDescription(stripIndents`
@@ -65,7 +67,7 @@ export default class WelcomeCommand extends Command {
 
 			return this.sendSuccess(msg, welcomeEmbed);
 		} catch (err) {
-			return this.catchError(msg, { subCommand: 'message', content: content }, err);
+			return this.catchError(msg, { subCommand: 'message', content }, err);
 		}
 	}
 
@@ -85,27 +87,27 @@ export default class WelcomeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const welcomeChannel = await msg.guild.settings.get('welcome.channel');
+		const welcomeChannel = await msg.guild.settings.get(GuildSettings.Welcome.Channel);
 		const channelID = msg.guild.channels.get(resolveChannel(content)).id;
 
 		if (welcomeChannel && welcomeChannel === channelID) {
-			return sendSimpleEmbeddedMessage(msg, `Welcome channel already set to <#${channelID}>!`, 3000);
-		} else {
-			try {
-				await msg.guild.settings.update('welcome.channel', channelID, msg.guild);
+			return msg.sendSimpleEmbed(`Welcome channel already set to <#${channelID}>!`, 3000);
+		}
+		try {
+			await msg.guild.settings.update(GuildSettings.Welcome.Channel, channelID);
 
-				// Set up embed message
-				welcomeEmbed.setDescription(stripIndents`
+			// Set up embed message
+			welcomeEmbed.setDescription(stripIndents`
 							**Member:** ${msg.author.tag} (${msg.author.id})
 							**Action:** Welcome Channel set to <#${channelID}>
 						`);
-				welcomeEmbed.setFooter('Use the `welcome status` command to see the details of this feature');
+			welcomeEmbed.setFooter('Use the `welcome status` command to see the details of this feature');
 
-				return this.sendSuccess(msg, welcomeEmbed);
-			} catch (err) {
-				return this.catchError(msg, { subCommand: 'channel', content: content }, err);
-			}
+			return this.sendSuccess(msg, welcomeEmbed);
+		} catch (err) {
+			return this.catchError(msg, { subCommand: 'channel', content }, err);
 		}
+
 	}
 
 	/**
@@ -123,30 +125,30 @@ export default class WelcomeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const welcomeChannel = await msg.guild.settings.get('welcome.channel');
-		const welcomeEnabled = await msg.guild.settings.get('welcome.enabled');
+		const welcomeChannel = await msg.guild.settings.get(GuildSettings.Welcome.Channel);
+		const welcomeEnabled = await msg.guild.settings.get(GuildSettings.Welcome.Enabled);
 
 		if (welcomeChannel) {
 			if (welcomeEnabled) {
-				return sendSimpleEmbeddedMessage(msg, 'Welcome message already enabled!', 3000);
-			} else {
-				try {
-					await msg.guild.settings.update('welcome.enabled', true, msg.guild);
+				return msg.sendSimpleEmbed('Welcome message already enabled!', 3000);
+			}
+			try {
+				await msg.guild.settings.update(GuildSettings.Welcome.Enabled, true);
 
-					// Set up embed message
-					welcomeEmbed.setDescription(stripIndents`
+				// Set up embed message
+				welcomeEmbed.setDescription(stripIndents`
 						**Member:** ${msg.author.tag} (${msg.author.id})
 						**Action:** Welcome messages set to: _Enabled_
 					`);
-					welcomeEmbed.setFooter('Use the `welcome status` command to see the details of this feature');
+				welcomeEmbed.setFooter('Use the `welcome status` command to see the details of this feature');
 
-					return this.sendSuccess(msg, welcomeEmbed);
-				} catch (err) {
-					return this.catchError(msg, { subCommand: 'enable' }, err);
-				}
+				return this.sendSuccess(msg, welcomeEmbed);
+			} catch (err) {
+				return this.catchError(msg, { subCommand: 'enable' }, err);
 			}
+
 		} else {
-			return sendSimpleEmbeddedError(msg, 'Please set the channel for the welcome message before enabling the feature. See `help welcome` for info.', 3000);
+			return msg.sendSimpleEmbed('Please set the channel for the welcome message before enabling the feature. See `help welcome` for info.', 3000);
 		}
 	}
 
@@ -165,11 +167,11 @@ export default class WelcomeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const welcomeEnabled = await msg.guild.settings.get('welcome.enabled');
+		const welcomeEnabled = await msg.guild.settings.get(GuildSettings.Welcome.Enabled);
 
 		if (welcomeEnabled) {
 			try {
-				await msg.guild.settings.update('welcome.enabled', false, msg.guild);
+				await msg.guild.settings.update(GuildSettings.Welcome.Enabled, false);
 
 				// Set up embed message
 				welcomeEmbed.setDescription(stripIndents`
@@ -183,7 +185,7 @@ export default class WelcomeCommand extends Command {
 				return this.catchError(msg, { subCommand: 'disable' }, err);
 			}
 		} else {
-			return sendSimpleEmbeddedMessage(msg, 'Welcome message already disabled!', 3000);
+			return msg.sendSimpleEmbed('Welcome message already disabled!', 3000);
 		}
 	}
 
@@ -202,9 +204,9 @@ export default class WelcomeCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		}).setTimestamp();
-		const welcomeChannel = await msg.guild.settings.get('welcome.channel');
-		const welcomeMessage = await msg.guild.settings.get('welcome.message');
-		const welcomeEnabled = await msg.guild.settings.get('welcome.enabled');
+		const welcomeChannel = await msg.guild.settings.get(GuildSettings.Welcome.Channel);
+		const welcomeMessage = await msg.guild.settings.get(GuildSettings.Welcome.Message);
+		const welcomeEnabled = await msg.guild.settings.get(GuildSettings.Welcome.Enabled);
 
 		// Set up embed message
 		welcomeEmbed.setDescription(stripIndents`
@@ -226,7 +228,7 @@ export default class WelcomeCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof WelcomeCommand
 	 */
-	private catchError(msg: KlasaMessage, args: { subCommand: string, content?: Channel | string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
+	private catchError(msg: KlasaMessage, args: { subCommand: string; content?: Channel | string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Build warning message
 		let welcomeWarn = stripIndents`
 		Error occurred in \`welcome\` command!
@@ -265,13 +267,14 @@ export default class WelcomeCommand extends Command {
 		msg.client.emit('warn', welcomeWarn);
 
 		// Inform the user the command failed
-		return sendSimpleEmbeddedError(msg, welcomeUserWarn);
+		return msg.sendSimpleError(welcomeUserWarn);
 	}
 
-	private sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
-		modLogMessage(msg, embed);
-		
+	private async sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
+		await modLogMessage(msg, embed);
+
 		// Send the success response
 		return msg.sendEmbed(embed);
 	}
+
 }

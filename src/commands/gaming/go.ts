@@ -4,13 +4,11 @@
 
 import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
-import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
-import { SteamGames } from '../../lib/constants';
+import { getEmbedColor } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { SteamGames } from '@lib/constants';
 
-const steamGameNames = Object.keys(SteamGames).map(item => {
-	return `* ${item}`
-}).join('\n');
+const steamGameNames = Object.keys(SteamGames).map(item => `* ${item}`).join('\n');
 
 /**
  * Displays a link to launch a steam game.
@@ -20,8 +18,9 @@ const steamGameNames = Object.keys(SteamGames).map(item => {
  * @extends {Command}
  */
 export default class GoCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['play-game', 'lets-play', 'go-play'],
 			description: 'Displays a link to launch a steam game.',
 			extendedHelp: stripIndents`
@@ -41,8 +40,8 @@ export default class GoCommand extends Command {
 	 * @memberof GoCommand
 	 */
 	public async run(msg: KlasaMessage, [game]): Promise<KlasaMessage | KlasaMessage[]> {
-		if (Object.keys(SteamGames).indexOf(game.toUpperCase()) === -1) {
-			return sendSimpleEmbeddedError(msg, `Sorry, only a few games are supported at this time: \n ${steamGameNames}`, 5000);
+		if (!Object.keys(SteamGames).includes(game.toUpperCase())) {
+			return msg.sendSimpleError(`Sorry, only a few games are supported at this time: \n ${steamGameNames}`, 5000);
 		}
 		const gameID = SteamGames[game.toUpperCase()];
 
@@ -54,4 +53,5 @@ export default class GoCommand extends Command {
 			.setDescription(`**Launch game:** steam://run/${gameID}`)
 			.setImage(`http://cdn.edgecast.steamstatic.com/steam/apps/${gameID}/header.jpg`));
 	}
+
 }

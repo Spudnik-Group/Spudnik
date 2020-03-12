@@ -1,5 +1,5 @@
 {
-    "exec": "tsc && node ./dist/launch.js",
+    "exec": "tsc && node ./dist/src/launch.js",
     "ignore": ["**/*.test.ts", "**/*.spec.ts", ".git", "./node_modules", "./dist", "./docs"],
     "watch": ["./src/"],
 	"ext": "ts",

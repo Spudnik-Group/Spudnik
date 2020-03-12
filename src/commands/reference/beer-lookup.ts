@@ -4,11 +4,11 @@
 
 import { MessageEmbed } from 'discord.js';
 import axios from 'axios';
-import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
-import { SpudConfig } from '../../lib/config';
+import { getEmbedColor } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { SpudConfig } from '@lib/config';
 
-const breweryDbApiKey: string = SpudConfig.breweryDbApiKey;
+const { breweryDbApiKey } = SpudConfig;
 
 /**
  * Post information about an alcoholic brew.
@@ -18,8 +18,9 @@ const breweryDbApiKey: string = SpudConfig.breweryDbApiKey;
  * @extends {Command}
  */
 export default class BrewCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Returns information about a brewery or brew. Uses the BreweryDB API.',
 			name: 'brew',
 			usage: '<query:...string>'
@@ -52,7 +53,7 @@ export default class BrewCommand extends Command {
 		});
 
 		try {
-			const { data: response } = await axios(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(query)}&key=${breweryDbApiKey}`)
+			const { data: response } = await axios(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(query)}&key=${breweryDbApiKey}`);
 
 			if (response.data) {
 				const result = response.data[0];
@@ -119,7 +120,7 @@ export default class BrewCommand extends Command {
 					if (thumbnail !== '') {
 						brewEmbed.thumbnail = {
 							url: thumbnail
-						}
+						};
 					}
 
 					brewEmbed.setDescription(`\n${result.description}\n\n`);
@@ -132,10 +133,11 @@ export default class BrewCommand extends Command {
 		} catch (err) {
 			msg.client.emit('warn', `Error in command ref:brew: ${err}`);
 
-			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+			return msg.sendSimpleError('There was an error with the request. Try again?', 3000);
 		}
 
 		// Send the success response
 		return msg.sendEmbed(brewEmbed);
 	}
+
 }

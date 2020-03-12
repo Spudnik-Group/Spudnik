@@ -2,32 +2,31 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-// tslint:disable
+// Tslint:disable
 export const SpudConfig = {
-	'token': process.env.spud_token,
-	'port': process.env.PORT || 1337,
-	'owner': process.env.spud_owner,
-	'spudCoreDB': process.env.SPUD_CORE_DB,
-	'spudCoreDBConnection': process.env.SPUD_CORE_DB_CONNECTION,
-	'spudStatsDB': process.env.SPUD_STATS_DB,
-	'spudStatsDBConnection': process.env.SPUD_STATS_DB_CONNECTION,
-	'botListGuilds': process.env.spud_botlist_guilds ? process.env.spud_botlist_guilds.split(',') : [],
-	'botListUpdateInterval': process.env.spud_botlist_update_interval ? process.env.spud_botlist_update_interval : '0 10,22 * * *',
-	'statusUpdateInterval': process.env.spud_status_update_interval ? process.env.spud_status_update_interval : '* * * * *',
-	'debug': process.env.spud_debug ? !!process.env.spud_debug : false,
-	'rollbarApiKey': process.env.spud_rollbarapi || '',
-	'issueLogChannel': process.env.spud_issuelog || '',
+	token: process.env.SPUD_TOKEN,
+	port: process.env.PORT || 1337,
+	owners: process.env.SPUD_OWNERS ? process.env.SPUD_OWNERS.split(',') : [],
+	spudCoreDB: process.env.SPUD_CORE_DB,
+	spudCoreDBConnection: process.env.SPUD_CORE_DB_CONNECTION,
+	spudStatsDB: process.env.SPUD_STATS_DB,
+	spudStatsDBConnection: process.env.SPUD_STATS_DB_CONNECTION,
+	botListGuilds: process.env.SPUD_BOTLIST_GUILDS ? process.env.SPUD_BOTLIST_GUILDS.split(',') : [],
+	botListUpdateInterval: process.env.SPUD_BOTLIST_UPDATE_INTERVAL || '0 10,22 * * *',
+	statusUpdateInterval: process.env.SPUD_STATUS_UPDATE_INTERVAL || '* * * * *',
+	debug: process.env.SPUD_DEBUG ? Boolean(process.env.SPUD_DEBUG) : false,
+	rollbarApiKey: process.env.SPUD_ROLLBARAPI || '',
+	issueLogChannel: process.env.SPUD_ISSUELOG || '',
 	// Command-Specific API Keys
-	'wolframApiKey': process.env.spud_wolframapi || '',
-	'tmdbAPIkey': process.env.spud_moviedbapi || '',
-	'dictionaryApiKey': process.env.spud_dictionaryapi || '',
-	'breweryDbApiKey': process.env.spud_brewdbapi || '',
-	'trackerApiKey': process.env.spud_trackerapi || '',
-	'stackoverflowApiKey': process.env.spud_stackoverflowapi || '',
+	wolframApiKey: process.env.SPUD_WOLFRAMAPI || '',
+	tmdbAPIkey: process.env.SPUD_MOVIEDBAPI || '',
+	dictionaryApiKey: process.env.SPUD_DICTIONARYAPI || '',
+	breweryDbApiKey: process.env.SPUD_BREWDBAPI || '',
+	stackoverflowApiKey: process.env.SPUD_STACKOVERFLOWAPI || '',
 	// Bot List API Keys
-	'bfdApiKey': process.env.spud_bfdapi || '',
-	'bodApiKey': process.env.spud_bodapi || '',
-	'botsggApiKey': process.env.spud_botsggapi || '',
-	'dbApiKey': process.env.spud_dbapi || '',
-	'dblApiKey': process.env.spud_dblapi || ''
-}
+	bfdApiKey: process.env.SPUD_BFDAPI || '',
+	bodApiKey: process.env.SPUD_BODAPI || '',
+	botsggApiKey: process.env.SPUD_BOTSGGAPI || '',
+	dbApiKey: process.env.SPUD_DBAPI || '',
+	dblApiKey: process.env.SPUD_DBLAPI || ''
+};

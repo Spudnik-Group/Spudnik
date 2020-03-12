@@ -4,8 +4,7 @@
 
 import { stripIndents } from 'common-tags';
 import axios from 'axios';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Generates a Strawpoll with the provided options.
@@ -15,8 +14,9 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class StrawpollCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['poll'],
 			description: 'Generates a Strawpoll with the provided options.',
 			name: 'strawpoll',
@@ -37,17 +37,18 @@ export default class StrawpollCommand extends Command {
 			const { data: res } = await axios.post('https://www.strawpoll.me/api/v2/polls', {
 				captcha: true,
 				options: options.slice(0, 10),
-				title: title
+				title
 			});
 
-			return sendSimpleEmbeddedMessage(msg, stripIndents`
+			return msg.sendSimpleEmbed(stripIndents`
 				${res.title}
 				http://www.strawpoll.me/${res.id}
 			`);
 		} catch (err) {
 			msg.client.emit('warn', `Error in command misc:strawpoll: ${err}`);
 
-			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+			return msg.sendSimpleError('There was an error with the request. Try again?', 3000);
 		}
 	}
+
 }

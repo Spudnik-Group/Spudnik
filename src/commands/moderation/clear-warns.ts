@@ -4,8 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { GuildMember, MessageEmbed } from 'discord.js';
-import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { getEmbedColor } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 /**
  * Clears warns for a member of the guild.
@@ -15,8 +16,9 @@ import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'kla
  * @extends {Command}
  */
 export default class ClearWarnsCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: [
 				'clear-warn',
 				'warn-clear'
@@ -46,7 +48,7 @@ export default class ClearWarnsCommand extends Command {
 			description: ''
 		}).setTimestamp();
 		let previousPoints = 0;
-		const guildWarnings = await msg.guild.settings.get('warnings');
+		const guildWarnings = await msg.guild.settings.get(GuildSettings.Warnings);
 
 		if (guildWarnings.length) {
 			// Warnings present for current guild
@@ -57,7 +59,7 @@ export default class ClearWarnsCommand extends Command {
 					if (warning.id === member.id) {
 						memberIndex = index;
 
-						return true
+						return true;
 					}
 
 					return false;
@@ -67,7 +69,7 @@ export default class ClearWarnsCommand extends Command {
 					// Previous warnings present for supplied member
 					previousPoints = currentWarnings.points;
 
-					msg.guild.settings.update('warnings', currentWarnings, null, { arrayPosition: memberIndex });
+					await msg.guild.settings.update(GuildSettings.Warnings, currentWarnings, { arrayAction: 'overwrite' });
 					// Set up embed message
 					warnEmbed.setDescription(stripIndents`
 						**Moderator:** ${msg.author.tag} (${msg.author.id})
@@ -79,20 +81,20 @@ export default class ClearWarnsCommand extends Command {
 
 					// Send the success response
 					return msg.sendEmbed(warnEmbed);
-				} else {
-					// No previous warnings present
-					return sendSimpleEmbeddedError(msg, 'No warnings present for the supplied member.');
 				}
+				// No previous warnings present
+				return msg.sendSimpleError('No warnings present for the supplied member.');
+
 			} catch (err) {
-				this.catchError(msg, { member: member, reason: reason }, err);
+				return this.catchError(msg, { member, reason }, err);
 			}
 		} else {
 			// No warnings for current guild
-			return sendSimpleEmbeddedError(msg, 'No warnings for current guild', 3000);
+			return msg.sendSimpleError('No warnings for current guild', 3000);
 		}
 	}
 
-	private catchError(msg: KlasaMessage, args: { member: GuildMember, reason: string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
+	private catchError(msg: KlasaMessage, args: { member: GuildMember; reason: string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Emit warn event for debugging
 		msg.client.emit('warn', stripIndents`
 		Error occurred in \`clear-warns\` command!
@@ -103,6 +105,7 @@ export default class ClearWarnsCommand extends Command {
 		**Error Message:** ${err}`);
 
 		// Inform the user the command failed
-		return sendSimpleEmbeddedError(msg, `Clearing warnings for ${args.member} failed!`, 3000);
+		return msg.sendSimpleError(`Clearing warnings for ${args.member} failed!`, 3000);
 	}
+
 }

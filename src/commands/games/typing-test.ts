@@ -3,10 +3,10 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { list } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { list } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { data as sentences } from '../../extras/typing-test.json';
 
-const sentences = require('../../extras/typing-test');
 const difficulties = ['easy', 'medium', 'hard', 'extreme', 'impossible'];
 const times: any = {
 	easy: 25000,
@@ -14,7 +14,7 @@ const times: any = {
 	hard: 15000,
 	impossible: 5000,
 	medium: 20000
-}
+};
 
 /**
  * Starts a game of Typing Test.
@@ -24,14 +24,15 @@ const times: any = {
  * @extends {Command}
  */
 export default class TypingTestCommand extends Command {
+
 	/**
 	 * Creates an instance of TypingTestCommand.
 	 *
 	 * @param {CommandoClient} client
 	 * @memberof TypingTestCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['typing-game'],
 			description: 'See how fast you can type a sentence in a given time limit.',
 			extendedHelp: stripIndents`
@@ -44,8 +45,8 @@ export default class TypingTestCommand extends Command {
 
 		this.createCustomResolver('difficulty', (arg: string) => {
 			if (difficulties.includes(arg.toLowerCase())) return arg;
-			throw `Please provide a valid difficulty level. Options are: ${list(difficulties, 'or')}.`;
-		})
+			throw new Error(`Please provide a valid difficulty level. Options are: ${list(difficulties, 'or')}.`);
+		});
 	}
 
 	/**
@@ -65,10 +66,11 @@ export default class TypingTestCommand extends Command {
 		const now = Date.now();
 		const msgs: any = await msg.channel.awaitMessages((res: any) => res.author.id === msg.author.id, {
 			max: 1,
-			time: time
+			time
 		});
-		if (!msgs.size || msgs.first().content !== sentence) { return msg.sendMessage('Sorry! You lose!', { reply: msg.author }); }
+		if (!msgs.size || msgs.first().content !== sentence) return msg.sendMessage('Sorry! You lose!', { reply: msg.author });
 
 		return msg.sendMessage(`Nice job! 10/10! You deserve some cake! (Took ${(Date.now() - now) / 1000} seconds)`, { reply: msg.author });
 	}
+
 }

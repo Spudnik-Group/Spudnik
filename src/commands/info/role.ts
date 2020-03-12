@@ -2,8 +2,9 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Command, KlasaClient, CommandStore, Timestamp, KlasaMessage } from 'klasa';
+import { Command, CommandStore, Timestamp, KlasaMessage } from 'klasa';
 import { MessageEmbed } from 'discord.js';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 const perms = {
 	ADD_REACTIONS: 'Add Reactions',
@@ -37,10 +38,11 @@ const perms = {
 };
 
 export default class RoleComand extends Command {
+
 	private timestamp: Timestamp;
 
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Get information on a role with an id or a mention.',
 			name: 'role-info',
 			usage: '<Role:role>'
@@ -49,8 +51,9 @@ export default class RoleComand extends Command {
 	}
 
 	public async run(msg: KlasaMessage, [role]): Promise<KlasaMessage | KlasaMessage[]> {
-		const allPermissions = Object.entries(role.permissions.serialize()).filter(perm => perm[1]).map(([perm]) => perms[perm]).join(', ');
-		const defaultRole = await msg.guild.settings.get('roles.default');
+		const allPermissions = Object.entries(role.permissions.serialize()).filter(perm => perm[1]).map(([perm]) => perms[perm])
+			.join(', ');
+		const defaultRole = msg.guild.settings.get(GuildSettings.Roles.Default);
 
 		return msg.sendEmbed(new MessageEmbed()
 			.setColor(role.hexColor || 0xFFFFFF)
@@ -63,4 +66,5 @@ export default class RoleComand extends Command {
 			.addField('❯ Mentionable', role.mentionable ? 'Yes' : 'No', true)
 			.addField('❯ Permissions', allPermissions || 'None'));
 	}
-};
+
+}

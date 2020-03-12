@@ -2,8 +2,8 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { getEmbedColor, getRandomInt, sendSimpleEmbeddedError } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { getEmbedColor, getRandomInt } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed } from 'discord.js';
 
 /**
@@ -14,8 +14,9 @@ import { MessageEmbed } from 'discord.js';
  * @extends {Command}
  */
 export default class ChooseCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Have the bot choose something for you.',
 			name: 'choose',
 			usage: '<choice:string> <choice:string> [...]',
@@ -34,7 +35,7 @@ export default class ChooseCommand extends Command {
 	public async run(msg: KlasaMessage, [...choices]): Promise<KlasaMessage | KlasaMessage[]> {
 		const options: string[] = choices;
 		if (options.length < 2) {
-			return sendSimpleEmbeddedError(msg, 'I can\'t choose for you if you don\'t give me more options!', 3000);
+			return msg.sendSimpleError(`I can't choose for you if you don't give me more options!`, 3000);
 		}
 
 		return msg.sendEmbed(new MessageEmbed({
@@ -47,4 +48,5 @@ export default class ChooseCommand extends Command {
 			title: ':thinking:'
 		}), '', { reply: msg.author });
 	}
+
 }

@@ -4,8 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, Permissions } from 'discord.js';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, getEmbedColor, modLogMessage } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { getEmbedColor, modLogMessage } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 /**
  * Enable or disable the adblock feature.
@@ -15,8 +16,9 @@ import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'kla
  * @extends {Command}
  */
 export default class AdblockCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Enable or disable the adblock feature.',
 			name: 'adblock',
 			permissionLevel: 1, // MANAGE_MESSAGES
@@ -27,7 +29,7 @@ export default class AdblockCommand extends Command {
 	}
 
 	public async off(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const adblockEnabled = await msg.guild.settings.get('adblockEnabled');
+		const adblockEnabled = msg.guild.settings.get(GuildSettings.AdblockEnabled);
 		const adblockEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				name: '🛑 Adblock'
@@ -38,7 +40,7 @@ export default class AdblockCommand extends Command {
 
 		if (adblockEnabled) {
 			try {
-				await msg.guild.settings.update('adblockEnabled', false, msg.guild);
+				await msg.guild.settings.update(GuildSettings.AdblockEnabled, false);
 
 				// Set up embed message
 				adblockEmbed.setDescription(stripIndents`
@@ -48,15 +50,15 @@ export default class AdblockCommand extends Command {
 
 				return this.sendSuccess(msg, adblockEmbed);
 			} catch (err) {
-				return this.catchError(msg, { subCommand: 'disable' }, err)
+				return this.catchError(msg, { subCommand: 'disable' }, err);
 			}
 		} else {
-			return sendSimpleEmbeddedMessage(msg, 'Adblock feature already disabled!', 3000);
+			return msg.sendSimpleEmbed('Adblock feature already disabled!', 3000);
 		}
 	}
-	
+
 	public async on(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const adblockEnabled = await msg.guild.settings.get('adblockEnabled');
+		const adblockEnabled = await msg.guild.settings.get(GuildSettings.AdblockEnabled);
 		const adblockEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				name: '🛑 Adblock'
@@ -66,22 +68,22 @@ export default class AdblockCommand extends Command {
 		}).setTimestamp();
 
 		if (adblockEnabled) {
-			return sendSimpleEmbeddedMessage(msg, 'Adblock feature already enabled!', 3000);
-		} else {
-			try {
-				await msg.guild.settings.update('adblockEnabled', true, msg.guild);
+			return msg.sendSimpleEmbed('Adblock feature already enabled!', 3000);
+		}
+		try {
+			await msg.guild.settings.update(GuildSettings.AdblockEnabled, true);
 
-				// Set up embed message
-				adblockEmbed.setDescription(stripIndents`
+			// Set up embed message
+			adblockEmbed.setDescription(stripIndents`
 						**Member:** ${msg.author.tag} (${msg.author.id})
 						**Action:** Adblock _Enabled_
 					`);
 
-				return this.sendSuccess(msg, adblockEmbed);
-			} catch (err) {
-				return this.catchError(msg, { subCommand: 'enable' }, err)
-			}
+			return this.sendSuccess(msg, adblockEmbed);
+		} catch (err) {
+			return this.catchError(msg, { subCommand: 'enable' }, err);
 		}
+
 	}
 
 	private catchError(msg: KlasaMessage, args: { subCommand: string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
@@ -97,16 +99,17 @@ export default class AdblockCommand extends Command {
 
 		// Inform the user the command failed
 		if (args.subCommand.toLowerCase() === 'enable') {
-			return sendSimpleEmbeddedError(msg, 'Enabling adblock feature failed!');
-		} else {
-			return sendSimpleEmbeddedError(msg, 'Disabling adblock feature failed!');
+			return msg.sendSimpleError('Enabling adblock feature failed!');
 		}
+		return msg.sendSimpleError('Disabling adblock feature failed!');
+
 	}
 
-	private sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
-		modLogMessage(msg, embed);
-		
+	private async sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
+		await modLogMessage(msg, embed);
+
 		// Send the success response
 		return msg.sendEmbed(embed);
 	}
+
 }

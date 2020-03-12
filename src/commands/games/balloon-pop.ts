@@ -2,8 +2,8 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { getRandomInt, verify } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { getRandomInt, verify } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Starts a game of Balloon Pop.
@@ -13,6 +13,7 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class BalloonPopCommand extends Command {
+
 	private playing = new Set();
 
 	/**
@@ -21,8 +22,8 @@ export default class BalloonPopCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof BalloonPopCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Don\'t let yourself be the last one to pump the balloon before it pops!',
 			extendedHelp: 'syntax: \`!balloon-pop (@usermention)\`',
 			name: 'balloon-pop',
@@ -40,8 +41,8 @@ export default class BalloonPopCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage, [opp]): Promise<KlasaMessage | KlasaMessage[]> {
 		const opponent = opp ? opp : this.client.user;
-		if (opponent.id === msg.author.id) { return msg.sendMessage('You may not play against yourself.', { reply: msg.author }); }
-		if (this.playing.has(msg.channel.id)) { return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author }); }
+		if (opponent.id === msg.author.id) return msg.sendMessage('You may not play against yourself.', { reply: msg.author });
+		if (this.playing.has(msg.channel.id)) return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author });
 		this.playing.add(msg.channel.id);
 		try {
 			if (!opponent.bot) {
@@ -49,7 +50,7 @@ export default class BalloonPopCommand extends Command {
 				const verification = await verify(msg.channel, opponent);
 				if (!verification) {
 					this.playing.delete(msg.channel.id);
-					
+
 					return msg.sendMessage('Looks like they declined...');
 				}
 			}
@@ -87,11 +88,12 @@ export default class BalloonPopCommand extends Command {
 				}
 			}
 			this.playing.delete(msg.channel.id);
-			
+
 			return msg.sendMessage(`And the winner is... ${winner}! Great job!`);
 		} catch (err) {
 			this.playing.delete(msg.channel.id);
 			throw err;
 		}
 	}
+
 }

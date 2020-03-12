@@ -2,8 +2,8 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { sendSimpleEmbeddedMessageWithAuthor, Convert } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Convert } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Converts Decimal to Binary
@@ -13,8 +13,9 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class Dec2BinCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Converts hexadecimal to decimal',
 			name: 'dec2bin',
 			usage: '<numberToConvert:int>'
@@ -29,6 +30,7 @@ export default class Dec2BinCommand extends Command {
 	 * @memberof Dec2BinCommand
 	 */
 	public async run(msg: KlasaMessage, [numberToConvert]): Promise<KlasaMessage | KlasaMessage[]> {
-		return sendSimpleEmbeddedMessageWithAuthor(msg, `${numberToConvert} = ${Convert.dec2bin(numberToConvert)}`, { name: 'Decimal to Binary Conversion:' });
+		return msg.sendSimpleEmbedWithAuthor(`${numberToConvert} = ${Convert.dec2bin(numberToConvert)}`, { name: 'Decimal to Binary Conversion:' });
 	}
+
 }

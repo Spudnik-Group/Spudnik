@@ -4,8 +4,8 @@
 
 import { MessageEmbed } from 'discord.js';
 import axios from 'axios';
-import { getEmbedColor, sendSimpleEmbeddedError } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { getEmbedColor } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Post information about a cocktail.
@@ -15,8 +15,9 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class CocktailCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Returns information about a cocktail. Uses the CocktailDB API.',
 			name: 'cocktail',
 			usage: '<query:...string>'
@@ -45,7 +46,7 @@ export default class CocktailCommand extends Command {
 		});
 
 		try {
-			const { data: response } = await axios(`http://www.thecocktaildb.com/api/json/v1/1/search.php?s=${encodeURIComponent(query)}`)
+			const { data: response } = await axios(`http://www.thecocktaildb.com/api/json/v1/1/search.php?s=${encodeURIComponent(query)}`);
 
 			if (typeof response !== 'undefined' && response.drinks !== null) {
 				const result = response.drinks[0];
@@ -108,15 +109,12 @@ export default class CocktailCommand extends Command {
 		} catch (err) {
 			msg.client.emit('warn', `Error in command ref:cocktail: ${err}`);
 
-			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
-		};
+			return msg.sendSimpleError('There was an error with the request. Try again?', 3000);
+		}
 	}
 
 	private findSimilarProps(obj: any, propName: string): string[] {
-		return Object.keys(obj).filter(k => {
-			return k.indexOf(propName) === 0;
-		}).map(key => {
-			return obj[key]
-		});
+		return Object.keys(obj).filter(k => k.startsWith(propName)).map(key => obj[key]);
 	}
+
 }

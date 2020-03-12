@@ -2,10 +2,9 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { getRandomInt } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
-
-const fishes = require('../../extras/fish');
+import { getRandomInt } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
+import * as fishes from '../../extras/fish.json';
 
 /**
  * Starts a game of Slots.
@@ -15,14 +14,15 @@ const fishes = require('../../extras/fish');
  * @extends {Command}
  */
 export default class SlotsCommand extends Command {
+
 	/**
 	 * Creates an instance of SlotsCommand.
 	 *
 	 * @param {CommandoClient} client
 	 * @memberof SlotsCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['fish', 'fishing'],
 			description: 'Go fishing.',
 			name: 'fishy'
@@ -55,4 +55,5 @@ export default class SlotsCommand extends Command {
 
 		return msg.sendMessage(`You caught a ${fish.symbol}. I bet it'd sell for around $${worth}.`, { reply: msg.author });
 	}
+
 }

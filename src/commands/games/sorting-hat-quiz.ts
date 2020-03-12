@@ -3,11 +3,11 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { shuffle } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { shuffle } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { questions, houses, descriptions } from '../../extras/sorting-hat-quiz.json';
 
 const choices = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'];
-const { questions, houses, descriptions } = require('../../extras/sorting-hat-quiz');
 
 /**
  * Starts a game of Sorting Hats.
@@ -17,6 +17,7 @@ const { questions, houses, descriptions } = require('../../extras/sorting-hat-qu
  * @extends {Command}
  */
 export default class SortingHatQuizCommand extends Command {
+
 	private playing = new Set();
 
 	/**
@@ -25,8 +26,8 @@ export default class SortingHatQuizCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof SortingHatQuizCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['sorting-hat', 'pottermore', 'hogwarts'],
 			description: 'Take a quiz to determine your Hogwarts house.',
 			name: 'sorting-hat-quiz'
@@ -41,7 +42,7 @@ export default class SortingHatQuizCommand extends Command {
 	 * @memberof SortingHatQuizCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		if (this.playing.has(msg.channel.id)) { return msg.sendMessage('Only one quiz may be occurring per channel.', { reply: msg.author }); }
+		if (this.playing.has(msg.channel.id)) return msg.sendMessage('Only one quiz may be occurring per channel.', { reply: msg.author });
 		this.playing.add(msg.channel.id);
 		try {
 			const points: any = {
@@ -49,7 +50,7 @@ export default class SortingHatQuizCommand extends Command {
 				h: 0,
 				r: 0,
 				s: 0
-			}
+			};
 
 			const blacklist: any[] = [];
 			const questionNums = ['2', '3', '4', '5', '6', '7'];
@@ -63,7 +64,7 @@ export default class SortingHatQuizCommand extends Command {
 				} else if (turn === 8) {
 					question = questions.last[Math.floor(Math.random() * questions.last.length)];
 				} else {
-					const possible = questionNums.filter((num) => !blacklist.includes(num));
+					const possible = questionNums.filter(num => !blacklist.includes(num));
 					const value = possible[Math.floor(Math.random() * possible.length)];
 					const group = questions[value];
 					blacklist.push(value);
@@ -83,11 +84,11 @@ export default class SortingHatQuizCommand extends Command {
 					time: 120000
 				});
 
-				if (!choice.size) { return msg.sendMessage('Oh no, you ran out of time! Too bad.'); }
+				if (!choice.size) return msg.sendMessage('Oh no, you ran out of time! Too bad.');
 
 				const answer = answers[choices.indexOf(choice.first().content.toUpperCase())];
 
-				for (const [house, amount] of Object.entries(answer.points)) { points[house] += amount; }
+				for (const [house, amount] of Object.entries(answer.points)) points[house] += amount;
 
 				++turn;
 			}
@@ -106,4 +107,5 @@ export default class SortingHatQuizCommand extends Command {
 			throw err;
 		}
 	}
+
 }

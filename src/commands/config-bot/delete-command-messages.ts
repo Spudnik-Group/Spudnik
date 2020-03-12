@@ -4,8 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, Permissions } from 'discord.js';
-import { sendSimpleEmbeddedError, sendSimpleEmbeddedMessage, getEmbedColor } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { getEmbedColor } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 /**
  * Enable or disable the DeleteCommandMessages feature.
@@ -15,8 +16,9 @@ import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'kla
  * @extends {Command}
  */
 export default class DeleteCommandMessagesCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: [
 				'deletecommandmessages'
 			],
@@ -31,13 +33,13 @@ export default class DeleteCommandMessagesCommand extends Command {
 
 	/**
 	 * Enable the feature
-	 * 
+	 *
 	 * @param {KlasaMessage} msg
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof DeleteCommandMessagesCommand
 	 */
 	public async on(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const deleteCommandMessagesEnabled = await msg.guild.settings.get('deleteCommandMessages');
+		const deleteCommandMessagesEnabled = await msg.guild.settings.get(GuildSettings.Commands.DeleteCommandMessages);
 		const deleteCommandMessagesEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				name: '🛑 DeleteCommandMessages'
@@ -47,22 +49,22 @@ export default class DeleteCommandMessagesCommand extends Command {
 		}).setTimestamp();
 
 		if (deleteCommandMessagesEnabled) {
-			return sendSimpleEmbeddedMessage(msg, 'DeleteCommandMessages feature already enabled!', 3000);
-		} else {
-			try {
-				await msg.guild.settings.update('deleteCommandMessages', true, msg.guild);
+			return msg.sendSimpleEmbed('DeleteCommandMessages feature already enabled!', 3000);
+		}
+		try {
+			await msg.guild.settings.update(GuildSettings.Commands.DeleteCommandMessages, true);
 
-				// Set up embed message
-				deleteCommandMessagesEmbed.setDescription(stripIndents`
+			// Set up embed message
+			deleteCommandMessagesEmbed.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
 					**Action:** DeleteCommandMessages _Enabled_
 				`);
 
-				return this.sendSuccess(msg, deleteCommandMessagesEmbed);
-			} catch (err) {
-				return this.catchError(msg, { subCommand: 'enable' }, err)
-			}
+			return this.sendSuccess(msg, deleteCommandMessagesEmbed);
+		} catch (err) {
+			return this.catchError(msg, { subCommand: 'enable' }, err);
 		}
+
 	}
 
 	/**
@@ -73,7 +75,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 	 * @memberof DeleteCommandMessagesCommand
 	 */
 	public async off(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const deleteCommandMessagesEnabled = await msg.guild.settings.get('deleteCommandMessages');
+		const deleteCommandMessagesEnabled = await msg.guild.settings.get(GuildSettings.Commands.DeleteCommandMessages);
 		const deleteCommandMessagesEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				name: '🛑 DeleteCommandMessages'
@@ -84,7 +86,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 
 		if (deleteCommandMessagesEnabled) {
 			try {
-				await msg.guild.settings.update('deleteCommandMessages', false, msg.guild);
+				await msg.guild.settings.update(GuildSettings.Commands.DeleteCommandMessages, false);
 
 				// Set up embed message
 				deleteCommandMessagesEmbed.setDescription(stripIndents`
@@ -94,10 +96,10 @@ export default class DeleteCommandMessagesCommand extends Command {
 
 				return this.sendSuccess(msg, deleteCommandMessagesEmbed);
 			} catch (err) {
-				return this.catchError(msg, { subCommand: 'disable' }, err)
+				return this.catchError(msg, { subCommand: 'disable' }, err);
 			}
 		} else {
-			return sendSimpleEmbeddedMessage(msg, 'DeleteCommandMessages feature already disabled!', 3000);
+			return msg.sendSimpleEmbed('DeleteCommandMessages feature already disabled!', 3000);
 		}
 	}
 
@@ -114,14 +116,15 @@ export default class DeleteCommandMessagesCommand extends Command {
 
 		// Inform the user the command failed
 		if (args.subCommand.toLowerCase() === 'enable') {
-			return sendSimpleEmbeddedError(msg, 'Enabling DeleteCommandMessages feature failed!');
-		} else {
-			return sendSimpleEmbeddedError(msg, 'Disabling DeleteCommandMessages feature failed!');
+			return msg.sendSimpleError('Enabling DeleteCommandMessages feature failed!');
 		}
+		return msg.sendSimpleError('Disabling DeleteCommandMessages feature failed!');
+
 	}
 
 	private sendSuccess(msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> {
 		// Send the success response
 		return msg.sendEmbed(embed);
 	}
+
 }

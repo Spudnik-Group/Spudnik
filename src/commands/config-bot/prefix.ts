@@ -4,8 +4,9 @@
 
 import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
-import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { getEmbedColor } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 /**
  * Returns or sets the command prefix.
@@ -15,8 +16,9 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class PrefixCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Returns or sets the command prefix.',
 			extendedHelp: stripIndents`
 				If no prefix is provided, the current prefix will be shown.
@@ -50,7 +52,7 @@ export default class PrefixCommand extends Command {
 
 		// Just output the prefix
 		if (!prefix) {
-			const currentPrefix = msg.guild ? msg.guild.settings.get('prefix') : this.client.options.prefix;
+			const currentPrefix = msg.guild ? msg.guild.settings.get(GuildSettings.Prefix) : this.client.options.prefix;
 
 			prefixEmbed.setDescription(stripIndents`
 				${currentPrefix ? `The command prefix is \`\`${currentPrefix}\`\`.` : 'There is no command prefix.'}
@@ -61,8 +63,8 @@ export default class PrefixCommand extends Command {
 		}
 
 		// Check the user's permission before changing anything
-		if (!msg.guild && this.client.owner !== msg.author) {
-			return sendSimpleEmbeddedError(msg, 'Only the bot owner(s) may change the global command prefix.', 3000);
+		if (!msg.guild && !this.client.owners.has(msg.author)) {
+			return msg.sendSimpleError('Only the bot owner(s) may change the global command prefix.', 3000);
 		}
 
 		// Save the prefix
@@ -72,7 +74,7 @@ export default class PrefixCommand extends Command {
 
 		if (lowercase === 'default') {
 			if (msg.guild) {
-				msg.guild.settings.reset('prefix');
+				await msg.guild.settings.reset(GuildSettings.Prefix);
 			} else {
 				this.client.options.prefix = '!';
 			}
@@ -82,7 +84,7 @@ export default class PrefixCommand extends Command {
 			response = `Reset the command prefix to the default (currently ${current}).`;
 		} else {
 			if (msg.guild) {
-				msg.guild.settings.update('prefix', newPrefix, msg.guild);
+				await msg.guild.settings.update(GuildSettings.Prefix, newPrefix);
 			} else {
 				this.client.options.prefix = newPrefix;
 			}
@@ -96,4 +98,5 @@ export default class PrefixCommand extends Command {
 
 		return msg.sendEmbed(prefixEmbed);
 	}
+
 }

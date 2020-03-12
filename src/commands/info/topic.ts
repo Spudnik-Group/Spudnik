@@ -3,8 +3,8 @@
  */
 
 import { TextChannel, MessageEmbed } from 'discord.js';
-import { getEmbedColor } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { getEmbedColor } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Posts the topic of a channel.
@@ -14,8 +14,9 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class TopicCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Returns the purpose of the chat channel.',
 			name: 'topic'
 		});
@@ -46,4 +47,5 @@ export default class TopicCommand extends Command {
 			title: channel.name
 		}));
 	}
+
 }

@@ -3,16 +3,16 @@
  */
 
 import axios from 'axios';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed } from 'discord.js';
-import { sendSimpleEmbeddedError } from '../../lib/helpers';
-import { SpudConfig } from '../../lib/config';
+import { SpudConfig } from '@lib/config';
 
-const tmdbAPIkey = SpudConfig.tmdbAPIkey;
+const { tmdbAPIkey } = SpudConfig;
 
 export default class TVShowCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['tvshows', 'tv', 'tvseries', 'tv-show'],
 			description: 'Finds a TV show on TMDB.org',
 			name: 'tvshow',
@@ -23,18 +23,18 @@ export default class TVShowCommand extends Command {
 	}
 
 	public async run(msg: KlasaMessage, [query, page = 1]): Promise<KlasaMessage | KlasaMessage[]> {
-		if (!tmdbAPIkey) return sendSimpleEmbeddedError(msg, 'No API Key has been set up. This feature is unusable', 3000);
-		
+		if (!tmdbAPIkey) return msg.sendSimpleError('No API Key has been set up. This feature is unusable', 3000);
+
 		try {
 			const { data: body } = await axios.get('https://api.themoviedb.org/3/search/tv', {
 				params: {
 					api_key: tmdbAPIkey,
-					query: query
+					query
 				}
 			});
 			const show = body.results[page - 1];
-			if (!show) sendSimpleEmbeddedError(msg, `I couldn't find a TV show with title **${query}** in page ${page}.`, 3000);
-	
+			if (!show) return msg.sendSimpleError(`I couldn't find a TV show with title **${query}** in page ${page}.`, 3000);
+
 			const embed = new MessageEmbed()
 				.setColor('RANDOM')
 				.setImage(`https://image.tmdb.org/t/p/original${show.poster_path}`)
@@ -48,12 +48,13 @@ export default class TVShowCommand extends Command {
 				.addField('Vote Average', show.vote_average, true)
 				.addField('Popularity', show.popularity, true)
 				.addField('First Air Date', show.first_air_date);
-	
+
 			return msg.sendEmbed(embed);
 		} catch (err) {
 			msg.client.emit('warn', `Error in command reference:tvshow: ${err}`);
 
-			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+			return msg.sendSimpleError('There was an error with the request. Try again?', 3000);
 		}
 	}
-};
+
+}

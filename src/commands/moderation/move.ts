@@ -3,9 +3,9 @@
  */
 
 import { GuildMember, Message, MessageEmbed, TextChannel, Permissions } from 'discord.js';
-import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '../../lib/helpers';
+import { getEmbedColor, modLogMessage } from '@lib/helpers';
 import { stripIndents } from 'common-tags';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Moves messages to different channels.
@@ -15,8 +15,9 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class MoveCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Moves a message to a different channel.',
 			name: 'move',
 			permissionLevel: 1, // MANAGE_MESSAGES
@@ -75,7 +76,7 @@ export default class MoveCommand extends Command {
 
 				// Add attachments, if any
 				if (originalMessage.attachments.some(attachment => attachment.url !== '')) {
-					moveMessage.image = { url: originalMessage.attachments.first().url }
+					moveMessage.image = { url: originalMessage.attachments.first().url };
 				}
 
 				if (originalMessage.embeds.length === 0) {
@@ -83,7 +84,7 @@ export default class MoveCommand extends Command {
 					await (destinationChannel as TextChannel).send(moveMessage);
 				} else {
 					// Build the messages array
-					const messages: MessageEmbed[] = new Array();
+					const messages: MessageEmbed[] = [];
 					messages.push(moveMessage);
 					messages.concat(originalMessage.embeds);
 
@@ -92,7 +93,7 @@ export default class MoveCommand extends Command {
 				}
 
 				// Delete the original message, now that it's been moved
-				originalMessage.delete();
+				await originalMessage.delete();
 
 				// Log the event in the mod log
 				const moveModMessage: MessageEmbed = new MessageEmbed({
@@ -110,12 +111,13 @@ export default class MoveCommand extends Command {
 					`
 				}).setTimestamp();
 
-				modLogMessage(msg, moveModMessage);
+				await modLogMessage(msg, moveModMessage);
 			} else {
-				return sendSimpleEmbeddedError(msg, 'Cannot move a text message to a non-text channel.', 3000);
+				return msg.sendSimpleError('Cannot move a text message to a non-text channel.', 3000);
 			}
 		} else {
-			return sendSimpleEmbeddedError(msg, `Could not find the message with supplied id (${message}) in this channel.`, 3000);
+			return msg.sendSimpleError(`Could not find the message with supplied id (${message}) in this channel.`, 3000);
 		}
 	}
+
 }

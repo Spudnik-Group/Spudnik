@@ -3,9 +3,9 @@
  */
 
 import { MessageEmbed } from 'discord.js';
-import { getEmbedColor, sendSimpleEmbeddedError, shorten } from '../../lib/helpers';
+import { getEmbedColor, shorten } from '@lib/helpers';
 import * as WikiJS from 'wikijs';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Post a summary from Wikipedia.
@@ -15,8 +15,9 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class WikiCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Returns the summary of the first matching search result from Wikipedia.',
 			name: 'wiki',
 			usage: '<query:string>'
@@ -52,7 +53,7 @@ export default class WikiCommand extends Command {
 				paragraph = paragraph.replace(' ()', '').replace('()', '');
 				paragraph = `${shorten(paragraph)}...`;
 
-				messageOut.setThumbnail((page.thumbnail && page.thumbnail.source) || 'https://i.imgur.com/fnhlGh5.png')
+				messageOut.setThumbnail((page.thumbnail && page.thumbnail.source) || 'https://i.imgur.com/fnhlGh5.png');
 				messageOut.setDescription(`${paragraph}\n\n${page.raw.fullurl}`);
 				messageOut.setTitle(page.raw.title);
 			} else {
@@ -64,7 +65,8 @@ export default class WikiCommand extends Command {
 		} catch (err) {
 			msg.client.emit('warn', `Error in command ref:wiki: ${err}`);
 
-			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+			return msg.sendSimpleError('There was an error with the request. Try again?', 3000);
 		}
 	}
+
 }

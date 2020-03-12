@@ -3,7 +3,7 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 const prizes = ['$0', '$2', '$4', '$10', '$500', '$1,000,000', 'the Jackpot'];
 
 /**
@@ -14,14 +14,15 @@ const prizes = ['$0', '$2', '$4', '$10', '$500', '$1,000,000', 'the Jackpot'];
  * @extends {Command}
  */
 export default class LotteryCommand extends Command {
+
 	/**
 	 * Creates an instance of LotteryCommand.
 	 *
 	 * @param {CommandoClient} client
 	 * @memberof LotteryCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['lotto'],
 			description: 'Attempt to win the lottery with 6 numbers.',
 			extendedHelp: 'syntax: \`!lottery <choices>\`',
@@ -46,4 +47,5 @@ export default class LotteryCommand extends Command {
 			You matched **${similarities}** numbers, which gives you **${prizes[similarities]}**! Congrats!
 		`, { reply: msg.author });
 	}
+
 }

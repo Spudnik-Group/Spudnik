@@ -2,9 +2,10 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { getEmbedColor, sendSimpleEmbeddedMessage } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { getEmbedColor } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed, Permissions } from 'discord.js';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 /**
  * Search for a command with the given text.
@@ -15,8 +16,8 @@ import { MessageEmbed, Permissions } from 'discord.js';
  */
 export default class CommandSearchCommand extends Command {
 
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Search for a command with the given text.',
 			guarded: true,
 			name: 'command-search',
@@ -43,13 +44,14 @@ export default class CommandSearchCommand extends Command {
 			commandsEmbed
 				.setTitle('Command Search')
 				.setDescription(`Found ${commands.size} commands containing *${commandName}*.`)
-				.addField('❯ Commands', `\`\`\`css\n${msg.guild.settings.get('prefix')}${commands.map((c: any) => c.name).join(`\n${msg.guild.settings.get('prefix')}`)}\`\`\``)
-				.addField('❯ Need more details?', `Run \`${msg.guild.settings.get('prefix')}help <commandName>\``)
+				.addField('❯ Commands', `\`\`\`css\n${msg.guild.settings.get(GuildSettings.Prefix)}${commands.map((c: any) => c.name).join(`\n${msg.guild.settings.get(GuildSettings.Prefix)}`)}\`\`\``)
+				.addField('❯ Need more details?', `Run \`${msg.guild.settings.get(GuildSettings.Prefix)}help <commandName>\``)
 				.addField('❯ Want the complete list of commands?', 'Visit [the website](https://spudnik.io) and check out the commands page: https://docs.spudnik.io/commands/');
 
 			return msg.sendEmbed(commandsEmbed);
-		} else {
-			return sendSimpleEmbeddedMessage(msg, `No commands found containing that text. Use \`${msg.guild.settings.get('prefix')}commands\` to view a list of command groups.`, 3000);
 		}
+		return msg.sendSimpleEmbed(`No commands found containing that text. Use \`${msg.guild.settings.get(GuildSettings.Prefix)}commands\` to view a list of command groups.`, 3000);
+
 	}
+
 }

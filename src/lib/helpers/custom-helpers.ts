@@ -5,6 +5,7 @@
 import { TextChannel, MessageEmbed } from 'discord.js';
 import { oneLine } from 'common-tags';
 import { KlasaMessage, Command } from 'klasa';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 /**
  * Get Embed Color.
@@ -14,7 +15,7 @@ import { KlasaMessage, Command } from 'klasa';
  * @returns number
  */
 export const getEmbedColor = (msg: KlasaMessage): number => {
-	let embedColor: number = parseInt(msg.guild.settings.get('embedColor'), 16);
+	let embedColor: number = parseInt(msg.guild.settings.get(GuildSettings.EmbedColor), 16);
 
 	// This shouldn't happen, but if it does, return the default embed color
 	if (embedColor > parseInt('FFFFFF', 16) || embedColor < 0) {
@@ -22,33 +23,33 @@ export const getEmbedColor = (msg: KlasaMessage): number => {
 	}
 
 	return embedColor;
-}
+};
 
 /**
  * Log the message to the corresponding guild's mod log channel
- * 
+ *
  * @export
  * @param {KlasaMessage} msg
  * @param {MessageEmbed} embed
  * @returns Promise<KlasaMessage | KlasaMessage[]>
  */
-export const modLogMessage = (msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> | null => {
-	const guild = msg.guild;
-	const outChannelID = guild.settings.get('modlog.channel');
+export const modLogMessage = async (msg: KlasaMessage, embed: MessageEmbed): Promise<KlasaMessage | KlasaMessage[]> | null => {
+	const { guild } = msg;
+	const outChannelID = guild.settings.get(GuildSettings.Modlog.Channel);
 	const outChannel = (msg.guild.channels.get(outChannelID) as TextChannel);
 
-	if (!guild.settings.get('modlog.initialMessageSent')) {
-		msg.reply(oneLine`
+	if (!guild.settings.get(GuildSettings.Modlog.InitialMessageSent)) {
+		await msg.reply(oneLine`
 			📃 I can keep a log of moderator actions if you create a channel named \'mod-logs\'
-			(or some other name configured by the ${guild.settings.get('prefix')}modlog command) and give me access to it.
+			(or some other name configured by the ${guild.settings.get(GuildSettings.Prefix)}modlog command) and give me access to it.
 			This message will only show up this one time and never again after this so if you desire to set up mod logs make sure to do so now.`);
-		guild.settings.update('modlog.initialMessageSent', true, guild);
+		await guild.settings.update(GuildSettings.Modlog.InitialMessageSent, true);
 	}
 
-	return outChannelID && guild.settings.get('modlog.enabled')
+	return outChannelID && guild.settings.get(GuildSettings.Modlog.Enabled)
 		? outChannel.sendEmbed(new MessageEmbed(embed))
 		: null;
-}
+};
 
 export const getPermissionsFromLevel = (permissionsLevel: number): string => {
 	const permissionLevels = [
@@ -66,19 +67,15 @@ export const getPermissionsFromLevel = (permissionsLevel: number): string => {
 	];
 
 	return permissionLevels[permissionsLevel];
-}
+};
 
-export const isCommandCategoryEnabled = (msg: KlasaMessage, commandCategory: string): boolean => {
-	return !msg.guild.settings.get('disabledCommandCategories').includes(commandCategory.toLowerCase());
-}
+export const isCommandCategoryEnabled = (msg: KlasaMessage, commandCategory: string): boolean => !msg.guild.settings.get(GuildSettings.Commands.DisabledCategories).includes(commandCategory.toLowerCase());
 
-export const isCommandEnabled = (msg: KlasaMessage, command: Command): boolean => {
-	return !msg.guild.settings.get('disabledCommands').includes(command.name.toLowerCase())
-}
+export const isCommandEnabled = (msg: KlasaMessage, command: Command): boolean => !msg.guild.settings.get(GuildSettings.Commands.Disabled).includes(command.name.toLowerCase());
 
 export const canCommandBeUsed = (msg: KlasaMessage, command: Command): boolean => {
 	if (!isCommandCategoryEnabled(msg, command.category)) return false;
 	if (!isCommandEnabled(msg, command)) return false;
 
 	return true;
-}
+};

@@ -3,7 +3,8 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
+
 const slots = ['🍇', '🍊', '🍐', '🍒', '🍋'];
 
 /**
@@ -14,14 +15,15 @@ const slots = ['🍇', '🍊', '🍐', '🍒', '🍋'];
  * @extends {Command}
  */
 export default class SlotsCommand extends Command {
+
 	/**
 	 * Creates an instance of SlotsCommand.
 	 *
 	 * @param {CommandoClient} client
 	 * @memberof SlotsCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Play a game of slots.',
 			name: 'slots'
 		});
@@ -51,4 +53,5 @@ export default class SlotsCommand extends Command {
 			Aww... You lost... Guess it's just bad luck, huh?
 		`, { reply: msg.author });
 	}
+
 }

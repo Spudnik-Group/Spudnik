@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * States a message as the bot.
@@ -12,8 +12,9 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class SayCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Returns the text provided.',
 			name: 'say',
 			usage: '<text:...string>'
@@ -31,4 +32,5 @@ export default class SayCommand extends Command {
 	public async run(msg: KlasaMessage, [text]): Promise<KlasaMessage | KlasaMessage[]> {
 		return msg.sendMessage(text);
 	}
+
 }

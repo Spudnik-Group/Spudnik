@@ -3,8 +3,8 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { verify } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { verify } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 const emojis = ['⬆', '↗', '➡', '↘', '⬇', '↙', '⬅', '↖'];
 
 /**
@@ -15,6 +15,7 @@ const emojis = ['⬆', '↗', '➡', '↘', '⬇', '↙', '⬅', '↖'];
  * @extends {Command}
  */
 export default class EmojiEmojiRevolutionCommand extends Command {
+
 	private playing = new Set();
 
 	/**
@@ -23,8 +24,8 @@ export default class EmojiEmojiRevolutionCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof EmojiEmojiRevolutionCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['eer'],
 			description: 'Can you type arrow emoji faster than anyone else has ever typed them before?',
 			extendedHelp: 'syntax: \`!emoji-emoji-revolution <@usermention>\`',
@@ -42,9 +43,9 @@ export default class EmojiEmojiRevolutionCommand extends Command {
 	 * @memberof EmojiEmojiRevolutionCommand
 	 */
 	public async run(msg: KlasaMessage, [opponent]): Promise<KlasaMessage | KlasaMessage[]> {
-		if (opponent.bot) { return msg.sendMessage('Bots may not be played against.', { reply: msg.author }); }
-		if (opponent.id === msg.author.id) { return msg.sendMessage('You may not play against yourself.', { reply: msg.author }); }
-		if (this.playing.has(msg.channel.id)) { return msg.sendMessage('Only one fight may be occurring per channel.', { reply: msg.author }); }
+		if (opponent.bot) return msg.sendMessage('Bots may not be played against.', { reply: msg.author });
+		if (opponent.id === msg.author.id) return msg.sendMessage('You may not play against yourself.', { reply: msg.author });
+		if (this.playing.has(msg.channel.id)) return msg.sendMessage('Only one fight may be occurring per channel.', { reply: msg.author });
 
 		this.playing.add(msg.channel.id);
 
@@ -82,7 +83,11 @@ export default class EmojiEmojiRevolutionCommand extends Command {
 
 				const winner = win.first().author;
 
-				if (winner.id === msg.author.id) { ++aPts; } else { ++oPts; }
+				if (winner.id === msg.author.id) {
+					++aPts;
+				} else {
+				 ++oPts;
+				}
 
 				await msg.sendMessage(stripIndents`
 					${winner} won this round!
@@ -93,7 +98,7 @@ export default class EmojiEmojiRevolutionCommand extends Command {
 
 			this.playing.delete(msg.channel.id);
 
-			if (aPts === oPts) { return msg.sendMessage('It\'s a tie!'); }
+			if (aPts === oPts) return msg.sendMessage('It\'s a tie!');
 
 			const userWin = aPts > oPts;
 
@@ -104,4 +109,5 @@ export default class EmojiEmojiRevolutionCommand extends Command {
 			throw err;
 		}
 	}
+
 }

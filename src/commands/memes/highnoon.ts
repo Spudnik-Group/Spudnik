@@ -2,8 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { sendSimpleEmbeddedImage } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { Permissions } from 'discord.js';
 
 /**
@@ -14,8 +13,9 @@ import { Permissions } from 'discord.js';
  * @extends {Command}
  */
 export default class HighNoonCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Displays the High Noon XKCD comic.',
 			name: 'highnoon',
 			requiredPermissions: Permissions.FLAGS.ATTACH_FILES
@@ -30,6 +30,7 @@ export default class HighNoonCommand extends Command {
 	 * @memberof HighNoonCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		return sendSimpleEmbeddedImage(msg, 'http://imgs.xkcd.com/comics/now.png', 'IT\'S HIGH NOON...');
+		return msg.sendSimpleImage(`IT'S HIGH NOON...`, 'http://imgs.xkcd.com/comics/now.png');
 	}
+
 }

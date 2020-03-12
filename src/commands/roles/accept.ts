@@ -4,8 +4,10 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, Role } from 'discord.js';
-import { getEmbedColor, modLogMessage, sendSimpleEmbeddedError } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { getEmbedColor, modLogMessage } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
+
 
 /**
  * Accept the guild rules, and be auto-assigned the default role.
@@ -15,8 +17,9 @@ import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'kla
  * @extends {Command}
  */
 export default class AcceptCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Accept the Terms of Use for the current guild.',
 			name: 'accept',
 			requiredSettings: ['tos.channel', 'roles.default']
@@ -40,12 +43,14 @@ export default class AcceptCommand extends Command {
 			color: getEmbedColor(msg)
 		}).setTimestamp();
 
-		const defaultRole: Role = msg.guild.settings.get('roles.default');
-		const acceptChannel: string = msg.guild.settings.get('tos.channel');
+		const defaultRole: string = msg.guild.settings.get(GuildSettings.Roles.Default);
+		const role: Role = msg.guild.roles.get(defaultRole);
+		const acceptChannel: string = msg.guild.settings.get(GuildSettings.Tos.Channel);
 
-		if (defaultRole && msg.channel.id === acceptChannel) {
+
+		if (role && msg.channel.id === acceptChannel) {
 			try {
-				await msg.member.roles.add(defaultRole);
+				await msg.member.roles.add(role);
 			} catch (err) {
 				return this.catchError(msg, err);
 			}
@@ -53,10 +58,10 @@ export default class AcceptCommand extends Command {
 			// Set up embed message
 			acceptEmbed.setDescription(stripIndents`
 				**Member:** ${msg.author.tag} (${msg.author.id})
-				**Action:** The default role of ${defaultRole.name} has been applied.
+				**Action:** The default role of ${role.name} has been applied.
 			`);
 
-			modLogMessage(msg, acceptEmbed);
+			await modLogMessage(msg, acceptEmbed);
 		}
 
 		return null;
@@ -78,6 +83,7 @@ export default class AcceptCommand extends Command {
 		msg.client.emit('warn', acceptWarn);
 
 		// Inform the user the command failed
-		return sendSimpleEmbeddedError(msg, 'An error occured, an admin will need to assign the default role');
+		return msg.sendSimpleError('An error occured, an admin will need to assign the default role');
 	}
+
 }

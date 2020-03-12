@@ -2,8 +2,8 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { delay, getRandomInt, verify } from '../../lib/helpers';
-import { KlasaClient, Command, CommandStore, KlasaMessage } from 'klasa';
+import { delay, getRandomInt, verify } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 const words = ['fire', 'draw', 'shoot', 'bang', 'pull'];
 
 /**
@@ -14,6 +14,7 @@ const words = ['fire', 'draw', 'shoot', 'bang', 'pull'];
  * @extends {Command}
  */
 export default class GunFightCommand extends Command {
+
 	private fighting = new Set();
 
 	/**
@@ -22,8 +23,8 @@ export default class GunFightCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof GunFightCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['western-gunfight'],
 			description: 'Engage in a western gunfight against another user. High noon.',
 			extendedHelp: 'syntax: \`!gunfight <@usermention>\`',
@@ -40,11 +41,11 @@ export default class GunFightCommand extends Command {
 	 * @memberof GunFightCommand
 	 */
 	public async run(msg: KlasaMessage, [opponent]): Promise<KlasaMessage | KlasaMessage[]> {
-		if (opponent.bot) { return msg.sendMessage('Bots may not be fought.', { reply: msg.author }); }
+		if (opponent.bot) return msg.sendMessage('Bots may not be fought.', { reply: msg.author });
 
-		if (opponent.id === msg.author.id) { return msg.sendMessage('You may not fight yourself.', { reply: msg.author }); }
+		if (opponent.id === msg.author.id) return msg.sendMessage('You may not fight yourself.', { reply: msg.author });
 
-		if (this.fighting.has(msg.channel.id)) { return msg.sendMessage('Only one fight may be occurring per channel.', { reply: msg.author }); }
+		if (this.fighting.has(msg.channel.id)) return msg.sendMessage('Only one fight may be occurring per channel.', { reply: msg.author });
 
 		this.fighting.add(msg.channel.id);
 
@@ -54,7 +55,7 @@ export default class GunFightCommand extends Command {
 
 			if (!verification) {
 				this.fighting.delete(msg.channel.id);
-				
+
 				return msg.sendMessage('Looks like they declined...');
 			}
 
@@ -72,12 +73,13 @@ export default class GunFightCommand extends Command {
 			});
 
 			this.fighting.delete(msg.channel.id);
-			if (!winner.size) { return msg.sendMessage('Oh... No one won.'); }
-			
+			if (!winner.size) return msg.sendMessage('Oh... No one won.');
+
 			return msg.sendMessage(`The winner is ${winner.first().author}!`);
 		} catch (err) {
 			this.fighting.delete(msg.channel.id);
 			throw err;
 		}
 	}
+
 }

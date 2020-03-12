@@ -3,9 +3,8 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { GuildMember, Permissions } from 'discord.js';
-import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Permissions } from 'discord.js';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Change the bot's nickname on your server, or reset it.
@@ -16,8 +15,8 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  */
 export default class NickCommand extends Command {
 
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Used to change the bot\'s nickname on your server, or reset it.',
 			extendedHelp: stripIndents`
 				Supplying no nickname resets the nickname to default.
@@ -39,13 +38,14 @@ export default class NickCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage, [nickName]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (nickName === '' || nickName === undefined) {
-			(msg.guild.me as GuildMember).setNickname('Spudnik', `${msg.author.username} used Spudnik to reset it.`);
+			await (msg.guild.me).setNickname('Spudnik', `${msg.author.username} used Spudnik to reset it.`);
 
-			return sendSimpleEmbeddedMessage(msg, 'Bot nickname cleared.');
-		} else {
-			(msg.guild.me as GuildMember).setNickname(nickName, `${msg.author.username} used Spudnik to set it.`);
-
-			return sendSimpleEmbeddedMessage(msg, 'Bot nickname set.');
+			return msg.sendSimpleEmbed('Bot nickname cleared.');
 		}
+		await (msg.guild.me).setNickname(nickName, `${msg.author.username} used Spudnik to set it.`);
+
+		return msg.sendSimpleEmbed('Bot nickname set.');
+
 	}
+
 }

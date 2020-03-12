@@ -2,12 +2,14 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Monitor, KlasaClient, MonitorStore } from 'klasa';
+import { Monitor, MonitorStore } from 'klasa';
 import { Message, MessageEmbed } from 'discord.js';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 export default class extends Monitor {
-	constructor(client: KlasaClient, store: MonitorStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: MonitorStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			enabled: true,
 			ignoreOthers: false,
 			ignoreSelf: true,
@@ -15,8 +17,8 @@ export default class extends Monitor {
 		});
 	}
 
-	async run(msg) {
-		if (!msg.guild || !msg.guild.settings.get('adblockEnabled')) return null;
+	public async run(msg) {
+		if (!msg.guild || !msg.guild.settings.get(GuildSettings.AdblockEnabled)) return null;
 		if (await msg.hasAtLeastPermissionLevel(6)) return null;
 		if (!/(https?:\/\/)?(www\.)?(discord\.(gg|li|me|io)|discordapp\.com\/invite)\/.+/.test(msg.content)) return null;
 		await msg.delete()
@@ -29,8 +31,9 @@ export default class extends Monitor {
 		});
 		if (rejectMessage instanceof Message) {
 			if (rejectMessage.deletable) {
-				rejectMessage.delete({ timeout: 3000 });
+				await rejectMessage.delete({ timeout: 3000 });
 			}
-		};
+		}
 	}
-};
+
+}

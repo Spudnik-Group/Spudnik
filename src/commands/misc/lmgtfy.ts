@@ -2,8 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { sendSimpleEmbeddedMessage } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { Permissions } from 'discord.js';
 
 /**
@@ -14,8 +13,9 @@ import { Permissions } from 'discord.js';
  * @extends {Command}
  */
 export default class LmgtfyCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Returns a Let Me Google That For You link, so you can school a n00b.',
 			name: 'lmgtfy',
 			requiredPermissions: Permissions.FLAGS.EMBED_LINKS,
@@ -32,6 +32,7 @@ export default class LmgtfyCommand extends Command {
 	 * @memberof LmgtfyCommand
 	 */
 	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
-		return sendSimpleEmbeddedMessage(msg, `<http://lmgtfy.com/?q=${encodeURI(query)}>`);
+		return msg.sendSimpleEmbed(`<http://lmgtfy.com/?q=${encodeURI(query)}>`);
 	}
+
 }

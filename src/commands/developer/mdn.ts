@@ -4,9 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
+import { getEmbedColor } from '@lib/helpers';
 import axios from 'axios';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
  * Returns MDN results for a query.
@@ -16,8 +16,9 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class MdnReferenceCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['jsdocs'],
 			description: 'Returns results for the supplied query from the MDN.',
 			extendedHelp: stripIndents`
@@ -49,10 +50,10 @@ export default class MdnReferenceCommand extends Command {
 		});
 
 		try {
-			const { data: response } = await axios.get(`https://developer.mozilla.org/en-US/search.json?q=${encodeURIComponent(query)}`)
+			const { data: response } = await axios.get(`https://developer.mozilla.org/en-US/search.json?q=${encodeURIComponent(query)}`);
 			if (!response.documents.length) {
 
-				return sendSimpleEmbeddedError(msg, 'Your query did not return any results', 3000)
+				return msg.sendSimpleError('Your query did not return any results', 3000);
 			}
 			const firstRes = response.documents[0];
 
@@ -62,22 +63,29 @@ export default class MdnReferenceCommand extends Command {
 				.setURL(firstRes.url)
 				.setDescription(stripIndents`
 					${firstRes.excerpt.replace(/<[^>]*>/g, '`').replace(/``/g, '')}...
-					${response.documents[1] ? `
-					
+					${response.documents[1]
+		? `
+
 					__Similar related pages__:
-					${response.documents.slice(1, 4).map(({ url, slug }: any, index: any) => `${index + 1}) [${slug}](${url})`).join('\n')}` : ''}
-	
-	
-					${firstRes.tags ? `__Tag${firstRes.tags.length === 1 ? '' : 's'}__:
-					${firstRes.tags.join(', ')}` : ''}
+					${response.documents.slice(1, 4).map(({ url, slug }, index: number) => `${index + 1}) [${slug}](${url})`).join('\n')}`
+		: ''}
+
+
+					${firstRes.tags
+		? `__Tag${firstRes.tags.length === 1
+			? ''
+			: 's'}__:
+					${firstRes.tags.join(', ')}`
+		: ''}
 				`)
-				.setFooter(`${response.count} documents found for "${query}". ${response.count < 1 ? '' : `Showing results 1 to ${response.documents.length < 5 ? response.documents.length : '4'}`} | Article ID: ${response.documents[0].id}`)
+				.setFooter(`${response.count} documents found for "${query}". ${response.count < 1 ? '' : `Showing results 1 to ${response.documents.length < 5 ? response.documents.length : '4'}`} | Article ID: ${response.documents[0].id}`);
 
 			return msg.sendEmbed(mdnEmbed);
 		} catch (err) {
 			msg.client.emit('warn', `Error in command dev:mdn: ${err}`);
 
-			return sendSimpleEmbeddedError(msg, 'There was an error with the request. Try again?', 3000);
+			return msg.sendSimpleError('There was an error with the request. Try again?', 3000);
 		}
 	}
+
 }

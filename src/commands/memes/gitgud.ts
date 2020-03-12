@@ -2,8 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
-import { sendSimpleEmbeddedImage } from '../../lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed } from 'discord.js';
 
 /**
@@ -14,8 +13,9 @@ import { MessageEmbed } from 'discord.js';
  * @extends {Command}
  */
 export default class GitGudCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			description: 'Informs someone that they should "git gud".',
 			name: 'gitgud',
 			usage: '[mention:member]'
@@ -37,8 +37,9 @@ export default class GitGudCommand extends Command {
 			return msg.sendEmbed(new MessageEmbed({ image: { url: gitgudImageURL } }), '', {
 				reply: mention
 			});
-		} else {
-			return sendSimpleEmbeddedImage(msg, gitgudImageURL);
 		}
+		return msg.sendSimpleImage(null, gitgudImageURL);
+
 	}
+
 }

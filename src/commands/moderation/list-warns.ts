@@ -4,8 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { sendSimpleEmbeddedError, getEmbedColor } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { getEmbedColor } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 /**
  * List warns for the guild.
@@ -15,8 +16,9 @@ import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
  * @extends {Command}
  */
 export default class ListWarnsCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: [
 				'list-warn',
 				'warn-list',
@@ -44,7 +46,7 @@ export default class ListWarnsCommand extends Command {
 			color: getEmbedColor(msg),
 			description: ''
 		});
-		const guildWarnings = await msg.guild.settings.get('warnings');
+		const guildWarnings = await msg.guild.settings.get(GuildSettings.Warnings);
 
 		if (guildWarnings.length) {
 			// Warnings present for current guild
@@ -59,9 +61,10 @@ export default class ListWarnsCommand extends Command {
 
 			// Send the success response
 			return msg.sendEmbed(warnEmbed);
-		} else {
-			// No warnings for current guild
-			return sendSimpleEmbeddedError(msg, 'No warnings for current guild', 3000);
 		}
+		// No warnings for current guild
+		return msg.sendSimpleError('No warnings for current guild', 3000);
+
 	}
+
 }

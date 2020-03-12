@@ -3,8 +3,8 @@
  */
 
 import { MessageEmbed, Channel } from 'discord.js';
-import { getEmbedColor } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { getEmbedColor } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 
 const filterLevels = ['Off', 'No Role', 'Everyone'];
 const verificationLevels = ['None', 'Low', 'Medium', '(╯°□°）╯︵ ┻━┻', '┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻'];
@@ -17,8 +17,9 @@ const verificationLevels = ['None', 'Low', 'Medium', '(╯°□°）╯︵ ┻�
  * @extends {Command}
  */
 export default class ServerCommand extends Command {
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['server-stats'],
 			description: 'Returns statistics about the server.',
 			name: 'server'
@@ -33,7 +34,7 @@ export default class ServerCommand extends Command {
 	 * @memberof ServerCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		let serverEmbed: MessageEmbed = new MessageEmbed()
+		const serverEmbed: MessageEmbed = new MessageEmbed()
 			.setColor(getEmbedColor(msg))
 			.setDescription('**Server Statistics**')
 			.setThumbnail(msg.guild.iconURL({ format: 'png' }))
@@ -47,7 +48,8 @@ export default class ServerCommand extends Command {
 			.addField('❯ Members', msg.guild.memberCount, true)
 			.addField('❯ Roles', msg.guild.roles.size, true)
 			.addField('❯ Channels', msg.guild.channels.filter((channel: Channel) => channel.type !== 'category').size, true);
-		
+
 		return msg.sendEmbed(serverEmbed);
 	}
+
 }

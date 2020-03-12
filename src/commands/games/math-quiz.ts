@@ -3,8 +3,8 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { list } from '../../lib/helpers';
-import { Command, KlasaClient, CommandStore, KlasaMessage } from 'klasa';
+import { list } from '@lib/helpers';
+import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 const difficulties: string[] = ['easy', 'medium', 'hard', 'extreme', 'impossible'];
 const operations = ['+', '-', '*'];
@@ -14,7 +14,7 @@ const maxValues: any = {
 	hard: 500,
 	impossible: 1000000,
 	medium: 100
-}
+};
 
 /**
  * Starts a game of Math Quiz.
@@ -31,8 +31,8 @@ export default class MathQuizCommand extends Command {
 	 * @param {CommandoClient} client
 	 * @memberof MathQuizCommand
 	 */
-	constructor(client: KlasaClient, store: CommandStore, file: string[], directory: string) {
-		super(client, store, file, directory, {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
 			aliases: ['math-game'],
 			description: 'See how fast you can answer a math problem in a given time limit.',
 			extendedHelp: stripIndents`
@@ -45,8 +45,8 @@ export default class MathQuizCommand extends Command {
 
 		this.createCustomResolver('difficulty', (arg: string) => {
 			if (difficulties.includes(arg.toLowerCase())) return arg;
-			throw `Please provide a valid difficulty level. Options are: ${list(difficulties, 'or')}.`;
-		})
+			throw new Error(`Please provide a valid difficulty level. Options are: ${list(difficulties, 'or')}.`);
+		});
 	}
 
 	/**
@@ -63,9 +63,15 @@ export default class MathQuizCommand extends Command {
 		let answer: any;
 
 		switch (operation) {
-			case '+': answer = value1 + value2; break;
-			case '-': answer = value1 - value2; break;
-			case '*': answer = value1 * value2; break;
+			case '+':
+				answer = value1 + value2;
+				break;
+			case '-':
+				answer = value1 - value2;
+				break;
+			case '*':
+				answer = value1 * value2;
+				break;
 		}
 
 		await msg.reply(stripIndents`
@@ -73,14 +79,15 @@ export default class MathQuizCommand extends Command {
 			${value1} ${operation} ${value2}
 		`);
 
-		const msgs: any = await msg.channel.awaitMessages((res) => res.author.id === msg.author.id, {
+		const msgs: any = await msg.channel.awaitMessages(res => res.author.id === msg.author.id, {
 			max: 1,
 			time: 10000
 		});
 
-		if (!msgs.size) { return msg.sendMessage(`Sorry, time is up! It was ${answer}.`, { reply: msg.author }); }
-		if (msgs.first().content !== answer.toString()) { return msg.sendMessage(`Nope, sorry, it's ${answer}.`, { reply: msg.author }); }
+		if (!msgs.size) return msg.sendMessage(`Sorry, time is up! It was ${answer}.`, { reply: msg.author });
+		if (msgs.first().content !== answer.toString()) return msg.sendMessage(`Nope, sorry, it's ${answer}.`, { reply: msg.author });
 
 		return msg.sendMessage('Nice job! 10/10! You deserve some cake!', { reply: msg.author });
 	}
+
 }
