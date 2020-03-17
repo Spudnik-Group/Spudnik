@@ -138,41 +138,6 @@ export default class extends Language {
 			guildsAdded.length ? `**Guilds Added**\n${util.codeBlock('', guildsAdded.join(', '))}` : '',
 			guildsRemoved.length ? `**Guilds Removed**\n${util.codeBlock('', guildsRemoved.join(', '))}` : ''
 		].filter(val => val !== '').join('\n'),
-		COMMAND_EVAL_DESCRIPTION: 'Evaluates arbitrary Javascript. Reserved for bot owner.',
-		COMMAND_EVAL_EXTENDEDHELP: [
-			'The eval command evaluates code as-in, any error thrown from it will be handled.',
-			'It also uses the flags feature. Write --silent, --depth=number or --async to customize the output.',
-			'The --silent flag will make it output nothing.',
-			"The --depth flag accepts a number, for example, --depth=2, to customize util.inspect's depth.",
-			'The --async flag will wrap the code into an async function where you can enjoy the use of await, however, if you want to return something, you will need the return keyword.',
-			'The --showHidden flag will enable the showHidden option in util.inspect.',
-			'If the output is too large, it\'ll send the output as a file, or in the console if the bot does not have the ATTACH_FILES permission.'
-		].join('\n'),
-		COMMAND_EVAL_ERROR: (time, output, type) => `**Error**:${output}\n**Type**:${type}\n${time}`,
-		COMMAND_EVAL_OUTPUT: (time, output, type) => `**Output**:${output}\n**Type**:${type}\n${time}`,
-		COMMAND_EVAL_SENDFILE: (time, type) => `Output was too long... sent the result as a file.\n**Type**:${type}\n${time}`,
-		COMMAND_EVAL_SENDCONSOLE: (time, type) => `Output was too long... sent the result to console.\n**Type**:${type}\n${time}`,
-		COMMAND_UNLOAD: (type, name) => `✅ Unloaded ${type}: ${name}`,
-		COMMAND_UNLOAD_DESCRIPTION: 'Unloads the klasa piece.',
-		COMMAND_UNLOAD_WARN: 'You probably don\'t want to unload that, since you wouldn\'t be able to run any command to enable it again',
-		COMMAND_TRANSFER_ERROR: '❌ That file has been transfered already or never existed.',
-		COMMAND_TRANSFER_SUCCESS: (type, name) => `✅ Successfully transferred ${type}: ${name}.`,
-		COMMAND_TRANSFER_FAILED: (type, name) => `Transfer of ${type}: ${name} to Client has failed. Please check your Console.`,
-		COMMAND_TRANSFER_DESCRIPTION: 'Transfers a core piece to its respective folder.',
-		COMMAND_RELOAD: (type, name, time) => `✅ Reloaded ${type}: ${name}. (Took: ${time})`,
-		COMMAND_RELOAD_FAILED: (type, name) => `❌ Failed to reload ${type}: ${name}. Please check your Console.`,
-		COMMAND_RELOAD_ALL: (type, time) => `✅ Reloaded all ${type}. (Took: ${time})`,
-		COMMAND_RELOAD_EVERYTHING: time => `✅ Reloaded everything. (Took: ${time})`,
-		COMMAND_RELOAD_DESCRIPTION: 'Reloads a klasa piece, or all pieces of a klasa store.',
-		COMMAND_REBOOT: 'Rebooting...',
-		COMMAND_REBOOT_DESCRIPTION: 'Reboots the bot.',
-		COMMAND_LOAD: (time, type, name) => `✅ Successfully loaded ${type}: ${name}. (Took: ${time})`,
-		COMMAND_LOAD_FAIL: 'The file does not exist, or an error occurred while loading your file. Please check your console.',
-		COMMAND_LOAD_ERROR: (type, name, error) => `❌ Failed to load ${type}: ${name}. Reason:${util.codeBlock('js', error)}`,
-		COMMAND_LOAD_DESCRIPTION: 'Load a piece from your bot.',
-		COMMAND_PING: 'Ping?',
-		COMMAND_PING_DESCRIPTION: 'Runs a connection test to Discord.',
-		COMMAND_PINGPONG: (diff, ping) => `Pong! (Roundtrip took: ${diff}ms. Heartbeat: ${ping}ms.)`,
 		COMMAND_INVITE: () => [
 			`To add me to your discord guild: <${this.client.invite}>`,
 			'Don\'t be afraid to uncheck some permissions, I will let you know if you\'re trying to run a command without permissions.'
@@ -222,14 +187,14 @@ export default class extends Language {
 		COMMAND_CONF_SERVER: (key, list) => `**Guild Settings${key}**\n${list}`,
 		COMMAND_CONF_USER_DESCRIPTION: 'Define per-user settings.',
 		COMMAND_CONF_USER: (key, list) => `**User Settings${key}**\n${list}`,
-		COMMAND_STATS: (color, stats, uptime, usage, dependencies) => new MessageEmbed()
+		COMMAND_STATS: (color, stats, uptime, usage) => new MessageEmbed()
 			.setColor(color)
 			.setDescription('**Spudnik Statistics**')
 			.addField('❯ Uptime', Duration.toNow(Date.now() - (uptime.CLIENT * 1000)), true)
 			.addField('❯ Process Stats', stripIndents`
 						• Memory Usage: ${usage.RAM_USED}
 						• Node Version: ${process.version}
-						• Version: v${stats.VERSION}`, true)
+						• Version: ${stats.VERSION}`, true)
 			.addField('❯ General Stats', stripIndents`
 						• Guilds: ${this.client.guilds.size}
 						• Channels: ${this.client.channels.size}
@@ -237,8 +202,7 @@ export default class extends Language {
 						• Commands: ${this.client.commands.size}`, true)
 			.addField('❯ Spudnik Command', '[Join](https://spudnik.io/support)', true)
 			.addField('❯ Source Code', '[View](https://github.com/Spudnik-Group/Spudnik)', true)
-			.addField('❯ Invite to Your Server!', '[Invite](https://spudnik.io/invite)', true)
-			.addField('❯ Dependencies', dependencies.join(', ')),
+			.addField('❯ Invite to Your Server!', '[Invite](https://spudnik.io/invite)', true),
 		COMMAND_STATS_DESCRIPTION: 'Provides some details about the bot and stats.',
 		MESSAGE_PROMPT_TIMEOUT: 'The prompt has timed out.',
 		TEXT_PROMPT_ABORT_OPTIONS: ['abort', 'stop', 'cancel']

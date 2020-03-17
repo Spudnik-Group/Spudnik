@@ -5,7 +5,7 @@
 import { KlasaMessage, Command, CommandStore } from 'klasa';
 import { getEmbedColor } from '@lib/helpers';
 import { loadavg, uptime } from 'os';
-import { version, dependencies } from '@root/../package.json';
+import { version } from '@root/../package.json';
 
 /**
  * Returns statistics about the bot.
@@ -32,20 +32,7 @@ export default class StatsCommand extends Command {
 	 * @memberof StatsCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		return msg.sendLocale('COMMAND_STATS', [getEmbedColor(msg), this.generalStatistics, this.uptimeStatistics, this.usageStatistics, this.parseDependencies]);
-	}
-
-	private get parseDependencies(): string[] {
-		return Object.entries(dependencies)
-			.map((dep: any) => {
-				if (dep[1].startsWith('github:')) {
-					const repo = dep[1].replace('github:', '').split('/');
-
-					return `[${dep[0]}](https://github.com/${repo[0]}/${repo[1].replace(/#.+/, '')})`;
-				}
-
-				return `[${dep[0]}](https://npmjs.com/${dep[0]})`;
-			});
+		return msg.sendLocale('COMMAND_STATS', [getEmbedColor(msg), this.generalStatistics, this.uptimeStatistics, this.usageStatistics]);
 	}
 
 	private get generalStatistics(): StatsGeneral {
