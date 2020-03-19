@@ -17,3 +17,6 @@ package-lock.json
 
 #other annoying things
 **/.DS_Store
+
+# config stuff you shouldnt commit
+scripts/custom_init.sh

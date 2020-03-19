@@ -2,20 +2,20 @@
 echo "Setting environment variables"
 
 # core settings
-export spud_token="BOT TOKEN"
-export spud_owner="OWNER ID"
+export SPUD_TOKEN="BOT TOKEN"
+export SPUD_OWNERS="OWNER ID"
 export SPUD_CORE_DB="CORE DB CONNECT STRING"
-export spud_debug=false
-export spud_issuelog=""
+export SPUD_CORE_DB_CONNECTION=""
+export SPUD_STATS_DB=""
+export SPUD_STATS_DB_CONNECTION=""
+export SPUD_DEBUG=true
+export SPUD_ISSUELOG=""
 
 # api keys
-export spud_wolframapi=""
-export spud_moviedbapi=""
-export spud_dictionaryapi=""
-export spud_brewdbapi=""
-export spud_scoutid=""
-export spud_scoutsecret=""
-export spud_trackerapi=""
-export spud_stackoverflowapi=""
+export SPUD_WOLFRAMAPI=""
+export SPUD_MOVIEDBAPI=""
+export SPUD_DICTIONARYAPI=""
+export SPUD_BREWDBAPI=""
+export SPUD_STACKOVERFLOWAPI=""
 
 echo "Environment variables set"
