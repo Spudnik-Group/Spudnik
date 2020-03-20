@@ -1,1 +1,1 @@
-web: node "./dist/src/launch.js"
+web: node "./dist/launch.js"

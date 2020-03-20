@@ -18,13 +18,17 @@
     ],
     "main": "dist/launch.js",
     "scripts": {
-        "preinstall": "npm i -g node-gyp typescript@3.6.5",
+        "preinstall": "npm i -g node-gyp typescript@3.6.5 rimraf",
         "lint": "eslint --ext ts src/**",
+        "clean:all": "npm run clean:node_modules && npm run clean:dist",
+        "clean:node_modules": "rimraf ./node_modules",
+        "clean:dist": "rimraf ./dist",
+        "build": "tsc && copyfiles -u 2 \"./dist/src/*.js\" \"./dist/src/**/*.json\" \"./dist/src/**/*.js\" \"./dist/src/**/*.js.map\" ./dist && rimraf \"./dist/src\"",
         "test": "npm run lint",
-        "prestart": "rimraf ./dist && tsc",
-        "start": "node ./node_modules/nodemon/bin/nodemon.js",
-        "start:prod": "node ./dist/src/launch.js",
-        "start:docs": "cd ./docs && bundle exec jekyll serve"
+        "prestart": "npm run clean:dist && npm run build",
+        "start": "npm run start:prod",
+        "start:dev": "node ./node_modules/nodemon/bin/nodemon.js",
+        "start:prod": "node ./dist/launch.js"
     },
     "dependencies": {
         "@klasa/querybuilder": "^0.0.1",
@@ -61,6 +65,7 @@
         "@typescript-eslint/eslint-plugin": "2.23.0",
         "@typescript-eslint/parser": "2.23.0",
         "common-tags": "1.8.0",
+        "copyfiles": "^2.2.0",
         "eslint": "6.8.0",
         "eslint-config-klasa": "dirigeants/klasa-lint",
         "eslint-plugin-import": "2.20.1",
@@ -68,12 +73,11 @@
         "eslint-plugin-prefer-arrow": "1.1.7",
         "eslint-plugin-unicorn": "16.1.1",
         "nodemon": "1.19.4",
-        "rimraf": "3.0.2",
         "typescript": "3.6.5"
     },
     "_moduleAliases": {
-        "@utils": "./dist/src/lib/util",
-        "@lib": "./dist/src/lib",
-        "@root": "./dist/src"
+        "@utils": "./dist/lib/util",
+        "@lib": "./dist/lib",
+        "@root": "./dist"
     }
 }
