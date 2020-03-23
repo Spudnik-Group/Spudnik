@@ -37,6 +37,10 @@ export namespace GuildSettings {
 		export const Message = T<string>('goodbye.message');
 	}
 
+	export namespace Announce {
+		export const Channel = T<string>('announce.channel');
+	}
+
 	export namespace Modlog {
 		export const InitialMessageSent = T<boolean>('modlog.initialMessageSent');
 		export const Enabled = T<boolean>('modlog.enabled');

@@ -26,6 +26,8 @@ Client.defaultGuildSchema
 		.add('initialMessageSent', 'boolean')
 		.add('channel', 'TextChannel')
 		.add('enabled', 'boolean'))
+	.add('announce', folder => folder
+		.add('channel', 'TextChannel'))
 	.add('tos', folder => folder
 		.add('channel', 'TextChannel')
 		.add('messages', 'any', { array: true }))
