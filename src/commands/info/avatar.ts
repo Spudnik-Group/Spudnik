@@ -18,7 +18,7 @@ export default class AvatarCommand extends Command {
 		const avatar = user.displayAvatarURL({ size: 512 });
 
 		return msg.sendEmbed(new MessageEmbed()
-			.setAuthor(user.username, avatar)
+			.addField('Avatar', user.tag)
 			.setImage(avatar));
 	}
 
