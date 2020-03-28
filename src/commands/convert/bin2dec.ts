@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Convert } from '@lib/helpers';
+import { Convert } from '@lib/helpers/convert';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**

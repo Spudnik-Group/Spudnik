@@ -4,8 +4,9 @@
 
 import axios from 'axios';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-import { MessageEmbed, Permissions } from 'discord.js';
+import { Permissions } from 'discord.js';
 import { stripIndents } from 'common-tags';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 const suffixes = ['Bytes', 'KB', 'MB'];
 const getBytes = bytes => {
@@ -30,8 +31,7 @@ export default class CrateCommand extends Command {
 			const { crate, versions: [latest] } = data;
 			if (!crate) throw new Error('That crate doesn\'t exist.');
 
-			const embed = new MessageEmbed()
-				.setColor(15051318)
+			const embed = baseEmbed(msg)
 				.setThumbnail('https://doc.rust-lang.org/cargo/images/Cargo-Logo-Small.png')
 				.setTitle(name)
 				.setURL(`https://crates.io/crates/${name}`)

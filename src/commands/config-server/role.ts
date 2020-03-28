@@ -3,9 +3,12 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { Collection, Message, MessageEmbed, Role, Permissions } from 'discord.js';
-import { getEmbedColor, modLogMessage, isNormalInteger, hexColor } from '@lib/helpers';
+import { Collection, Message, Role, Permissions } from 'discord.js';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { specialEmbed } from '@lib/helpers/embed-helpers';
+import { hexColor } from '@lib/helpers/resolvers';
+import { modLogMessage } from '@lib/helpers/custom-helpers';
+import { isNormalInteger } from '@lib/helpers/helpers';
 
 /**
  * Manage guild roles.
@@ -43,16 +46,7 @@ export default class RoleCommand extends Command {
 	 * @memberof RoleManagementCommands
 	 */
 	public async add(msg: KlasaMessage, [name, color]): Promise<KlasaMessage | KlasaMessage[]> {
-		const roleEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/110/lock_1f512.png',
-				name: 'Role Manager'
-			},
-			color: getEmbedColor(msg),
-			footer: {
-				text: 'Use the `role` command to add/remove a role from your guild'
-			}
-		}).setTimestamp();
+		const roleEmbed = specialEmbed(msg, 'role-manager');
 
 		try {
 			let roleMetaData = {};
@@ -97,16 +91,7 @@ export default class RoleCommand extends Command {
 	 * @memberof RoleManagementCommands
 	 */
 	public async remove(msg: KlasaMessage, [name]): Promise<KlasaMessage | KlasaMessage[]> {
-		const roleEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/110/lock_1f512.png',
-				name: 'Role Manager'
-			},
-			color: getEmbedColor(msg),
-			footer: {
-				text: 'Use the `role` command to add/remove a role from your guild'
-			}
-		}).setTimestamp();
+		const roleEmbed = specialEmbed(msg, 'role-manager');
 		const rolesFound: Collection<string, Role> = await msg.guild.roles.filter(role => role.name.toLocaleLowerCase() === name.toLocaleLowerCase());
 
 		if (rolesFound.size > 1) {

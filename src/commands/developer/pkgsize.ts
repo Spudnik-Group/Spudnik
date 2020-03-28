@@ -5,7 +5,8 @@
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import axios from 'axios';
 import { stripIndents } from 'common-tags';
-import { MessageEmbed, Permissions } from 'discord.js';
+import { Permissions } from 'discord.js';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 const suffixes = ['Bytes', 'KB', 'MB', 'GB'];
 const getBytes = bytes => {
@@ -28,9 +29,9 @@ export default class PackagesizeCommand extends Command {
 		try {
 			const { data } = await axios(`https://packagephobia.now.sh/api.json?p=${encodeURIComponent(name)}`);
 			const { publishSize, installSize } = data;
-			if (!publishSize && !installSize) throw new Error(`That package doesn't exist.`);
+			if (!publishSize && !installSize) throw new Error("That package doesn't exist.");
 
-			return msg.sendEmbed(new MessageEmbed()
+			return msg.sendEmbed(baseEmbed(msg)
 				.setDescription(stripIndents`
 					<https://www.npmjs.com/package/${name}>
 	

@@ -2,9 +2,9 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { MessageEmbed } from 'discord.js';
-import { Convert, getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
+import { Convert } from '@lib/helpers/convert';
 
 /**
  * Base64 encodes a string
@@ -34,12 +34,8 @@ export default class Base64EncodeCommand extends Command {
 		console.log(stringToEncode);
 		console.log(Convert.base64encode(stringToEncode));
 
-		const returnMessage = new MessageEmbed({
-			author: {
-				name: 'Base64 Encoded String:'
-			},
-			color: getEmbedColor(msg)
-		})
+		const returnMessage = baseEmbed(msg)
+			.setAuthor('Base64 Encoded String:')
 			.addField('Input:', stringToEncode)
 			.addField('Output:', Convert.base64encode(stringToEncode));
 

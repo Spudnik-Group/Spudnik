@@ -2,10 +2,10 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed, Permissions } from 'discord.js';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Search for a command with the given text.
@@ -35,8 +35,7 @@ export default class CommandSearchCommand extends Command {
 	 * @memberof CommandSearchCommand
 	 */
 	public async run(msg: KlasaMessage, [commandName]): Promise<KlasaMessage | KlasaMessage[]> {
-		const commandsEmbed: MessageEmbed = new MessageEmbed()
-			.setColor(getEmbedColor(msg))
+		const commandsEmbed: MessageEmbed = baseEmbed(msg)
 			.setFooter(`Comrade! I bring ${this.client.commands.size} commands in this version!`);
 		const commands = this.client.commands.filter(command => command.name.includes(commandName));
 
@@ -50,8 +49,8 @@ export default class CommandSearchCommand extends Command {
 
 			return msg.sendEmbed(commandsEmbed);
 		}
-		return msg.sendSimpleEmbed(`No commands found containing that text. Use \`${msg.guild.settings.get(GuildSettings.Prefix)}commands\` to view a list of command groups.`, 3000);
 
+		return msg.sendSimpleEmbed(`No commands found containing that text. Use \`${msg.guild.settings.get(GuildSettings.Prefix)}commands\` to view a list of command groups.`, 3000);
 	}
 
 }

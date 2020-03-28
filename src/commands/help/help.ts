@@ -4,9 +4,11 @@
 
 import { MessageEmbed, Permissions } from 'discord.js';
 import { stripIndents } from 'common-tags';
-import { getEmbedColor, getPermissionsFromBitfield, getPermissionsFromLevel, canCommandBeUsed } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
+import { getPermissionsFromBitfield } from '@lib/helpers/helpers';
+import { getPermissionsFromLevel, canCommandBeUsed } from '@lib/helpers/custom-helpers';
 
 /**
  * Returns helpful information on the bot, or detailed information for a specific command.
@@ -36,8 +38,8 @@ export default class HelpCommand extends Command {
 	 * @memberof HelpCommand
 	 */
 	public async run(msg: KlasaMessage, [command]): Promise<KlasaMessage | KlasaMessage[]> {
-		const helpEmbed: MessageEmbed = new MessageEmbed()
-			.setColor(getEmbedColor(msg));
+		const helpEmbed: MessageEmbed = baseEmbed(msg);
+
 		if (command) {
 			helpEmbed
 				.setTitle(`__Command: **${command.name}**__`)
@@ -68,7 +70,6 @@ export default class HelpCommand extends Command {
 			.setFooter(`Server Prefix: ${msg.guild.settings.get(GuildSettings.Prefix)} • Total Commands: ${this.client.commands.size}`);
 
 		return msg.sendEmbed(helpEmbed);
-
 	}
 
 }

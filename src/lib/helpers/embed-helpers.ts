@@ -65,6 +65,42 @@ export const specialEmbed = (msg: KlasaMessage, name: string): MessageEmbed => {
 				);
 			break;
 		}
+		case 'goodbye': {
+			embedOut
+				.setAuthor(
+					'Server Goodbye Message',
+					'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png'
+				);
+			break;
+		}
+		case 'starboard': {
+			embedOut
+				.setAuthor(
+					'Star Board',
+					'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/133/white-medium-star_2b50.png'
+				);
+			break;
+		}
+		case 'welcome': {
+			embedOut
+				.setAuthor(
+					'Server Welcome Message',
+					'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png'
+				);
+			break;
+		}
+		case 'adblock': {
+			embedOut.setAuthor('🛑 Adblock');
+			break;
+		}
+		case 'modlog': {
+			embedOut
+				.setAuthor(
+					'Mod Log',
+					'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/memo_1f4dd.png'
+				);
+			break;
+		}
 	}
 
 	return embedOut;

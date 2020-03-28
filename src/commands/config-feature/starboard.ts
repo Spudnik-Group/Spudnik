@@ -4,9 +4,11 @@
 
 import { stripIndents } from 'common-tags';
 import { Channel, MessageEmbed, Permissions } from 'discord.js';
-import { getEmbedColor, modLogMessage, resolveChannel } from '@lib/helpers';
+import { modLogMessage } from '@lib/helpers/custom-helpers';
 import { Command, CommandStore, KlasaMessage, Possible, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import { resolveChannel } from '@lib/helpers/helpers';
+import { specialEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Adjusts starboard settings.
@@ -54,13 +56,7 @@ export default class StarboardCommand extends Command {
 	 * @memberof StarboardCommand
 	 */
 	public async channel(msg: KlasaMessage, [content]): Promise<KlasaMessage | KlasaMessage[]> {
-		const starboardEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/133/white-medium-star_2b50.png',
-				name: 'Star Board'
-			},
-			color: getEmbedColor(msg)
-		}).setTimestamp();
+		const starboardEmbed: MessageEmbed = specialEmbed(msg, 'starboard');
 		const starboard = msg.guild.settings.get(GuildSettings.Starboard.Channel);
 		const channelID = msg.guild.channels.get(resolveChannel(content)).id;
 
@@ -93,13 +89,7 @@ export default class StarboardCommand extends Command {
 	 * @memberof StarboardCommand
 	 */
 	public async trigger(msg: KlasaMessage, [content]): Promise<KlasaMessage | KlasaMessage[]> {
-		const starboardEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/133/white-medium-star_2b50.png',
-				name: 'Star Board'
-			},
-			color: getEmbedColor(msg)
-		}).setTimestamp();
+		const starboardEmbed: MessageEmbed = specialEmbed(msg, 'starboard');
 
 		try {
 			await msg.guild.settings.update(GuildSettings.Starboard.Trigger, content);
@@ -125,13 +115,7 @@ export default class StarboardCommand extends Command {
 	 * @memberof StarboardCommand
 	 */
 	public async on(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const starboardEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/133/white-medium-star_2b50.png',
-				name: 'Star Board'
-			},
-			color: getEmbedColor(msg)
-		}).setTimestamp();
+		const starboardEmbed: MessageEmbed = specialEmbed(msg, 'starboard');
 		const starboard = msg.guild.settings.get(GuildSettings.Starboard.Channel);
 		const starboardEnabled = msg.guild.settings.get(GuildSettings.Starboard.Enabled);
 
@@ -167,13 +151,7 @@ export default class StarboardCommand extends Command {
 	 * @memberof StarboardCommand
 	 */
 	public async off(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const starboardEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/133/white-medium-star_2b50.png',
-				name: 'Star Board'
-			},
-			color: getEmbedColor(msg)
-		}).setTimestamp();
+		const starboardEmbed: MessageEmbed = specialEmbed(msg, 'starboard');
 		const starboardEnabled: boolean = msg.guild.settings.get(GuildSettings.Starboard.Enabled);
 
 		if (starboardEnabled) {
@@ -205,13 +183,7 @@ export default class StarboardCommand extends Command {
 	 * @memberof StarboardCommand
 	 */
 	public async status(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const starboardEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/133/white-medium-star_2b50.png',
-				name: 'Star Board'
-			},
-			color: getEmbedColor(msg)
-		}).setTimestamp();
+		const starboardEmbed: MessageEmbed = specialEmbed(msg, 'starboard');
 		const starboard = msg.guild.settings.get(GuildSettings.Starboard.Channel);
 		const starboardTrigger: string = msg.guild.settings.get(GuildSettings.Starboard.Trigger);
 		const starboardEnabled: boolean = msg.guild.settings.get(GuildSettings.Starboard.Enabled);

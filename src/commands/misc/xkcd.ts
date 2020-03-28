@@ -5,8 +5,8 @@
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
 import axios from 'axios';
-import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Post an XKCD comic.
@@ -36,10 +36,7 @@ export default class XkcdCommand extends Command {
 	 * @memberof XkcdCommand
 	 */
 	public async run(msg: KlasaMessage, [comicNumber]): Promise<KlasaMessage | KlasaMessage[]> {
-		const xkcdEmbed: MessageEmbed = new MessageEmbed({
-			color: getEmbedColor(msg),
-			description: ''
-		});
+		const xkcdEmbed: MessageEmbed = baseEmbed(msg);
 
 		let url = 'http://xkcd.com/';
 

@@ -8,6 +8,8 @@ import { resolveChannel } from '@lib/helpers/helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 import { basicFeatureContent } from '@lib/helpers/resolvers';
+import { specialEmbed } from '@lib/helpers/embed-helpers';
+import { modLogMessage } from '@lib/helpers/custom-helpers';
 
 /**
  * Manage notifications when someone leaves the guild.
@@ -47,13 +49,7 @@ export default class GoodbyeCommand extends Command {
 	 * @memberof GoodbyeCommand
 	 */
 	public async message(msg: KlasaMessage, [content]): Promise<KlasaMessage | KlasaMessage[]> {
-		const goodbyeEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png',
-				name: 'Server Goodbye Message'
-			},
-			color: getEmbedColor(msg)
-		}).setTimestamp();
+		const goodbyeEmbed = specialEmbed(msg, 'goodbye');
 
 		try {
 			await msg.guild.settings.update(GuildSettings.Goodbye.Message, content);
@@ -81,13 +77,7 @@ export default class GoodbyeCommand extends Command {
 	 * @memberof GoodbyeCommand
 	 */
 	public async channel(msg: KlasaMessage, [content]): Promise<KlasaMessage | KlasaMessage[]> {
-		const goodbyeEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png',
-				name: 'Server Goodbye Message'
-			},
-			color: getEmbedColor(msg)
-		}).setTimestamp();
+		const goodbyeEmbed = specialEmbed(msg, 'goodbye');
 		const goodbyeChannel = await msg.guild.settings.get(GuildSettings.Goodbye.Channel);
 		const channelID = msg.guild.channels.get(resolveChannel(content)).id;
 
@@ -119,13 +109,7 @@ export default class GoodbyeCommand extends Command {
 	 * @memberof GoodbyeCommand
 	 */
 	public async on(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const goodbyeEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png',
-				name: 'Server Goodbye Message'
-			},
-			color: getEmbedColor(msg)
-		}).setTimestamp();
+		const goodbyeEmbed = specialEmbed(msg, 'goodbye');
 		const goodbyeChannel = await msg.guild.settings.get(GuildSettings.Goodbye.Channel);
 		const goodbyeEnabled = await msg.guild.settings.get(GuildSettings.Goodbye.Enabled);
 
@@ -161,13 +145,7 @@ export default class GoodbyeCommand extends Command {
 	 * @memberof GoodbyeCommand
 	 */
 	public async off(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const goodbyeEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png',
-				name: 'Server Goodbye Message'
-			},
-			color: getEmbedColor(msg)
-		}).setTimestamp();
+		const goodbyeEmbed = specialEmbed(msg, 'goodbye');
 		const goodbyeEnabled = await msg.guild.settings.get(GuildSettings.Goodbye.Enabled);
 
 		if (goodbyeEnabled) {
@@ -199,13 +177,7 @@ export default class GoodbyeCommand extends Command {
 	 * @memberof GoodbyeCommand
 	 */
 	public async status(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const goodbyeEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png',
-				name: 'Server Goodbye Message'
-			},
-			color: getEmbedColor(msg)
-		}).setTimestamp();
+		const goodbyeEmbed = specialEmbed(msg, 'goodbye');
 		const goodbyeChannel = msg.guild.settings.get(GuildSettings.Goodbye.Channel);
 		const goodbyeMessage = msg.guild.settings.get(GuildSettings.Goodbye.Message);
 		const goodbyeEnabled = msg.guild.settings.get(GuildSettings.Goodbye.Enabled);

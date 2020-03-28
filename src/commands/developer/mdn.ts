@@ -4,9 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { getEmbedColor } from '@lib/helpers';
 import axios from 'axios';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Returns MDN results for a query.
@@ -39,15 +39,12 @@ export default class MdnReferenceCommand extends Command {
 	 * @memberof MdnReferenceCommand
 	 */
 	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
-		const mdnEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://i.imgur.com/xwbpIKG.png',
-				name: 'Mozilla Developer Network',
-				url: 'https://developer.mozilla.org/en-US/'
-			},
-			color: getEmbedColor(msg),
-			description: ''
-		});
+		const mdnEmbed: MessageEmbed = baseEmbed(msg)
+			.setAuthor(
+				'Mozilla Developer Network',
+				'https://i.imgur.com/xwbpIKG.png',
+				'https://developer.mozilla.org/en-US/'
+			);
 
 		try {
 			const { data: response } = await axios.get(`https://developer.mozilla.org/en-US/search.json?q=${encodeURIComponent(query)}`);

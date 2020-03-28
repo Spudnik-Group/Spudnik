@@ -3,10 +3,10 @@
  */
 
 import { MessageEmbed, Permissions } from 'discord.js';
-import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import * as fs from 'fs';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Returns a list of command groups, or all commands in a given group.
@@ -36,8 +36,7 @@ export default class CommandsCommand extends Command {
 	 * @memberof CommandsCommand
 	 */
 	public async run(msg: KlasaMessage, [groupName]): Promise<KlasaMessage | KlasaMessage[]> {
-		const commandsEmbed: MessageEmbed = new MessageEmbed()
-			.setColor(getEmbedColor(msg))
+		const commandsEmbed: MessageEmbed = baseEmbed(msg)
 			.setFooter(`Comrade! I bring ${this.client.commands.size} commands in this version!`);
 
 		const groups: any[] = fs.readdirSync('commands')
@@ -57,8 +56,8 @@ export default class CommandsCommand extends Command {
 
 				return msg.sendEmbed(commandsEmbed);
 			}
-			return msg.sendSimpleEmbed(`No groups matching that name. Use \`${msg.guild.settings.get(GuildSettings.Prefix)}commands\` to view a list of command groups.`, 3000);
 
+			return msg.sendSimpleEmbed(`No groups matching that name. Use \`${msg.guild.settings.get(GuildSettings.Prefix)}commands\` to view a list of command groups.`, 3000);
 		}
 		commandsEmbed
 			.setTitle('List of Command Groups')
@@ -68,7 +67,6 @@ export default class CommandsCommand extends Command {
 			.addField('❯ Want the complete list of commands?', 'Visit [the website](https://spudnik.io) and check out the commands page: https://docs.spudnik.io/commands/');
 
 		return msg.sendEmbed(commandsEmbed);
-
 	}
 
 }

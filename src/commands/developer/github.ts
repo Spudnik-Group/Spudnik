@@ -4,9 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, Permissions } from 'discord.js';
-import { getEmbedColor } from '@lib/helpers';
 import axios from 'axios';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Returns details for a GitHub repository.
@@ -41,15 +41,12 @@ export default class GithubCommand extends Command {
 	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (query.indexOf('/') === -1) return msg.sendSimpleError('Invalid repository, it must be in the format: `username/repositoryname`');
 
-		const githubEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png',
-				name: 'GitHub',
-				url: 'https://github.com'
-			},
-			color: getEmbedColor(msg),
-			description: ''
-		});
+		const githubEmbed: MessageEmbed = baseEmbed(msg)
+			.setAuthor(
+				'GitHub',
+				'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png',
+				'https://github.com'
+			);
 
 		try {
 			const { data: res } = await axios.get(`https://api.github.com/repos/${query}`, {

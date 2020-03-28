@@ -2,10 +2,11 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { MessageEmbed, User, GuildMember } from 'discord.js';
-import { trimArray, getEmbedColor } from '@lib/helpers';
+import { User, GuildMember } from 'discord.js';
 import { stripIndents } from 'common-tags';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
+import { trimArray } from '@lib/helpers/helpers';
 
 const activities = {
 	LISTENING: 'Listening to',
@@ -51,9 +52,8 @@ export default class UserCommand extends Command {
 	public async run(msg: KlasaMessage, [user]): Promise<KlasaMessage | KlasaMessage[]> {
 		const currentUser: User = user ? user : msg.author;
 		const avatarFormat = currentUser.avatar && currentUser.avatar.startsWith('a_') ? 'gif' : 'png';
-		const userEmbed = new MessageEmbed()
+		const userEmbed = baseEmbed(msg)
 			.setThumbnail(currentUser.displayAvatarURL({ format: avatarFormat }))
-			.setColor(getEmbedColor(msg))
 			.addField('❯ Name', currentUser.tag, true)
 			.addField('❯ ID', currentUser.id, true)
 			.addField('❯ Discord Join Date', new Timestamp('MM/DD/YYYY h:mm A').display(currentUser.createdAt), true)

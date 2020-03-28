@@ -2,11 +2,10 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
-import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { SteamGames } from '@lib/constants';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 const steamGameNames = Object.keys(SteamGames).map(item => `* ${item}`).join('\n');
 
@@ -45,8 +44,7 @@ export default class GoCommand extends Command {
 		}
 		const gameID = SteamGames[game.toUpperCase()];
 
-		return msg.sendEmbed(new MessageEmbed()
-			.setColor(getEmbedColor(msg))
+		return msg.sendEmbed(baseEmbed(msg)
 			.setAuthor(`${msg.author.username}`, `${msg.author.displayAvatarURL()}`)
 			.setThumbnail(`${msg.author.displayAvatarURL()}`)
 			.setTitle('Let\'s Play!')

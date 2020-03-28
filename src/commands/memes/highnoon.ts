@@ -30,7 +30,7 @@ export default class HighNoonCommand extends Command {
 	 * @memberof HighNoonCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		return msg.sendSimpleImage(`IT'S HIGH NOON...`, 'http://imgs.xkcd.com/comics/now.png');
+		return msg.sendSimpleImage("IT'S HIGH NOON...", 'http://imgs.xkcd.com/comics/now.png');
 	}
 
 }
