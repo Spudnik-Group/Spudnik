@@ -38,11 +38,11 @@ export default class NickCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage, [nickName]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (nickName === '' || nickName === undefined) {
-			await (msg.guild.me).setNickname('Spudnik', `${msg.author.username} used Spudnik to reset it.`);
+			await msg.guild.me.setNickname('Spudnik', `${msg.author.username} used Spudnik to reset it.`);
 
 			return msg.sendSimpleEmbed('Bot nickname cleared.');
 		}
-		await (msg.guild.me).setNickname(nickName, `${msg.author.username} used Spudnik to set it.`);
+		await msg.guild.me.setNickname(nickName, `${msg.author.username} used Spudnik to set it.`);
 
 		return msg.sendSimpleEmbed('Bot nickname set.');
 

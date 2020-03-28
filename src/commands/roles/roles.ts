@@ -3,9 +3,9 @@
  */
 
 import { MessageEmbed, Role } from 'discord.js';
-import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import { specialEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Lists default and self-assignable roles.
@@ -31,17 +31,7 @@ export default class RolesCommand extends Command {
 	 * @memberof RolesCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const roleEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/110/lock_1f512.png',
-				name: 'Role Manager'
-			},
-			color: getEmbedColor(msg),
-			footer: {
-				text: 'Use the `iam`/`iamnot` commands to manage your roles'
-			}
-		});
-
+		const roleEmbed: MessageEmbed = specialEmbed(msg, 'role-manager');
 		const guildAssignableRoles: string[] = await msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);
 		const guildDefaultRole: string = await msg.guild.settings.get(GuildSettings.Roles.Default);
 		const guildMutedRole: string = await msg.guild.settings.get(GuildSettings.Roles.Muted);
@@ -55,28 +45,16 @@ export default class RolesCommand extends Command {
 			});
 
 			if (rolesListOut.length) {
-				roleEmbed.fields.push({
-					inline: true,
-					name: 'Assignable Roles',
-					value: `${rolesListOut.sort().join('\n')}`
-				});
+				roleEmbed.addField('Assignable Roles', `${rolesListOut.sort().join('\n')}`, true);
 			}
 		}
 
 		if (guildDefaultRole) {
-			roleEmbed.fields.push({
-				inline: true,
-				name: 'Default Role',
-				value: `<@&${guildDefaultRole}>`
-			});
+			roleEmbed.addField('Default Role', `<@&${guildDefaultRole}>`, true);
 		}
 
 		if (guildMutedRole) {
-			roleEmbed.fields.push({
-				inline: true,
-				name: 'Muted Role',
-				value: `<@&${guildMutedRole}>`
-			});
+			roleEmbed.addField('Muted Role', `<@&${guildMutedRole}>`, true);
 		}
 
 		if (Array.isArray(roleEmbed.fields) && roleEmbed.fields.length === 0) {

@@ -4,9 +4,9 @@
 
 import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
-import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import { specialEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Returns or sets the command prefix.
@@ -41,14 +41,7 @@ export default class PrefixCommand extends Command {
 	 * @memberof PrefixCommand
 	 */
 	public async run(msg: KlasaMessage, [prefix]): Promise<KlasaMessage | KlasaMessage[]> {
-		const prefixEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/memo_1f4dd.png',
-				name: 'Prefix'
-			},
-			color: getEmbedColor(msg),
-			description: ''
-		}).setTimestamp();
+		const prefixEmbed: MessageEmbed = specialEmbed(msg, 'prefix');
 
 		// Just output the prefix
 		if (!prefix) {

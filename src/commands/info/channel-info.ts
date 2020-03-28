@@ -2,9 +2,9 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { TextChannel, MessageEmbed } from 'discord.js';
-import { getEmbedColor } from '@lib/helpers';
+import { TextChannel } from 'discord.js';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Returns info on the specified channel, or the current one.
@@ -35,38 +35,14 @@ export default class ChannelIDCommand extends Command {
 		const channel = content as TextChannel;
 
 		// Send the success response
-		return msg.sendEmbed(new MessageEmbed({
-			color: getEmbedColor(msg),
-			fields: [
-				{
-					name: 'Name',
-					value: channel.name,
-					inline: true
-				},
-				{
-					name: 'ID',
-					value: channel.id,
-					inline: true
-				},
-				{
-					name: 'Topic',
-					value: (channel.topic === null || channel.topic.length < 2) ? '-' : channel.topic,
-					inline: false
-				},
-				{
-					name: 'Created At',
-					value: channel.createdAt.toUTCString(),
-					inline: true
-				},
-				{
-					name: 'Users',
-					value: channel.members.size.toString(),
-					inline: true
-				}
-			],
-			thumbnail: { url: msg.guild.iconURL() },
-			title: channel.type === 'text' ? 'Text Channel Info' : 'Voice Channel Info'
-		}));
+		return msg.sendEmbed(baseEmbed(msg)
+			.addField('Name', channel.name, true)
+			.addField('ID', channel.id, true)
+			.addField('Topic', (channel.topic === null || channel.topic.length < 2) ? '-' : channel.topic, false)
+			.addField('Created At', channel.createdAt.toUTCString(), true)
+			.addField('Users', channel.members.size.toString(), true)
+			.setThumbnail(msg.guild.iconURL())
+			.setTitle(channel.type === 'text' ? 'Text Channel Info' : 'Voice Channel Info'));
 	}
 
 }

@@ -4,9 +4,10 @@
 
 import { stripIndents } from 'common-tags';
 import { Channel, MessageEmbed } from 'discord.js';
-import { getEmbedColor, modLogMessage, resolveChannel, basicFeatureContent } from '@lib/helpers';
+import { resolveChannel } from '@lib/helpers/helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import { basicFeatureContent } from '@lib/helpers/resolvers';
 
 /**
  * Manage notifications when someone leaves the guild.

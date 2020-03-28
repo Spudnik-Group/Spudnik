@@ -3,10 +3,12 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { Channel, MessageEmbed, TextChannel } from 'discord.js';
-import { getEmbedColor, modLogMessage, resolveChannel } from '@lib/helpers';
+import { Channel, TextChannel } from 'discord.js';
+import { modLogMessage } from '@lib/helpers/custom-helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp, Possible } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import { resolveChannel } from '@lib/helpers/helpers';
+import { specialEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Have the bot post an announcement to a pre-configured or specified channel.
@@ -48,8 +50,8 @@ export default class AnnounceCommand extends Command {
 	 */
 	public async direct(msg: KlasaMessage, [channel, text]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (!text) throw new Error('Please include the text for the announcement.');
-		const announceEmbed = this.buildEmbed(msg);
-		const modlogEmbed = this.buildEmbed(msg);
+		const announceEmbed = specialEmbed(msg, 'announcement');
+		const modlogEmbed = specialEmbed(msg, 'announcement');
 		const announceChannel = (msg.guild.channels.get(resolveChannel(channel)) as TextChannel);
 
 		try {
@@ -84,7 +86,7 @@ export default class AnnounceCommand extends Command {
 	 * @memberof AnnounceCommand
 	 */
 	public async channel(msg: KlasaMessage, [channel]): Promise<KlasaMessage | KlasaMessage[]> {
-		const announceEmbed = this.buildEmbed(msg);
+		const announceEmbed = specialEmbed(msg, 'announcement');
 		const announceChannel = await msg.guild.settings.get(GuildSettings.Announce.Channel);
 		const channelID = msg.guild.channels.get(resolveChannel(channel)).id;
 
@@ -116,8 +118,8 @@ export default class AnnounceCommand extends Command {
 	 * @memberof AnnounceCommand
 	 */
 	public async send(msg: KlasaMessage, [text]): Promise<KlasaMessage | KlasaMessage[]> {
-		const announceEmbed = this.buildEmbed(msg);
-		const modlogEmbed = this.buildEmbed(msg);
+		const announceEmbed = specialEmbed(msg, 'announcement');
+		const modlogEmbed = specialEmbed(msg, 'announcement');
 		const announceChannel = (msg.guild.channels.get(await msg.guild.settings.get(GuildSettings.Announce.Channel)) as TextChannel);
 
 		if (announceChannel) {
@@ -197,16 +199,6 @@ export default class AnnounceCommand extends Command {
 
 		// Inform the user the command failed
 		return msg.sendSimpleError(goodbyeUserWarn);
-	}
-
-	private buildEmbed(msg: KlasaMessage): MessageEmbed {
-		return new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/223/public-address-loudspeaker_1f4e2.png',
-				name: 'Announcement'
-			},
-			color: getEmbedColor(msg)
-		}).setTimestamp();
 	}
 
 }

@@ -2,9 +2,9 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { TextChannel, MessageEmbed } from 'discord.js';
-import { getEmbedColor } from '@lib/helpers';
+import { TextChannel } from 'discord.js';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Returns the id of the specified channel, or the current one.
@@ -35,12 +35,12 @@ export default class ChannelIDCommand extends Command {
 		const channel = content as TextChannel;
 
 		// Send the success response
-		return msg.sendEmbed(new MessageEmbed({
-			color: getEmbedColor(msg),
-			description: `Channel ID: ${channel.id}`,
-			thumbnail: { url: msg.guild.iconURL() },
-			title: channel.guild.name
-		}));
+		return msg.sendEmbed(
+			baseEmbed(msg)
+				.setDescription(`Channel ID: ${channel.id}`)
+				.setThumbnail(msg.guild.iconURL())
+				.setTitle(channel.guild.name)
+		);
 	}
 
 }
