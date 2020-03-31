@@ -3,7 +3,7 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { shuffle, verify } from '@lib/helpers';
+import { shuffle, verify } from '@lib/helpers/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import * as events from '../../extras/hunger-games.json';
 

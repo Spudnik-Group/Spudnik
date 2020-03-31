@@ -3,7 +3,7 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { list } from '@lib/helpers';
+import { list } from '@lib/helpers/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { data as sentences } from '../../extras/typing-test.json';
 

@@ -3,9 +3,9 @@
  */
 
 import { MessageEmbed, Permissions, Role } from 'discord.js';
-import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import { specialEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Allows a member to assign a role to themselves.
@@ -35,13 +35,7 @@ export default class IAmNotCommand extends Command {
 	 * @memberof IAmNotCommand
 	 */
 	public async run(msg: KlasaMessage, [roleName]): Promise<KlasaMessage | KlasaMessage[]> {
-		const roleEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/110/lock_1f512.png',
-				name: 'Role Manager'
-			},
-			color: getEmbedColor(msg)
-		});
+		const roleEmbed = specialEmbed(msg, 'role-manager');
 
 		const role = msg.guild.roles.find((r: Role) => r.name.toLowerCase() === roleName.toLowerCase());
 		const guildAssignableRoles = msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);
@@ -50,7 +44,7 @@ export default class IAmNotCommand extends Command {
 			if (!msg.member.roles.has(role.id)) {
 				await msg.member.roles.add(role.id);
 
-				roleEmbed.description = `<@${msg.member.id}>, you now have the ${role.name} role.`;
+				roleEmbed.setDescription(`<@${msg.member.id}>, you now have the ${role.name} role.`);
 
 				return msg.sendEmbed(roleEmbed);
 			}

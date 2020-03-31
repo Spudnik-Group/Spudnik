@@ -3,7 +3,7 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { shuffle } from '@lib/helpers';
+import { shuffle } from '@lib/helpers/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { questions, houses, descriptions } from '../../extras/sorting-hat-quiz.json';
 

@@ -2,8 +2,8 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { getRandomInt, verify } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { verify, getRandomInt } from '@lib/helpers/helpers';
 
 /**
  * Starts a game of Balloon Pop.

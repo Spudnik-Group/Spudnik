@@ -4,10 +4,11 @@
 
 import { stripIndents } from 'common-tags';
 import { Channel, MessageEmbed } from 'discord.js';
-import { getEmbedColor, modLogMessage, resolveChannel } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, Possible, Timestamp } from 'klasa';
 import * as markdownescape from 'markdown-escape';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import { resolveChannel } from '@lib/helpers/helpers';
+import { getEmbedColor, modLogMessage } from '@lib/helpers/custom-helpers';
 
 /**
  * Sets/Shows the terms of service for a guild.

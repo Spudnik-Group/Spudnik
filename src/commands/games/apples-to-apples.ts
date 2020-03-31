@@ -4,10 +4,10 @@
 
 import { stripIndents } from 'common-tags';
 import { Collection } from 'discord.js';
-import { awaitPlayers, shuffle } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import * as data from '../../extras/apples-to-apples.json';
 import * as removeMarkdown from 'remove-markdown';
+import { awaitPlayers, shuffle } from '@lib/helpers/helpers';
 
 /**
  * Starts a game of Apples To Apples.

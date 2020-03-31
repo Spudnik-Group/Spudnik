@@ -3,8 +3,8 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { verify } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { verify } from '@lib/helpers/helpers';
 const emojis = ['⬆', '↗', '➡', '↘', '⬇', '↙', '⬅', '↖'];
 
 /**

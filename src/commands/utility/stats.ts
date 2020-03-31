@@ -3,7 +3,7 @@
  */
 
 import { KlasaMessage, Command, CommandStore } from 'klasa';
-import { getEmbedColor } from '@lib/helpers';
+import { getEmbedColor } from '@lib/helpers/custom-helpers';
 import { loadavg, uptime } from 'os';
 import { version } from '@root/../package.json';
 

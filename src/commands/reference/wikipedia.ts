@@ -3,9 +3,10 @@
  */
 
 import { MessageEmbed } from 'discord.js';
-import { getEmbedColor, shorten } from '@lib/helpers';
+import { shorten } from '@lib/helpers/helpers';
 import * as WikiJS from 'wikijs';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Post a summary from Wikipedia.
@@ -40,9 +41,7 @@ export default class WikiCommand extends Command {
 			const page: any = await WikiJS.default().page(data.results[0]);
 			const summary: string = await page.summary();
 
-			const messageOut: MessageEmbed = new MessageEmbed({
-				color: getEmbedColor(msg)
-			});
+			const messageOut: MessageEmbed = baseEmbed(msg);
 
 			const sumText = summary.split('\n');
 			let paragraph = sumText.shift();

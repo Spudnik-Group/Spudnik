@@ -4,8 +4,8 @@
 
 import { MessageEmbed } from 'discord.js';
 import axios from 'axios';
-import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Post information about a cocktail.
@@ -35,15 +35,12 @@ export default class CocktailCommand extends Command {
 	 * @memberof CocktailCommand
 	 */
 	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
-		const cocktailEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/240/twitter/103/cocktail-glass_1f378.png',
-				name: 'CocktailDB',
-				url: 'http://www.thecocktaildb.com/'
-			},
-			color: getEmbedColor(msg),
-			description: ''
-		});
+		const cocktailEmbed: MessageEmbed = baseEmbed(msg)
+			.setAuthor(
+				'CocktailDB',
+				'https://emojipedia-us.s3.amazonaws.com/thumbs/240/twitter/103/cocktail-glass_1f378.png',
+				'http://www.thecocktaildb.com/'
+			);
 
 		try {
 			const { data: response } = await axios(`http://www.thecocktaildb.com/api/json/v1/1/search.php?s=${encodeURIComponent(query)}`);
@@ -54,21 +51,12 @@ export default class CocktailCommand extends Command {
 				const ratios = this.findSimilarProps(result, 'strMeasure');
 
 				if (result.strInstructions) {
-					const fields = [];
-					let thumbnail = '';
-
-					if (result.strDrinkThumb) {
-						thumbnail = result.strDrinkThumb;
-					} else {
-						thumbnail = 'https://emojipedia-us.s3.amazonaws.com/thumbs/240/twitter/103/tropical-drink_1f379.png';
-					}
-
 					if (result.strGlass) {
-						fields.push({
-							inline: true,
-							name: 'Glass:',
-							value: result.strGlass
-						});
+						cocktailEmbed.addField(
+							'Glass:',
+							result.strGlass,
+							true
+						);
 					}
 
 					if (ingredients) {
@@ -82,21 +70,20 @@ export default class CocktailCommand extends Command {
 								}
 							}
 						});
-						fields.push({
-							inline: true,
-							name: 'Ingredients:',
-							value: ingredientsList
-						});
+						cocktailEmbed.addField(
+							'Ingredients:',
+							ingredientsList,
+							true
+						);
 					}
 
-					fields.push({
-						name: 'Instructions:',
-						value: result.strInstructions
-					});
+					cocktailEmbed.addField(
+						'Instructions:',
+						result.strInstructions
+					);
 
-					cocktailEmbed.title = `__${result.strDrink}__`;
-					cocktailEmbed.thumbnail = { url: thumbnail };
-					cocktailEmbed.fields = fields;
+					cocktailEmbed.setTitle(`__${result.strDrink}__`);
+					cocktailEmbed.setThumbnail(result.strDrinkThumb ? result.strDrinkThumb : 'https://emojipedia-us.s3.amazonaws.com/thumbs/240/twitter/103/tropical-drink_1f379.png');
 				} else {
 					cocktailEmbed.setDescription(`${response.data.drinks[0].strDrink} is a good drink, but I don't have a good way to describe it.`);
 				}

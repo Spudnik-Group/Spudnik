@@ -1,5 +1,6 @@
 import { Message, MessageEmbed, MessageEmbedAuthor, MessageOptions } from 'discord.js';
 import { KlasaMessage, MessageAskOptions, Extendable, ExtendableStore } from 'klasa';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 export default class extends Extendable {
 
@@ -33,9 +34,10 @@ export default class extends Extendable {
 	}
 
 	public async sendSimpleEmbedWithAuthorAndTitle(this: KlasaMessage, description: string, author: MessageEmbedAuthor | null, title: string | null, timeout?: number | null): Promise<KlasaMessage | KlasaMessage[]> {
+		const color = await this.guild.settings.get(GuildSettings.EmbedColor);
 		const promise: Promise<KlasaMessage | KlasaMessage[]> = this.sendEmbed(new MessageEmbed({
 			author,
-			// color
+			color,
 			description,
 			title
 		}));

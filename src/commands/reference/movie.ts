@@ -4,8 +4,8 @@
 
 import axios from 'axios';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-import { MessageEmbed } from 'discord.js';
 import { SpudConfig } from '@lib/config';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 const { tmdbAPIkey } = SpudConfig;
 
@@ -35,7 +35,7 @@ export default class MovieCommand extends Command {
 			const movie = body.results[page - 1];
 			if (!movie) return msg.sendSimpleError(`I couldn't find a movie with title **${query}** in page ${page}.`, 3000);
 
-			const embed = new MessageEmbed()
+			const embed = baseEmbed(msg)
 				.setImage(`https://image.tmdb.org/t/p/original${movie.poster_path}`)
 				.setTitle(`${movie.title} (${page} out of ${body.results.length} results)`)
 				.setDescription(movie.overview)

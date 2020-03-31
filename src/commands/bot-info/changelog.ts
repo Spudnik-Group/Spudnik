@@ -3,9 +3,8 @@
  */
 
 import { CommandStore, KlasaMessage, Command } from 'klasa';
-import { MessageEmbed, Permissions } from 'discord.js';
+import { Permissions } from 'discord.js';
 import axios, { AxiosResponse } from 'axios';
-import { specialEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Returns GitHub release notes for the 3 most recent releases.

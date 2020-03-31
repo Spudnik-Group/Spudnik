@@ -4,7 +4,7 @@
 
 import { stripIndents } from 'common-tags';
 import { Collection } from 'discord.js';
-import { awaitPlayers, delay, shuffle } from '@lib/helpers';
+import { awaitPlayers, delay, shuffle } from '@lib/helpers/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { questions, stories } from '../../extras/mafia.json';
 

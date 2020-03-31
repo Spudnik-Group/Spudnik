@@ -3,8 +3,8 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { getRandomInt, verify } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { verify, getRandomInt } from '@lib/helpers/helpers';
 
 /**
  * Allows users to battle each other or the bot.

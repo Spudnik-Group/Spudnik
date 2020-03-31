@@ -4,9 +4,9 @@
 
 import axios from 'axios';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-import { getEmbedColor } from '@lib/helpers';
 import { MessageEmbed } from 'discord.js';
 import { SpudConfig } from '@lib/config';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 const wolframAppID = SpudConfig.wolframApiKey;
 
@@ -25,15 +25,12 @@ export default class WolframCommand extends Command {
 
 	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (!wolframAppID) return msg.sendSimpleError('No API Key has been set up. This feature is unusable', 3000);
-		const responseEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Mathematica_Logo.svg/1200px-Mathematica_Logo.svg.png',
-				name: 'Wolfram Alpha',
-				url: 'https://wolframalpha.com'
-			},
-			color: getEmbedColor(msg),
-			description: ''
-		});
+		const responseEmbed: MessageEmbed = baseEmbed(msg)
+			.setAuthor(
+				'Wolfram Alpha',
+				'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Mathematica_Logo.svg/1200px-Mathematica_Logo.svg.png',
+				'https://wolframalpha.com'
+			);
 
 		try {
 			const pods = await axios.get('http://api.wolframalpha.com/v2/query', {
@@ -47,11 +44,11 @@ export default class WolframCommand extends Command {
 
 			if (!pods || pods.error) throw new Error("Couldn't find an answer to that question!");
 
-			responseEmbed.fields.push({
-				inline: false,
-				name: '**Input Interpretation:**',
-				value: pods[0].subpods[0].plaintext
-			});
+			responseEmbed.addField(
+				'**Input Interpretation:**',
+				pods[0].subpods[0].plaintext,
+				true
+			);
 
 			let somethingReturned = false;
 
@@ -62,11 +59,11 @@ export default class WolframCommand extends Command {
 			const decForm = pods.find(x => x.title.toLowerCase() === 'decimal form');
 
 			if (plot) {
-				responseEmbed.fields.push({
-					inline: false,
-					name: '**Alternate Form:**',
-					value: altForm.subpods[0].plaintext.substring(0, 1500)
-				});
+				responseEmbed.addField(
+					'**Alternate Form:**',
+					altForm.subpods[0].plaintext.substring(0, 1500),
+					true
+				);
 
 				responseEmbed.setImage(plot.subpods[0].img.src);
 
@@ -74,31 +71,31 @@ export default class WolframCommand extends Command {
 			}
 
 			if (result) {
-				responseEmbed.fields.push({
-					inline: false,
-					name: '**Result:**',
-					value: result.subpods[0].plaintext.substring(0, 1500)
-				});
+				responseEmbed.addField(
+					'**Result:**',
+					result.subpods[0].plaintext.substring(0, 1500),
+					true
+				);
 
 				somethingReturned = true;
 			}
 
 			if (decApprox) {
-				responseEmbed.fields.push({
-					inline: false,
-					name: '**Decimal Approximation:**',
-					value: decApprox.subpods[0].plaintext.substring(0, 1500)
-				});
+				responseEmbed.addField(
+					'**Decimal Approximation:**',
+					decApprox.subpods[0].plaintext.substring(0, 1500),
+					true
+				);
 
 				somethingReturned = true;
 			}
 
 			if (decForm) {
-				responseEmbed.fields.push({
-					inline: false,
-					name: '**Decimal Form:**',
-					value: decForm.subpods[0].plaintext.substring(0, 1500)
-				});
+				responseEmbed.addField(
+					'**Decimal Form:**',
+					decForm.subpods[0].plaintext.substring(0, 1500),
+					true
+				);
 
 				somethingReturned = true;
 			}

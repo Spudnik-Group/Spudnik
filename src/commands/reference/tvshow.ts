@@ -4,8 +4,8 @@
 
 import axios from 'axios';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-import { MessageEmbed } from 'discord.js';
 import { SpudConfig } from '@lib/config';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 const { tmdbAPIkey } = SpudConfig;
 
@@ -35,8 +35,7 @@ export default class TVShowCommand extends Command {
 			const show = body.results[page - 1];
 			if (!show) return msg.sendSimpleError(`I couldn't find a TV show with title **${query}** in page ${page}.`, 3000);
 
-			const embed = new MessageEmbed()
-				.setColor('RANDOM')
+			const embed = baseEmbed(msg)
 				.setImage(`https://image.tmdb.org/t/p/original${show.poster_path}`)
 				.setTitle(`${show.name} (${page} out of ${body.results.length} results)`)
 				.setDescription(show.overview)

@@ -3,7 +3,7 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { list, shuffle } from '@lib/helpers';
+import { list, shuffle } from '@lib/helpers/helpers';
 import axios from 'axios';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 

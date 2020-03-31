@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { delay, getRandomInt, verify } from '@lib/helpers';
+import { delay, getRandomInt, verify } from '@lib/helpers/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 const words = ['fire', 'draw', 'shoot', 'bang', 'pull'];
 

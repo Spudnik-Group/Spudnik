@@ -4,9 +4,9 @@
 
 import { MessageEmbed } from 'discord.js';
 import axios from 'axios';
-import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { SpudConfig } from '@lib/config';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 const { breweryDbApiKey } = SpudConfig;
 
@@ -38,19 +38,13 @@ export default class BrewCommand extends Command {
 	 * @memberof BrewCommand
 	 */
 	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
-		const brewEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/twitter/103/beer-mug_1f37a.png',
-				name: 'BreweryDB',
-				url: 'http://www.brewerydb.com/'
-			},
-			color: getEmbedColor(msg),
-			description: '',
-			footer: {
-				icon_url: 'http://s3.amazonaws.com/brewerydb/Powered-By-BreweryDB.png',
-				text: 'powered by BreweryDB'
-			}
-		});
+		const brewEmbed: MessageEmbed = baseEmbed(msg)
+			.setAuthor(
+				'BreweryDB',
+				'https://emojipedia-us.s3.amazonaws.com/thumbs/120/twitter/103/beer-mug_1f37a.png',
+				'http://www.brewerydb.com/'
+			)
+			.setFooter('powered by BreweryDB', 'http://s3.amazonaws.com/brewerydb/Powered-By-BreweryDB.png');
 
 		try {
 			const { data: response } = await axios(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(query)}&key=${breweryDbApiKey}`);
@@ -59,7 +53,6 @@ export default class BrewCommand extends Command {
 				const result = response.data[0];
 
 				if (result.description) {
-					const fields: any = [];
 					let thumbnail = '';
 
 					if (result.labels) {
@@ -71,50 +64,46 @@ export default class BrewCommand extends Command {
 					}
 
 					if (result.name) {
-						brewEmbed.title = result.name;
+						brewEmbed.setTitle(result.name);
 					}
 
 					if (result.style) {
-						fields.push({
-							name: `Style: ${result.style.name}`,
-							value: result.style.description
-						});
+						brewEmbed.addField(
+							`Style: ${result.style.name}`,
+							result.style.description
+						);
 					}
 
 					if (result.abv) {
-						fields.push({
-							inline: true,
-							name: 'ABV (Alcohol By Volume)',
-							value: `${result.abv}%`
-						});
+						brewEmbed.addField(
+							'ABV (Alcohol By Volume)',
+							`${result.abv}%`,
+							true
+						);
 					}
 
 					if (result.ibu) {
-						fields.push({
-							inline: true,
-							name: 'IBU (International Bitterness Units)',
-							value: `${result.ibu}/100`
-						});
+						brewEmbed.addField(
+							'IBU (International Bitterness Units)',
+							`${result.ibu}/100`,
+							true
+						);
 					}
 
 					if (result.website) {
-						fields.push({
-							inline: true,
-							name: 'Website',
-							value: result.website
-						});
+						brewEmbed.addField(
+							'Website',
+							result.website,
+							true
+						);
 					}
 
 					if (result.established) {
-						fields.push({
-							inline: true,
-							name: 'Year Established',
-							value: result.established
-						});
-					}
-
-					if (fields !== []) {
-						brewEmbed.fields = fields;
+						brewEmbed.addField(
+							'Year Established',
+							result.established,
+							true
+						);
 					}
 
 					if (thumbnail !== '') {

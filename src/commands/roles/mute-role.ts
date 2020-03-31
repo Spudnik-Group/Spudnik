@@ -4,9 +4,10 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, Role, Permissions } from 'discord.js';
-import { getEmbedColor, modLogMessage } from '@lib/helpers';
+import { modLogMessage } from '@lib/helpers/custom-helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import { specialEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Manage setting a mute role.
@@ -41,16 +42,7 @@ export default class MuteRoleCommand extends Command {
 	 * @memberof RoleManagementCommands
 	 */
 	public async run(msg: KlasaMessage, [role]): Promise<KlasaMessage | KlasaMessage[]> {
-		const roleEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/110/lock_1f512.png',
-				name: 'Role Manager'
-			},
-			color: getEmbedColor(msg),
-			footer: {
-				text: 'Use the `roles` command to list the current default, muted, and self-assignable roles'
-			}
-		}).setTimestamp();
+		const roleEmbed = specialEmbed(msg, 'role-manager');
 
 		const guildMuteRole: string = msg.guild.settings.get(GuildSettings.Roles.Muted);
 
