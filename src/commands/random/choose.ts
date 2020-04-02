@@ -2,9 +2,9 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { getEmbedColor, getRandomInt } from '@lib/helpers';
+import { getRandomInt } from '@lib/helpers/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-import { MessageEmbed } from 'discord.js';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Post a random choice of 2 options.
@@ -38,15 +38,10 @@ export default class ChooseCommand extends Command {
 			return msg.sendSimpleError(`I can't choose for you if you don't give me more options!`, 3000);
 		}
 
-		return msg.sendEmbed(new MessageEmbed({
-			author: {
-				iconURL: msg.client.user.displayAvatarURL(),
-				name: `${msg.client.user.username}`
-			},
-			color: getEmbedColor(msg),
-			description: `I choose ${options[getRandomInt(0, options.length)]}`,
-			title: ':thinking:'
-		}), '', { reply: msg.author });
+		return msg.sendEmbed(baseEmbed(msg)
+			.setAuthor(`${msg.client.user.username}`, msg.client.user.displayAvatarURL())
+			.setDescription(`I choose ${options[getRandomInt(0, options.length)]}`)
+			.setTitle(':thinking:'), '', { reply: msg.author });
 	}
 
 }

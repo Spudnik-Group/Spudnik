@@ -4,8 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, User, Permissions } from 'discord.js';
-import { getEmbedColor, modLogMessage } from '@lib/helpers';
+import { modLogMessage } from '@lib/helpers/custom-helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { specialEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Unban a member.
@@ -35,14 +36,7 @@ export default class UnBanCommand extends Command {
 	 * @memberof UnBanCommand
 	 */
 	public async run(msg: KlasaMessage, [user, reason]): Promise<KlasaMessage | KlasaMessage[]> {
-		const unbanEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/hammer_1f528.png',
-				name: 'Un-Ban'
-			},
-			color: getEmbedColor(msg),
-			description: ''
-		}).setTimestamp();
+		const unbanEmbed: MessageEmbed = specialEmbed(msg, 'un-ban');
 
 		try {
 			await msg.guild.members.unban(user, `Un-Banned by: ${msg.author.tag} (${msg.author.id}) for: ${reason}`);

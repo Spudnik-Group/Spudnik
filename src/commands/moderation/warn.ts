@@ -4,9 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { GuildMember, MessageEmbed } from 'discord.js';
-import { getEmbedColor } from '@lib/helpers';
 import { CommandStore, Command, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import { specialEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Warn a member of the guild.
@@ -36,15 +36,7 @@ export default class WarnCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage, [member, points, reason]: [GuildMember, number, string]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (points < 0) return msg.sendSimpleError('Points must be a positive number', 3000);
-		const warnEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/warning-sign_26a0.png',
-				name: 'Warning'
-			},
-			color: getEmbedColor(msg),
-			description: ''
-		}).setTimestamp();
-		let previousPoints = 0;
+		const warnEmbed: MessageEmbed = specialEmbed(msg, 'warn');
 		const guildWarnings = msg.guild.settings.get(GuildSettings.Warnings);
 
 		try {
@@ -59,7 +51,7 @@ export default class WarnCommand extends Command {
 
 			if (currentWarnings) {
 				// Previous warnings present for supplied member
-				previousPoints = currentWarnings.points;
+				const previousPoints = currentWarnings.points;
 				const newPoints = previousPoints + points;
 
 				// Update previous warning points

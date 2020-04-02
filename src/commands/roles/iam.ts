@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { MessageEmbed, Permissions, Role } from 'discord.js';
+import { Permissions, Role } from 'discord.js';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 import { specialEmbed } from '@lib/helpers/embed-helpers';

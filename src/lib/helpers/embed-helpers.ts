@@ -101,6 +101,86 @@ export const specialEmbed = (msg: KlasaMessage, name: string): MessageEmbed => {
 				);
 			break;
 		}
+		case 'kick': {
+			embedOut
+				.setAuthor(
+					'Get Out! - уходить!!',
+					'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/eject-symbol_23cf.png'
+				);
+			break;
+		}
+		case 'move': {
+			embedOut
+				.setAuthor(
+					'Move it!',
+					'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/rightwards-arrow-with-hook_21aa.png'
+				);
+			break;
+		}
+		case 'mute': {
+			embedOut
+				.setAuthor(
+					'Mute',
+					'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/google/223/speaker-with-cancellation-stroke_1f507.png'
+				);
+			break;
+		}
+		case 'un-mute': {
+			embedOut
+				.setAuthor(
+					'Un-Mute',
+					'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/google/223/speaker-with-cancellation-stroke_1f507.png'
+				);
+			break;
+		}
+		case 'prune': {
+			embedOut
+				.setAuthor(
+					'Prune',
+					'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/black-scissors_2702.png'
+				);
+			break;
+		}
+		case 'ban': {
+			embedOut
+				.setAuthor(
+					'Ban Hammer',
+					'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/hammer_1f528.png'
+				);
+			break;
+		}
+		case 'soft-ban': {
+			embedOut
+				.setAuthor(
+					'Ban Hammer (Soft)',
+					'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/hammer_1f528.png'
+				);
+			break;
+		}
+		case 'un-ban': {
+			embedOut
+				.setAuthor(
+					'Un-Ban',
+					'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/hammer_1f528.png'
+				);
+			break;
+		}
+		case 'warn': {
+			embedOut
+				.setAuthor(
+					'Warning',
+					'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/warning-sign_26a0.png'
+				);
+			break;
+		}
+		case 'clear-warn': {
+			embedOut
+				.setAuthor(
+					'Clear Warnings',
+					'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/warning-sign_26a0.png'
+				);
+			break;
+		}
 	}
 
 	return embedOut;

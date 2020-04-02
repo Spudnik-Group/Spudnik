@@ -4,9 +4,10 @@
 
 import { Command, CommandStore, Duration, KlasaMessage, Timestamp } from 'klasa';
 import { MessageEmbed, Permissions } from 'discord.js';
-import { getEmbedColor, modLogMessage } from '@lib/helpers';
+import { modLogMessage } from '@lib/helpers/custom-helpers';
 import { stripIndents } from 'common-tags';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import { specialEmbed } from '@lib/helpers/embed-helpers';
 
 export default class MuteCommand extends Command {
 
@@ -16,19 +17,12 @@ export default class MuteCommand extends Command {
 			permissionLevel: 6, // MANAGE_GUILD
 			requiredPermissions: Permissions.FLAGS.MANAGE_ROLES,
 			requiredSettings: ['roles.muted'],
-			usage: '[when:time] <member:member> [reason:...string]'
+			usage: '<member:member> [reason:...string] [when:time]'
 		});
 	}
 
-	public async run(msg: KlasaMessage, [when, member, reason]): Promise<KlasaMessage | KlasaMessage[]> {
-		const muteEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/google/223/speaker-with-cancellation-stroke_1f507.png',
-				name: 'Mute'
-			},
-			color: getEmbedColor(msg),
-			description: ''
-		}).setTimestamp();
+	public async run(msg: KlasaMessage, [member, reason, when]): Promise<KlasaMessage | KlasaMessage[]> {
+		const muteEmbed: MessageEmbed = specialEmbed(msg, 'mute');
 
 		// Check if user is able to mute the mentioned user
 		if (member.roles.highest.position >= msg.member.roles.highest.position) {

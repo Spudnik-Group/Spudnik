@@ -2,9 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { MessageEmbed } from 'discord.js';
 import axios from 'axios';
-import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
@@ -31,18 +29,11 @@ export default class CatFactCommand extends Command {
 	 * @memberof CatFactCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const responseEmbed: MessageEmbed = new MessageEmbed({
-			color: getEmbedColor(msg),
-			description: '',
-			title: ':cat: Fact'
-		});
-
 		try {
 			const { data } = await axios.get('https://catfact.ninja/fact');
-			responseEmbed.setDescription(data.fact);
 
 			// Send the success response
-			return msg.sendEmbed(responseEmbed);
+			return msg.sendSimpleEmbedWithTitle(data.fact, ':cat: Fact');
 		} catch (err) {
 			msg.client.emit('warn', `Error in command facts:cat-fact: ${err}`);
 

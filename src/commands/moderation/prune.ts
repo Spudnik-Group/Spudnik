@@ -4,8 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, Permissions } from 'discord.js';
-import { getEmbedColor, modLogMessage } from '@lib/helpers';
+import { modLogMessage } from '@lib/helpers/custom-helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { specialEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Deletes previous messages.
@@ -61,19 +62,13 @@ export default class PruneCommand extends Command {
 		try {
 			await msg.channel.bulkDelete(messagesToDelete.reverse());
 			// Log the event in the mod log
-			const modlogEmbed: MessageEmbed = new MessageEmbed({
-				author: {
-					iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/black-scissors_2702.png',
-					name: 'Prune'
-				},
-				color: getEmbedColor(msg),
-				description: stripIndents`
+			const modlogEmbed: MessageEmbed = specialEmbed(msg, 'prune')
+				.setDescription(stripIndents`
 					**Moderator:** ${msg.author.tag} (${msg.author.id})
 					**Action:** Prune
 					**Details:** Deleted ${limit} messages from <#${msg.channel.id}>
 					${filter ? `**Filter:** ${filter}` : ''}
-				`
-			}).setTimestamp();
+				`);
 			await modLogMessage(msg, modlogEmbed);
 
 			return msg.sendSimpleEmbed(`Pruned ${limit} messages`, 5000);

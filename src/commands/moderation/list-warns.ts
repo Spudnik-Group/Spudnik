@@ -4,9 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * List warns for the guild.
@@ -38,14 +38,11 @@ export default class ListWarnsCommand extends Command {
 	 * @memberof ListWarnsCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const warnEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/warning-sign_26a0.png',
-				name: 'Warnings List'
-			},
-			color: getEmbedColor(msg),
-			description: ''
-		});
+		const warnEmbed: MessageEmbed = baseEmbed(msg)
+			.setAuthor(
+				'Warnings List',
+				'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/warning-sign_26a0.png'
+			);
 		const guildWarnings = await msg.guild.settings.get(GuildSettings.Warnings);
 
 		if (guildWarnings.length) {

@@ -4,8 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { GuildMember, MessageEmbed, Permissions } from 'discord.js';
-import { getEmbedColor, modLogMessage } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { specialEmbed } from '@lib/helpers/embed-helpers';
+import { modLogMessage } from '@lib/helpers/custom-helpers';
 
 /**
  * Kick a member from the guild.
@@ -36,14 +37,7 @@ export default class KickCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage, [member, reason]): Promise<KlasaMessage | KlasaMessage[]> {
 		const memberToKick: GuildMember = member;
-		const kickEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/eject-symbol_23cf.png',
-				name: 'Get Out! - уходить!!'
-			},
-			color: getEmbedColor(msg),
-			description: ''
-		}).setTimestamp();
+		const kickEmbed: MessageEmbed = specialEmbed(msg, 'kick');
 
 		// Check if user is able to kick the mentioned user
 		if (!memberToKick.kickable || !(msg.member.roles.highest.comparePositionTo(memberToKick.roles.highest) > 0)) {
