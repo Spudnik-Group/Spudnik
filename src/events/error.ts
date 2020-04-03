@@ -3,7 +3,7 @@
  */
 
 import { Event, Timestamp } from 'klasa';
-import * as Rollbar from 'rollbar';
+import Rollbar from 'rollbar';
 import { SpudConfig } from '@lib/config/spud-config';
 import { stripIndents } from 'common-tags';
 import { TextChannel } from 'discord.js';
