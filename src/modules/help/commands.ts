@@ -57,13 +57,15 @@ export default class CommandsCommand extends Command {
 		const commandsEmbed: MessageEmbed = new MessageEmbed()
 			.setColor(getEmbedColor(msg))
 			.setFooter(`Comrade! I bring ${this.client.registry.commands.size} commands in this version!`);
-		const groups: any[] = this.client.registry.groups.array();
+		const groupsMap: Map<string, any> = this.client.registry.groups;
+		let groups: any[] = [];
+		for (let [key] of groupsMap) {
+			groups.push(key);
+		}
 		
 		if (args.groupName) {
-			const parsedGroup: string = args.groupName.split(' ').join('-').toLowerCase();
-
-			if (groups.find((g: any) => g.id === parsedGroup)) {
-				const commands = this.client.registry.commands.array().filter((command: any) => command.groupID === parsedGroup);
+			if (groups.find((g: any) => g === args.groupName.toLowerCase())) {
+				const commands = this.client.registry.commands.array().filter((command: any) => command.groupID === args.groupName.toLowerCase());
 				commandsEmbed
 					.setTitle(`List of commands in the ${args.groupName} category`)
 					.setDescription(`Use the \`commands\` command to get a list of all ${groups.length} command groups.`)
@@ -81,7 +83,7 @@ export default class CommandsCommand extends Command {
 			commandsEmbed
 				.setTitle('List of Command Groups')
 				.setDescription(`Run \`${msg.guild.commandPrefix}commands <groupName>\` to view all the commands in the given group.`)
-				.addField('❯ Command Groups', `\`\`\`css\n${groups.map((g: any) => g.name).join('\n')}\`\`\``)
+				.addField('❯ Command Groups', `\`\`\`css\n${groups.join('\n')}\`\`\``)
 				.addField('❯ Need more details?', `Run \`${msg.guild.commandPrefix}help <commandName>\``)
 				.addField('❯ Want the complete list of commands?', 'Visit [the website](https://spudnik.io) and check out the commands page: https://docs.spudnik.io/commands/');
 			
