@@ -36,7 +36,7 @@
         "@klasa/utils": "^0.0.4",
         "axios": "^0.19.0",
         "bufferutil": "^4.0.1",
-        "chalk": "^2.4.2",
+        "chalk": "^4.0.0",
         "d20": "^1.4.1",
         "discord.js": "discordjs/discord.js#fe7df70",
         "erlpack": "github:discordapp/erlpack",

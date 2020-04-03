@@ -15,6 +15,8 @@
 		"noUnusedLocals": true,
 		"moduleResolution": "node",
 		"baseUrl": "./src",
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
 		"experimentalDecorators": true,
 		"resolveJsonModule": true,
 		"forceConsistentCasingInFileNames": true,
