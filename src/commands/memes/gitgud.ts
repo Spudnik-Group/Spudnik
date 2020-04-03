@@ -4,6 +4,7 @@
 
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed } from 'discord.js';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Post the "gitgud" image at someone.
@@ -34,7 +35,7 @@ export default class GitGudCommand extends Command {
 		const gitgudImageURL = 'http://i.imgur.com/NqpPXHu.jpg';
 
 		if (mention && mention !== null) {
-			return msg.sendEmbed(new MessageEmbed({ image: { url: gitgudImageURL } }), '', {
+			return msg.sendEmbed(baseEmbed(msg).setImage(gitgudImageURL), '', {
 				reply: mention
 			});
 		}
