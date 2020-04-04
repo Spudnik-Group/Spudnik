@@ -19,11 +19,12 @@ export default class EmbedColorCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
+			aliases: ['embedcolor'],
 			description: 'Used to change the default embed color the bot uses for responses, or reset it.',
 			extendedHelp: stripIndents`
 				Supplying no hex color resets the embed color to default.
 			`,
-			name: 'embedcolor',
+			name: 'embed-color',
 			permissionLevel: 6, // MANAGE_GUILD
 			usage: '[color:string]'
 		});
@@ -39,7 +40,7 @@ export default class EmbedColorCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof EmbedColorCommand
 	 */
-	public async run(msg: KlasaMessage, [color]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [color]: string[]): Promise<KlasaMessage | KlasaMessage[]> {
 		const embedColorEmbed: MessageEmbed = new MessageEmbed({
 			author: {
 				iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/artist-palette_1f3a8.png',
@@ -49,6 +50,15 @@ export default class EmbedColorCommand extends Command {
 		}).setTimestamp();
 
 		if (color) {
+			color = color.toUpperCase();
+			if (!(/^[0-9A-F]{3}([0-9A-F]{3})?$/i.test(color))) {
+				return msg.sendSimpleEmbed(`${color} is not a valid hex code.`, 3000);
+			}
+			
+			if (color.length === 3) {
+				color = color.split('').map(l => l.concat(l)).join('');
+			}
+			
 			try {
 				await msg.guild.settings.update(GuildSettings.EmbedColor, color);
 
