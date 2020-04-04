@@ -20,7 +20,7 @@ export default class BlacklistCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: (language: any) => language.get('COMMAND_BLACKLIST_DESCRIPTION'),
+			description: 'Blacklists or un-blacklists users and guilds from the bot.',
 			guarded: true,
 			hidden: true,
 			permissionLevel: 9, // BOT OWNER
@@ -46,7 +46,7 @@ export default class BlacklistCommand extends Command {
 
 				if (type === 'user') {
 					const userBlacklist = this.client.settings.get(ClientSettings.Blacklist.Users);
-
+					
 					if (userBlacklist.includes(userOrGuild.id || userOrGuild)) {
 						changes[this.terms.indexOf(`usersRemoved`)].push(userOrGuild.name || userOrGuild.username || userOrGuild);
 					} else {
