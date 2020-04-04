@@ -55,20 +55,24 @@ export default class EnableCommand extends Command {
 				.filter(path => fs.statSync(`commands/${path}`).isDirectory());
 			const parsedGroup: string = cmdOrCat.toLowerCase();
 
+			const group = groups.find((g: string) => g === parsedGroup);
+			if (!group) {
+				return msg.sendSimpleEmbed(`No groups matching that name. Use \`${msg.guild.settings.get(GuildSettings.Prefix)}commands\` to view a list of command groups.`, 3000);
+			}
+
 			if (isCommandCategoryEnabled(msg, cmdOrCat)) {
 				return msg.sendSimpleError(`The \`${cmdOrCat}\` category is already enabled.`, 3000);
-			} else if (groups.find((g: string) => g === parsedGroup)) {
-				await msg.guild.settings.update(GuildSettings.Commands.DisabledCategories, cmdOrCat.toLowerCase());
+			} 
+			
+			await msg.guild.settings.update(GuildSettings.Commands.DisabledCategories, cmdOrCat.toLowerCase());
 
-				enableEmbed.setDescription(stripIndents`
-					**Moderator:** ${msg.author.tag} (${msg.author.id})
-					**Action:** Enabled the \`${cmdOrCat}\` category.`);
+			enableEmbed.setDescription(stripIndents`
+				**Moderator:** ${msg.author.tag} (${msg.author.id})
+				**Action:** Enabled the \`${cmdOrCat}\` category.`);
 
-				await modLogMessage(msg, enableEmbed);
+			await modLogMessage(msg, enableEmbed);
 
-				return msg.sendEmbed(enableEmbed);
-			}
-			return msg.sendSimpleEmbed(`No groups matching that name. Use \`${msg.guild.settings.get(GuildSettings.Prefix)}commands\` to view a list of command groups.`, 3000);
+			return msg.sendEmbed(enableEmbed);
 
 		}
 		// Command
