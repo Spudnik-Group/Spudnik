@@ -3,7 +3,7 @@
  */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 import { Client } from 'klasa';
 import * as http from 'http';
 import { SpudConfig } from './config/spud-config';

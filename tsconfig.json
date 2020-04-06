@@ -6,6 +6,7 @@
 			"esnext",
 			"dom"
 		],
+		"esModuleInterop": true,
 		"sourceMap": true,
 		"allowJs": true,
 		"checkJs": true,
