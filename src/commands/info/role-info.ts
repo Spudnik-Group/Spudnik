@@ -6,6 +6,7 @@ import { Command, CommandStore, Timestamp, KlasaMessage } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 import { perms } from '@lib/constants/permissions';
 import { baseEmbed } from '@lib/helpers/embed-helpers';
+import { Role } from 'discord.js';
 
 export default class RoleInfoComand extends Command {
 
@@ -20,8 +21,8 @@ export default class RoleInfoComand extends Command {
 		this.timestamp = new Timestamp('dddd, MMMM d YYYY');
 	}
 
-	public async run(msg: KlasaMessage, [role]): Promise<KlasaMessage | KlasaMessage[]> {
-		const allPermissions = Object.entries(role.permissions.serialize()).filter(perm => perm[1]).map(([perm]) => perms[perm])
+	public async run(msg: KlasaMessage, [role]: [Role]): Promise<KlasaMessage | KlasaMessage[]> {
+		const allPermissions = Object.entries(role.permissions.serialize()).filter((perm: [string, boolean]) => perm[1]).map(([perm]: [string, boolean]) => perms[perm])
 			.join(', ');
 		const defaultRole = msg.guild.settings.get(GuildSettings.Roles.Default);
 
@@ -30,7 +31,7 @@ export default class RoleInfoComand extends Command {
 			.setAuthor(role.name)
 			.addField('❯ Name', role.name, true)
 			.addField('❯ ID', role.id, true)
-			.addField('❯ Is Default Role', defaultRole === role, true)
+			.addField('❯ Is Default Role', defaultRole === role.toString(), true)
 			.addField('❯ Members', role.members.size, true)
 			.addField('❯ Creation Date', this.timestamp.display(role.createdAt), true)
 			.addField('❯ Hoisted', role.hoist ? 'Yes' : 'No', true)

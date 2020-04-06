@@ -2,8 +2,9 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { delay, getRandomInt, verify } from '@lib/helpers/helpers';
+import { delay, getRandomInt, verify } from '@lib/helpers/base';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { User } from 'discord.js';
 const words = ['fire', 'draw', 'shoot', 'bang', 'pull'];
 
 /**
@@ -15,7 +16,7 @@ const words = ['fire', 'draw', 'shoot', 'bang', 'pull'];
  */
 export default class GunFightCommand extends Command {
 
-	private fighting = new Set();
+	private fighting: Set<string> = new Set();
 
 	/**
 	 * Creates an instance of GunFightCommand.
@@ -40,7 +41,7 @@ export default class GunFightCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof GunFightCommand
 	 */
-	public async run(msg: KlasaMessage, [opponent]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [opponent]: [User]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (opponent.bot) return msg.sendMessage('Bots may not be fought.', { reply: msg.author });
 
 		if (opponent.id === msg.author.id) return msg.sendMessage('You may not fight yourself.', { reply: msg.author });
@@ -66,7 +67,7 @@ export default class GunFightCommand extends Command {
 
 			await msg.sendMessage(`TYPE \`${word.toUpperCase()}\` NOW!`);
 
-			const filter = (res: any) => [opponent.id, msg.author.id].includes(res.author.id) && res.content.toLowerCase() === word;
+			const filter = (res: any): boolean => [opponent.id, msg.author.id].includes(res.author.id) && res.content.toLowerCase() === word;
 			const winner: any = await msg.channel.awaitMessages(filter, {
 				max: 1,
 				time: 30000

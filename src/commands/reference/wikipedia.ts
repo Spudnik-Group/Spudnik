@@ -3,7 +3,7 @@
  */
 
 import { MessageEmbed } from 'discord.js';
-import { shorten } from '@lib/helpers/helpers';
+import { shorten } from '@lib/helpers/base';
 import * as WikiJS from 'wikijs';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { baseEmbed } from '@lib/helpers/embed-helpers';
@@ -35,7 +35,7 @@ export default class WikiCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof WikiCommand
 	 */
-	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [query]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		try {
 			const data: any = await WikiJS.default().search(query, 1);
 			const page: any = await WikiJS.default().page(data.results[0]);

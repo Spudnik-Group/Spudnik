@@ -4,7 +4,7 @@
 
 import { stripIndents } from 'common-tags';
 import { Channel, MessageEmbed } from 'discord.js';
-import { resolveChannel } from '@lib/helpers/helpers';
+import { resolveChannel } from '@lib/helpers/base';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 import { basicFeatureContent } from '@lib/helpers/resolvers';
@@ -48,7 +48,7 @@ export default class GoodbyeCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof GoodbyeCommand
 	 */
-	public async message(msg: KlasaMessage, [content]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async message(msg: KlasaMessage, [content]: string): Promise<KlasaMessage | KlasaMessage[]> {
 		const goodbyeEmbed = specialEmbed(msg, 'goodbye');
 
 		try {
@@ -76,7 +76,7 @@ export default class GoodbyeCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof GoodbyeCommand
 	 */
-	public async channel(msg: KlasaMessage, [content]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async channel(msg: KlasaMessage, [content]: string): Promise<KlasaMessage | KlasaMessage[]> {
 		const goodbyeEmbed = specialEmbed(msg, 'goodbye');
 		const goodbyeChannel = await msg.guild.settings.get(GuildSettings.Goodbye.Channel);
 		const channelID = msg.guild.channels.get(resolveChannel(content)).id;

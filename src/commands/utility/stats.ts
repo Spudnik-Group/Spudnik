@@ -6,6 +6,7 @@ import { KlasaMessage, Command, CommandStore } from 'klasa';
 import { getEmbedColor } from '@lib/helpers/custom-helpers';
 import { loadavg, uptime } from 'os';
 import { version } from '@root/../package.json';
+import { Guild } from 'discord.js';
 
 /**
  * Returns statistics about the bot.
@@ -40,7 +41,7 @@ export default class StatsCommand extends Command {
 			CHANNELS: this.client.channels.size.toLocaleString(),
 			GUILDS: this.client.guilds.size.toLocaleString(),
 			NODE_JS: process.version,
-			USERS: this.client.guilds.reduce((a, b) => a + b.memberCount, 0).toLocaleString(),
+			USERS: this.client.guilds.reduce((a: number, b: Guild) => a + b.memberCount, 0).toLocaleString(),
 			VERSION: `v${version}`
 		};
 	}
@@ -56,7 +57,7 @@ export default class StatsCommand extends Command {
 	private get usageStatistics(): StatsUsage {
 		const usage = process.memoryUsage();
 		return {
-			CPU_LOAD: loadavg().map(load => Math.round(load * 10000) / 100) as [number, number, number],
+			CPU_LOAD: loadavg().map((load: number) => Math.round(load * 10000) / 100) as [number, number, number],
 			RAM_TOTAL: `${Math.round(100 * (usage.heapTotal / 1048576)) / 100}MB`,
 			RAM_USED: `${Math.round(100 * (usage.heapUsed / 1048576)) / 100}MB`
 		};

@@ -7,7 +7,7 @@ import { Channel, TextChannel } from 'discord.js';
 import { modLogMessage } from '@lib/helpers/custom-helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp, Possible } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
-import { resolveChannel } from '@lib/helpers/helpers';
+import { resolveChannel } from '@lib/helpers/base';
 import { specialEmbed } from '@lib/helpers/embed-helpers';
 
 /**
@@ -31,7 +31,7 @@ export default class AnnounceCommand extends Command {
 			usage: '<channel|send|direct> <content:content> [text:...string]'
 		});
 
-		this.createCustomResolver('content', (arg: string, possible: Possible, message: KlasaMessage, [subCommand]) => {
+		this.createCustomResolver('content', (arg: string, possible: Possible, message: KlasaMessage, [subCommand]: [string]) => {
 			if (subCommand === 'channel' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw new Error('Please provide a valid channel for the announcements to be displayed in.');
 			if (subCommand === 'send' && !arg) throw new Error('Please include the text for the announcement.');
 			if (subCommand === 'direct' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw new Error('Please provide a valid channel for the announcement to be displayed in.');
@@ -48,7 +48,7 @@ export default class AnnounceCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof AnnounceCommand
 	 */
-	public async direct(msg: KlasaMessage, [channel, text]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async direct(msg: KlasaMessage, [channel, text]: Array<string>): Promise<KlasaMessage | KlasaMessage[]> {
 		if (!text) throw new Error('Please include the text for the announcement.');
 		const announceEmbed = specialEmbed(msg, 'announcement');
 		const modlogEmbed = specialEmbed(msg, 'announcement');
@@ -85,7 +85,7 @@ export default class AnnounceCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof AnnounceCommand
 	 */
-	public async channel(msg: KlasaMessage, [channel]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async channel(msg: KlasaMessage, [channel]: string): Promise<KlasaMessage | KlasaMessage[]> {
 		const announceEmbed = specialEmbed(msg, 'announcement');
 		const announceChannel = await msg.guild.settings.get(GuildSettings.Announce.Channel);
 		const channelID = msg.guild.channels.get(resolveChannel(channel)).id;
@@ -117,7 +117,7 @@ export default class AnnounceCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof AnnounceCommand
 	 */
-	public async send(msg: KlasaMessage, [text]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async send(msg: KlasaMessage, [text]: string): Promise<KlasaMessage | KlasaMessage[]> {
 		const announceEmbed = specialEmbed(msg, 'announcement');
 		const modlogEmbed = specialEmbed(msg, 'announcement');
 		const announceChannel = (msg.guild.channels.get(await msg.guild.settings.get(GuildSettings.Announce.Channel)) as TextChannel);

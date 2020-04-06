@@ -33,7 +33,7 @@ export default class RollCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof RollCommand
 	 */
-	public async run(msg: KlasaMessage, [roll = 6, reason]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [roll = 6, reason]: [string|number, string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const result = require('d20').roll(roll);
 		const diceEmbed: MessageEmbed = baseEmbed(msg)
 			.setTitle(':game_die: Dice Roller');

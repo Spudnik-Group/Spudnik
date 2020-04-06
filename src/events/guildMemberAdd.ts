@@ -9,7 +9,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 export default class extends Event {
 
-	public async run(member: GuildMember) {
+	public async run(member: GuildMember): Promise<void> {
 		const { guild } = member;
 		if (SpudConfig.botListGuilds.includes(guild.id)) return; // Guild is on Blacklist, ignore.
 		const welcomeEnabled = guild.settings.get(GuildSettings.Welcome.Enabled);

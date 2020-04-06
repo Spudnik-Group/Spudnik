@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { GuildMember, Message, MessageEmbed, TextChannel, Permissions } from 'discord.js';
+import { GuildMember, Message, MessageEmbed, TextChannel, Permissions, MessageAttachment, Channel } from 'discord.js';
 import { modLogMessage } from '@lib/helpers/custom-helpers';
 import { stripIndents } from 'common-tags';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
@@ -35,7 +35,7 @@ export default class MoveCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof MoveCommand
 	 */
-	public async run(msg: KlasaMessage, [message, channel, reason]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [message, channel, reason]: [Message, Channel, string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const originalChannel = msg.channel as TextChannel;
 		const originalMessage: Message = await originalChannel.messages.fetch(message.id);
 		const originalMessageAuthor: GuildMember = await originalChannel.guild.members.fetch(originalMessage.author.id);
@@ -67,7 +67,7 @@ export default class MoveCommand extends Command {
 				}
 
 				// Add attachments, if any
-				if (originalMessage.attachments.some(attachment => attachment.url !== '')) {
+				if (originalMessage.attachments.some((attachment: MessageAttachment) => attachment.url !== '')) {
 					moveMessage.setImage(originalMessage.attachments.first().url);
 				}
 

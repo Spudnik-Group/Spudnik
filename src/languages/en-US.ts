@@ -3,6 +3,8 @@ import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
 import { LanguageKeys } from '@lib/types/Language';
 
+/* eslint-disable */
+
 const PERMS = {
 	ADMINISTRATOR: 'Administrator',
 	VIEW_AUDIT_LOG: 'View Audit Log',

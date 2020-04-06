@@ -3,8 +3,9 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { verify } from '@lib/helpers/helpers';
+import { verify } from '@lib/helpers/base';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { User } from 'discord.js';
 
 /**
  * Starts a game of Tic Tac Toe.
@@ -15,7 +16,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  */
 export default class TicTacToeCommand extends Command {
 
-	private playing = new Set();
+	private playing: Set<string> = new Set();
 
 	/**
 	 * Creates an instance of TicTacToeCommand.
@@ -42,7 +43,7 @@ export default class TicTacToeCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof TicTacToeCommand
 	 */
-	public async run(msg: KlasaMessage, [opponent]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [opponent]: [User]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (opponent.bot) return msg.sendMessage('Bots may not be played against.', { reply: msg.author });
 		if (opponent.id === msg.author.id) return msg.sendMessage('You may not play against yourself.', { reply: msg.author });
 		if (this.playing.has(msg.channel.id)) return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author });
@@ -78,7 +79,7 @@ export default class TicTacToeCommand extends Command {
 					\`\`\`
 				`);
 
-				const filter = (res: any) => {
+				const filter = (res: any): boolean => {
 					const choice = res.content;
 
 					return res.author.id === user.id && sides.includes(choice) && !taken.includes(choice);

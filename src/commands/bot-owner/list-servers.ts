@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { MessageEmbed } from 'discord.js';
+import { MessageEmbed, Guild } from 'discord.js';
 import { stripIndents } from 'common-tags';
 import { Command, CommandStore, KlasaMessage, RichDisplay, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
@@ -46,7 +46,7 @@ export default class ListServersCommand extends Command {
 		for (let i = 0; i < noOfPages; i++) {
 			guilds = guilds.slice(i * 5, (i * 5) + 5);
 			display.addPage((template: MessageEmbed) => {
-				guilds.forEach(guild => {
+				guilds.forEach((guild: Guild) => {
 					template.addField(
 						guild.name,
 						stripIndents`

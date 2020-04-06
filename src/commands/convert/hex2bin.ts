@@ -29,7 +29,7 @@ export default class Hex2BinCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof Hex2BinCommand
 	 */
-	public async run(msg: KlasaMessage, [numberToConvert]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [numberToConvert]: [any]): Promise<KlasaMessage | KlasaMessage[]> {
 		numberToConvert = numberToConvert.input;
 		numberToConvert = numberToConvert.toLowerCase().startsWith('0x') ? `0x${numberToConvert.toLowerCase().replace('0x', '').toUpperCase()}` : `0x${numberToConvert.toUpperCase()}`;
 

@@ -30,7 +30,7 @@ export default class Base64EncodeCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof Base64EncodeCommand
 	 */
-	public async run(msg: KlasaMessage, [stringToEncode]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [stringToEncode]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		console.log(stringToEncode);
 		console.log(Convert.base64encode(stringToEncode));
 

@@ -40,7 +40,7 @@ export default class EmbedColorCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof EmbedColorCommand
 	 */
-	public async run(msg: KlasaMessage, [color]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [color]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const embedColorEmbed: MessageEmbed = specialEmbed(msg, 'embed-color');
 
 		if (color) {

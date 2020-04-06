@@ -3,7 +3,7 @@
  */
 
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
-import { MessageEmbed, Permissions } from 'discord.js';
+import { MessageEmbed, Permissions, GuildMember } from 'discord.js';
 import { modLogMessage } from '@lib/helpers/custom-helpers';
 import { stripIndents } from 'common-tags';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
@@ -21,7 +21,7 @@ export default class UnmuteCommand extends Command {
 		});
 	}
 
-	public async run(msg: KlasaMessage, [member, reason]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [member, reason]: [GuildMember, string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const muteEmbed: MessageEmbed = specialEmbed(msg, 'un-mute');
 
 		// Check if user is able to mute the mentioned user

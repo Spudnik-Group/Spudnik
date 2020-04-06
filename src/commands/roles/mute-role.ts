@@ -41,10 +41,10 @@ export default class MuteRoleCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof RoleManagementCommands
 	 */
-	public async run(msg: KlasaMessage, [role]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [role]: [Role]): Promise<KlasaMessage | KlasaMessage[]> {
 		const roleEmbed = specialEmbed(msg, 'role-manager');
 
-		const guildMuteRole: string = msg.guild.settings.get(GuildSettings.Roles.Muted);
+		const guildMuteRole = await msg.guild.roles.fetch(msg.guild.settings.get(GuildSettings.Roles.Muted));
 
 		if (!role) {
 			try {

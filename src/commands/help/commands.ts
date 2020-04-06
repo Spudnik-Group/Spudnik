@@ -35,12 +35,12 @@ export default class CommandsCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof CommandsCommand
 	 */
-	public async run(msg: KlasaMessage, [groupName]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [groupName]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const commandsEmbed: MessageEmbed = baseEmbed(msg)
 			.setFooter(`Comrade! I bring ${this.client.commands.size} commands in this version!`);
 
 		const groups: any[] = fs.readdirSync('commands')
-			.filter(path => fs.statSync(`commands/${path}`).isDirectory());
+			.filter((path: string) => fs.statSync(`commands/${path}`).isDirectory());
 
 		if (groupName) {
 			const parsedGroup: string = groupName.toLowerCase();

@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { getRandomInt } from '@lib/helpers/helpers';
+import { getRandomInt } from '@lib/helpers/base';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import * as fishes from '../../extras/fish.json';
 

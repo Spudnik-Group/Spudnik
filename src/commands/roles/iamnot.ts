@@ -34,7 +34,7 @@ export default class IAmNotCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof IAmNotCommand
 	 */
-	public async run(msg: KlasaMessage, [roleName]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [roleName]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const roleEmbed = specialEmbed(msg, 'role-manager');
 
 		const role = msg.guild.roles.find((r: Role) => r.name.toLowerCase() === roleName.toLowerCase());

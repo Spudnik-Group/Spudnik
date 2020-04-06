@@ -3,13 +3,13 @@
  */
 
 import { Task, Colors } from 'klasa';
-import { Guild, PresenceData } from 'discord.js';
+import { Guild, PresenceData, Presence } from 'discord.js';
 import { createPick } from '@lib//utils/util';
 import { version } from '../../package.json';
 
 export default class extends Task {
 
-	public run() {
+	public run(): Promise<Presence> {
 		this.client.emit('verbose', new Colors({ text: 'lightblue' }).format('[STATUS UPDATE]'));
 
 		const defaultPrefix = this.client.options.prefix;
@@ -97,7 +97,7 @@ export default class extends Task {
 		return this.client.user.setPresence(statuses());
 	}
 
-	public async init() {
+	public init(): Promise<Presence> {
 		return this.run();
 	}
 

@@ -35,7 +35,7 @@ export default class XkcdCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof XkcdCommand
 	 */
-	public async run(msg: KlasaMessage, [comicNumber]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [comicNumber]: [number]): Promise<KlasaMessage | KlasaMessage[]> {
 		const xkcdEmbed: MessageEmbed = baseEmbed(msg);
 
 		let url = 'http://xkcd.com/';

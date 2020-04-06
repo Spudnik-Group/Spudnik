@@ -44,7 +44,7 @@ export default class NPMCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof NPMCommand
 	 */
-	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [query]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const npmEmbed: MessageEmbed = baseEmbed(msg)
 			.setAuthor(
 				'NPM',

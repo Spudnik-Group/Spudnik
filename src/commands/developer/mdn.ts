@@ -38,7 +38,7 @@ export default class MdnReferenceCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof MdnReferenceCommand
 	 */
-	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [query]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const mdnEmbed: MessageEmbed = baseEmbed(msg)
 			.setAuthor(
 				'Mozilla Developer Network',
@@ -64,7 +64,7 @@ export default class MdnReferenceCommand extends Command {
 		? `
 
 					__Similar related pages__:
-					${response.documents.slice(1, 4).map(({ url, slug }, index: number) => `${index + 1}) [${slug}](${url})`).join('\n')}`
+					${response.documents.slice(1, 4).map(({ url, slug }: {url: string; slug: string}, index: number) => `${index + 1}) [${slug}](${url})`).join('\n')}`
 		: ''}
 
 

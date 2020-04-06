@@ -11,7 +11,7 @@ export default class extends Event {
 		if (this.client.options.production) this.unload();
 	}
 
-	public run(err) {
+	public run(err: any): void {
 		if (!err) return;
 		this.client.emit('error', `Uncaught Promise Error: \n${err.stack || err}`);
 	}

@@ -3,7 +3,7 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { GuildMember } from 'discord.js';
+import { GuildMember, Activity } from 'discord.js';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
@@ -34,7 +34,7 @@ export default class PlayingCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof PlayingCommand
 	 */
-	public async run(msg: KlasaMessage, [game]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [game]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const gameSearch = game ? game.toLowerCase() : '';
 		const gamePlayers: { [id: string]: Array<GuildMember> } = {};
 
@@ -43,7 +43,7 @@ export default class PlayingCommand extends Command {
 				return;
 			}
 
-			const game = member.presence.activities.find(x => x.name.includes(gameSearch));
+			const game = member.presence.activities.find((x: Activity) => x.name.includes(gameSearch));
 			if (!game) {
 				return;
 			}
@@ -55,13 +55,13 @@ export default class PlayingCommand extends Command {
 		});
 
 		const sortedMessage = Object.keys(gamePlayers).sort()
-			.map(game => `**${gamePlayers[game][0].presence.activities.find(x => x.name === game).name}**\n${
-				gamePlayers[game].sort((a, b) => {
+			.map((game: string) => `**${gamePlayers[game][0].presence.activities.find((x: Activity) => x.name === game).name}**\n${
+				gamePlayers[game].sort((a: GuildMember, b: GuildMember) => {
 					const aName = a.displayName.toLowerCase();
 					const bName = b.displayName.toLowerCase();
 
 					return aName < bName ? -1 : aName > bName ? 1 : 0;
-				}).map(member => `<@${member.id}>`)
+				}).map((member: GuildMember) => `<@${member.id}>`)
 					.join('\n')}`)
 			.join('\n\n');
 

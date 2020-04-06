@@ -6,7 +6,7 @@ import { stripIndents } from 'common-tags';
 import { Collection } from 'discord.js';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import * as data from '../../extras/wizard-convention.json';
-import { awaitPlayers, delay, shuffle } from '@lib/helpers/helpers';
+import { awaitPlayers, delay, shuffle } from '@lib/helpers/base';
 
 /**
  * Starts a game of Wizard Convention.
@@ -17,7 +17,7 @@ import { awaitPlayers, delay, shuffle } from '@lib/helpers/helpers';
  */
 export default class WizardConventionCommand extends Command {
 
-	private playing = new Set();
+	private playing: Set<string> = new Set();
 
 	/**
 	 * Creates an instance of WizardConventionCommand.
@@ -77,7 +77,7 @@ export default class WizardConventionCommand extends Command {
 						${valid.map((p: any, i: number) => `**${i + 1}.** ${p.user.tag}`).join('\n')}
 					`);
 
-					const filter = (res: any) => valid[Number.parseInt(res.content, 10) - 1];
+					const filter = (res: any): boolean => valid[Number.parseInt(res.content, 10) - 1];
 					const decision = await player.user.dmChannel.awaitMessages(filter, {
 						max: 1,
 						time: 120000
@@ -142,7 +142,7 @@ export default class WizardConventionCommand extends Command {
 
 				const voted: any[] = [];
 
-				const filter = (res: any) => {
+				const filter = (res: any): boolean => {
 					if (!players.exists((p: any) => p.user.id === res.author.id)) return false;
 					if (voted.includes(res.author.id)) return false;
 					if (!playersArr[Number.parseInt(res.content, 10) - 1]) return false;
@@ -185,7 +185,7 @@ export default class WizardConventionCommand extends Command {
 		}
 	}
 
-	private async generatePlayers(list: any) {
+	private async generatePlayers(list: any): Promise<void> {
 		let roles = ['dragon', 'healer', 'mind reader'];
 
 		for (let i = 0; i < (list.length - 2); i++) roles.push(`pleb ${i + 1}`);
@@ -206,7 +206,7 @@ export default class WizardConventionCommand extends Command {
 		}
 	}
 
-	private getExpelled(votes: any, players: any, playersArr: any) {
+	private getExpelled(votes: any, players: any, playersArr: any): any {
 		const counts: any = new Collection();
 
 		for (const vote of votes.values()) {

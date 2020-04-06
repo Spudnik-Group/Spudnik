@@ -15,7 +15,7 @@ export default class HastebinCommand extends Command {
 		});
 	}
 
-	public async run(msg: KlasaMessage, [code]: [string]) {
+	public async run(msg: KlasaMessage, [code]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		try {
 			const { data } = await axios.post('https://hastebin.com/documents', code);
 

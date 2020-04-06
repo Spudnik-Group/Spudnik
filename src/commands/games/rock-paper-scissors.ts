@@ -37,7 +37,7 @@ export default class RockPaperScissorsCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof RockPaperScissorsCommand
 	 */
-	public async run(msg: KlasaMessage, [choice]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [choice]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const response = choices[Math.floor(Math.random() * choices.length)];
 
 		if (choice.toLowerCase() === 'rock') {

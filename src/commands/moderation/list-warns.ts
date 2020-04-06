@@ -5,7 +5,7 @@
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import { GuildSettings, Warning } from '@lib/types/settings/GuildSettings';
 import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 /**
@@ -48,7 +48,7 @@ export default class ListWarnsCommand extends Command {
 		if (guildWarnings.length) {
 			// Warnings present for current guild
 			// Build embed
-			guildWarnings.forEach(warning => {
+			guildWarnings.forEach((warning: Warning) => {
 				warnEmbed.description += stripIndents`
 
 						<@${warning.id}> (${warning.id}) - ${warning.points} Points

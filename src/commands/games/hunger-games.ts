@@ -3,9 +3,10 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { shuffle, verify } from '@lib/helpers/helpers';
+import { shuffle, verify } from '@lib/helpers/base';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import * as events from '../../extras/hunger-games.json';
+import { User } from 'discord.js';
 
 /**
  * Starts a game of Hunger Games.
@@ -16,7 +17,7 @@ import * as events from '../../extras/hunger-games.json';
  */
 export default class HungerGamesCommand extends Command {
 
-	private playing = new Set();
+	private playing: Set<string> = new Set();
 
 	/**
 	 * Creates an instance of HungerGamesCommand.
@@ -40,7 +41,7 @@ export default class HungerGamesCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof HungerGamesCommand
 	 */
-	public async run(msg: KlasaMessage, [...tributes]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [...tributes]: [User[]]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (tributes.length < 2) return msg.sendMessage(`...${tributes[0]} wins, as they were the only tribute.`);
 		if (tributes.length > 24) return msg.sendMessage('Please do not enter more than 24 tributes.', { reply: msg.author });
 		if (new Set(tributes).size !== tributes.length) return msg.sendMessage('Please do not enter the same tribute twice.', { reply: msg.author });
@@ -94,7 +95,7 @@ export default class HungerGamesCommand extends Command {
 		}
 	}
 
-	private parseEvent(event: string, tributes: string[]) {
+	private parseEvent(event: string, tributes: string[]): string {
 		return event
 			.replace(/\(Player1\)/gi, `**${tributes[0]}**`)
 			.replace(/\(Player2\)/gi, `**${tributes[1]}**`)
@@ -104,7 +105,7 @@ export default class HungerGamesCommand extends Command {
 			.replace(/\(Player6\)/gi, `**${tributes[5]}**`);
 	}
 
-	private makeEvents(tributes: Set<any>, eventsArr: any[], deaths: string[], results: any[]) {
+	private makeEvents(tributes: Set<any>, eventsArr: any[], deaths: string[], results: any[]): void {
 		const turn = new Set(tributes);
 		for (const tribute of tributes) {
 			if (!turn.has(tribute)) continue;

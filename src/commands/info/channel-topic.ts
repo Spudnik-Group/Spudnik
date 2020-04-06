@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { TextChannel } from 'discord.js';
+import { TextChannel, Channel } from 'discord.js';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { baseEmbed } from '@lib/helpers/embed-helpers';
 
@@ -31,7 +31,7 @@ export default class ChannelTopicCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof ChannelTopicCommand
 	 */
-	public async run(msg: KlasaMessage, [content = msg.channel]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [content = msg.channel]: [Channel]): Promise<KlasaMessage | KlasaMessage[]> {
 		const channel = content as TextChannel;
 
 		// Send the success response

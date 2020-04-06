@@ -3,7 +3,7 @@
  */
 
 import 'module-alias/register';
-import chalk from 'chalk';
+import * as chalk from 'chalk';
 import { version } from 'discord.js';
 import Spudnik from '@lib/spudnik';
 

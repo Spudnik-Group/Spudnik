@@ -40,7 +40,7 @@ export default class PrefixCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof PrefixCommand
 	 */
-	public async run(msg: KlasaMessage, [prefix]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [prefix]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const prefixEmbed: MessageEmbed = specialEmbed(msg, 'prefix');
 
 		// Just output the prefix

@@ -32,7 +32,7 @@ export default class ChangelogCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		try {
-			let output;
+			let output: string;
 			const res: AxiosResponse<any> = await axios.get('https://api.github.com/repos/Spudnik-Group/Spudnik/releases', {
 				headers: {
 					'Accept': 'application/vnd.github.v3+json',

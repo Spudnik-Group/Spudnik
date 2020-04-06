@@ -38,8 +38,8 @@ export default class GithubCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof GithubCommand
 	 */
-	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
-		if (query.indexOf('/') === -1) return msg.sendSimpleError('Invalid repository, it must be in the format: `username/repositoryname`');
+	public async run(msg: KlasaMessage, [query]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
+		if (!query.includes('/')) return msg.sendSimpleError('Invalid repository, it must be in the format: `username/repositoryname`');
 
 		const githubEmbed: MessageEmbed = baseEmbed(msg)
 			.setAuthor(

@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { getRandomInt } from '@lib/helpers/helpers';
+import { getRandomInt } from '@lib/helpers/base';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { baseEmbed } from '@lib/helpers/embed-helpers';
 
@@ -32,7 +32,7 @@ export default class ChooseCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof ChooseCommand
 	 */
-	public async run(msg: KlasaMessage, [...choices]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [...choices]: string[]): Promise<KlasaMessage | KlasaMessage[]> {
 		const options: string[] = choices;
 		if (options.length < 2) {
 			return msg.sendSimpleError(`I can't choose for you if you don't give me more options!`, 3000);

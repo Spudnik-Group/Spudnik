@@ -35,7 +35,7 @@ export default class KickCommand extends Command {
 	 * @returns {(Promise<Message | Message[] | any>)}
 	 * @memberof KickCommand
 	 */
-	public async run(msg: KlasaMessage, [member, reason]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [member, reason]: [GuildMember, string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const memberToKick: GuildMember = member;
 		const kickEmbed: MessageEmbed = specialEmbed(msg, 'kick');
 

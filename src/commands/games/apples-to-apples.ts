@@ -7,7 +7,7 @@ import { Collection } from 'discord.js';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import * as data from '../../extras/apples-to-apples.json';
 import * as removeMarkdown from 'remove-markdown';
-import { awaitPlayers, shuffle } from '@lib/helpers/helpers';
+import { awaitPlayers, shuffle } from '@lib/helpers/base';
 
 /**
  * Starts a game of Apples To Apples.
@@ -18,7 +18,7 @@ import { awaitPlayers, shuffle } from '@lib/helpers/helpers';
  */
 export default class ApplesToApplesCommand extends Command {
 
-	private playing = new Set();
+	private playing: Set<string> = new Set();
 
 	/**
 	 * Creates an instance of ApplesToApplesCommand.
@@ -43,7 +43,7 @@ export default class ApplesToApplesCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof ApplesToApplesCommand
 	 */
-	public async run(msg: KlasaMessage, [maxPts]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [maxPts]: [number]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (this.playing.has(msg.channel.id)) return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author });
 		this.playing.add(msg.channel.id);
 		try {
@@ -93,7 +93,7 @@ export default class ApplesToApplesCommand extends Command {
 
 					await player.user.send(stripIndents`
 						__**Your hand is**__:
-						${hand.map((card, i) => `**${i + 1}.** ${card}`).join('\n')}
+						${hand.map((card: any, i: number) => `**${i + 1}.** ${card}`).join('\n')}
 
 						**Green Card**: ${(green)}
 						**Card Czar**: ${czar.user.username}
@@ -102,7 +102,7 @@ export default class ApplesToApplesCommand extends Command {
 
 					let chosen = null;
 
-					const filter = (res: any) => {
+					const filter = (res: any): boolean => {
 						const existing = hand[Number.parseInt(res.content, 10) - 1];
 
 						if (!existing) return false;
@@ -152,10 +152,10 @@ export default class ApplesToApplesCommand extends Command {
 					${czar.user}, which card do you pick?
 					**Green Card**: ${removeMarkdown(green)}
 
-					${cards.map((card, i) => `**${i + 1}.** ${card.card}`).join('\n')}
+					${cards.map((card: any, i: number) => `**${i + 1}.** ${card.card}`).join('\n')}
 				`);
 
-				const filter = (res: any) => {
+				const filter = (res: any): boolean => {
 					if (res.author.id !== czar.user.id) return false;
 
 					if (!cards[Number.parseInt(res.content, 10) - 1]) return false;
@@ -195,7 +195,7 @@ export default class ApplesToApplesCommand extends Command {
 		}
 	}
 
-	private async generatePlayers(list: any) {
+	private async generatePlayers(list: any): Promise<Collection<any, any>> {
 		const players = new Collection();
 
 		for (const user of list) {
@@ -218,7 +218,7 @@ export default class ApplesToApplesCommand extends Command {
 		return players;
 	}
 
-	private async handleBlank(player: any) {
+	private async handleBlank(player: any): Promise<string> {
 		await player.user.send('What do you want the blank card to say? Must be 100 or less characters.');
 		const blank = await player.user.dmChannel.awaitMessages((res: any) => res.content.length <= 100, {
 			max: 1,

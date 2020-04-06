@@ -15,7 +15,7 @@ import { data as words } from '../../extras/hangman.json';
  */
 export default class HangmanCommand extends Command {
 
-	private playing = new Set();
+	private playing: Set<string> = new Set();
 
 	/**
 	 * Creates an instance of HangmanCommand.
@@ -67,7 +67,7 @@ export default class HangmanCommand extends Command {
 					===========
 					\`\`\`
 				`);
-				const filter = (res: any) => {
+				const filter = (res: any): boolean => {
 					const choice = res.content.toLowerCase();
 
 					return res.author.id === msg.author.id && !confirmation.includes(choice) && !incorrect.includes(choice);

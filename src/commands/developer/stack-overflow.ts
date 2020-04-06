@@ -40,7 +40,7 @@ export default class StackOverflowCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof StackOverflowCommand
 	 */
-	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [query]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (!apikey) return msg.sendSimpleError('No API Key has been set up. This feature is unusable', 3000);
 		const stackEmbed: MessageEmbed = baseEmbed(msg)
 			.setAuthor(

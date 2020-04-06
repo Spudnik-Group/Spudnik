@@ -4,6 +4,7 @@
 
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { baseEmbed } from '@lib/helpers/embed-helpers';
+import { User } from 'discord.js';
 
 export default class AvatarCommand extends Command {
 
@@ -14,7 +15,7 @@ export default class AvatarCommand extends Command {
 		});
 	}
 
-	public async run(msg: KlasaMessage, [user = msg.author]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [user = msg.author]: [User]): Promise<KlasaMessage | KlasaMessage[]> {
 		return msg.sendEmbed(baseEmbed(msg)
 			.addField('Avatar', user.tag)
 			.setImage(user.displayAvatarURL({ size: 512 })));

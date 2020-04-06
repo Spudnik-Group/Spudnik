@@ -35,7 +35,7 @@ export default class BanCommand extends Command {
 	 * @returns {(Promise<Message | Message[] | any>)}
 	 * @memberof BanCommand
 	 */
-	public async run(msg: KlasaMessage, [member, reason]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [member, reason]: [any, string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const banEmbed: MessageEmbed = specialEmbed(msg, 'ban');
 
 		try {

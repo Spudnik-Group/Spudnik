@@ -35,7 +35,7 @@ export default class UnBanCommand extends Command {
 	 * @returns {(Promise<Message | Message[] | any>)}
 	 * @memberof UnBanCommand
 	 */
-	public async run(msg: KlasaMessage, [user, reason]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [user, reason]: [User, string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const unbanEmbed: MessageEmbed = specialEmbed(msg, 'un-ban');
 
 		try {

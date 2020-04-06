@@ -41,13 +41,13 @@ export default class DisableCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof DisableCommand
 	 */
-	public async run(msg: KlasaMessage, [cmdOrCat]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [cmdOrCat]: [Command|string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const disableEmbed: MessageEmbed = specialEmbed(msg, 'disable');
 
 		if (typeof cmdOrCat === 'string') {
 			// Category
 			const groups: any[] = fs.readdirSync('commands')
-				.filter(path => fs.statSync(`commands/${path}`).isDirectory());
+				.filter((path: string) => fs.statSync(`commands/${path}`).isDirectory());
 			const parsedGroup: string = cmdOrCat.toLowerCase();
 
 			if (!isCommandCategoryEnabled(msg, cmdOrCat)) {

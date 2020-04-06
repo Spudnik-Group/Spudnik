@@ -38,9 +38,9 @@ export default class LotteryCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof LotteryCommand
 	 */
-	public async run(msg: KlasaMessage, [...choices]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [...choices]: number[]): Promise<KlasaMessage | KlasaMessage[]> {
 		const lotto = Array.from({ length: 6 }, () => Math.floor(Math.random() * 70) + 1);
-		const similarities = lotto.filter((num, i) => choices[i] === num).length;
+		const similarities = lotto.filter((num: number, i: number) => choices[i] === num).length;
 
 		return msg.sendMessage(stripIndents`
 			${lotto.join(', ')}

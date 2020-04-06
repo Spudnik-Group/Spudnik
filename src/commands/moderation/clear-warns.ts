@@ -5,7 +5,7 @@
 import { stripIndents } from 'common-tags';
 import { GuildMember, MessageEmbed } from 'discord.js';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
-import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import { GuildSettings, Warning } from '@lib/types/settings/GuildSettings';
 import { specialEmbed } from '@lib/helpers/embed-helpers';
 
 /**
@@ -38,7 +38,7 @@ export default class ClearWarnsCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof ClearWarnsCommand
 	 */
-	public async run(msg: KlasaMessage, [member, reason]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [member, reason]: [GuildMember, string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const warnEmbed: MessageEmbed = specialEmbed(msg, 'clear-warn');
 		const guildWarnings = await msg.guild.settings.get(GuildSettings.Warnings);
 
@@ -47,7 +47,7 @@ export default class ClearWarnsCommand extends Command {
 			try {
 				let memberIndex: number = null;
 				// Check for previous warnings of supplied member
-				const currentWarnings = guildWarnings.find((warning, index) => {
+				const currentWarnings = guildWarnings.find((warning: Warning, index: number) => {
 					if (warning.id === member.id) {
 						memberIndex = index;
 

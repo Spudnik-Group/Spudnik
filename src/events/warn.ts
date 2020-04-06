@@ -8,7 +8,7 @@ import { SpudConfig } from '@lib//config/spud-config';
 
 export default class extends Event {
 
-	public run(warning) {
+	public run(warning: any): void {
 		if (!SpudConfig.debug && process.env.NODE_ENV !== 'development') {
 			const rollbar = new Rollbar({
 				accessToken: SpudConfig.rollbarApiKey,

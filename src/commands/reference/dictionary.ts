@@ -39,7 +39,7 @@ export default class DefineCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof DefineCommand
 	 */
-	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [query]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (!dictionaryApiKey) return msg.sendSimpleError('No API Key has been set up. This feature is unusable', 3000);
 		const word = query;
 		const dictionaryEmbed: MessageEmbed = baseEmbed(msg)

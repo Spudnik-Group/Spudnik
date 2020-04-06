@@ -15,7 +15,7 @@ import { questions } from '../../extras/google-feud.json';
  */
 export default class GoogleFeudCommand extends Command {
 
-	private playing = new Set();
+	private playing: Set<string> = new Set();
 
 	/**
 	 * Creates an instance of GoogleFeudCommand.
@@ -31,7 +31,7 @@ export default class GoogleFeudCommand extends Command {
 			usage: '<question:...string>'
 		});
 
-		this.createCustomResolver('question', arg => arg ? arg : questions[Math.floor(Math.random() * questions.length)]);
+		this.createCustomResolver('question', (arg: string) => arg ? arg : questions[Math.floor(Math.random() * questions.length)]);
 	}
 
 	/**
@@ -41,7 +41,7 @@ export default class GoogleFeudCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof GoogleFeudCommand
 	 */
-	public async run(msg: KlasaMessage, [question]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [question]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (this.playing.has(msg.channel.id)) return msg.sendMessage('Only one fight may be occurring per channel.', { reply: msg.author });
 		this.playing.add(msg.channel.id);
 
@@ -64,7 +64,7 @@ export default class GoogleFeudCommand extends Command {
 
 				await msg.sendEmbed(embed);
 
-				const msgs: any = await msg.channel.awaitMessages(res => res.author.id === msg.author.id, {
+				const msgs: any = await msg.channel.awaitMessages((res: any) => res.author.id === msg.author.id, {
 					max: 1,
 					time: 30000
 				});
@@ -95,7 +95,7 @@ export default class GoogleFeudCommand extends Command {
 		}
 	}
 
-	private async fetchSuggestions(question: any) {
+	private async fetchSuggestions(question: any): Promise<any> {
 		const { text } = await require('node-superfetch')
 			.get('https://suggestqueries.google.com/complete/search')
 			.query({

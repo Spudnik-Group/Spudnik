@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { getRandomInt } from '@lib/helpers/helpers';
+import { getRandomInt } from '@lib/helpers/base';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { eightBall } from '../../extras/data.json';
 import { baseEmbed } from '@lib/helpers/embed-helpers.js';
@@ -32,7 +32,7 @@ export default class EightBallCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof EightBallCommand
 	 */
-	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [query]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		let response = 'Error getting answer. Try again later?';
 		if (eightBall && eightBall.length > 0) {
 			response = eightBall[getRandomInt(0, eightBall.length) - 1];

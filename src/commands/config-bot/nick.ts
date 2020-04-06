@@ -36,7 +36,7 @@ export default class NickCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof NickCommand
 	 */
-	public async run(msg: KlasaMessage, [nickName]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [nickName]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (nickName === '' || nickName === undefined) {
 			await msg.guild.me.setNickname('Spudnik', `${msg.author.username} used Spudnik to reset it.`);
 

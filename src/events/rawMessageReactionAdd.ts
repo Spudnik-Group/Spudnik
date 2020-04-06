@@ -13,7 +13,7 @@ export default class extends Event {
 		super(store, file, directory, { name: 'MESSAGE_REACTION_ADD', emitter: store.client.ws });
 	}
 
-	public async run(event) {
+	public async run(event: any): Promise<void> {
 		if (!event.guild_id) return; // Ignore non-guild events
 
 		const guild: Guild = await this.client.guilds.get(event.guild_id);
@@ -65,7 +65,7 @@ export default class extends Event {
 			if (message.content.length > 1) starboardEmbed.addField('Message', message.content); // Add message
 			if (message.attachments.size > 0) starboardEmbed.setImage((message.attachments as any).first().attachment); // Add attachments
 			// eslint-disable-next-line array-callback-return
-			const existingStar = starboardMessages.find((m): boolean => {
+			const existingStar = starboardMessages.find((m: Message): boolean => {
 				// Need this filter if there are non-starboard posts in the starboard channel.
 				if (m.embeds.length > 0) {
 					if (m.embeds[0].footer) {
@@ -79,7 +79,7 @@ export default class extends Event {
 			if (existingStar) {
 				// Old star, update star count
 				existingStar.edit({ embed: starboardEmbed })
-					.catch(err => {
+					.catch((err: Error) => {
 						this.client.emit('warn', `Failed to edit starboard embed. Message ID: ${message.id}\nError: ${err}`);
 
 
@@ -87,7 +87,7 @@ export default class extends Event {
 			} else {
 				// Fresh star, add to starboard
 				(starboard as TextChannel).send({ embed: starboardEmbed })
-					.catch(err => {
+					.catch((err: Error) => {
 						this.client.emit('warn', `Failed to send new starboard embed. Message ID: ${message.id}\nError: ${err}`);
 					});
 			}

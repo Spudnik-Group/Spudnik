@@ -7,13 +7,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { Permissions } from 'discord.js';
 import { stripIndents } from 'common-tags';
 import { baseEmbed } from '@lib/helpers/embed-helpers';
-
-const suffixes = ['Bytes', 'KB', 'MB'];
-const getBytes = bytes => {
-	const i = Math.floor(Math.log(bytes) / Math.log(1024));
-
-	return (!bytes && '0 Bytes') || `${(bytes / Math.pow(1024, i)).toFixed(2)} ${suffixes[i]}`;
-};
+import { getBytes } from '@lib/helpers/base';
 
 export default class CrateCommand extends Command {
 
@@ -25,7 +19,7 @@ export default class CrateCommand extends Command {
 		});
 	}
 
-	public async run(msg: KlasaMessage, [name]: [string]) {
+	public async run(msg: KlasaMessage, [name]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		try {
 			const { data } = await axios(`https://crates.io/api/v1/crates/${encodeURIComponent(name)}`);
 			const { crate, versions: [latest] } = data;

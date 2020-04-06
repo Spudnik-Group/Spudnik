@@ -8,7 +8,7 @@ import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 import { basicFeatureContent } from '@lib/helpers/resolvers';
 import { modLogMessage } from '@lib/helpers/custom-helpers';
-import { resolveChannel } from '@lib/helpers/helpers';
+import { resolveChannel } from '@lib/helpers/base';
 import { specialEmbed } from '@lib/helpers/embed-helpers';
 
 /**
@@ -48,7 +48,7 @@ export default class WelcomeCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof WelcomeCommand
 	 */
-	public async message(msg: KlasaMessage, [content]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async message(msg: KlasaMessage, [content]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const welcomeEmbed = specialEmbed(msg, 'welcome');
 
 		try {
@@ -76,7 +76,7 @@ export default class WelcomeCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof WelcomeCommand
 	 */
-	public async channel(msg: KlasaMessage, [content]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async channel(msg: KlasaMessage, [content]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const welcomeEmbed = specialEmbed(msg, 'welcome');
 		const welcomeChannel = await msg.guild.settings.get(GuildSettings.Welcome.Channel);
 		const channelID = msg.guild.channels.get(resolveChannel(content)).id;

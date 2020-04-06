@@ -37,7 +37,7 @@ export default class BrewCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof BrewCommand
 	 */
-	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [query]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const brewEmbed: MessageEmbed = baseEmbed(msg)
 			.setAuthor(
 				'BreweryDB',

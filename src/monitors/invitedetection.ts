@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Monitor, MonitorStore } from 'klasa';
+import { Monitor, MonitorStore, KlasaMessage } from 'klasa';
 import { Message, MessageEmbed } from 'discord.js';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
@@ -17,12 +17,12 @@ export default class extends Monitor {
 		});
 	}
 
-	public async run(msg) {
+	public async run(msg: KlasaMessage): Promise<any> {
 		if (!msg.guild || !msg.guild.settings.get(GuildSettings.AdblockEnabled)) return null;
 		if (await msg.hasAtLeastPermissionLevel(6)) return null;
 		if (!/(https?:\/\/)?(www\.)?(discord\.(gg|li|me|io)|discordapp\.com\/invite)\/.+/.test(msg.content)) return null;
 		await msg.delete()
-			.catch(err => this.client.emit('log', err, 'error'));
+			.catch((err: Error) => this.client.emit('log', err, 'error'));
 
 		const rejectMessage: Message | Message[] = await msg.channel.send({
 			embed: new MessageEmbed()

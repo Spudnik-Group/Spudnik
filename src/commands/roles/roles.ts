@@ -39,7 +39,7 @@ export default class RolesCommand extends Command {
 		if (guildAssignableRoles.length) {
 			const rolesListOut: string[] = [];
 
-			guildAssignableRoles.forEach(role => {
+			guildAssignableRoles.forEach((role: string) => {
 				const r: Role = msg.guild.roles.find((r: Role) => r.id === role.toString());
 				if (r) rolesListOut.push(`* <@&${r.id}> - ${r.members.size} members`);
 			});

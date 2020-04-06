@@ -4,7 +4,7 @@
 
 import { stripIndents } from 'common-tags';
 import { Collection } from 'discord.js';
-import { awaitPlayers, delay, shuffle } from '@lib/helpers/helpers';
+import { awaitPlayers, delay, shuffle } from '@lib/helpers/base';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { questions, stories } from '../../extras/mafia.json';
 
@@ -17,7 +17,7 @@ import { questions, stories } from '../../extras/mafia.json';
  */
 export default class MafiaCommand extends Command {
 
-	private playing = new Set();
+	private playing: Set<string> = new Set();
 
 	/**
 	 * Creates an instance of MafiaCommand.
@@ -67,7 +67,7 @@ export default class MafiaCommand extends Command {
 						${questions[player.role]} Please type the number.
 						${valid.map((p: any, i: number) => `**${i + 1}.** ${p.user.tag}`).join('\n')}
 					`);
-					const filter = (res: any) => valid[Number.parseInt(res.content, 10) - 1];
+					const filter = (res: any): boolean => valid[Number.parseInt(res.content, 10) - 1];
 					const decision = await player.user.dmChannel.awaitMessages(filter, {
 						max: 1,
 						time: 120000
@@ -128,7 +128,7 @@ export default class MafiaCommand extends Command {
 				`);
 
 				const voted: any = [];
-				const filter = (res: any) => {
+				const filter = (res: any): boolean => {
 					if (!players.exists((p: any) => p.user.id === res.author.id)) return false;
 
 					if (voted.includes(res.author.id)) return false;
@@ -165,7 +165,7 @@ export default class MafiaCommand extends Command {
 		}
 	}
 
-	private async generatePlayers(list: any) {
+	private async generatePlayers(list: any): Promise<void> {
 		let roles = ['mafia', 'doctor', 'detective'];
 		for (let i = 0; i < (list.length - 2); i++) roles.push(`pleb ${i + 1}`);
 		roles = shuffle(roles);
@@ -183,7 +183,7 @@ export default class MafiaCommand extends Command {
 		}
 	}
 
-	private getHanged(votes: any, players: any, playersArr: any) {
+	private getHanged(votes: any, players: any, playersArr: any): any {
 		const counts: any = new Collection();
 
 		for (const vote of votes.values()) {

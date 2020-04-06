@@ -3,7 +3,7 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { shuffle } from '@lib/helpers/helpers';
+import { shuffle } from '@lib/helpers/base';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { questions, houses, descriptions } from '../../extras/sorting-hat-quiz.json';
 
@@ -18,7 +18,7 @@ const choices = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M'
  */
 export default class SortingHatQuizCommand extends Command {
 
-	private playing = new Set();
+	private playing: Set<string> = new Set();
 
 	/**
 	 * Creates an instance of SortingHatQuizCommand.
@@ -64,7 +64,7 @@ export default class SortingHatQuizCommand extends Command {
 				} else if (turn === 8) {
 					question = questions.last[Math.floor(Math.random() * questions.last.length)];
 				} else {
-					const possible = questionNums.filter(num => !blacklist.includes(num));
+					const possible = questionNums.filter((num: string) => !blacklist.includes(num));
 					const value = possible[Math.floor(Math.random() * possible.length)];
 					const group = questions[value];
 					blacklist.push(value);
@@ -75,10 +75,10 @@ export default class SortingHatQuizCommand extends Command {
 
 				await msg.sendMessage(stripIndents`
 					**${turn}**. ${question.text}
-					${answers.map((answer, i) => `- **${choices[i]}**. ${answer.text}`).join('\n')}
+					${answers.map((answer: any, i: number) => `- **${choices[i]}**. ${answer.text}`).join('\n')}
 				`);
 
-				const filter = (res: any) => res.author.id === msg.author.id && choices.slice(0, answers.length).includes(res.content.toUpperCase());
+				const filter = (res: any): boolean => res.author.id === msg.author.id && choices.slice(0, answers.length).includes(res.content.toUpperCase());
 				const choice: any = await msg.channel.awaitMessages(filter, {
 					max: 1,
 					time: 120000
@@ -93,7 +93,7 @@ export default class SortingHatQuizCommand extends Command {
 				++turn;
 			}
 
-			const house = Object.keys(points).sort((a, b) => points[b] - points[a])[0];
+			const house = Object.keys(points).sort((a: string, b: string) => points[b] - points[a])[0];
 
 			this.playing.delete(msg.channel.id);
 

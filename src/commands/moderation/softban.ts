@@ -19,7 +19,7 @@ export default class SoftbanCommand extends Command {
 		});
 	}
 
-	public async run(msg: KlasaMessage, [member, reason, when]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [member, reason, when]: [GuildMember, string, string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const banEmbed: MessageEmbed = specialEmbed(msg, 'soft-ban');
 
 		// Check if user is able to ban the mentioned user

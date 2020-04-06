@@ -3,7 +3,7 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { MessageEmbed } from 'discord.js';
+import { MessageEmbed, Role } from 'discord.js';
 import { modLogMessage } from '@lib/helpers/custom-helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
@@ -39,7 +39,7 @@ export default class SelfAssignableRolesCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof SelfAssignableRolesCommand
 	 */
-	public async add(msg: KlasaMessage, [role]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async add(msg: KlasaMessage, [role]: [Role]): Promise<KlasaMessage | KlasaMessage[]> {
 		const roleEmbed = specialEmbed(msg, 'role-manager');
 
 		let guildAssignableRoles: string[] = await msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);
@@ -66,7 +66,7 @@ export default class SelfAssignableRolesCommand extends Command {
 		}
 	}
 
-	public async remove(msg: KlasaMessage, [role]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async remove(msg: KlasaMessage, [role]: [Role]): Promise<KlasaMessage | KlasaMessage[]> {
 		const roleEmbed = specialEmbed(msg, 'role-manager');
 
 		let guildAssignableRoles: string[] = await msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);

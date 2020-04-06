@@ -8,7 +8,7 @@ import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { specialEmbed } from '@lib/helpers/embed-helpers';
 import { hexColor } from '@lib/helpers/resolvers';
 import { modLogMessage } from '@lib/helpers/custom-helpers';
-import { isNormalInteger } from '@lib/helpers/helpers';
+import { isNormalInteger } from '@lib/helpers/base';
 
 /**
  * Manage guild roles.
@@ -45,7 +45,7 @@ export default class RoleCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof RoleManagementCommands
 	 */
-	public async add(msg: KlasaMessage, [name, color]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async add(msg: KlasaMessage, [name, color]: [Role|string, string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const roleEmbed = specialEmbed(msg, 'role-manager');
 
 		try {
@@ -69,7 +69,7 @@ export default class RoleCommand extends Command {
 			// TODO: add a reason
 			await msg.guild.roles.create(roleMetaData);
 		} catch (err) {
-			return this.catchError(msg, { subCommand: 'add', name, arg3: color }, err);
+			return this.catchError(msg, { subCommand: 'add', name: name.toString(), arg3: color }, err);
 		}
 
 		roleEmbed.setDescription(stripIndents`
@@ -90,9 +90,9 @@ export default class RoleCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof RoleManagementCommands
 	 */
-	public async remove(msg: KlasaMessage, [name]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async remove(msg: KlasaMessage, [name]: [Role|string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const roleEmbed = specialEmbed(msg, 'role-manager');
-		const rolesFound: Collection<string, Role> = await msg.guild.roles.filter(role => role.name.toLocaleLowerCase() === name.toLocaleLowerCase());
+		const rolesFound: Collection<string, Role> = await msg.guild.roles.filter((role: Role) => role.name.toLocaleLowerCase() === (typeof name === 'string' ? name.toLocaleLowerCase() : name.name));
 
 		if (rolesFound.size > 1) {
 			const rolesFoundArray = rolesFound.array();
@@ -100,11 +100,11 @@ export default class RoleCommand extends Command {
 			roleEmbed.setDescription(stripIndents`
 						More than one role was found matching the provided name.
 						Which role would you like to delete?\n
-						${rolesFoundArray.map((role, i) => `**${i + 1}** - \`${role.id}\` - <@&${role.id}> - ${role.members.size} members`).join('\n')}`);
+						${rolesFoundArray.map((role: Role, i: number) => `**${i + 1}** - \`${role.id}\` - <@&${role.id}> - ${role.members.size} members`).join('\n')}`);
 
 			await msg.sendEmbed(roleEmbed);
 
-			const filter = (res: Message) => (res.author.id === msg.author.id);
+			const filter = (res: Message): boolean => (res.author.id === msg.author.id);
 
 			try {
 				const responses = await msg.channel.awaitMessages(filter, { max: 1 });
@@ -113,7 +113,7 @@ export default class RoleCommand extends Command {
 				if (isNormalInteger(response.content) && ((Number(response.content) > -1) && (Number(response.content) < rolesFoundArray.length))) {
 					try {
 						await rolesFoundArray[Number(response.content) - 1].delete()
-							.then(async deletedRole => {
+							.then(async (deletedRole: Role) => {
 								roleEmbed.setDescription(stripIndents`
 												**Member:** ${msg.author.tag} (${msg.author.id})
 												**Action:** Removed role \`${deletedRole.name}\` from the guild.
@@ -123,23 +123,23 @@ export default class RoleCommand extends Command {
 
 								return msg.sendEmbed(roleEmbed);
 							})
-							.catch(err => this.catchError(msg, { subCommand: 'remove', name }, err));
+							.catch((err: Error) => this.catchError(msg, { subCommand: 'remove', name: name.toString() }, err));
 
 					} catch (err) {
-						return this.catchError(msg, { subCommand: 'remove', name }, err);
+						return this.catchError(msg, { subCommand: 'remove', name: name.toString() }, err);
 					}
 				} else {
 					return msg.sendSimpleError('Please supply a row number corresponding to the role you want to delete.');
 				}
 			} catch (err) {
-				return this.catchError(msg, { subCommand: 'remove', name }, err);
+				return this.catchError(msg, { subCommand: 'remove', name: name.toString() }, err);
 			}
 		} else if (rolesFound.size === 1) {
 			const roleToDelete = rolesFound.first();
 
 			try {
 				await roleToDelete.delete()
-					.then(async deletedRole => {
+					.then(async (deletedRole: Role) => {
 						roleEmbed.setDescription(stripIndents`
 									**Member:** ${msg.author.tag} (${msg.author.id})
 									**Action:** Removed role \`${deletedRole.name}\` from the guild.
@@ -149,9 +149,9 @@ export default class RoleCommand extends Command {
 
 						return msg.sendEmbed(roleEmbed);
 					})
-					.catch(err => this.catchError(msg, { subCommand: 'remove', name }, err));
+					.catch((err: Error) => this.catchError(msg, { subCommand: 'remove', name: name.toString() }, err));
 			} catch (err) {
-				return this.catchError(msg, { subCommand: 'remove', name }, err);
+				return this.catchError(msg, { subCommand: 'remove', name: name.toString() }, err);
 			}
 		} else {
 			return msg.sendSimpleError(`A role with the supplied name \`${name}\` was not found on this guild.`);

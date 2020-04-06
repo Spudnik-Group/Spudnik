@@ -2,11 +2,11 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { User, GuildMember } from 'discord.js';
+import { User, GuildMember, Role } from 'discord.js';
 import { stripIndents } from 'common-tags';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { baseEmbed } from '@lib/helpers/embed-helpers';
-import { trimArray } from '@lib/helpers/helpers';
+import { trimArray } from '@lib/helpers/base';
 
 const activities = {
 	LISTENING: 'Listening to',
@@ -49,7 +49,7 @@ export default class UserCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof UserCommand
 	 */
-	public async run(msg: KlasaMessage, [user]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [user]: [User]): Promise<KlasaMessage | KlasaMessage[]> {
 		const currentUser: User = user ? user : msg.author;
 		const avatarFormat = currentUser.avatar && currentUser.avatar.startsWith('a_') ? 'gif' : 'png';
 		const userEmbed = baseEmbed(msg)
@@ -64,8 +64,8 @@ export default class UserCommand extends Command {
 			// Check if user is a member of the guild
 			const member: GuildMember = await msg.guild.members.fetch(currentUser.id);
 			const roles = member.roles
-				.sort((a, b) => b.position - a.position)
-				.map(role => role.name);
+				.sort((a: Role, b: Role) => b.position - a.position)
+				.map((role: Role) => role.name);
 			userEmbed
 				.setDescription(member.presence.activities
 					? `${activities[member.presence.activities[0].type]} **${member.presence.activities[0].name}**`

@@ -49,7 +49,7 @@ export default class extends Extendable {
 				} else if (reply instanceof Array) {
 					this.channel.bulkDelete(reply).catch(() => undefined);
 				}
-			}).catch(err => {
+			}).catch((err: Error) => {
 				this.client.emit('api', err);
 			});
 		}
@@ -74,7 +74,7 @@ export default class extends Extendable {
 				} else if (reply instanceof Array) {
 					this.channel.bulkDelete(reply).catch(() => undefined);
 				}
-			}).catch(err => {
+			}).catch((err: Error) => {
 				this.client.emit('api', err);
 			});
 		}
@@ -99,7 +99,7 @@ export default class extends Extendable {
 				} else if (reply instanceof Array) {
 					this.channel.bulkDelete(reply).catch(() => undefined);
 				}
-			}).catch(err => {
+			}).catch((err: Error) => {
 				this.client.emit('api', err);
 			});
 		}
@@ -124,18 +124,18 @@ const OPTIONS = { time: 15000, max: 1 };
 const REACTIONS = { YES: '✅', NO: '❎' };
 const REG_ACCEPT = /^y|yes?|yeah?$/i;
 
-async function awaitReaction(message: Message, messageSent: Message, promptOptions: MessageAskOptions = OPTIONS) {
+async function awaitReaction(message: Message, messageSent: Message, promptOptions: MessageAskOptions = OPTIONS): Promise<boolean> {
 	await messageSent.react(REACTIONS.YES);
 	await messageSent.react(REACTIONS.NO);
 
-	const filter = () => true; // (reaction, user) => user === message.author && Object.keys(REACTIONS).indexOf(reaction.emoji.name) !== -1;
+	const filter = (): boolean => true; // (reaction, user) => user === message.author && Object.keys(REACTIONS).indexOf(reaction.emoji.name) !== -1;
 	const reactions = await messageSent.awaitReactions(filter, promptOptions);
 
 	return Boolean(reactions.size) && reactions.firstKey() === REACTIONS.YES;
 }
 
-async function awaitMessage(message: Message, promptOptions: MessageAskOptions = OPTIONS) {
-	const messages = await message.channel.awaitMessages(mes => mes.author === message.author, promptOptions);
+async function awaitMessage(message: Message, promptOptions: MessageAskOptions = OPTIONS): Promise<boolean> {
+	const messages = await message.channel.awaitMessages((mes: any) => mes.author === message.author, promptOptions);
 
 	return Boolean(messages.size) && REG_ACCEPT.test(messages.first()!.content);
 }

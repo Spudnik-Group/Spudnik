@@ -7,7 +7,7 @@ import { MessageEmbed, Channel } from 'discord.js';
 import { Command, CommandStore, KlasaMessage, Possible, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 import { specialEmbed } from '@lib/helpers/embed-helpers';
-import { resolveChannel } from '@lib/helpers/helpers';
+import { resolveChannel } from '@lib/helpers/base';
 import { modLogMessage } from '@lib/helpers/custom-helpers';
 
 /**
@@ -35,7 +35,7 @@ export default class ModlogCommand extends Command {
 			usage: '<on|off|status|channel> (channel:channel)'
 		});
 
-		this.createCustomResolver('channel', (arg: string, possible: Possible, message: KlasaMessage, [subCommand]) => {
+		this.createCustomResolver('channel', (arg: string, possible: Possible, message: KlasaMessage, [subCommand]: [string]) => {
 			if (subCommand === 'channel' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw new Error('Please provide a channel for the modlog messages to be displayed in.');
 
 			return resolveChannel(arg);
@@ -95,7 +95,7 @@ export default class ModlogCommand extends Command {
 		}
 	}
 
-	public async channel(msg: KlasaMessage, [channel]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async channel(msg: KlasaMessage, [channel]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const modlogEmbed: MessageEmbed = specialEmbed(msg, 'modlog');
 		const modlogChannel = await msg.guild.settings.get(GuildSettings.Modlog.Channel);
 
@@ -146,7 +146,7 @@ export default class ModlogCommand extends Command {
 		return msg.sendEmbed(modlogEmbed);
 	}
 
-	private catchError(msg: KlasaMessage, args: { subCommand: string; channel?: Channel }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
+	private catchError(msg: KlasaMessage, args: { subCommand: string; channel?: Channel|string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Build warning message
 		let modlogWarn = stripIndents`
 			Error occurred in \`accept\` command!

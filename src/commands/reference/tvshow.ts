@@ -22,7 +22,7 @@ export default class TVShowCommand extends Command {
 		this.customizeResponse('query', 'Please supply a query');
 	}
 
-	public async run(msg: KlasaMessage, [query, page = 1]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [query, page = 1]: [string, number]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (!tmdbAPIkey) return msg.sendSimpleError('No API Key has been set up. This feature is unusable', 3000);
 
 		try {

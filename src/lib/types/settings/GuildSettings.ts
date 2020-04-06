@@ -52,6 +52,8 @@ export namespace GuildSettings {
 		export const Messages = T<TosMessage[]>('tos.messages');
 	}
 
+	export const Language = T<string>('language');
+
 	export const Warnings = T<Warning[]>('warnings');
 }
 

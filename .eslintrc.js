@@ -62,6 +62,7 @@ module.exports = {
 		"@typescript-eslint/no-extraneous-class": "error",
 		"@typescript-eslint/no-floating-promises": "error",
 		"@typescript-eslint/no-for-in-array": "error",
+		"@typescript-eslint/no-inferrable-types": 0,
 		"@typescript-eslint/no-misused-new": "error",
 		"@typescript-eslint/no-non-null-assertion": 0,
 		"@typescript-eslint/no-unnecessary-qualifier": "error",

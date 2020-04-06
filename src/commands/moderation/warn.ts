@@ -5,7 +5,7 @@
 import { stripIndents } from 'common-tags';
 import { GuildMember, MessageEmbed } from 'discord.js';
 import { CommandStore, Command, KlasaMessage, Timestamp } from 'klasa';
-import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import { GuildSettings, Warning } from '@lib/types/settings/GuildSettings';
 import { specialEmbed } from '@lib/helpers/embed-helpers';
 
 /**
@@ -41,7 +41,7 @@ export default class WarnCommand extends Command {
 
 		try {
 			// Check for previous warnings of supplied member
-			const currentWarnings = guildWarnings.find(warning => {
+			const currentWarnings = guildWarnings.find((warning: Warning) => {
 				if (warning.id === member.id) {
 					return true;
 				}

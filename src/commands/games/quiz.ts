@@ -3,7 +3,7 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { list, shuffle } from '@lib/helpers/helpers';
+import { list, shuffle } from '@lib/helpers/base';
 import axios from 'axios';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
@@ -40,11 +40,11 @@ export default class QuizCommand extends Command {
 		});
 
 		this
-			.createCustomResolver('type', arg => {
+			.createCustomResolver('type', (arg: string) => {
 				if (types.includes(arg.toLowerCase())) return arg;
 				throw new Error(`Please provide a valid quiz type. Options are: ${list(types, 'or')}.`);
 			})
-			.createCustomResolver('difficulty', arg => {
+			.createCustomResolver('difficulty', (arg: string) => {
 				if (difficulties.includes(arg.toLowerCase())) return arg;
 				throw new Error(`Please provide a valid difficulty level. Options are: ${list(difficulties, 'or')}.`);
 			});
@@ -57,7 +57,7 @@ export default class QuizCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof QuizCommand
 	 */
-	public async run(msg: KlasaMessage, [type, difficulty]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [type, difficulty]: [string, string]): Promise<KlasaMessage | KlasaMessage[]> {
 		try {
 			const { data: body } = await axios.get('https://opentdb.com/api.php', {
 				params: {
@@ -77,7 +77,7 @@ export default class QuizCommand extends Command {
 				${decodeURIComponent(body.results[0].question)}
 				${shuffled.map((answer: string, i: any) => `**${choices[i]}**. ${answer}`).join('\n')}
 			`);
-			const filter = (res: any) => res.author.id === msg.author.id && choices.includes(res.content.toUpperCase());
+			const filter = (res: any): boolean => res.author.id === msg.author.id && choices.includes(res.content.toUpperCase());
 			const msgs: any = await msg.channel.awaitMessages(filter, {
 				max: 1,
 				time: 15000

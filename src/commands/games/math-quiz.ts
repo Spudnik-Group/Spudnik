@@ -3,7 +3,7 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { list } from '@lib/helpers/helpers';
+import { list } from '@lib/helpers/base';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 const difficulties: string[] = ['easy', 'medium', 'hard', 'extreme', 'impossible'];
@@ -56,7 +56,7 @@ export default class MathQuizCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof MathQuizCommand
 	 */
-	public async run(msg: KlasaMessage, [difficulty]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [difficulty]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const value1 = Math.floor(Math.random() * maxValues[difficulty]) + 1;
 		const value2 = Math.floor(Math.random() * maxValues[difficulty]) + 1;
 		const operation = operations[Math.floor(Math.random() * operations.length)];
@@ -79,7 +79,7 @@ export default class MathQuizCommand extends Command {
 			${value1} ${operation} ${value2}
 		`);
 
-		const msgs: any = await msg.channel.awaitMessages(res => res.author.id === msg.author.id, {
+		const msgs: any = await msg.channel.awaitMessages((res: any) => res.author.id === msg.author.id, {
 			max: 1,
 			time: 10000
 		});

@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Channel, TextChannel, User, PermissionString, Message } from 'discord.js';
+import { Channel, TextChannel, User, PermissionString, Message, Permissions } from 'discord.js';
 import { KlasaMessage } from 'klasa';
 
 const yes = ['yes', 'y', 'ye', 'yeah', 'yup', 'yea'];
@@ -17,6 +17,13 @@ const no = ['no', 'n', 'nah', 'nope'];
  * @returns number
  */
 export const getRandomInt = (min: number, max: number): number => Math.floor(Math.random() * (max - min + 1)) + min;
+
+export const getBytes = (bytes: number): string => {
+	const suffixes = ['Bytes', 'KB', 'MB'];
+	const i = Math.floor(Math.log(bytes) / Math.log(1024));
+
+	return (!bytes && '0 Bytes') || `${(bytes / Math.pow(1024, i)).toFixed(2)} ${suffixes[i]}`;
+};
 
 /**
  * Returns a mention of the supplied user text.
@@ -59,7 +66,7 @@ export const resolveChannel = (channeltxt: string): string => {
  * @param {number} ms
  * @returns Promise<any>
  */
-export const delay = (ms: number): Promise<any> => new Promise(resolve => setTimeout(resolve, ms));
+export const delay = (ms: number): Promise<any> => new Promise((resolve: any) => setTimeout(resolve, ms));
 /**
  * Returns a shuffled version of the supplied array.
  *
@@ -86,7 +93,7 @@ export const shuffle = (array: any[]): any[] => {
  * @param  {} conj='and'
  * @returns string
  */
-export const list = (arr: any[], conj = 'and'): string => {
+export const list = (arr: any[], conj: string = 'and'): string => {
 	const len = arr.length;
 
 	return `${arr.slice(0, -1).join(', ')}${len > 1 ? `${len > 2 ? ',' : ''} ${conj} ` : ''}${arr.slice(-1)}`;
@@ -98,7 +105,7 @@ export const list = (arr: any[], conj = 'and'): string => {
  * @param  {} maxLen=2000
  * @returns string
  */
-export const shorten = (text: string, maxLen = 2000): string => text.length > maxLen ? `${text.substr(0, maxLen - 3)}...` : text;
+export const shorten = (text: string, maxLen: number = 2000): string => text.length > maxLen ? `${text.substr(0, maxLen - 3)}...` : text;
 
 /**
  * Returns a formatted duration from a supplied number.
@@ -121,7 +128,7 @@ export const duration = (ms: number): string => {
  * @param  {} maxLen=10
  * @returns any
  */
-export const trimArray = (arr: any[], maxLen = 10): any[] => {
+export const trimArray = (arr: any[], maxLen: number = 10): any[] => {
 	if (arr.length > maxLen) {
 		const len = arr.length - maxLen;
 		arr = arr.slice(0, maxLen);
@@ -168,7 +175,7 @@ export const today = (timeZone: number): Date => {
  * @param  {} property='name'
  * @returns string
  */
-export const disambiguation = (items: any[], label: string, property = 'name'): string => {
+export const disambiguation = (items: any[], label: string, property: string = 'name'): string => {
 	const itemList = items.map((item: any) => `"${(property ? item[property] : item).replace(/ /g, '\xa0')}"`).join(',   ');
 
 	return `Multiple ${label} found, please be more specific: ${itemList}`;
@@ -195,7 +202,7 @@ export const tomorrow = (timeZone: number): Date => {
  * @param  {} {text='joingame', time=30000, dmCheck=false}
  * @returns Promise
  */
-export const awaitPlayers = async (msg: KlasaMessage, max: number, min: number, { text = 'join game', time = 30000, dmCheck = false } = {}): Promise<any> => {
+export const awaitPlayers = async (msg: KlasaMessage, max: number, min: number, { text = 'join game', time = 30000, dmCheck = false }: any = {}): Promise<any> => {
 	const joined: string[] = [];
 
 	joined.push(msg.author.id);
@@ -238,7 +245,7 @@ export const awaitPlayers = async (msg: KlasaMessage, max: number, min: number, 
  * @param {number} [time=30000]
  * @returns Promise
  */
-export const verify = async (channel: Channel, user: User, time = 30000): Promise<boolean | 0> => {
+export const verify = async (channel: Channel, user: User, time: number = 30000): Promise<boolean | 0> => {
 	const verify = await (channel as TextChannel).awaitMessages((res: Message) => {
 		const value = res.content.toLowerCase();
 
@@ -267,7 +274,7 @@ export const verify = async (channel: Channel, user: User, time = 30000): Promis
  * @param {boolean} [onlyInlineCode=false] Whether to only escape inline code
  * @returns string
  */
-export const escapeMarkdown = (text: string, onlyCodeBlock = false, onlyInlineCode = false): string => {
+export const escapeMarkdown = (text: string, onlyCodeBlock: boolean = false, onlyInlineCode: boolean = false): string => {
 	if (onlyCodeBlock) return text.replace(/```/g, '`\u200b``');
 	if (onlyInlineCode) return text.replace(/\\(`|\\)/g, '$1').replace(/(`|\\)/g, '\\$1');
 
@@ -275,13 +282,13 @@ export const escapeMarkdown = (text: string, onlyCodeBlock = false, onlyInlineCo
 };
 
 // TODO: add jsdoc
-export const isNormalInteger = (str: string) => {
+export const isNormalInteger = (str: string): boolean => {
 	const n = Math.floor(Number(str));
 
 	return String(n) === str && n >= 0;
 };
 
-export const getPermissionsFromBitfield = (permissions): Array<PermissionString> => {
+export const getPermissionsFromBitfield = (permissions: Permissions): Array<PermissionString> => {
 	const permissionsList = [];
 	if (permissions.has('ADMINISTRATOR')) permissionsList.push('ADMINISTRATOR');
 	if (permissions.has('CREATE_INSTANT_INVITE')) permissionsList.push('CREATE_INSTANT_INVITE');

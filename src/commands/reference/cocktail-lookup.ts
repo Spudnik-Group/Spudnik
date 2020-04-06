@@ -34,7 +34,7 @@ export default class CocktailCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof CocktailCommand
 	 */
-	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [query]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const cocktailEmbed: MessageEmbed = baseEmbed(msg)
 			.setAuthor(
 				'CocktailDB',
@@ -101,7 +101,7 @@ export default class CocktailCommand extends Command {
 	}
 
 	private findSimilarProps(obj: any, propName: string): string[] {
-		return Object.keys(obj).filter(k => k.startsWith(propName)).map(key => obj[key]);
+		return Object.keys(obj).filter((k: string) => k.startsWith(propName)).map((key: string) => obj[key]);
 	}
 
 }

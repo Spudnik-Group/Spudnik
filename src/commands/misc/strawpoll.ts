@@ -32,7 +32,7 @@ export default class StrawpollCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof StrawpollCommand
 	 */
-	public async run(msg: KlasaMessage, [title, ...options]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [title, ...options]: [string, string[]]): Promise<KlasaMessage | KlasaMessage[]> {
 		try {
 			const { data: res } = await axios.post('https://www.strawpoll.me/api/v2/polls', {
 				captcha: true,

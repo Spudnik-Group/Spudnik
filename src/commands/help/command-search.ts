@@ -34,10 +34,10 @@ export default class CommandSearchCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof CommandSearchCommand
 	 */
-	public async run(msg: KlasaMessage, [commandName]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [commandName]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const commandsEmbed: MessageEmbed = baseEmbed(msg)
 			.setFooter(`Comrade! I bring ${this.client.commands.size} commands in this version!`);
-		const commands = this.client.commands.filter(command => command.name.includes(commandName));
+		const commands = this.client.commands.filter((command: Command) => command.name.includes(commandName));
 
 		if (commands.size > 0) {
 			commandsEmbed

@@ -44,7 +44,7 @@ export default class DefaultRoleCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof RoleManagementCommands
 	 */
-	public async run(msg: KlasaMessage, [role]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [role]: [Role]): Promise<KlasaMessage | KlasaMessage[]> {
 		const roleEmbed = specialEmbed(msg, 'role-manager');
 
 		const guildDefaultRoleId: string = msg.guild.settings.get(GuildSettings.Roles.Default);

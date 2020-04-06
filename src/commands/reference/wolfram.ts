@@ -23,7 +23,7 @@ export default class WolframCommand extends Command {
 		this.customizeResponse('query', 'Please supply a query');
 	}
 
-	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [query]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (!wolframAppID) return msg.sendSimpleError('No API Key has been set up. This feature is unusable', 3000);
 		const responseEmbed: MessageEmbed = baseEmbed(msg)
 			.setAuthor(
@@ -52,11 +52,11 @@ export default class WolframCommand extends Command {
 
 			let somethingReturned = false;
 
-			const plot = pods.find(x => x.title.toLowerCase() === 'plot');
-			const altForm = pods.find(x => x.title.toLowerCase() === 'alternate form');
-			const result = pods.find(x => x.title.toLowerCase() === 'result');
-			const decApprox = pods.find(x => x.title.toLowerCase() === 'decimal approximation');
-			const decForm = pods.find(x => x.title.toLowerCase() === 'decimal form');
+			const plot = pods.find((x: any) => x.title.toLowerCase() === 'plot');
+			const altForm = pods.find((x: any) => x.title.toLowerCase() === 'alternate form');
+			const result = pods.find((x: any) => x.title.toLowerCase() === 'result');
+			const decApprox = pods.find((x: any) => x.title.toLowerCase() === 'decimal approximation');
+			const decForm = pods.find((x: any) => x.title.toLowerCase() === 'decimal form');
 
 			if (plot) {
 				responseEmbed.addField(
