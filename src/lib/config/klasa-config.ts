@@ -34,9 +34,8 @@ export const KlasaConfig: KlasaClientOptions = {
 	],
 	owners: SpudConfig.owners,
 	disableEveryone: false,
-	language: 'en-US',
 	prefix: '!',
-	production: Boolean(SpudConfig.debug),
+	production: (process.env.NODE_ENV === 'production'),
 	readyMessage: (client: Client) => new Colors({ text: 'magenta' }).format(`Logged into Discord! Serving in ${client.guilds.array().length} Discord servers`),
 	restTimeOffset: 500,
 
@@ -44,7 +43,6 @@ export const KlasaConfig: KlasaClientOptions = {
 	 * Caching Options
 	 */
 	commandMessageLifetime: 1800,
-	fetchAllMembers: false,
 	messageCacheLifetime: 900,
 	messageCacheMaxSize: 300,
 	// The above 2 options are ignored while the interval is 0
@@ -53,7 +51,6 @@ export const KlasaConfig: KlasaClientOptions = {
 	/**
 	 * Command Handler Options
 	 */
-	commandEditing: true,
 	commandLogging: true,
 	typing: true,
 
