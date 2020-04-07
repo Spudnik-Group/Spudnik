@@ -83,8 +83,8 @@ export class Spudnik {
 				'WEBHOOKS_UPDATE'
 			],
 			invite: 'https://spudnik.io/support',
-			messageCacheLifetime: 30,
-			messageSweepInterval: 60,
+			messageCacheLifetime: 1,
+			messageSweepInterval: 1,
 			owner: this.Config.owner
 		});
 
@@ -109,7 +109,6 @@ export class Spudnik {
 				['facts', 'Facts'],
 				['feature', 'Feature'],
 				['game', 'Game'],
-				['game_server_facts', 'Game Server Facts'],
 				['gaming', 'Gaming'],
 				['help', 'Help'],
 				['info', 'Info'],
@@ -121,7 +120,6 @@ export class Spudnik {
 				['ref', 'Reference'],
 				['roles', 'Self Assignable Role Management'],
 				['server_config', 'Server Configuration'],
-				['server_management', 'Server Management'],
 				['translate', 'Translate'],
 				['util', 'Utility'],
 				['util-required', 'Required Utility']
