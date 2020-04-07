@@ -3,9 +3,10 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { MessageEmbed, Permissions } from 'discord.js';
-import { getEmbedColor, modLogMessage } from '@lib/helpers';
+import { MessageEmbed, Permissions, User } from 'discord.js';
+import { modLogMessage } from '@lib/helpers/custom-helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { specialEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Deletes previous messages.
@@ -48,7 +49,7 @@ export default class PruneCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof PruneCommand
 	 */
-	public async run(msg: KlasaMessage, [limit, filter]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [limit, filter]: [number, string|User]): Promise<KlasaMessage | KlasaMessage[]> {
 		await msg.delete();
 
 		let messages = await msg.channel.messages.fetch({ limit: 100 });
@@ -61,36 +62,30 @@ export default class PruneCommand extends Command {
 		try {
 			await msg.channel.bulkDelete(messagesToDelete.reverse());
 			// Log the event in the mod log
-			const modlogEmbed: MessageEmbed = new MessageEmbed({
-				author: {
-					iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/black-scissors_2702.png',
-					name: 'Prune'
-				},
-				color: getEmbedColor(msg),
-				description: stripIndents`
+			const modlogEmbed: MessageEmbed = specialEmbed(msg, 'prune')
+				.setDescription(stripIndents`
 					**Moderator:** ${msg.author.tag} (${msg.author.id})
 					**Action:** Prune
 					**Details:** Deleted ${limit} messages from <#${msg.channel.id}>
 					${filter ? `**Filter:** ${filter}` : ''}
-				`
-			}).setTimestamp();
+				`);
 			await modLogMessage(msg, modlogEmbed);
 
 			return msg.sendSimpleEmbed(`Pruned ${limit} messages`, 5000);
 		} catch (err) {
-			return this.catchError(msg, { limit, filter }, err);
+			return this.catchError(msg, { limit, filter: filter.toString() }, err);
 		}
 	}
 
-	private getFilter(msg, filter, user) {
+	private getFilter(msg: KlasaMessage, filter: any, user: User): any {
 		switch (filter) {
-			case 'links': return mes => /https?:\/\/[^ /.]+\.[^ /.]+/.test(mes.content);
-			case 'invites': return mes => /(https?:\/\/)?(www\.)?(discord\.(gg|li|me|io)|discordapp\.com\/invite)\/.+/.test(mes.content);
-			case 'bots': return mes => mes.author.bot;
-			case 'me': return mes => mes.author.id === msg.author.id;
-			case 'uploads': return mes => mes.attachments.size > 0;
-			case 'user': return mes => mes.author.id === user.id;
-			default: return () => true;
+			case 'links': return (mes: KlasaMessage): boolean => /https?:\/\/[^ /.]+\.[^ /.]+/.test(mes.content);
+			case 'invites': return (mes: KlasaMessage): boolean => /(https?:\/\/)?(www\.)?(discord\.(gg|li|me|io)|discordapp\.com\/invite)\/.+/.test(mes.content);
+			case 'bots': return (mes: KlasaMessage): boolean => mes.author.bot;
+			case 'me': return (mes: KlasaMessage): boolean => mes.author.id === msg.author.id;
+			case 'uploads': return (mes: KlasaMessage): boolean => mes.attachments.size > 0;
+			case 'user': return (mes: KlasaMessage): boolean => mes.author.id === user.id;
+			default: return (): boolean => true;
 		}
 	}
 

@@ -37,7 +37,7 @@ export default class ChanceCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof ChanceCommand
 	 */
-	public async run(msg: KlasaMessage, [chance]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [chance]: [number]): Promise<KlasaMessage | KlasaMessage[]> {
 		const loss = Math.floor(Math.random() * (chance ? Number(chance) : 1000));
 		if (!loss) return msg.sendMessage('Nice job! 10/10! You deserve some cake!', { reply: msg.author });
 

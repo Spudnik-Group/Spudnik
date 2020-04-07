@@ -4,9 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { getEmbedColor } from '@lib/helpers';
 import axios from 'axios';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Returns MDN results for a query.
@@ -38,16 +38,13 @@ export default class MdnReferenceCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof MdnReferenceCommand
 	 */
-	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
-		const mdnEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://i.imgur.com/xwbpIKG.png',
-				name: 'Mozilla Developer Network',
-				url: 'https://developer.mozilla.org/en-US/'
-			},
-			color: getEmbedColor(msg),
-			description: ''
-		});
+	public async run(msg: KlasaMessage, [query]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
+		const mdnEmbed: MessageEmbed = baseEmbed(msg)
+			.setAuthor(
+				'Mozilla Developer Network',
+				'https://i.imgur.com/xwbpIKG.png',
+				'https://developer.mozilla.org/en-US/'
+			);
 
 		try {
 			const { data: response } = await axios.get(`https://developer.mozilla.org/en-US/search.json?q=${encodeURIComponent(query)}`);
@@ -67,7 +64,7 @@ export default class MdnReferenceCommand extends Command {
 		? `
 
 					__Similar related pages__:
-					${response.documents.slice(1, 4).map(({ url, slug }, index: number) => `${index + 1}) [${slug}](${url})`).join('\n')}`
+					${response.documents.slice(1, 4).map(({ url, slug }: {url: string; slug: string}, index: number) => `${index + 1}) [${slug}](${url})`).join('\n')}`
 		: ''}
 
 

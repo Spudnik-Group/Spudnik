@@ -4,9 +4,12 @@
 
 import { stripIndents } from 'common-tags';
 import { Channel, MessageEmbed } from 'discord.js';
-import { getEmbedColor, modLogMessage, resolveChannel, basicFeatureContent } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import { basicFeatureContent } from '@lib/helpers/resolvers';
+import { modLogMessage } from '@lib/helpers/custom-helpers';
+import { resolveChannel } from '@lib/helpers/base';
+import { specialEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Manage notifications when someone joins the guild.
@@ -45,14 +48,8 @@ export default class WelcomeCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof WelcomeCommand
 	 */
-	public async message(msg: KlasaMessage, [content]): Promise<KlasaMessage | KlasaMessage[]> {
-		const welcomeEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png',
-				name: 'Server Welcome Message'
-			},
-			color: getEmbedColor(msg)
-		}).setTimestamp();
+	public async message(msg: KlasaMessage, [content]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
+		const welcomeEmbed = specialEmbed(msg, 'welcome');
 
 		try {
 			await msg.guild.settings.update(GuildSettings.Welcome.Message, content);
@@ -79,14 +76,8 @@ export default class WelcomeCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof WelcomeCommand
 	 */
-	public async channel(msg: KlasaMessage, [content]): Promise<KlasaMessage | KlasaMessage[]> {
-		const welcomeEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png',
-				name: 'Server Welcome Message'
-			},
-			color: getEmbedColor(msg)
-		}).setTimestamp();
+	public async channel(msg: KlasaMessage, [content]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
+		const welcomeEmbed = specialEmbed(msg, 'welcome');
 		const welcomeChannel = await msg.guild.settings.get(GuildSettings.Welcome.Channel);
 		const channelID = msg.guild.channels.get(resolveChannel(content)).id;
 
@@ -118,13 +109,7 @@ export default class WelcomeCommand extends Command {
 	 * @memberof WelcomeCommand
 	 */
 	public async on(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const welcomeEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png',
-				name: 'Server Welcome Message'
-			},
-			color: getEmbedColor(msg)
-		}).setTimestamp();
+		const welcomeEmbed = specialEmbed(msg, 'welcome');
 		const welcomeChannel = await msg.guild.settings.get(GuildSettings.Welcome.Channel);
 		const welcomeEnabled = await msg.guild.settings.get(GuildSettings.Welcome.Enabled);
 
@@ -160,13 +145,7 @@ export default class WelcomeCommand extends Command {
 	 * @memberof WelcomeCommand
 	 */
 	public async off(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const welcomeEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png',
-				name: 'Server Welcome Message'
-			},
-			color: getEmbedColor(msg)
-		}).setTimestamp();
+		const welcomeEmbed = specialEmbed(msg, 'welcome');
 		const welcomeEnabled = await msg.guild.settings.get(GuildSettings.Welcome.Enabled);
 
 		if (welcomeEnabled) {
@@ -197,13 +176,7 @@ export default class WelcomeCommand extends Command {
 	 * @memberof WelcomeCommand
 	 */
 	public async status(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const welcomeEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/waving-hand-sign_1f44b.png',
-				name: 'Server Welcome Message'
-			},
-			color: getEmbedColor(msg)
-		}).setTimestamp();
+		const welcomeEmbed = specialEmbed(msg, 'welcome');
 		const welcomeChannel = await msg.guild.settings.get(GuildSettings.Welcome.Channel);
 		const welcomeMessage = await msg.guild.settings.get(GuildSettings.Welcome.Message);
 		const welcomeEnabled = await msg.guild.settings.get(GuildSettings.Welcome.Enabled);

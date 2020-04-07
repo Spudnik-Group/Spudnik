@@ -4,10 +4,10 @@
 
 import { oneLine } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { SpudConfig } from '@lib/config';
 import * as mw from 'mw-dict';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 const { dictionaryApiKey } = SpudConfig;
 const dict = new mw.CollegiateDictionary(dictionaryApiKey);
@@ -39,18 +39,15 @@ export default class DefineCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof DefineCommand
 	 */
-	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [query]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (!dictionaryApiKey) return msg.sendSimpleError('No API Key has been set up. This feature is unusable', 3000);
 		const word = query;
-		const dictionaryEmbed: MessageEmbed = new MessageEmbed({
-			color: getEmbedColor(msg),
-			description: '',
-			footer: {
-				icon_url: 'http://www.dictionaryapi.com/images/info/branding-guidelines/mw-logo-light-background-50x50.png',
-				text: 'powered by Merriam-Webster\'s Collegiate® Dictionary'
-			},
-			title: `Definition Result: ${word}`
-		});
+		const dictionaryEmbed: MessageEmbed = baseEmbed(msg)
+			.setFooter(
+				'powered by Merriam-Webster\'s Collegiate® Dictionary',
+				'http://www.dictionaryapi.com/images/info/branding-guidelines/mw-logo-light-background-50x50.png'
+			)
+			.setTitle(`Definition Result: ${word}`);
 
 		try {
 			const result = await dict.lookup(word);
@@ -70,7 +67,7 @@ export default class DefineCommand extends Command {
 				dictionaryEmbed.addField('Popularity:', result[0].popularity);
 			}
 
-			dictionaryEmbed.description = this.renderDefinition(result[0].definition);
+			dictionaryEmbed.setDescription(this.renderDefinition(result[0].definition));
 
 			// Send the success response
 			return msg.sendEmbed(dictionaryEmbed);

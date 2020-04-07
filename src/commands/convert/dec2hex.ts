@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Convert } from '@lib/helpers';
+import { Convert } from '@lib/helpers/convert';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
@@ -29,8 +29,8 @@ export default class Dec2HexCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof Dec2HexCommand
 	 */
-	public async run(msg: KlasaMessage, [numberToConvert]): Promise<KlasaMessage | KlasaMessage[]> {
-		return msg.sendSimpleEmbedWithAuthor(`${numberToConvert} = 0x${Convert.dec2hex(numberToConvert).toUpperCase()}`, { name: 'Decimal to Hexadecimal Conversion:' });
+	public async run(msg: KlasaMessage, [numberToConvert]: [number]): Promise<KlasaMessage | KlasaMessage[]> {
+		return msg.sendSimpleEmbedWithAuthor(`${numberToConvert} = 0x${Convert.dec2hex(numberToConvert.toString()).toUpperCase()}`, { name: 'Decimal to Hexadecimal Conversion:' });
 	}
 
 }

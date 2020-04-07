@@ -2,10 +2,10 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Simulate dice rolling.
@@ -33,18 +33,15 @@ export default class RollCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof RollCommand
 	 */
-	public async run(msg: KlasaMessage, [roll = 6, reason]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [roll = 6, reason]: [string|number, string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const result = require('d20').roll(roll);
-		const diceEmbed: MessageEmbed = new MessageEmbed({
-			color: getEmbedColor(msg),
-			description: '',
-			title: ':game_die: Dice Roller'
-		});
+		const diceEmbed: MessageEmbed = baseEmbed(msg)
+			.setTitle(':game_die: Dice Roller');
 
 		if (!result) {
 			return msg.sendSimpleError('Invalid roll attempt. Try again with d20 syntax or a valid number.');
 		}
-		diceEmbed.description = stripIndents`
+		diceEmbed.setDescription(stripIndents`
 			Roll: ${roll}${reason
 	? `
 
@@ -53,7 +50,7 @@ export default class RollCommand extends Command {
 
 			--
 			Result: ${result}
-		`;
+		`);
 
 		// Send the success response
 		return msg.sendEmbed(diceEmbed, '', { reply: msg.author });

@@ -2,11 +2,11 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { MessageEmbed } from 'discord.js';
+import { MessageEmbed, Guild } from 'discord.js';
 import { stripIndents } from 'common-tags';
-import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, RichDisplay, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Returns a list of servers the bot is in.
@@ -38,8 +38,7 @@ export default class ListServersCommand extends Command {
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		let guilds = Array.from(this.client.guilds.values());
 		const totalGuilds = guilds.length;
-		const display = new RichDisplay(new MessageEmbed()
-			.setColor(getEmbedColor(msg))
+		const display = new RichDisplay(baseEmbed(msg)
 			.setTitle('Server List')
 			.setDescription(`Spudnik is connected to **${totalGuilds}** servers${this.client.shard ? `, in Shard ${this.client.shard.ids}` : ''}.`));
 		const noOfPages = Math.ceil(totalGuilds / 5);
@@ -47,10 +46,10 @@ export default class ListServersCommand extends Command {
 		for (let i = 0; i < noOfPages; i++) {
 			guilds = guilds.slice(i * 5, (i * 5) + 5);
 			display.addPage((template: MessageEmbed) => {
-				guilds.forEach(guild => {
-					template.fields.push({
-						name: guild.name,
-						value: stripIndents`
+				guilds.forEach((guild: Guild) => {
+					template.addField(
+						guild.name,
+						stripIndents`
 							**ID**: ${guild.id}
 							**User Count**: ${guild.memberCount}
 							**Channel Count**: ${guild.channels.size}
@@ -61,7 +60,7 @@ export default class ListServersCommand extends Command {
 		
 							--
 						`
-					});
+					);
 				});
 
 				return template;

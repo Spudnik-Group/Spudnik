@@ -4,9 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import * as UD from 'urban-dictionary';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Post an Urban Dictionary definition.
@@ -39,11 +39,8 @@ export default class UrbanCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof UrbanCommand
 	 */
-	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
-		const responseEmbed: MessageEmbed = new MessageEmbed({
-			color: getEmbedColor(msg),
-			description: ''
-		});
+	public async run(msg: KlasaMessage, [query]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
+		const responseEmbed: MessageEmbed = baseEmbed(msg);
 
 		try {
 			const targetWord = query === '' ? UD.random() : UD.term(query);

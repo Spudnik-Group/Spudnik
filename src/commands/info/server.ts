@@ -3,8 +3,8 @@
  */
 
 import { MessageEmbed, Channel } from 'discord.js';
-import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 const filterLevels = ['Off', 'No Role', 'Everyone'];
 const verificationLevels = ['None', 'Low', 'Medium', '(╯°□°）╯︵ ┻━┻', '┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻'];
@@ -34,8 +34,7 @@ export default class ServerCommand extends Command {
 	 * @memberof ServerCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const serverEmbed: MessageEmbed = new MessageEmbed()
-			.setColor(getEmbedColor(msg))
+		const serverEmbed: MessageEmbed = baseEmbed(msg)
 			.setDescription('**Server Statistics**')
 			.setThumbnail(msg.guild.iconURL({ format: 'png' }))
 			.addField('❯ Name', msg.guild.name, true)

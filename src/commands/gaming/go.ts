@@ -2,13 +2,12 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
-import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { SteamGames } from '@lib/constants';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
 
-const steamGameNames = Object.keys(SteamGames).map(item => `* ${item}`).join('\n');
+const steamGameNames = Object.keys(SteamGames).map((item: string) => `* ${item}`).join('\n');
 
 /**
  * Displays a link to launch a steam game.
@@ -39,14 +38,13 @@ export default class GoCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof GoCommand
 	 */
-	public async run(msg: KlasaMessage, [game]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [game]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (!Object.keys(SteamGames).includes(game.toUpperCase())) {
 			return msg.sendSimpleError(`Sorry, only a few games are supported at this time: \n ${steamGameNames}`, 5000);
 		}
 		const gameID = SteamGames[game.toUpperCase()];
 
-		return msg.sendEmbed(new MessageEmbed()
-			.setColor(getEmbedColor(msg))
+		return msg.sendEmbed(baseEmbed(msg)
 			.setAuthor(`${msg.author.username}`, `${msg.author.displayAvatarURL()}`)
 			.setThumbnail(`${msg.author.displayAvatarURL()}`)
 			.setTitle('Let\'s Play!')

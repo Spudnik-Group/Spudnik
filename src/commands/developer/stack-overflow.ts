@@ -4,10 +4,10 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, Permissions } from 'discord.js';
-import { getEmbedColor } from '@lib/helpers';
 import axios from 'axios';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { SpudConfig } from '@lib/config';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 const apikey = SpudConfig.stackoverflowApiKey;
 
@@ -40,17 +40,14 @@ export default class StackOverflowCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof StackOverflowCommand
 	 */
-	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [query]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (!apikey) return msg.sendSimpleError('No API Key has been set up. This feature is unusable', 3000);
-		const stackEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://i.imgur.com/b4Hhl8y.png',
-				name: 'Stack Overflow',
-				url: 'https://stackoverflow.com'
-			},
-			color: getEmbedColor(msg),
-			description: ''
-		});
+		const stackEmbed: MessageEmbed = baseEmbed(msg)
+			.setAuthor(
+				'Stack Overflow',
+				'https://i.imgur.com/b4Hhl8y.png',
+				'https://stackoverflow.com'
+			);
 		const queryParams = `q=${encodeURIComponent(query)}&page=1&pagesize=1&order=asc&sort=relevance&answers=1&site=stackoverflow&key=${apikey}`;
 
 		try {

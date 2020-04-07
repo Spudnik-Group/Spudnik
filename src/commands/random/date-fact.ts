@@ -2,9 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { MessageEmbed } from 'discord.js';
 import axios from 'axios';
-import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
@@ -31,18 +29,11 @@ export default class DateFactCommand extends Command {
 	 * @memberof DateFactCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const responseEmbed: MessageEmbed = new MessageEmbed({
-			color: getEmbedColor(msg),
-			description: '',
-			title: 'Date Fact'
-		});
-
 		try {
 			const { data } = await axios.get('http://numbersapi.com/random/date?json');
-			responseEmbed.setDescription(data.text);
 
 			// Send the success response
-			return msg.sendEmbed(responseEmbed);
+			return msg.sendSimpleEmbedWithTitle(data.text, 'Date Fact');
 		} catch (err) {
 			msg.client.emit('warn', `Error in command facts:date-fact: ${err}`);
 

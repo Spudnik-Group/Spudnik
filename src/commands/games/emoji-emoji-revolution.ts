@@ -3,8 +3,9 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { verify } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { verify } from '@lib/helpers/base';
+import { User } from 'discord.js';
 const emojis = ['⬆', '↗', '➡', '↘', '⬇', '↙', '⬅', '↖'];
 
 /**
@@ -16,7 +17,7 @@ const emojis = ['⬆', '↗', '➡', '↘', '⬇', '↙', '⬅', '↖'];
  */
 export default class EmojiEmojiRevolutionCommand extends Command {
 
-	private playing = new Set();
+	private playing: Set<string> = new Set();
 
 	/**
 	 * Creates an instance of EmojiEmojiRevolutionCommand.
@@ -42,7 +43,7 @@ export default class EmojiEmojiRevolutionCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof EmojiEmojiRevolutionCommand
 	 */
-	public async run(msg: KlasaMessage, [opponent]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [opponent]: [User]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (opponent.bot) return msg.sendMessage('Bots may not be played against.', { reply: msg.author });
 		if (opponent.id === msg.author.id) return msg.sendMessage('You may not play against yourself.', { reply: msg.author });
 		if (this.playing.has(msg.channel.id)) return msg.sendMessage('Only one fight may be occurring per channel.', { reply: msg.author });
@@ -70,7 +71,7 @@ export default class EmojiEmojiRevolutionCommand extends Command {
 
 				await msg.sendMessage(emoji);
 
-				const filter = (res: any) => [msg.author.id, opponent.id].includes(res.author.id) && res.content === emoji;
+				const filter = (res: any): boolean => [msg.author.id, opponent.id].includes(res.author.id) && res.content === emoji;
 				const win: any = await msg.channel.awaitMessages(filter, {
 					max: 1,
 					time: 30000

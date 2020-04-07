@@ -5,6 +5,7 @@
 import { Task, Colors } from 'klasa';
 import axios from 'axios';
 import { SpudConfig } from '@lib//config';
+import { Guild } from 'discord.js';
 
 enum Lists {
 	BotsForDiscord = 'botsfordiscord.com',
@@ -16,13 +17,13 @@ enum Lists {
 
 export default class extends Task {
 
-	public async run() {
+	public async run(): Promise<void> {
 		if (SpudConfig.debug) return;
 
 		this.client.emit('verbose', new Colors({ text: 'lightblue' }).format('[BOTLIST UPDATE]'));
 
 		const guilds = this.client.guilds.size.toString();
-		const users = this.client.guilds.reduce((acc, val) => acc + val.memberCount, 0).toString();
+		const users = this.client.guilds.reduce((acc: number, val: Guild) => acc + val.memberCount, 0).toString();
 
 		await Promise.all([
 			this.query(`https://discordbots.org/api/bots/${this.client.user!.id}/stats`,
@@ -38,11 +39,11 @@ export default class extends Task {
 		]);
 	}
 
-	public async init() {
+	public async init(): Promise<void> {
 		return this.run();
 	}
 
-	private async query(url: string, body: string, token: string | null, list: Lists) {
+	private async query(url: string, body: string, token: string | null, list: Lists): Promise<any> {
 		try {
 			if (!token) throw new Error(`No token for ${list}`);
 

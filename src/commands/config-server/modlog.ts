@@ -4,9 +4,11 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed, Channel } from 'discord.js';
-import { getEmbedColor, modLogMessage, resolveChannel } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, Possible, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import { specialEmbed } from '@lib/helpers/embed-helpers';
+import { resolveChannel } from '@lib/helpers/base';
+import { modLogMessage } from '@lib/helpers/custom-helpers';
 
 /**
  * Enable or disable the Modlog feature.
@@ -33,7 +35,7 @@ export default class ModlogCommand extends Command {
 			usage: '<on|off|status|channel> (channel:channel)'
 		});
 
-		this.createCustomResolver('channel', (arg: string, possible: Possible, message: KlasaMessage, [subCommand]) => {
+		this.createCustomResolver('channel', (arg: string, possible: Possible, message: KlasaMessage, [subCommand]: [string]) => {
 			if (subCommand === 'channel' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw new Error('Please provide a channel for the modlog messages to be displayed in.');
 
 			return resolveChannel(arg);
@@ -41,14 +43,7 @@ export default class ModlogCommand extends Command {
 	}
 
 	public async on(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const modlogEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/memo_1f4dd.png',
-				name: 'Mod Log'
-			},
-			color: getEmbedColor(msg),
-			description: ''
-		}).setTimestamp();
+		const modlogEmbed: MessageEmbed = specialEmbed(msg, 'modlog');
 		const modlogChannel = msg.guild.settings.get(GuildSettings.Modlog.Channel);
 		const modlogEnabled = msg.guild.settings.get(GuildSettings.Modlog.Enabled);
 
@@ -77,14 +72,7 @@ export default class ModlogCommand extends Command {
 	}
 
 	public async off(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const modlogEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/memo_1f4dd.png',
-				name: 'Mod Log'
-			},
-			color: getEmbedColor(msg),
-			description: ''
-		}).setTimestamp();
+		const modlogEmbed: MessageEmbed = specialEmbed(msg, 'modlog');
 		const modlogEnabled = await msg.guild.settings.get(GuildSettings.Modlog.Enabled);
 
 		if (modlogEnabled) {
@@ -107,15 +95,8 @@ export default class ModlogCommand extends Command {
 		}
 	}
 
-	public async channel(msg: KlasaMessage, [channel]): Promise<KlasaMessage | KlasaMessage[]> {
-		const modlogEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/memo_1f4dd.png',
-				name: 'Mod Log'
-			},
-			color: getEmbedColor(msg),
-			description: ''
-		}).setTimestamp();
+	public async channel(msg: KlasaMessage, [channel]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
+		const modlogEmbed: MessageEmbed = specialEmbed(msg, 'modlog');
 		const modlogChannel = await msg.guild.settings.get(GuildSettings.Modlog.Channel);
 
 		if (channel) {
@@ -153,14 +134,7 @@ export default class ModlogCommand extends Command {
 	 * @memberof ModlogCommand
 	 */
 	public async status(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const modlogEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/memo_1f4dd.png',
-				name: 'Mod Log'
-			},
-			color: getEmbedColor(msg),
-			description: ''
-		}).setTimestamp();
+		const modlogEmbed: MessageEmbed = specialEmbed(msg, 'modlog');
 		const modlogChannel = await msg.guild.settings.get(GuildSettings.Modlog.Channel);
 		const modlogEnabled = await msg.guild.settings.get(GuildSettings.Modlog.Enabled);
 
@@ -172,7 +146,7 @@ export default class ModlogCommand extends Command {
 		return msg.sendEmbed(modlogEmbed);
 	}
 
-	private catchError(msg: KlasaMessage, args: { subCommand: string; channel?: Channel }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
+	private catchError(msg: KlasaMessage, args: { subCommand: string; channel?: Channel|string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Build warning message
 		let modlogWarn = stripIndents`
 			Error occurred in \`accept\` command!

@@ -4,9 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { getEmbedColor } from '@lib/helpers';
 import axios from 'axios';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Returns details for an NPM package.
@@ -44,16 +44,13 @@ export default class NPMCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof NPMCommand
 	 */
-	public async run(msg: KlasaMessage, [query]): Promise<KlasaMessage | KlasaMessage[]> {
-		const npmEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://authy.com/wp-content/uploads/npm-logo.png',
-				name: 'NPM',
-				url: 'https://npmjs.com'
-			},
-			color: getEmbedColor(msg),
-			description: ''
-		});
+	public async run(msg: KlasaMessage, [query]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
+		const npmEmbed: MessageEmbed = baseEmbed(msg)
+			.setAuthor(
+				'NPM',
+				'https://authy.com/wp-content/uploads/npm-logo.png',
+				'https://npmjs.com'
+			);
 
 		try {
 			const { data: res } = await axios.get(`https://registry.npmjs.com/${query}`);

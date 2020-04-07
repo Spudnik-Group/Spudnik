@@ -37,7 +37,7 @@ export default class RouletteCommand extends Command {
 			usage: '<space:string>'
 		});
 
-		this.createCustomResolver('space', arg => {
+		this.createCustomResolver('space', (arg: string) => {
 			if (numbers.includes(Number.parseInt(arg, 10))) return arg;
 			if (dozens.includes(arg)) return arg;
 			if (halves.includes(arg)) return arg;
@@ -59,7 +59,7 @@ export default class RouletteCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof RouletteCommand
 	 */
-	public async run(msg: KlasaMessage, [space]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [space]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const num: number = Math.floor(Math.random() * 37);
 		const color = num ? red.includes(num) ? 'RED' : 'BLACK' : null;
 		const win = this.verifyWin(space, num);
@@ -67,7 +67,7 @@ export default class RouletteCommand extends Command {
 		return msg.sendMessage(`The result is **${num}${color ? ` ${color}` : ''}**. ${win ? 'You win!' : 'You lose...'}`, { reply: msg.author });
 	}
 
-	private verifyWin(choice: string, result: any) {
+	private verifyWin(choice: string, result: any): boolean {
 		if (dozens.includes(choice) || halves.includes(choice)) {
 			const range = choice.split('-');
 

@@ -16,7 +16,7 @@ export default class extends Provider {
 		this.db = null;
 	}
 
-	public async init() {
+	public async init(): Promise<void> {
 		const connection = mergeDefault({
 			db: 'klasa',
 			host: 'localhost',
@@ -37,67 +37,67 @@ export default class extends Provider {
 
 	/* Table methods */
 
-	public get exec() {
+	public get exec(): any {
 		return this.db;
 	}
 
-	public hasTable(table: any) {
+	public hasTable(table: any): any {
 		return this.db.listCollections().toArray().then((collections: any) => collections.some((col: any) => col.name === table));
 	}
 
-	public createTable(table: any) {
+	public createTable(table: any): any {
 		return this.db.createCollection(table);
 	}
 
-	public deleteTable(table: any) {
+	public deleteTable(table: any): any {
 		return this.db.dropCollection(table);
 	}
 
 	/* Document methods */
 
-	public getAll(table: any, filter: any[] = []) {
+	public getAll(table: any, filter: any[] = []): any {
 		if (filter.length) return this.db.collection(table).find({ id: { $in: filter } }, { _id: 0 }).toArray();
 
 		return this.db.collection(table).find({}, { _id: 0 }).toArray();
 	}
 
-	public getKeys(table: any) {
+	public getKeys(table: any): any {
 		return this.db.collection(table).find({}, { id: 1, _id: 0 }).toArray();
 	}
 
-	public get(table: any, id: any) {
+	public get(table: any, id: any): any {
 		return this.db.collection(table).findOne(resolveQuery(id));
 	}
 
-	public has(table: any, id: any) {
+	public has(table: any, id: any): any {
 		return this.get(table, id).then(Boolean);
 	}
 
-	public getRandom(table: any) {
+	public getRandom(table: any): any {
 		return this.db.collection(table).aggregate({ $sample: { size: 1 } });
 	}
 
-	public create(table: any, id: any, doc = {}) {
+	public create(table: any, id: any, doc: any = {}): any {
 		return this.db.collection(table).insertOne(mergeObjects(this.parseUpdateInput(doc), resolveQuery(id)));
 	}
 
-	public delete(table: any, id: any) {
+	public delete(table: any, id: any): any {
 		return this.db.collection(table).deleteOne(resolveQuery(id));
 	}
 
-	public update(table: any, id: any, doc: any) {
+	public update(table: any, id: any, doc: any): any {
 		return this.db.collection(table).updateOne(resolveQuery(id), { $set: isObject(doc) ? flatten(doc) : parseEngineInput(doc) });
 	}
 
-	public replace(table: any, id: any, doc: any) {
+	public replace(table: any, id: any, doc: any): any {
 		return this.db.collection(table).replaceOne(resolveQuery(id), this.parseUpdateInput(doc));
 	}
 
 }
 
-const resolveQuery = (query: any) => isObject(query) ? query : { id: query };
+const resolveQuery = (query: any): any => isObject(query) ? query : { id: query };
 
-const flatten = (obj: any, path = '') => {
+const flatten = (obj: any, path: string = ''): any => {
 	let output: any = {};
 	for (const [key, value] of Object.entries(obj)) {
 		if (isObject(value)) output = Object.assign(output, flatten(value, path ? `${path}.${key}` : key));
@@ -107,4 +107,4 @@ const flatten = (obj: any, path = '') => {
 	return output;
 };
 
-const parseEngineInput = (updated: any) => Object.assign({}, ...updated.map(({ entry, next }) => ({ [entry.path]: next })));
+const parseEngineInput = (updated: any): any => Object.assign({}, ...updated.map(({ entry, next }: { entry: any; next: any}) => ({ [entry.path]: next })));

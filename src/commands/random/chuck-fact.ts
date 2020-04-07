@@ -2,9 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { MessageEmbed } from 'discord.js';
 import axios from 'axios';
-import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
@@ -32,18 +30,11 @@ export default class ChuckFactCommand extends Command {
 	 * @memberof ChuckFactCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const responseEmbed: MessageEmbed = new MessageEmbed({
-			color: getEmbedColor(msg),
-			description: '',
-			title: 'Chuck Norris Fact'
-		});
-
 		try {
 			const { data } = await axios.get('http://api.icndb.com/jokes/random');
-			responseEmbed.setDescription(data.value.joke);
 
 			// Send the success response
-			return msg.sendEmbed(responseEmbed);
+			return msg.sendSimpleEmbedWithTitle(data.value.joke, 'Chuck Norris Fact');
 		} catch (err) {
 			msg.client.emit('warn', `Error in command facts:chuck-fact: ${err}`);
 

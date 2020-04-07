@@ -4,8 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { GuildMember, MessageEmbed, Role, Permissions } from 'discord.js';
-import { getEmbedColor, modLogMessage } from '@lib/helpers';
+import { modLogMessage } from '@lib/helpers/custom-helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { specialEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Ban a member and optionally delete past messages.
@@ -34,15 +35,8 @@ export default class BanCommand extends Command {
 	 * @returns {(Promise<Message | Message[] | any>)}
 	 * @memberof BanCommand
 	 */
-	public async run(msg: KlasaMessage, [member, reason]): Promise<KlasaMessage | KlasaMessage[]> {
-		const banEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/hammer_1f528.png',
-				name: 'Ban Hammer'
-			},
-			color: getEmbedColor(msg),
-			description: ''
-		}).setTimestamp();
+	public async run(msg: KlasaMessage, [member, reason]: [any, string]): Promise<KlasaMessage | KlasaMessage[]> {
+		const banEmbed: MessageEmbed = specialEmbed(msg, 'ban');
 
 		try {
 			// Check if user is a guild member

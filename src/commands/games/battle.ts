@@ -3,8 +3,9 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { getRandomInt, verify } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { verify, getRandomInt } from '@lib/helpers/base';
+import { User } from 'discord.js';
 
 /**
  * Allows users to battle each other or the bot.
@@ -38,7 +39,7 @@ export default class BattleCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof BattleCommand
 	 */
-	public async run(msg: KlasaMessage, [opp]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [opp]: [User]): Promise<KlasaMessage | KlasaMessage[]> {
 		const fighting = new Set();
 		const opponent = opp ? opp : this.client.user;
 
@@ -69,14 +70,14 @@ export default class BattleCommand extends Command {
 			let userTurn = false;
 			let guard = false;
 
-			const reset = (changeGuard = true) => {
+			const reset = (changeGuard: boolean = true): void => {
 				userTurn = !userTurn;
 				if (changeGuard && guard) {
 					guard = false;
 				}
 			};
 
-			const dealDamage = (damage: any) => {
+			const dealDamage = (damage: any): void => {
 				if (userTurn) {
 					oppoHP -= damage;
 				} else {
@@ -84,7 +85,7 @@ export default class BattleCommand extends Command {
 				}
 			};
 
-			const forfeit = () => {
+			const forfeit = (): void => {
 				if (userTurn) {
 					userHP = 0;
 				} else {
@@ -102,7 +103,7 @@ export default class BattleCommand extends Command {
 						**${msg.author.username}**: ${userHP}HP
 						**${opponent.username}**: ${oppoHP}HP
 					`);
-					const filter = (res: any) =>
+					const filter = (res: any): boolean =>
 						res.author.id === user.id && ['fight', 'guard', 'special', 'run'].includes(res.content.toLowerCase());
 					const turn = await msg.channel.awaitMessages(filter, {
 						max: 1,

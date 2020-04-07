@@ -3,8 +3,7 @@
  */
 
 import { CommandStore, KlasaMessage, Command } from 'klasa';
-import { getEmbedColor } from '@lib/helpers';
-import { MessageEmbed, Permissions } from 'discord.js';
+import { Permissions } from 'discord.js';
 import axios, { AxiosResponse } from 'axios';
 
 /**
@@ -32,17 +31,8 @@ export default class ChangelogCommand extends Command {
 	 * @memberof changelogCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const stackEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/scroll_1f4dc.png',
-				name: 'Change Log',
-				url: 'https://github.com/Spudnik-Group/Spudnik'
-			},
-			color: getEmbedColor(msg),
-			description: ''
-		});
-
 		try {
+			let output: string;
 			const res: AxiosResponse<any> = await axios.get('https://api.github.com/repos/Spudnik-Group/Spudnik/releases', {
 				headers: {
 					'Accept': 'application/vnd.github.v3+json',
@@ -53,18 +43,22 @@ export default class ChangelogCommand extends Command {
 			const changelog: Array<any> = res.data.slice(0, 3);
 
 			changelog.forEach((release: any) => {
-				stackEmbed.description += `
+				output += `
 
 					- *${release.name}* -
 					${release.body}`;
 			});
 
-			stackEmbed.description += `
+			output += `
 
 				Check out the full changelog [here](https://github.com/Spudnik-Group/Spudnik/releases)
 			`;
 
-			return msg.sendEmbed(stackEmbed);
+			return msg.sendSimpleEmbedWithAuthor(output, {
+				name: 'Change Log',
+				iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/scroll_1f4dc.png',
+				url: 'https://github.com/Spudnik-Group/Spudnik'
+			});
 		} catch (err) {
 			msg.client.emit('warn', `Error in command dev:changelog: ${err}`);
 

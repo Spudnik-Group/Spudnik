@@ -2,9 +2,9 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { MessageEmbed } from 'discord.js';
-import { Convert, getEmbedColor } from '@lib/helpers';
+import { Convert } from '@lib/helpers/convert';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Base64 decodes a string
@@ -30,13 +30,9 @@ export default class Base64DecodeCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof Base64DecodeCommand
 	 */
-	public async run(msg: KlasaMessage, [stringToDecode]): Promise<KlasaMessage | KlasaMessage[]> {
-		const returnMessage = new MessageEmbed({
-			author: {
-				name: 'Base64 Decoded String:'
-			},
-			color: getEmbedColor(msg)
-		})
+	public async run(msg: KlasaMessage, [stringToDecode]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
+		const returnMessage = baseEmbed(msg)
+			.setAuthor('Base64 Decoded String:')
 			.addField('Input:', stringToDecode)
 			.addField('Output:', Convert.base64decode(stringToDecode));
 

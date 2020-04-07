@@ -4,7 +4,7 @@
 
 import { KlasaMessage, Command, CommandStore } from 'klasa';
 import { stripIndents } from 'common-tags';
-import { delay } from '@lib/helpers';
+import { delay } from '@lib/helpers/base';
 
 /**
  * Returns the bot's ping.

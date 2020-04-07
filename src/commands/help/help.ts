@@ -4,9 +4,11 @@
 
 import { MessageEmbed, Permissions } from 'discord.js';
 import { stripIndents } from 'common-tags';
-import { getEmbedColor, getPermissionsFromBitfield, getPermissionsFromLevel, canCommandBeUsed } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import { baseEmbed } from '@lib/helpers/embed-helpers';
+import { getPermissionsFromBitfield } from '@lib/helpers/base';
+import { getPermissionsFromLevel, canCommandBeUsed } from '@lib/helpers/custom-helpers';
 
 /**
  * Returns helpful information on the bot, or detailed information for a specific command.
@@ -35,15 +37,15 @@ export default class HelpCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof HelpCommand
 	 */
-	public async run(msg: KlasaMessage, [command]): Promise<KlasaMessage | KlasaMessage[]> {
-		const helpEmbed: MessageEmbed = new MessageEmbed()
-			.setColor(getEmbedColor(msg));
+	public async run(msg: KlasaMessage, [command]: [Command]): Promise<KlasaMessage | KlasaMessage[]> {
+		const helpEmbed: MessageEmbed = baseEmbed(msg);
+
 		if (command) {
 			helpEmbed
 				.setTitle(`__Command: **${command.name}**__`)
-				.addField('❯ Description', command.description)
+				.addField('❯ Description', typeof command.description === 'function' ? command.description(msg.language) : command.description)
 				.addField('❯ Usage', command.usage.fullUsage(msg))
-				.addField('❯ Details', command.extendedHelp ? (typeof command.extendedHelp === 'function' ? command.extendedHelp() : command.extendedHelp) : 'No extended help details.')
+				.addField('❯ Details', command.extendedHelp ? (typeof command.extendedHelp === 'function' ? command.extendedHelp(msg.language) : command.extendedHelp) : 'No extended help details.')
 				.addField('❯ Aliases', command.aliases.length > 0 ? command.aliases.join(', ') : 'None', true)
 				.addField('❯ Category', `${command.category}`, true)
 				.addField('❯ BOT Permissions', command.requiredPermissions.bitfield ? `${getPermissionsFromBitfield(command.requiredPermissions).join('\n')}` : 'No extra perms required', true)
@@ -68,7 +70,6 @@ export default class HelpCommand extends Command {
 			.setFooter(`Server Prefix: ${msg.guild.settings.get(GuildSettings.Prefix)} • Total Commands: ${this.client.commands.size}`);
 
 		return msg.sendEmbed(helpEmbed);
-
 	}
 
 }

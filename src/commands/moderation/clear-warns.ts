@@ -4,9 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { GuildMember, MessageEmbed } from 'discord.js';
-import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
-import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import { GuildSettings, Warning } from '@lib/types/settings/GuildSettings';
+import { specialEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Clears warns for a member of the guild.
@@ -38,16 +38,8 @@ export default class ClearWarnsCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof ClearWarnsCommand
 	 */
-	public async run(msg: KlasaMessage, [member, reason]): Promise<KlasaMessage | KlasaMessage[]> {
-		const warnEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/warning-sign_26a0.png',
-				name: 'Clear Warnings'
-			},
-			color: getEmbedColor(msg),
-			description: ''
-		}).setTimestamp();
-		let previousPoints = 0;
+	public async run(msg: KlasaMessage, [member, reason]: [GuildMember, string]): Promise<KlasaMessage | KlasaMessage[]> {
+		const warnEmbed: MessageEmbed = specialEmbed(msg, 'clear-warn');
 		const guildWarnings = await msg.guild.settings.get(GuildSettings.Warnings);
 
 		if (guildWarnings.length) {
@@ -55,7 +47,7 @@ export default class ClearWarnsCommand extends Command {
 			try {
 				let memberIndex: number = null;
 				// Check for previous warnings of supplied member
-				const currentWarnings = guildWarnings.find((warning, index) => {
+				const currentWarnings = guildWarnings.find((warning: Warning, index: number) => {
 					if (warning.id === member.id) {
 						memberIndex = index;
 
@@ -67,7 +59,7 @@ export default class ClearWarnsCommand extends Command {
 
 				if (currentWarnings && memberIndex !== null) {
 					// Previous warnings present for supplied member
-					previousPoints = currentWarnings.points;
+					const previousPoints = currentWarnings.points;
 
 					await msg.guild.settings.update(GuildSettings.Warnings, currentWarnings, { arrayAction: 'overwrite' });
 					// Set up embed message

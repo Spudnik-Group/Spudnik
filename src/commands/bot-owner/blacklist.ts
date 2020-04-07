@@ -16,7 +16,7 @@ import { stripIndents } from 'common-tags';
  */
 export default class BlacklistCommand extends Command {
 
-	private terms = ['usersAdded', 'usersRemoved', 'guildsAdded', 'guildsRemoved'];
+	private terms: string[] = ['usersAdded', 'usersRemoved', 'guildsAdded', 'guildsRemoved'];
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -36,7 +36,7 @@ export default class BlacklistCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof BlacklistCommand
 	 */
-	public async run(msg: KlasaMessage, [...usersAndGuilds]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [...usersAndGuilds]: any[]): Promise<KlasaMessage | KlasaMessage[]> {
 		const changes: any[][] = [[], [], [], []];
 		const queries: any[][] = [[], []];
 

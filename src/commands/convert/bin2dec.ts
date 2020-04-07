@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Convert } from '@lib/helpers';
+import { Convert } from '@lib/helpers/convert';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
@@ -29,8 +29,8 @@ export default class Bin2DecCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof Bin2DecCommand
 	 */
-	public async run(msg: KlasaMessage, [numberToConvert]): Promise<KlasaMessage | KlasaMessage[]> {
-		return msg.sendSimpleEmbedWithAuthor(`${numberToConvert} = ${Convert.bin2dec(numberToConvert)}`, { name: 'Binary to Decimal Conversion:' });
+	public async run(msg: KlasaMessage, [numberToConvert]: [number]): Promise<KlasaMessage | KlasaMessage[]> {
+		return msg.sendSimpleEmbedWithAuthor(`${numberToConvert} = ${Convert.bin2dec(numberToConvert.toString())}`, { name: 'Binary to Decimal Conversion:' });
 	}
 
 }

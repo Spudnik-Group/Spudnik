@@ -2,8 +2,9 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { getRandomInt, verify } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { verify, getRandomInt } from '@lib/helpers/base';
+import { User } from 'discord.js';
 
 /**
  * Starts a game of Balloon Pop.
@@ -14,7 +15,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
  */
 export default class BalloonPopCommand extends Command {
 
-	private playing = new Set();
+	private playing: Set<string> = new Set();
 
 	/**
 	 * Creates an instance of BalloonPopCommand.
@@ -39,7 +40,7 @@ export default class BalloonPopCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof BalloonPopCommand
 	 */
-	public async run(msg: KlasaMessage, [opp]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [opp]: [User]): Promise<KlasaMessage | KlasaMessage[]> {
 		const opponent = opp ? opp : this.client.user;
 		if (opponent.id === msg.author.id) return msg.sendMessage('You may not play against yourself.', { reply: msg.author });
 		if (this.playing.has(msg.channel.id)) return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author });

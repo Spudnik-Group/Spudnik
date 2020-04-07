@@ -13,7 +13,7 @@ export default class extends Event {
 		super(store, file, directory, { name: 'MESSAGE_REACTION_REMOVE', emitter: store.client.ws });
 	}
 
-	public async run(event) {
+	public async run(event: any): Promise<void> {
 		if (!event.guild_id) return; // Ignore non-guild events
 
 		const guild: Guild = await this.client.guilds.get(event.guild_id);
@@ -50,7 +50,7 @@ export default class extends Event {
 
 			const starboardMessages = await (starboard as TextChannel).messages.fetch({ limit: 100 });
 			// eslint-disable-next-line array-callback-return
-			const existingStar = starboardMessages.find((m): boolean => {
+			const existingStar = starboardMessages.find((m: Message): boolean => {
 				// Need this filter if there are non-starboard posts in the starboard channel.
 				if (m.embeds.length > 0) {
 					if (m.embeds[0].footer) {

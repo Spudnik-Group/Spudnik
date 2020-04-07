@@ -4,9 +4,10 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { hexColor } from '@lib/helpers';
+import { hexColor } from '@lib/helpers/resolvers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import { specialEmbed } from '@lib/helpers/embed-helpers';
 
 /**
  * Change the default embed color for the server.
@@ -39,14 +40,8 @@ export default class EmbedColorCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof EmbedColorCommand
 	 */
-	public async run(msg: KlasaMessage, [color]): Promise<KlasaMessage | KlasaMessage[]> {
-		const embedColorEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				iconURL: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/artist-palette_1f3a8.png',
-				name: 'Embed Color'
-			},
-			description: ''
-		}).setTimestamp();
+	public async run(msg: KlasaMessage, [color]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
+		const embedColorEmbed: MessageEmbed = specialEmbed(msg, 'embed-color');
 
 		if (color) {
 			try {

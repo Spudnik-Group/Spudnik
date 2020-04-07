@@ -3,10 +3,11 @@
  */
 
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
-import { MessageEmbed, Permissions } from 'discord.js';
-import { getEmbedColor, modLogMessage } from '@lib/helpers';
+import { MessageEmbed, Permissions, GuildMember } from 'discord.js';
+import { modLogMessage } from '@lib/helpers/custom-helpers';
 import { stripIndents } from 'common-tags';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import { specialEmbed } from '@lib/helpers/embed-helpers';
 
 export default class UnmuteCommand extends Command {
 
@@ -20,15 +21,8 @@ export default class UnmuteCommand extends Command {
 		});
 	}
 
-	public async run(msg: KlasaMessage, [member, reason]): Promise<KlasaMessage | KlasaMessage[]> {
-		const muteEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/google/223/speaker-with-cancellation-stroke_1f507.png',
-				name: 'Mute'
-			},
-			color: getEmbedColor(msg),
-			description: ''
-		}).setTimestamp();
+	public async run(msg: KlasaMessage, [member, reason]: [GuildMember, string]): Promise<KlasaMessage | KlasaMessage[]> {
+		const muteEmbed: MessageEmbed = specialEmbed(msg, 'un-mute');
 
 		// Check if user is able to mute the mentioned user
 		if (member.roles.highest.position >= msg.member.roles.highest.position) {

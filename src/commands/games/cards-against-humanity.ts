@@ -4,9 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { Collection } from 'discord.js';
-import { awaitPlayers, escapeMarkdown, shuffle } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { blackCards, whiteCards } from '../../extras/cards-against-humanity.json';
+import { awaitPlayers, escapeMarkdown, shuffle } from '@lib/helpers/base';
 
 /**
  * Starts a game of Cards Against Humanity.
@@ -17,7 +17,7 @@ import { blackCards, whiteCards } from '../../extras/cards-against-humanity.json
  */
 export default class CardsAgainstHumanityCommand extends Command {
 
-	private playing = new Set();
+	private playing: Set<string> = new Set();
 
 	/**
 	 * Creates an instance of CardsAgainstHumanityCommand.
@@ -43,7 +43,7 @@ export default class CardsAgainstHumanityCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof CardsAgainstHumanityCommand
 	 */
-	public async run(msg: KlasaMessage, [maxPts, noMidJoin]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [maxPts, noMidJoin]: [number, boolean]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (this.playing.has(msg.channel.id)) return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author });
 		const midJoinDisabled = noMidJoin ? noMidJoin : false;
 		this.playing.add(msg.channel.id);
@@ -100,10 +100,10 @@ export default class CardsAgainstHumanityCommand extends Command {
 				await msg.sendMessage(stripIndents`
 					${czar.user}, which card${black.pick > 1 ? 's' : ''} do you pick?
 					**Black Card**: ${escapeMarkdown(black.text)}
-					${cards.map((card, i) => `**${i + 1}.** ${card.cards.join(', ')}`).join('\n')}
+					${cards.map((card: any, i: number) => `**${i + 1}.** ${card.cards.join(', ')}`).join('\n')}
 				`);
 
-				const filter = (res: any) => {
+				const filter = (res: any): boolean => {
 					if (res.author.id !== czar.user.id) return false;
 
 					if (!/^[0-9]+$/g.test(res.content)) return false;
@@ -199,14 +199,14 @@ export default class CardsAgainstHumanityCommand extends Command {
 
 			await player.user.send(stripIndents`
 				__**Your hand is**__: _(Type \`swap\` to exchange a point for a new hand.)_
-				${hand.map((card, i) => `**${i + 1}.** ${card}`).join('\n')}
+				${hand.map((card: any, i: number) => `**${i + 1}.** ${card}`).join('\n')}
 				**Black Card**: ${escapeMarkdown(black.text)}
 				**Card Czar**: ${czar.user.username}
 				Pick **${black.pick}** card${black.pick > 1 ? 's' : ''}!
 			`);
 
 			const chosen: any[] = [];
-			const filter = (res: any) => {
+			const filter = (res: any): boolean => {
 				if (res.content.toLowerCase() === 'swap' && player.points > 0) return true;
 				const existing = hand[Number.parseInt(res.content, 10) - 1];
 				if (!existing) return false;
@@ -274,7 +274,7 @@ export default class CardsAgainstHumanityCommand extends Command {
 	}
 
 	private createJoinLeaveCollector(channel: any, players: any, czars: any): any {
-		const filter = (res: any) => {
+		const filter = (res: any): boolean => {
 			if (res.author.bot) return false;
 			if (players.has(res.author.id) && res.content.toLowerCase() !== 'leave game') return false;
 			if (czars[0] === res.author.id || players.size >= 10) {
@@ -323,7 +323,7 @@ export default class CardsAgainstHumanityCommand extends Command {
 		return collector;
 	}
 
-	private kickPlayer(player: any, players: any, czars: any) {
+	private kickPlayer(player: any, players: any, czars: any): void {
 		players.delete(player.id);
 		czars.splice(czars.indexOf(player.id), 1);
 	}

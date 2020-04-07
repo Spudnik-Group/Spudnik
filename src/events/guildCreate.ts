@@ -7,7 +7,7 @@ import { ClientSettings } from '@lib/types/settings/ClientSettings';
 
 export default class extends Event {
 
-	public run(guild) {
+	public run(guild: any): void {
 		if (!guild.available) return;
 		if (this.client.settings.get(ClientSettings.Blacklist.Guilds).includes(guild.id)) {
 			guild.leave();

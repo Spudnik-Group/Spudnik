@@ -10,7 +10,7 @@ import { TextChannel } from 'discord.js';
 
 export default class extends Event {
 
-	public run(failure) {
+	public run(failure: any): void {
 		if (process.env.NODE_ENV !== 'development') {
 			const rollbar = new Rollbar({
 				accessToken: SpudConfig.rollbarApiKey,

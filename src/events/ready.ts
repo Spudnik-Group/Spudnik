@@ -10,7 +10,7 @@ export default class extends Event {
 		super(store, file, directory, { once: true });
 	}
 
-	public run() {
+	public run(): void {
 		this.client.emit('verbose', new Colors({ text: 'blue' }).format('---Spudnik Launch Success---'));
 	}
 

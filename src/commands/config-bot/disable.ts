@@ -4,10 +4,12 @@
 
 import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
-import { getEmbedColor, modLogMessage, isCommandCategoryEnabled, isCommandEnabled, commandOrCategory } from '@lib/helpers';
+import { modLogMessage, isCommandCategoryEnabled, isCommandEnabled } from '@lib/helpers/custom-helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import * as fs from 'fs';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import { specialEmbed } from '@lib/helpers/embed-helpers';
+import { commandOrCategory } from '@lib/helpers/resolvers';
 
 /**
  * Disables a command or command category.
@@ -39,20 +41,13 @@ export default class DisableCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof DisableCommand
 	 */
-	public async run(msg: KlasaMessage, [cmdOrCat]): Promise<KlasaMessage | KlasaMessage[]> {
-		const disableEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/cross-mark_274c.png',
-				name: 'Disable'
-			},
-			color: getEmbedColor(msg),
-			description: ''
-		}).setTimestamp();
+	public async run(msg: KlasaMessage, [cmdOrCat]: [Command|string]): Promise<KlasaMessage | KlasaMessage[]> {
+		const disableEmbed: MessageEmbed = specialEmbed(msg, 'disable');
 
 		if (typeof cmdOrCat === 'string') {
 			// Category
 			const groups: any[] = fs.readdirSync('commands')
-				.filter(path => fs.statSync(`commands/${path}`).isDirectory());
+				.filter((path: string) => fs.statSync(`commands/${path}`).isDirectory());
 			const parsedGroup: string = cmdOrCat.toLowerCase();
 
 			if (!isCommandCategoryEnabled(msg, cmdOrCat)) {

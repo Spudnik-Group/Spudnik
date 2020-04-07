@@ -2,9 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { MessageEmbed } from 'discord.js';
 import axios from 'axios';
-import { getEmbedColor } from '@lib/helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 /**
@@ -31,18 +29,11 @@ export default class DogFactCommand extends Command {
 	 * @memberof DogFactCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const responseEmbed: MessageEmbed = new MessageEmbed({
-			color: getEmbedColor(msg),
-			description: '',
-			title: ':dog: Fact'
-		});
-
 		try {
 			const { data } = await axios.get('https://dog-api.kinduff.com/api/facts');
-			responseEmbed.setDescription(data.facts[0]);
 
 			// Send the success response
-			return msg.sendEmbed(responseEmbed);
+			return msg.sendSimpleEmbedWithTitle(data.facts[0], ':dog: Fact');
 		} catch (err) {
 			msg.client.emit('warn', `Error in command facts:dog-fact: ${err}`);
 

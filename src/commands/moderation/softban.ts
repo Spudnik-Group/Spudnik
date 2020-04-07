@@ -4,8 +4,9 @@
 
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildMember, MessageEmbed, Permissions } from 'discord.js';
-import { modLogMessage, getEmbedColor } from '@lib/helpers';
+import { modLogMessage } from '@lib/helpers/custom-helpers';
 import { stripIndents } from 'common-tags';
+import { specialEmbed } from '@lib/helpers/embed-helpers';
 
 export default class SoftbanCommand extends Command {
 
@@ -14,19 +15,12 @@ export default class SoftbanCommand extends Command {
 			description: 'Soft-Bans the user, with a supplied reason',
 			permissionLevel: 4, // BAN_MEMBERS
 			requiredPermissions: Permissions.FLAGS.BAN_MEMBERS,
-			usage: '<member:member> <reason:...string>'
+			usage: '<member:member> <reason:...string> [when:time]'
 		});
 	}
 
-	public async run(msg: KlasaMessage, [member, reason]): Promise<KlasaMessage | KlasaMessage[]> {
-		const banEmbed: MessageEmbed = new MessageEmbed({
-			author: {
-				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/hammer_1f528.png',
-				name: 'Ban Hammer (Softly)'
-			},
-			color: getEmbedColor(msg),
-			description: ''
-		}).setTimestamp();
+	public async run(msg: KlasaMessage, [member, reason, when]: [GuildMember, string, string]): Promise<KlasaMessage | KlasaMessage[]> {
+		const banEmbed: MessageEmbed = specialEmbed(msg, 'soft-ban');
 
 		// Check if user is able to ban the mentioned user
 		if (!member.bannable || member.roles.highest.position >= msg.member.roles.highest.position) {
@@ -37,7 +31,17 @@ export default class SoftbanCommand extends Command {
 			// Ban
 			await msg.guild.members.ban(member, { reason: `Soft-Banned by: ${msg.author.tag} (${msg.author.id}) for: ${reason}` });
 
-			await msg.guild.members.unban(member, 'Softban released.');
+			if (when) {
+				await this.client.schedule.create('unban', when, {
+					data: {
+						guild: msg.guild.id,
+						user: member.id,
+						reason: 'Softban released.'
+					}
+				});
+			} else {
+				await msg.guild.members.unban(member, 'Softban released.');
+			}
 
 			// Set up embed message
 			banEmbed.setDescription(stripIndents`

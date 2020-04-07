@@ -3,7 +3,7 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { list } from '@lib/helpers';
+import { list } from '@lib/helpers/base';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { data as sentences } from '../../extras/typing-test.json';
 
@@ -56,7 +56,7 @@ export default class TypingTestCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof TypingTestCommand
 	 */
-	public async run(msg: KlasaMessage, [difficulty]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [difficulty]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const sentence = sentences[Math.floor(Math.random() * sentences.length)];
 		const time = times[difficulty];
 		await msg.reply(stripIndents`

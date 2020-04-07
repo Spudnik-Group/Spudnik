@@ -2,8 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { MessageEmbed } from 'discord.js';
-import { getRandomInt, getEmbedColor } from '@lib/helpers';
+import { getRandomInt } from '@lib/helpers/base';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { smiff } from '../../extras/data.json';
 
@@ -32,16 +31,7 @@ export default class SmiffFactCommand extends Command {
 	 * @memberof SmiffFactCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const responseEmbed: MessageEmbed = new MessageEmbed({
-			color: getEmbedColor(msg),
-			description: '',
-			title: 'Will Smith Fact'
-		});
-
-		responseEmbed.setDescription(smiff[getRandomInt(0, smiff.length) - 1]);
-
-		// Send the success response
-		return msg.sendEmbed(responseEmbed);
+		return msg.sendSimpleEmbedWithTitle(smiff[getRandomInt(0, smiff.length) - 1], 'Will Smith Fact');
 	}
 
 }

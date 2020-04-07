@@ -4,15 +4,10 @@
 
 import axios from 'axios';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-import { MessageEmbed, Permissions } from 'discord.js';
+import { Permissions } from 'discord.js';
 import { stripIndents } from 'common-tags';
-
-const suffixes = ['Bytes', 'KB', 'MB'];
-const getBytes = bytes => {
-	const i = Math.floor(Math.log(bytes) / Math.log(1024));
-
-	return (!bytes && '0 Bytes') || `${(bytes / Math.pow(1024, i)).toFixed(2)} ${suffixes[i]}`;
-};
+import { baseEmbed } from '@lib/helpers/embed-helpers';
+import { getBytes } from '@lib/helpers/base';
 
 export default class CrateCommand extends Command {
 
@@ -24,14 +19,13 @@ export default class CrateCommand extends Command {
 		});
 	}
 
-	public async run(msg: KlasaMessage, [name]: [string]) {
+	public async run(msg: KlasaMessage, [name]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		try {
 			const { data } = await axios(`https://crates.io/api/v1/crates/${encodeURIComponent(name)}`);
 			const { crate, versions: [latest] } = data;
 			if (!crate) throw new Error('That crate doesn\'t exist.');
 
-			const embed = new MessageEmbed()
-				.setColor(15051318)
+			const embed = baseEmbed(msg)
 				.setThumbnail('https://doc.rust-lang.org/cargo/images/Cargo-Logo-Small.png')
 				.setTitle(name)
 				.setURL(`https://crates.io/crates/${name}`)
