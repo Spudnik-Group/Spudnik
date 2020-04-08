@@ -5,7 +5,7 @@
 import { getRandomInt } from '@lib/helpers/base';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { Permissions } from 'discord.js';
-import { bacon } from '../../extras/data.json';
+import { bacon } from '../../extras/data';
 
 /**
  * Post a random bacon gif.

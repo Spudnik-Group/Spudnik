@@ -5,7 +5,7 @@
 import { getRandomInt } from '@lib/helpers/base';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { Permissions } from 'discord.js';
-import { coinflip } from '../../extras/data.json';
+import { coinflip } from '../../extras/data';
 
 /**
  * Simulate a coin flip.

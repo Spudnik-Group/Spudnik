@@ -5,7 +5,7 @@
 import { stripIndents } from 'common-tags';
 import { shuffle, verify } from '@lib/helpers/base';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-import * as events from '../../extras/hunger-games.json';
+import * as events from '../../extras/hunger-games';
 import { User } from 'discord.js';
 
 /**

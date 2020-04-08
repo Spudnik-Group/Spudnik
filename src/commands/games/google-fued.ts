@@ -4,7 +4,7 @@
 
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed } from 'discord.js';
-import { questions } from '../../extras/google-feud.json';
+import { questions } from '../../extras/google-feud';
 
 /**
  * Starts a game of Google Feud.

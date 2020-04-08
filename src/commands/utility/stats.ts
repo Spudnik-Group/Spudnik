@@ -5,7 +5,6 @@
 import { KlasaMessage, Command, CommandStore } from 'klasa';
 import { getEmbedColor } from '@lib/helpers/custom-helpers';
 import { loadavg, uptime } from 'os';
-import { version } from '@root/../package.json';
 import { Guild } from 'discord.js';
 
 /**
@@ -42,7 +41,7 @@ export default class StatsCommand extends Command {
 			GUILDS: this.client.guilds.size.toLocaleString(),
 			NODE_JS: process.version,
 			USERS: this.client.guilds.reduce((a: number, b: Guild) => a + b.memberCount, 0).toLocaleString(),
-			VERSION: `v${version}`
+			VERSION: `v${process.env.npm_package_version}`
 		};
 	}
 

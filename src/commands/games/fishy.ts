@@ -4,7 +4,7 @@
 
 import { getRandomInt } from '@lib/helpers/base';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-import * as fishes from '../../extras/fish.json';
+import * as fishes from '../../extras/fish';
 
 /**
  * Starts a game of Slots.

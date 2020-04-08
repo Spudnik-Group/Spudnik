@@ -6,7 +6,7 @@ import { stripIndents } from 'common-tags';
 import { Collection } from 'discord.js';
 import { awaitPlayers, delay, shuffle } from '@lib/helpers/base';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-import { questions, stories } from '../../extras/mafia.json';
+import { questions, stories } from '../../extras/mafia';
 
 /**
  * Starts a game of Mafia.

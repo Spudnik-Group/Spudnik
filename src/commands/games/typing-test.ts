@@ -5,7 +5,7 @@
 import { stripIndents } from 'common-tags';
 import { list } from '@lib/helpers/base';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-import { data as sentences } from '../../extras/typing-test.json';
+import { data as sentences } from '../../extras/typing-test';
 
 const difficulties = ['easy', 'medium', 'hard', 'extreme', 'impossible'];
 const times: any = {

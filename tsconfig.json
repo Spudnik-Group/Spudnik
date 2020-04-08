@@ -6,30 +6,22 @@
 			"esnext",
 			"dom"
 		],
-		"esModuleInterop": true,
 		"sourceMap": true,
 		"allowJs": true,
 		"checkJs": true,
-		"outDir": "./dist",
+		"outDir": "dist",
 		"removeComments": true,
 		"strict": false,
 		"noUnusedLocals": true,
 		"moduleResolution": "node",
 		"baseUrl": "./src",
-		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
 		"experimentalDecorators": true,
-		"resolveJsonModule": true,
 		"forceConsistentCasingInFileNames": true,
 		"paths": {
             "@utils/*": ["./lib/util/*"],
 			"@lib/*": ["./lib/*"],
 			"@root/*": ["./*"]
         }
-	},
-	"include": [
-		"./launch.ts",
-		"./src/**/*.json",
-		"./src/**/*.ts"
-	]
+	}
 }

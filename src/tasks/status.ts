@@ -5,7 +5,6 @@
 import { Task, Colors } from 'klasa';
 import { Guild, PresenceData, Presence } from 'discord.js';
 import { createPick } from '@lib//utils/util';
-import { version } from '../../package.json';
 
 export default class extends Task {
 
@@ -41,7 +40,7 @@ export default class extends Task {
 			},
 			{
 				activity: {
-					name: `Version: v${version} | ${defaultPrefix}help`,
+					name: `Version: v${process.env.npm_package_version} | ${defaultPrefix}help`,
 					type: 'PLAYING'
 				}
 			},

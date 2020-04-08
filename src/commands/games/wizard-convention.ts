@@ -5,7 +5,7 @@
 import { stripIndents } from 'common-tags';
 import { Collection } from 'discord.js';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-import * as data from '../../extras/wizard-convention.json';
+import * as data from '../../extras/wizard-convention';
 import { awaitPlayers, delay, shuffle } from '@lib/helpers/base';
 
 /**

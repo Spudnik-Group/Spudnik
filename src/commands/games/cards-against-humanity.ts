@@ -5,7 +5,7 @@
 import { stripIndents } from 'common-tags';
 import { Collection } from 'discord.js';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-import { blackCards, whiteCards } from '../../extras/cards-against-humanity.json';
+import { blackCards, whiteCards } from '../../extras/cards-against-humanity';
 import { awaitPlayers, escapeMarkdown, shuffle } from '@lib/helpers/base';
 
 /**

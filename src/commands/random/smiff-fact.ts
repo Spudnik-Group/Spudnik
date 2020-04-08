@@ -4,7 +4,7 @@
 
 import { getRandomInt } from '@lib/helpers/base';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-import { smiff } from '../../extras/data.json';
+import { smiff } from '../../extras/data';
 
 /**
  * Post a random Will Smith fact.

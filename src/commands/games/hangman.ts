@@ -4,7 +4,7 @@
 
 import { stripIndents } from 'common-tags';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-import { data as words } from '../../extras/hangman.json';
+import { words } from '../../extras/hangman';
 
 /**
  * Starts a game of Hangman.

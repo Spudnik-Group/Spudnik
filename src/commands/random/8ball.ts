@@ -4,7 +4,7 @@
 
 import { getRandomInt } from '@lib/helpers/base';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-import { eightBall } from '../../extras/data.json';
+import { eightBall } from '../../extras/data';
 import { baseEmbed } from '@lib/helpers/embed-helpers.js';
 
 /**
