@@ -23,7 +23,7 @@
         "clean:all": "npm run clean:node_modules && npm run clean:dist",
         "clean:node_modules": "rimraf ./node_modules",
         "clean:dist": "rimraf ./dist",
-        "build": "tsc -p tsconfig.json",
+        "build": "tsc",
         "test": "npm run lint",
         "prestart": "npm run clean:dist && npm run build",
         "start": "npm run start:prod",
