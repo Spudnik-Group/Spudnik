@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { MessageEmbed, Guild } from 'discord.js';
+import { MessageEmbed, Guild, User } from 'discord.js';
 import { stripIndents } from 'common-tags';
 import { Command, CommandStore, KlasaMessage, RichDisplay, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
@@ -67,7 +67,7 @@ export default class ListServersCommand extends Command {
 			});
 		}
 
-		await display.run(await msg.send('Loading server list...'), { filter: (_reaction: any, user: any) => user === msg.author });
+		await display.run(await msg.send('Loading server list...'), { filter: (_reaction: any, user: User) => user === msg.author });
 
 		return null;
 	}
