@@ -23,17 +23,15 @@ export default class DefaultRoleCommand extends Command {
 			aliases: [
 				'dr'
 			],
-			description: 'Used to configure the default role for the `accept` command.',
+			description: 'Used to configure the default role for the server.',
 			extendedHelp: stripIndents`
 				If no role is provided, the default role is cleared.
 			`,
 			name: 'default-role',
 			permissionLevel: 2,
 			requiredPermissions: Permissions.FLAGS.MANAGE_ROLES,
-			usage: '[role:Role]'
+			usage: '[role:role]'
 		});
-
-		this.customizeResponse('role', 'Please supply a valid role to set as the default.');
 	}
 
 	/**
@@ -46,46 +44,49 @@ export default class DefaultRoleCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage, [role]: [Role]): Promise<KlasaMessage | KlasaMessage[]> {
 		const roleEmbed = specialEmbed(msg, 'role-manager');
+		const guildDefaultRoleId: string = await msg.guild.settings.get(GuildSettings.Roles.Default);
+		const guildDefaultRole: Role = await msg.guild.roles.get(guildDefaultRoleId);
 
-		const guildDefaultRoleId: string = msg.guild.settings.get(GuildSettings.Roles.Default);
-		const guildDefaultRole: Role = msg.guild.roles.get(guildDefaultRoleId);
+		if (role) {
+			if (!guildDefaultRole || guildDefaultRole.id !== role.id) {
+				try {
+					await msg.guild.settings.update(GuildSettings.Roles.Default, role);
 
-		if (!role) {
+					// Set up embed message
+					roleEmbed.setDescription(stripIndents`
+						**Member:** ${msg.author.tag} (${msg.author.id})
+						**Action:** Set <@&${role.id}> as the Default role for the server.
+					`);
+
+					return this.sendSuccess(msg, roleEmbed);
+				} catch (err) {
+					return this.catchError(msg, role, 'set', err);
+				}
+			} else {
+				return msg.sendSimpleError(`Default role already set to <@&${role.id}>`, 3000);
+			}
+		} else {
 			try {
 				await msg.guild.settings.reset(GuildSettings.Roles.Default);
 				// Set up embed message
 				roleEmbed.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
-					**Action:** Removed default role.
+					**Action:** Removed Default role.
+
+					_You must include a valid role/roleID when setting the Default role._
 				`);
 
 				return this.sendSuccess(msg, roleEmbed);
 			} catch (err) {
-				return this.catchError(msg, role, 'reset', err);
+				return this.catchError(msg, 'none', 'reset', err);
 			}
-		} else if (!guildDefaultRole || guildDefaultRole.id !== role.id) {
-			try {
-				await msg.guild.settings.update(GuildSettings.Roles.Default, role);
-
-				// Set up embed message
-				roleEmbed.setDescription(stripIndents`
-					**Member:** ${msg.author.tag} (${msg.author.id})
-					**Action:** Set <@&${role.id}> as the default role for the server.
-				`);
-
-				return this.sendSuccess(msg, roleEmbed);
-			} catch (err) {
-				return this.catchError(msg, role, 'set', err);
-			}
-		} else {
-			return msg.sendSimpleError(`Default role already set to <@&${role.id}>`, 3000);
 		}
 	}
 
-	private catchError(msg: KlasaMessage, role: Role, action: string, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
+	private catchError(msg: KlasaMessage, role: Role|string, action: string, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
 		// Build warning message
 		const roleWarn = stripIndents`
-			Error occurred in \`role-management\` command!
+			Error occurred in \`default-role\` command!
 			**Server:** ${msg.guild.name} (${msg.guild.id})
 			**Author:** ${msg.author.tag} (${msg.author.id})
 			**Time:** ${new Timestamp('MMMM D YYYY [at] HH:mm:ss [UTC]Z').display(msg.createdTimestamp)}
