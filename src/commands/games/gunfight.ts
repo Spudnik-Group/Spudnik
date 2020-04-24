@@ -2,9 +2,10 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { delay, getRandomInt, verify } from '@lib/helpers/base';
+import { verify } from '@lib/helpers/base';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { User } from 'discord.js';
+import { getRandomInt, delay } from '@lib/utils/util';
 const words = ['fire', 'draw', 'shoot', 'bang', 'pull'];
 
 /**

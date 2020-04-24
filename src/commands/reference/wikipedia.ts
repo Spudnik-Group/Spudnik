@@ -3,10 +3,10 @@
  */
 
 import { MessageEmbed } from 'discord.js';
-import { shorten } from '@lib/helpers/base';
 import * as WikiJS from 'wikijs';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { baseEmbed } from '@lib/helpers/embed-helpers';
+import { shorten } from '@lib/utils/util';
 
 /**
  * Post a summary from Wikipedia.

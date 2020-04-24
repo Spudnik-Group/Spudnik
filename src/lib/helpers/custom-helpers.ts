@@ -51,6 +51,7 @@ export const modLogMessage = async (msg: KlasaMessage, embed: MessageEmbed): Pro
 		: null;
 };
 
+// TODO: add jsdoc
 export const getPermissionsFromLevel = (permissionsLevel: number): string => {
 	const permissionLevels = [
 		'OPEN',
@@ -69,10 +70,13 @@ export const getPermissionsFromLevel = (permissionsLevel: number): string => {
 	return permissionLevels[permissionsLevel];
 };
 
+// TODO: add jsdoc
 export const isCommandCategoryEnabled = (msg: KlasaMessage, commandCategory: string): boolean => !msg.guild.settings.get(GuildSettings.Commands.DisabledCategories).includes(commandCategory.toLowerCase());
 
+// TODO: add jsdoc
 export const isCommandEnabled = (msg: KlasaMessage, command: Command): boolean => !msg.guild.settings.get(GuildSettings.Commands.Disabled).includes(command.name.toLowerCase());
 
+// TODO: add jsdoc
 export const canCommandBeUsed = (msg: KlasaMessage, command: Command): boolean => {
 	if (!isCommandCategoryEnabled(msg, command.category)) return false;
 	if (!isCommandEnabled(msg, command)) return false;

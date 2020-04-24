@@ -8,7 +8,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { SpudConfig } from '@lib/config';
 import * as mw from 'mw-dict';
 import { baseEmbed } from '@lib/helpers/embed-helpers';
-import { shorten } from '@lib/helpers/base';
+import { shorten } from '@lib/utils/util';
 
 const { dictionaryApiKey } = SpudConfig;
 const dict = new mw.CollegiateDictionary(dictionaryApiKey);

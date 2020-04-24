@@ -7,7 +7,7 @@ import { MessageEmbed } from 'discord.js';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import * as UD from 'urban-dictionary';
 import { baseEmbed } from '@lib/helpers/embed-helpers';
-import { shorten } from '@lib/helpers/base';
+import { shorten } from '@lib/utils/util';
 
 /**
  * Post an Urban Dictionary definition.

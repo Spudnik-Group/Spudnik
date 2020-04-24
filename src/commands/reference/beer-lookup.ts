@@ -7,7 +7,7 @@ import axios from 'axios';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { SpudConfig } from '@lib/config';
 import { baseEmbed } from '@lib/helpers/embed-helpers';
-import { shorten } from '@lib/helpers/base';
+import { shorten } from '@lib/utils/util';
 
 const { breweryDbApiKey } = SpudConfig;
 

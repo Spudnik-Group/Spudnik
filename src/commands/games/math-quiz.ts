@@ -3,8 +3,8 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { list } from '@lib/helpers/base';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { list } from '@lib/utils/util';
 
 const difficulties: string[] = ['easy', 'medium', 'hard', 'extreme', 'impossible'];
 const operations = ['+', '-', '*'];

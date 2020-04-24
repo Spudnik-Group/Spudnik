@@ -7,7 +7,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { Permissions } from 'discord.js';
 import { stripIndents } from 'common-tags';
 import { baseEmbed } from '@lib/helpers/embed-helpers';
-import { getBytes } from '@lib/helpers/base';
+import { getBytes } from '@lib/utils/util';
 
 export default class CrateCommand extends Command {
 

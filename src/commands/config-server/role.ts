@@ -8,7 +8,7 @@ import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { specialEmbed } from '@lib/helpers/embed-helpers';
 import { hexColor } from '@lib/helpers/resolvers';
 import { modLogMessage } from '@lib/helpers/custom-helpers';
-import { isNormalInteger } from '@lib/helpers/base';
+import { isNormalInteger } from '@lib/utils/util';
 
 /**
  * Manage guild roles.
