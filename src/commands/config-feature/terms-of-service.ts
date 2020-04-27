@@ -38,23 +38,25 @@ export default class TermsOfServiceCommand extends Command {
 
 		this
 			.createCustomResolver('item', (arg: string, possible: Possible, message: KlasaMessage, [subCommand]: [string]) => {
-				if (subCommand === 'channel' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw 'Please provide a channel for the TOS message to be displayed in.';
+				if (subCommand.toLocaleLowerCase() === 'channel' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw 'Please provide a channel for the TOS message to be displayed in.';
 
-				if (['title', 'body'].includes(subCommand) && !arg) throw 'Please include the index of the TOS message you would like to update.';
-				if (subCommand === 'get' && !arg) throw 'Please include the index of the TOS message you would like to view.';
-				if (['title', 'body', 'get'].includes(subCommand) && !Number(arg)) throw 'ID must be an integer.';
-				if (['title', 'body', 'get'].includes(subCommand) && Number(arg) < 1) throw 'ID must be a positive integer.'
+				if (['title', 'body'].includes(subCommand.toLocaleLowerCase()) && !arg) throw 'Please include the index of the TOS message you would like to update.';
+				if (subCommand.toLocaleLowerCase() === 'get' && !arg) throw 'Please include the index of the TOS message you would like to view.';
+				if (['title', 'body', 'get'].includes(subCommand)) {
+					if(!Number(arg)) throw 'ID must be an integer.';
+					else if (Number(arg) < 1) throw 'ID must be a positive integer.'
+				}
 
 				return arg;
 			})
 			.createCustomResolver('text', (arg: string, possible: Possible, message: KlasaMessage, [subCommand]: [string]) => {
-				if (['title', 'body'].includes(subCommand) && !arg) throw 'Please include the new text.';
-				if (subCommand === 'get' && !['true', 'false', 't', 'f', undefined].includes(arg)) throw 'Please supply a valid boolean option for `raw` option.';
-				if (subCommand === 'get' && ['true', 't'].includes(arg)) return 'raw';
+				if (['title', 'body'].includes(subCommand.toLocaleLowerCase()) && !arg) throw 'Please include the new text.';
+				if (subCommand.toLocaleLowerCase() === 'get' && !['true', 'false', 't', 'f', '1', '0', undefined].includes(arg.toLocaleLowerCase())) throw 'Please supply a valid boolean option for `raw` option.';
+				if (subCommand.toLocaleLowerCase() === 'get' && ['true', 't', '1'].includes(arg.toLocaleLowerCase())) return 'raw';
 
 				// Check text length against Discord embed limits
-				if (subCommand === 'title' && arg.length > 256) throw 'Discord message embed titles are limited to 256 characters; please supply a shorter title.';
-				if (subCommand === 'body' && arg.length > 2048) throw 'Discord message embed bodies are limited to 2048 characters; please supply a shorter body.';
+				if (subCommand.toLocaleLowerCase() === 'title' && arg.length > 256) throw 'Discord message embed titles are limited to 256 characters; please supply a shorter title.';
+				if (subCommand.toLocaleLowerCase() === 'body' && arg.length > 2048) throw 'Discord message embed bodies are limited to 2048 characters; please supply a shorter body.';
 
 				return arg;
 			});
@@ -272,7 +274,6 @@ export default class TermsOfServiceCommand extends Command {
 		}
 		tosEmbed.setFooter('Use the `tos get` command to see the full message content');
 
-		// Send the success response
 		return msg.sendEmbed(tosEmbed);
 	}
 
