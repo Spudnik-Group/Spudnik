@@ -23,13 +23,6 @@ export const commandOrCategory = (cmdOrCategory: string): string => {
 };
 
 // TODO: add jsdoc
-export const battletag = (tag: string): string => {
-	if (tag.match(/(\w{3,12})#(\d{4,5})/i)) return tag;
-
-	throw 'Please provide a valid battletag in the format: `username#0000`';
-};
-
-// TODO: add jsdoc
 export const platform = (platform: string): string => {
 	if (standardPlatforms.includes(platform.toLowerCase())) return platform;
 
