@@ -45,11 +45,11 @@ export default class TermsOfServiceCommand extends Command {
 				if (['title', 'body'].includes(subCommand.toLocaleLowerCase()) && !arg) throw 'Please include the index of the TOS message you would like to update.';
 				if (subCommand.toLocaleLowerCase() === 'get' && !arg) throw 'Please include the index of the TOS message you would like to view.';
 				if (['title', 'body', 'get'].includes(subCommand)) {
-					if(!Number(arg)) throw 'ID must be an integer.';
-					else if (Number(arg) < 1) throw 'ID must be a positive integer.'
+					if (!Number(arg)) throw 'ID must be an integer.';
+					else if (Number(arg) < 1) throw 'ID must be a positive integer.';
 				}
 
-				if(subCommand.toLocaleLowerCase() === 'welcome' && !arg) throw 'Insufficent parameters, run `help tos` for details.';
+				if (subCommand.toLocaleLowerCase() === 'welcome' && !arg) throw 'Insufficent parameters, run `help tos` for details.';
 
 				return arg;
 			})
@@ -62,7 +62,7 @@ export default class TermsOfServiceCommand extends Command {
 				if (subCommand.toLocaleLowerCase() === 'title' && arg.length > 256) throw 'Discord message embed titles are limited to 256 characters; please supply a shorter title.';
 				if (subCommand.toLocaleLowerCase() === 'body' && arg.length > 2048) throw 'Discord message embed bodies are limited to 2048 characters; please supply a shorter body.';
 
-				if(subCommand.toLocaleLowerCase() === 'welcome' && !arg) throw 'Insufficent parameters, run `help tos` for details.';
+				if (subCommand.toLocaleLowerCase() === 'welcome' && !arg) throw 'Insufficent parameters, run `help tos` for details.';
 
 				return arg;
 			});
@@ -222,9 +222,9 @@ export default class TermsOfServiceCommand extends Command {
 				.setTimestamp();
 
 			return this.sendSuccess(msg, tosEmbed);
-		} else {
-			return msg.sendSimpleError(`No terms of service message found matching ID of \`${item}\`.`);
 		}
+		return msg.sendSimpleError(`No terms of service message found matching ID of \`${item}\`.`);
+
 
 	}
 
@@ -298,10 +298,10 @@ export default class TermsOfServiceCommand extends Command {
 			color: getEmbedColor(msg)
 		});
 
-		if(item.toLocaleLowerCase() === 'message') {
+		if (item.toLocaleLowerCase() === 'message') {
 			try {
 				await msg.guild.settings.update(GuildSettings.Tos.Welcome.Message, text);
-	
+
 				// Set up embed message
 				tosEmbed
 					.setDescription(stripIndents`
@@ -311,17 +311,17 @@ export default class TermsOfServiceCommand extends Command {
 						`)
 					.setFooter('Use the `tos status` command to see the details of this feature')
 					.setTimestamp();
-	
+
 				return this.sendSuccess(msg, tosEmbed);
 			} catch (err) {
 				return this.catchError(msg, { subCommand: 'channel', item }, err);
 			}
-		} else if(item.toLocaleLowerCase() === 'enabled') {
+		} else if (item.toLocaleLowerCase() === 'enabled') {
 			try {
 				const value = ['true', 't', '1'].includes(text.join().toLocaleLowerCase()) ? true : false;
 
 				await msg.guild.settings.update(GuildSettings.Tos.Welcome.Enabled, value);
-	
+
 				// Set up embed message
 				tosEmbed
 					.setDescription(stripIndents`
@@ -330,13 +330,13 @@ export default class TermsOfServiceCommand extends Command {
 						`)
 					.setFooter('Use the `tos status` command to see the details of this feature')
 					.setTimestamp();
-	
+
 				return this.sendSuccess(msg, tosEmbed);
 			} catch (err) {
 				return this.catchError(msg, { subCommand: 'channel', item }, err);
 			}
 		}
-		
+
 		return msg.sendEmbed(tosEmbed);
 	}
 

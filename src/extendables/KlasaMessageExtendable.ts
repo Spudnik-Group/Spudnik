@@ -128,12 +128,13 @@ async function awaitReaction(message: Message, messageSent: Message, promptOptio
 	await messageSent.react(REACTIONS.YES);
 	await messageSent.react(REACTIONS.NO);
 
+	// eslint-disable-next-line @typescript-eslint/typedef
 	const reactions = await messageSent.awaitReactions((__, user) => user.id === message.author.id, promptOptions);
 
 	// Remove all reactions if the user has permissions to do so
 	if (message.guild && (message.channel as TextChannel).permissionsFor(message.guild.me!)!.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
-		messageSent.reactions.removeAll().catch(error => {});
-	} 	
+		messageSent.reactions.removeAll().catch((err: any) => this.client.emit('warn', `There was an error trying to remove all reactions from a message; ${err}`));
+	}
 
 	return Boolean(reactions.size) && reactions.firstKey() === REACTIONS.YES;
 }

@@ -45,14 +45,15 @@ export default class extends Event {
 				await messageSent.react(REACTIONS.YES);
 				await messageSent.react(REACTIONS.NO);
 
+				// eslint-disable-next-line @typescript-eslint/typedef
 				const reactions = await messageSent.awaitReactions((__, user) => user.id === member.id, { time: 1000 * 60 * 5, max: 1 });
 
 				// Remove all reactions if the user has permissions to do so
 				if (messageSent.guild && (messageSent.channel as TextChannel).permissionsFor(messageSent.guild.me!)!.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
-					messageSent.reactions.removeAll().catch(error => {});
-				} 	
+					messageSent.reactions.removeAll().catch((err: any) => this.client.emit('warn', `There was an error trying to remove all reactions from a message; ${err}`));
+				}
 
-				if(Boolean(reactions.size) && reactions.firstKey() === REACTIONS.YES){
+				if (Boolean(reactions.size) && reactions.firstKey() === REACTIONS.YES) {
 					await member.roles.add(role.id);
 				}
 			} else {
