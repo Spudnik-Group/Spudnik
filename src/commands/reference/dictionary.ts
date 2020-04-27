@@ -8,6 +8,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { SpudConfig } from '@lib/config';
 import * as mw from 'mw-dict';
 import { baseEmbed } from '@lib/helpers/embed-helpers';
+import { shorten } from '@lib/utils/util';
 
 const { dictionaryApiKey } = SpudConfig;
 const dict = new mw.CollegiateDictionary(dictionaryApiKey);
@@ -28,7 +29,7 @@ export default class DefineCommand extends Command {
 			usage: '<query:...string>'
 		});
 
-		this.customizeResponse('query', 'Please supply a query');
+		this.customizeResponse('query', 'Please supply a word to define.');
 	}
 
 	/**
@@ -67,7 +68,7 @@ export default class DefineCommand extends Command {
 				dictionaryEmbed.addField('Popularity:', result[0].popularity);
 			}
 
-			dictionaryEmbed.setDescription(this.renderDefinition(result[0].definition));
+			dictionaryEmbed.setDescription(shorten(this.renderDefinition(result[0].definition)));
 
 			// Send the success response
 			return msg.sendEmbed(dictionaryEmbed);

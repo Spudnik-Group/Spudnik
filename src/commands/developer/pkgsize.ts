@@ -7,7 +7,7 @@ import axios from 'axios';
 import { stripIndents } from 'common-tags';
 import { Permissions } from 'discord.js';
 import { baseEmbed } from '@lib/helpers/embed-helpers';
-import { getBytes } from '@lib/helpers/base';
+import { getBytes } from '@lib/utils/util';
 
 export default class PackagesizeCommand extends Command {
 

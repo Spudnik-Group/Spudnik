@@ -14,7 +14,6 @@ export namespace GuildSettings {
 	}
 
 	export namespace Roles {
-		export const Default = T<string>('roles.default');
 		export const Muted = T<string>('roles.muted');
 		export const SelfAssignable = T<string[]>('roles.selfAssignable');
 	}
@@ -49,6 +48,11 @@ export namespace GuildSettings {
 
 	export namespace Tos {
 		export const Channel = T<string>('tos.channel');
+		export const Role = T<string>('tos.role');
+		export namespace Welcome {
+			export const Enabled = T<boolean>('tos.welcome.enabled');
+			export const Message = T<string>('tos.welcome.message');
+		}
 		export const Messages = T<TosMessage[]>('tos.messages');
 	}
 

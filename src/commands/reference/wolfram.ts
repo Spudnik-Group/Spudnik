@@ -20,7 +20,7 @@ export default class WolframCommand extends Command {
 			usage: '<query:...string>'
 		});
 
-		this.customizeResponse('query', 'Please supply a query');
+		this.customizeResponse('query', 'Please supply a query for Wolfram Alpha.');
 	}
 
 	public async run(msg: KlasaMessage, [query]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
@@ -109,7 +109,7 @@ export default class WolframCommand extends Command {
 		} catch (err) {
 			msg.client.emit('warn', `Error in command ref:wolfram: ${err}`);
 
-			return msg.sendSimpleError(err.startsWith('Couldn\'t interpret an answer to that question! Try looking manually?') ? err : 'There was an error with the request. Try again?');
+			return msg.sendSimpleError('There was an error with the request. Make sure your query is something WolframAlpha can handle and try again.', 5000);
 		}
 	}
 

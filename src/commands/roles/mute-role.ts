@@ -24,13 +24,14 @@ export default class MuteRoleCommand extends Command {
 				'mr'
 			],
 			description: 'Used to configure the role for the `mute` command.',
+			extendedHelp: stripIndents`
+				If no role is provided, the default role is cleared.
+			`,
 			name: 'mute-role',
 			permissionLevel: 2,
-			requiredPermissions: Permissions.FLAGS['MANAGE_ROLES'],
-			usage: '[role:Role]'
+			requiredPermissions: Permissions.FLAGS.MANAGE_ROLES,
+			usage: '[role:role]'
 		});
-
-		this.customizeResponse('role', 'Please supply a valid role to set as the mute role.');
 	}
 
 	/**
@@ -43,37 +44,40 @@ export default class MuteRoleCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage, [role]: [Role]): Promise<KlasaMessage | KlasaMessage[]> {
 		const roleEmbed = specialEmbed(msg, 'role-manager');
-
 		const guildMuteRole = await msg.guild.roles.fetch(msg.guild.settings.get(GuildSettings.Roles.Muted));
 
-		if (!role) {
+		if (role) {
+			if (!guildMuteRole || guildMuteRole.id !== role.id) {
+				try {
+					await msg.guild.settings.update(GuildSettings.Roles.Muted, role);
+
+					// Set up embed message
+					roleEmbed.setDescription(stripIndents`
+						**Member:** ${msg.author.tag} (${msg.author.id})
+						**Action:** Set <@&${role.id}> as the Muted role for the server.
+					`);
+
+					return this.sendSuccess(msg, roleEmbed);
+				} catch (err) {
+					return this.catchError(msg, role, 'set', err);
+				}
+			} else {
+				return msg.sendSimpleError(`Muted role already set to <@&${role.id}>`, 3000);
+			}
+		} else {
 			try {
 				await msg.guild.settings.reset(GuildSettings.Roles.Muted);
 				// Set up embed message
 				roleEmbed.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
-					**Action:** Removed muted role.
+					**Action:** Removed Muted role.
+
+					_You must include a valid role/roleID when setting the Muted role._
 				`);
 
 				return this.sendSuccess(msg, roleEmbed);
 			} catch (err) {
 				return this.catchError(msg, role, 'reset', err);
-			}
-		} else if (guildMuteRole === role) {
-			return msg.sendSimpleError(`Muted role already set to <@${role.id}>`, 3000);
-		} else {
-			try {
-				await msg.guild.settings.update(GuildSettings.Roles.Muted, role);
-
-				// Set up embed message
-				roleEmbed.setDescription(stripIndents`
-					**Member:** ${msg.author.tag} (${msg.author.id})
-					**Action:** Set '${role.name}' as the muted role for the server.
-				`);
-
-				return this.sendSuccess(msg, roleEmbed);
-			} catch (err) {
-				return this.catchError(msg, role, 'set', err);
 			}
 		}
 	}

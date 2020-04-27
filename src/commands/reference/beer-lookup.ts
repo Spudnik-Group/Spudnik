@@ -7,7 +7,7 @@ import axios from 'axios';
 import { Command, CommandStore, KlasaMessage, ReactionHandler, RichMenu } from 'klasa';
 import { SpudConfig } from '@lib/config';
 import { baseEmbed } from '@lib/helpers/embed-helpers';
-import { shorten } from '@lib/helpers/base';
+import { shorten } from '@lib/utils/util';
 
 const { breweryDbApiKey } = SpudConfig;
 
@@ -27,7 +27,7 @@ export default class BrewCommand extends Command {
 			usage: '<query:...string>'
 		});
 
-		this.customizeResponse('query', 'Please supply a query');
+		this.customizeResponse('query', 'Please supply the name of a beer or brewery to look up.');
 	}
 
 	/**
@@ -48,7 +48,7 @@ export default class BrewCommand extends Command {
 			.setFooter('powered by BreweryDB', 'http://s3.amazonaws.com/brewerydb/Powered-By-BreweryDB.png');
 
 		try {
-			const { data: response } = await axios(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(query)}&key=${breweryDbApiKey}`);
+			const { data: response } = await axios(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(query)}&key=${breweryDbApiKey}&withBreweries=Y&withLocations=Y`);
 
 			if (response.data) {
 				// build RichMenu
@@ -71,11 +71,9 @@ export default class BrewCommand extends Command {
 				// wait for selection
 				const choice: number = await collector.selection;
 				if (!choice) {
-					console.log('no choice');
 					await collector.message.delete();
-					return null;
+					return;
 				}
-				console.log('after');
 
 				// display selection details
 				this.buildEmbed(brewEmbed, response.data[choice]);
@@ -84,9 +82,7 @@ export default class BrewCommand extends Command {
 			}
 
 			// Send the success response
-			await msg.sendEmbed(brewEmbed);
-
-			return null;
+			return msg.sendEmbed(brewEmbed);
 		} catch (err) {
 			msg.client.emit('warn', `Error in command ref:brew: ${err}`);
 
@@ -96,67 +92,86 @@ export default class BrewCommand extends Command {
 	}
 
 	private buildEmbed(embed: MessageEmbed, result: any): void {
-
-		let thumbnail = '';
-
-		if (result.labels) {
-			thumbnail = result.labels.medium;
+		if (result.type === 'beer') {
+			embed
+				.addField(
+					'Brewery',
+					result.breweries.length ? result.breweries[0].name : 'N/A'
+				)
+				.addField(
+					'Style',
+					result.style.name
+				)
+				.addField(
+					'Serving Temperature',
+					result.servingTemperatureDisplay ? result.servingTemperatureDisplay : 'Cold, of course.'
+				)
+				.addField(
+					'ABV (Alcohol By Volume)',
+					`${result.abv}%`,
+					true
+				)
+				.addField(
+					'IBU (International Bitterness Units)',
+					`${result.ibu}/100`,
+					true
+				)
+				.addField(
+					'Glass',
+					result.glass.name,
+					true
+				)
+				.addField(
+					'Availability',
+					result.available.name,
+					true
+				)
+				.addField(
+					'Retired',
+					result.isRetired,
+					true
+				)
+				.thumbnail = {
+					url: result.labels.medium
+				};
+		} else {
+			embed
+				.addField(
+					'Location',
+					`${result.locations[0].locality}, ${result.locations[0].region}`
+				)
+				.addField(
+					'Website',
+					result.website ? result.website : 'N/A'
+				)
+				.addField(
+					'In Business',
+					result.isInBusiness,
+					true
+				)
+				.addField(
+					'Mass Owned',
+					result.isMassOwned,
+					true
+				)
+				.addField(
+					'Year Established',
+					result.established,
+					true
+				)
+				.thumbnail = {
+					url: result.images.squareMedium
+				};
 		}
 
-		if (result.images) {
-			thumbnail = result.images.squareMedium;
-		}
-
-		if (thumbnail !== '') {
-			embed.thumbnail = {
-				url: thumbnail
-			};
-		}
-
-		if (result.name) {
-			embed.setTitle(result.name);
-		}
-
-		if (result.style) {
-			embed.addField(
-				`Style: ${result.style.name}`,
-				result.style.description
-			);
-		}
-
-		if (result.abv) {
-			embed.addField(
-				'ABV (Alcohol By Volume)',
-				`${result.abv}%`,
+		embed
+			.addField(
+				'Organic',
+				result.isOrganic,
 				true
-			);
-		}
-
-		if (result.ibu) {
-			embed.addField(
-				'IBU (International Bitterness Units)',
-				`${result.ibu}/100`,
-				true
-			);
-		}
-
-		if (result.website) {
-			embed.addField(
-				'Website',
-				result.website,
-				true
-			);
-		}
-
-		if (result.established) {
-			embed.addField(
-				'Year Established',
-				result.established,
-				true
-			);
-		}
-
-		embed.setDescription(`\n${result.description}\n\n`);
+			)
+			.setTitle(result.name)
+			.setDescription(`\n${shorten(result.description)}\n\n`);
 	}
 
 }

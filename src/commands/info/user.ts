@@ -6,7 +6,7 @@ import { User, GuildMember, Role } from 'discord.js';
 import { stripIndents } from 'common-tags';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { baseEmbed } from '@lib/helpers/embed-helpers';
-import { trimArray } from '@lib/helpers/base';
+import { trimArray } from '@lib/utils/util';
 
 const activities = {
 	LISTENING: 'Listening to',

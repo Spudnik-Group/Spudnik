@@ -4,9 +4,10 @@
 
 import { stripIndents } from 'common-tags';
 import { Collection } from 'discord.js';
-import { awaitPlayers, delay, shuffle } from '@lib/helpers/base';
+import { awaitPlayers } from '@lib/helpers/base';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { questions, stories } from '../../extras/mafia';
+import { delay, shuffle } from '@lib/utils/util';
 
 /**
  * Starts a game of Mafia.

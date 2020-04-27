@@ -33,7 +33,7 @@ export default class RolesCommand extends Command {
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const roleEmbed: MessageEmbed = specialEmbed(msg, 'role-manager');
 		const guildAssignableRoles: string[] = await msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);
-		const guildDefaultRole: string = await msg.guild.settings.get(GuildSettings.Roles.Default);
+		const guildDefaultRole: string = await msg.guild.settings.get(GuildSettings.Tos.Role);
 		const guildMutedRole: string = await msg.guild.settings.get(GuildSettings.Roles.Muted);
 
 		if (guildAssignableRoles.length) {
@@ -50,7 +50,7 @@ export default class RolesCommand extends Command {
 		}
 
 		if (guildDefaultRole) {
-			roleEmbed.addField('Default Role', `<@&${guildDefaultRole}>`, true);
+			roleEmbed.addField('Default (TOS) Role', `<@&${guildDefaultRole}>`, true);
 		}
 
 		if (guildMutedRole) {

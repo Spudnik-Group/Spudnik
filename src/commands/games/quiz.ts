@@ -3,9 +3,9 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { list, shuffle } from '@lib/helpers/base';
 import axios from 'axios';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { list, shuffle } from '@lib/utils/util';
 
 const types: string[] = ['multiple', 'boolean'];
 const difficulties: string[] = ['easy', 'medium', 'hard'];

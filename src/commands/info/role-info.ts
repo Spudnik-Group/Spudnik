@@ -24,14 +24,14 @@ export default class RoleInfoComand extends Command {
 	public async run(msg: KlasaMessage, [role]: [Role]): Promise<KlasaMessage | KlasaMessage[]> {
 		const allPermissions = Object.entries(role.permissions.serialize()).filter((perm: [string, boolean]) => perm[1]).map(([perm]: [string, boolean]) => perms[perm])
 			.join(', ');
-		const defaultRole = msg.guild.settings.get(GuildSettings.Roles.Default);
+		const defaultRole = msg.guild.settings.get(GuildSettings.Tos.Role);
 
 		return msg.sendEmbed(baseEmbed(msg)
 			.setTitle('Role Info')
 			.setAuthor(role.name)
 			.addField('❯ Name', role.name, true)
 			.addField('❯ ID', role.id, true)
-			.addField('❯ Is Default Role', defaultRole === role.toString(), true)
+			.addField('❯ Is Default (TOS) Role', defaultRole === role.toString(), true)
 			.addField('❯ Members', role.members.size, true)
 			.addField('❯ Creation Date', this.timestamp.display(role.createdAt), true)
 			.addField('❯ Hoisted', role.hoist ? 'Yes' : 'No', true)

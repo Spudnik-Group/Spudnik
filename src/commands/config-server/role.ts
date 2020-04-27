@@ -6,9 +6,8 @@ import { stripIndents } from 'common-tags';
 import { Collection, Message, Role, Permissions } from 'discord.js';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { specialEmbed } from '@lib/helpers/embed-helpers';
-import { hexColor } from '@lib/helpers/resolvers';
 import { modLogMessage } from '@lib/helpers/custom-helpers';
-import { isNormalInteger } from '@lib/helpers/base';
+import { isNormalInteger } from '@lib/utils/util';
 
 /**
  * Manage guild roles.
@@ -31,10 +30,8 @@ export default class RoleCommand extends Command {
 			permissionLevel: 2, // MANAGE_ROLES
 			requiredPermissions: Permissions.FLAGS.MANAGE_ROLES,
 			subcommands: true,
-			usage: '<add|remove> <name:Role|name:string> [color:color]'
+			usage: '<add|remove> <name:Role|name:string> (color:hexcolor)'
 		});
-
-		this.createCustomResolver('color', hexColor);
 	}
 
 	/**

@@ -16,13 +16,13 @@ export default class TVShowCommand extends Command {
 			aliases: ['tvshows', 'tv', 'tvseries', 'tv-show'],
 			description: 'Finds a TV show on TMDB.org',
 			name: 'tvshow',
-			usage: '<query:string> [page:number]'
+			usage: '<query:...string>'
 		});
 
-		this.customizeResponse('query', 'Please supply a query');
+		this.customizeResponse('query', 'Please supply a TV Show to look up.');
 	}
 
-	public async run(msg: KlasaMessage, [query, page = 1]: [string, number]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [query]: [string, number]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (!tmdbAPIkey) return msg.sendSimpleError('No API Key has been set up. This feature is unusable', 3000);
 
 		try {
@@ -32,12 +32,12 @@ export default class TVShowCommand extends Command {
 					query
 				}
 			});
-			const show = body.results[page - 1];
-			if (!show) return msg.sendSimpleError(`I couldn't find a TV show with title **${query}** in page ${page}.`, 3000);
+			const show = body.results[0];
+			if (!show) return msg.sendSimpleError(`I couldn't find a TV show with title **${query}**.`, 3000);
 
 			const embed = baseEmbed(msg)
 				.setImage(`https://image.tmdb.org/t/p/original${show.poster_path}`)
-				.setTitle(`${show.name} (${page} out of ${body.results.length} results)`)
+				.setTitle(show.name)
 				.setDescription(show.overview)
 				.setFooter('Spudnik uses the TMDb API but is not endorsed or certified by TMDb.',
 					'https://www.themoviedb.org/assets/1/v4/logos/408x161-powered-by-rectangle-green-bb4301c10ddc749b4e79463811a68afebeae66ef43d17bcfd8ff0e60ded7ce99.png');

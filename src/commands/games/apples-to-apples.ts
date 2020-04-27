@@ -7,7 +7,8 @@ import { Collection } from 'discord.js';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import * as data from '../../extras/apples-to-apples';
 import * as removeMarkdown from 'remove-markdown';
-import { awaitPlayers, shuffle } from '@lib/helpers/base';
+import { awaitPlayers } from '@lib/helpers/base';
+import { shuffle } from '@lib/utils/util';
 
 /**
  * Starts a game of Apples To Apples.
