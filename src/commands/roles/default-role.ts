@@ -44,18 +44,18 @@ export default class DefaultRoleCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage, [role]: [Role]): Promise<KlasaMessage | KlasaMessage[]> {
 		const roleEmbed = specialEmbed(msg, 'role-manager');
-		const guildDefaultRoleId: string = await msg.guild.settings.get(GuildSettings.Roles.Default);
+		const guildDefaultRoleId: string = await msg.guild.settings.get(GuildSettings.Tos.Role);
 		const guildDefaultRole: Role = await msg.guild.roles.get(guildDefaultRoleId);
 
 		if (role) {
 			if (!guildDefaultRole || guildDefaultRole.id !== role.id) {
 				try {
-					await msg.guild.settings.update(GuildSettings.Roles.Default, role);
+					await msg.guild.settings.update(GuildSettings.Tos.Role, role);
 
 					// Set up embed message
 					roleEmbed.setDescription(stripIndents`
 						**Member:** ${msg.author.tag} (${msg.author.id})
-						**Action:** Set <@&${role.id}> as the Default role for the server.
+						**Action:** Set <@&${role.id}> as the Default (TOS) Role for the server.
 					`);
 
 					return this.sendSuccess(msg, roleEmbed);
@@ -67,13 +67,13 @@ export default class DefaultRoleCommand extends Command {
 			}
 		} else {
 			try {
-				await msg.guild.settings.reset(GuildSettings.Roles.Default);
+				await msg.guild.settings.reset(GuildSettings.Tos.Role);
 				// Set up embed message
 				roleEmbed.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
 					**Action:** Removed Default role.
 
-					_You must include a valid role/roleID when setting the Default role._
+					_You must include a valid role/roleID when setting the Default (TOS) role._
 				`);
 
 				return this.sendSuccess(msg, roleEmbed);

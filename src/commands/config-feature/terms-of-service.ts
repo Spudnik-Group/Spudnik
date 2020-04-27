@@ -26,14 +26,16 @@ export default class TermsOfServiceCommand extends Command {
 				\`channel <#channelMention>\` - set the channel to display the terms of service in.
 				\`title <info block number> <text>\` - edit the title of a terms of service info block.
 				\`body <info block number> <text>\` - edit the body of a terms of service info block.
-				\`get <info block number> (raw:boolean)\` - returns the requested block number
+				\`get <info block number> (raw:boolean)\` - returns the requested block number.
+				\`welcome enabled <boolean>\` - enable/disable terms of service welcome message.
+				\`welcome text <text>\` - set the welcome text to prompt users to accept the terms of service.
 				\`list\` - return all the terms of service embedded blocks.
 				\`status\` - return the terms of service feature configuration details.
 			`,
 			name: 'tos',
 			permissionLevel: 6, // MANAGE_GUILD
 			subcommands: true,
-			usage: '<channel|title|body|get|list|status> (item:item) (text:text)'
+			usage: '<channel|title|body|get|welcome|list|status> (item:item) (text:text)'
 		});
 
 		this
@@ -47,6 +49,8 @@ export default class TermsOfServiceCommand extends Command {
 					else if (Number(arg) < 1) throw 'ID must be a positive integer.'
 				}
 
+				if(subCommand.toLocaleLowerCase() === 'welcome' && !arg) throw 'Insufficent parameters, run `help tos` for details.';
+
 				return arg;
 			})
 			.createCustomResolver('text', (arg: string, possible: Possible, message: KlasaMessage, [subCommand]: [string]) => {
@@ -57,6 +61,8 @@ export default class TermsOfServiceCommand extends Command {
 				// Check text length against Discord embed limits
 				if (subCommand.toLocaleLowerCase() === 'title' && arg.length > 256) throw 'Discord message embed titles are limited to 256 characters; please supply a shorter title.';
 				if (subCommand.toLocaleLowerCase() === 'body' && arg.length > 2048) throw 'Discord message embed bodies are limited to 2048 characters; please supply a shorter body.';
+
+				if(subCommand.toLocaleLowerCase() === 'welcome' && !arg) throw 'Insufficent parameters, run `help tos` for details.';
 
 				return arg;
 			});
@@ -256,7 +262,7 @@ export default class TermsOfServiceCommand extends Command {
 			color: getEmbedColor(msg)
 		});
 		const tosChannel = msg.guild.settings.get(GuildSettings.Tos.Channel);
-		const defaultRole = msg.guild.settings.get(GuildSettings.Roles.Default);
+		const defaultRole = msg.guild.settings.get(GuildSettings.Tos.Role);
 		const tosMessages = msg.guild.settings.get(GuildSettings.Tos.Messages).sort((a: TosMessage, b: TosMessage) => a.id - b.id);
 
 		tosEmbed.description = `Channel: ${tosChannel ? `<#${tosChannel}>` : 'None set.'}\nDefault role: ${defaultRole ? `<@${defaultRole}>` : 'None set.'}\nMessage List:\n`;

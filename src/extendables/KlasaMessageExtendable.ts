@@ -1,4 +1,4 @@
-import { Message, MessageEmbed, MessageEmbedAuthor, MessageOptions } from 'discord.js';
+import { Message, MessageEmbed, MessageEmbedAuthor, MessageOptions, Permissions, TextChannel } from 'discord.js';
 import { KlasaMessage, MessageAskOptions, Extendable, ExtendableStore } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
@@ -120,7 +120,7 @@ export default class extends Extendable {
 
 }
 
-const OPTIONS = { time: 15000, max: 1 };
+const OPTIONS = { time: 1000 * 60 * 1, max: 1 };
 const REACTIONS = { YES: '✅', NO: '❎' };
 const REG_ACCEPT = /^y|yes?|yeah?$/i;
 
@@ -128,8 +128,12 @@ async function awaitReaction(message: Message, messageSent: Message, promptOptio
 	await messageSent.react(REACTIONS.YES);
 	await messageSent.react(REACTIONS.NO);
 
-	const filter = (): boolean => true; // (reaction, user) => user === message.author && Object.keys(REACTIONS).indexOf(reaction.emoji.name) !== -1;
-	const reactions = await messageSent.awaitReactions(filter, promptOptions);
+	const reactions = await messageSent.awaitReactions((__, user) => user.id === message.author.id, promptOptions);
+
+	// Remove all reactions if the user has permissions to do so
+	if (message.guild && (message.channel as TextChannel).permissionsFor(message.guild.me!)!.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
+		messageSent.reactions.removeAll().catch(error => {});
+	} 	
 
 	return Boolean(reactions.size) && reactions.firstKey() === REACTIONS.YES;
 }
