@@ -128,7 +128,7 @@ export const escapeMarkdown = (text: string, onlyCodeBlock: boolean = false, onl
 	if (onlyCodeBlock) return text.replace(/```/g, '`\u200b``');
 	if (onlyInlineCode) return text.replace(/\\(`|\\)/g, '$1').replace(/(`|\\)/g, '\\$1');
 
-	return text.replace(/\\(\*|_|`|~|\\)/g, '$1').replace(/(\*|_|`|~|\\)/g, '\\$1');
+	return text.replace(/\\(\*|_|`|~|\\)/g, '$1').replace(/(\*|_|`|~|\\)/g, '\\$1').replace(/\<(\#|\@)([0-9]{18})\>/g, '<\\$1$2>');
 };
 
 // TODO: add jsdoc
