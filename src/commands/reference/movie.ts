@@ -16,13 +16,13 @@ export default class MovieCommand extends Command {
 			aliases: ['movies', 'film', 'films'],
 			description: 'Finds a movie on TMDB.org',
 			name: 'movie',
-			usage: '<query:string> [page:number]'
+			usage: '<query:...string>'
 		});
 
-		this.customizeResponse('query', 'Please supply a query');
+		this.customizeResponse('query', 'Please supply a Movie to look up.');
 	}
 
-	public async run(msg: KlasaMessage, [query, page = 1]: [string, number]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [query]: [string, number]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (!tmdbAPIkey) return msg.sendSimpleError('No API Key has been set up. This feature is unusable', 3000);
 
 		try {
@@ -32,12 +32,12 @@ export default class MovieCommand extends Command {
 					query
 				}
 			});
-			const movie = body.results[page - 1];
-			if (!movie) return msg.sendSimpleError(`I couldn't find a movie with title **${query}** in page ${page}.`, 3000);
+			const movie = body.results[0];
+			if (!movie) return msg.sendSimpleError(`I couldn't find a movie with title **${query}**.`, 3000);
 
 			const embed = baseEmbed(msg)
 				.setImage(`https://image.tmdb.org/t/p/original${movie.poster_path}`)
-				.setTitle(`${movie.title} (${page} out of ${body.results.length} results)`)
+				.setTitle(movie.title)
 				.setDescription(movie.overview)
 				.setFooter('Spudnik uses the TMDb API but is not endorsed or certified by TMDb.',
 					'https://www.themoviedb.org/assets/1/v4/logos/408x161-powered-by-rectangle-green-bb4301c10ddc749b4e79463811a68afebeae66ef43d17bcfd8ff0e60ded7ce99.png');

@@ -4,8 +4,9 @@
 
 import { stripIndents } from 'common-tags';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-import { verify, getRandomInt } from '@lib/helpers/base';
+import { verify } from '@lib/helpers/base';
 import { User } from 'discord.js';
+import { getRandomInt } from '@lib/utils/util';
 
 /**
  * Allows users to battle each other or the bot.

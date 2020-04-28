@@ -6,8 +6,10 @@ import { getEmbedColor } from './custom-helpers';
 import { MessageEmbed } from 'discord.js';
 import { KlasaMessage } from 'klasa';
 
+// TODO: add jsdoc
 export const baseEmbed = (msg: KlasaMessage): MessageEmbed => new MessageEmbed().setColor(getEmbedColor(msg));
 
+// TODO: add jsdoc
 export const specialEmbed = (msg: KlasaMessage, name: string): MessageEmbed => {
 	const embedOut: MessageEmbed = baseEmbed(msg)
 		.setTimestamp();

@@ -3,9 +3,9 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { shuffle } from '@lib/helpers/base';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { questions, houses, descriptions } from '../../extras/sorting-hat-quiz';
+import { shuffle } from '@lib/utils/util';
 
 const choices = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'];
 

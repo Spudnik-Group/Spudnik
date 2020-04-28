@@ -27,8 +27,10 @@ export default class SelfAssignableRolesCommand extends Command {
 			name: 'self-assignable-roles',
 			permissionLevel: 2,
 			subcommands: true,
-			usage: '<add|remove> <role:Role>'
+			usage: '<add|remove> <role:role>'
 		});
+
+		this.customizeResponse('role', 'Please supply a valid role to add/remove from the list of self-assignable roles.');
 	}
 
 	/**
@@ -41,54 +43,47 @@ export default class SelfAssignableRolesCommand extends Command {
 	 */
 	public async add(msg: KlasaMessage, [role]: [Role]): Promise<KlasaMessage | KlasaMessage[]> {
 		const roleEmbed = specialEmbed(msg, 'role-manager');
+		const guildAssignableRoles: string[] = await msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);
 
-		let guildAssignableRoles: string[] = await msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);
-
-		if (!Array.isArray(guildAssignableRoles)) {
-			guildAssignableRoles = [];
+		if (guildAssignableRoles.includes(role.id)) {
+			return msg.sendSimpleError(`${role.name} is already in the list of assignable roles for this guild.`, 3000);
 		}
 
-		// eslint-disable-next-line no-negated-condition
-		if (!guildAssignableRoles.includes(role.id)) {
-			msg.guild.settings.update('roles.selfAssignable', role)
-				.then(() => {
-					// Set up embed message
-					roleEmbed.setDescription(stripIndents`
-						**Member:** ${msg.author.tag} (${msg.author.id})
-						**Action:** Added role <@&${role.id}> to the list of assignable roles.
-					`);
+		try {
+			await msg.guild.settings.update('roles.selfAssignable', role);
 
-					return this.sendSuccess(msg, roleEmbed);
-				})
-				.catch((err: Error) => this.catchError(msg, { subCommand: 'add', role }, err));
-		} else {
-			return msg.sendSimpleError(`${role.name} is already in the list of assignable roles for this guild.`, 3000);
+			// Set up embed message
+			roleEmbed.setDescription(stripIndents`
+				**Member:** ${msg.author.tag} (${msg.author.id})
+				**Action:** Added role <@&${role.id}> to the list of assignable roles.
+			`);
+
+			return this.sendSuccess(msg, roleEmbed);
+		} catch (err) {
+			return this.catchError(msg, { subCommand: 'add', role }, err);
 		}
 	}
 
 	public async remove(msg: KlasaMessage, [role]: [Role]): Promise<KlasaMessage | KlasaMessage[]> {
 		const roleEmbed = specialEmbed(msg, 'role-manager');
+		const guildAssignableRoles: string[] = await msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);
 
-		let guildAssignableRoles: string[] = await msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);
-
-		if (!Array.isArray(guildAssignableRoles)) {
-			guildAssignableRoles = [];
+		if (!guildAssignableRoles.includes(role.id)) {
+			return msg.sendSimpleError(`Could not find role with name ${role.name} in the list of assignable roles for this guild.`, 3000);
 		}
 
-		if (guildAssignableRoles.includes(role.id)) {
-			msg.guild.settings.update(GuildSettings.Roles.SelfAssignable, role)
-				.then(() => {
-					// Set up embed message
-					roleEmbed.setDescription(stripIndents`
-						**Member:** ${msg.author.tag} (${msg.author.id})
-						**Action:** Removed role <@&${role.id}> from the list of assignable roles.
-					`);
+		try {
+			await msg.guild.settings.update(GuildSettings.Roles.SelfAssignable, role);
 
-					return this.sendSuccess(msg, roleEmbed);
-				})
-				.catch((err: Error) => this.catchError(msg, { subCommand: 'remove', role }, err));
-		} else {
-			return msg.sendSimpleError(`Could not find role with name ${role.name} in the list of assignable roles for this guild.`, 3000);
+			// Set up embed message
+			roleEmbed.setDescription(stripIndents`
+				**Member:** ${msg.author.tag} (${msg.author.id})
+				**Action:** Removed role <@&${role.id}> from the list of assignable roles.
+			`);
+
+			return this.sendSuccess(msg, roleEmbed);
+		} catch (err) {
+			return this.catchError(msg, { subCommand: 'remove', role }, err);
 		}
 	}
 

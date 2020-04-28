@@ -2,10 +2,10 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { getRandomInt } from '@lib/helpers/base';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { eightBall } from '../../extras/data';
 import { baseEmbed } from '@lib/helpers/embed-helpers.js';
+import { getRandomInt } from '@lib/utils/util';
 
 /**
  * Post a random "Magic 8-ball" response to a question.

@@ -3,10 +3,10 @@
  */
 
 import { MessageEmbed } from 'discord.js';
-import { shorten } from '@lib/helpers/base';
 import * as WikiJS from 'wikijs';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { baseEmbed } from '@lib/helpers/embed-helpers';
+import { shorten } from '@lib/utils/util';
 
 /**
  * Post a summary from Wikipedia.
@@ -19,12 +19,10 @@ export default class WikiCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'Returns the summary of the first matching search result from Wikipedia.',
+			description: 'Returns the Wikipedia result of the supplied query. If no query is supplied, returns a random Wikipedia result.',
 			name: 'wiki',
-			usage: '<query:string>'
+			usage: '[query:...string]'
 		});
-
-		this.customizeResponse('query', 'Please supply a query');
 	}
 
 	/**
@@ -37,7 +35,7 @@ export default class WikiCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage, [query]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		try {
-			const data: any = await WikiJS.default().search(query, 1);
+			const data: any = query ? await WikiJS.default().search(query, 1) : WikiJS.default().random();
 			const page: any = await WikiJS.default().page(data.results[0]);
 			const summary: string = await page.summary();
 
@@ -50,10 +48,11 @@ export default class WikiCommand extends Command {
 				// Wikipedia API Limitation:
 				// IPA phonetics are not returned in the summary but the parenthesis that they are encapsulated in are...
 				paragraph = paragraph.replace(' ()', '').replace('()', '');
-				paragraph = `${shorten(paragraph)}...`;
+				messageOut.setDescription(`${shorten(paragraph)}...`);
 
-				messageOut.setThumbnail((page.thumbnail && page.thumbnail.source) || 'https://i.imgur.com/fnhlGh5.png');
-				messageOut.setDescription(`${paragraph}\n\n${page.raw.fullurl}`);
+				const thumbnail = await page.mainImage();
+				messageOut.setThumbnail(thumbnail || 'https://i.imgur.com/fnhlGh5.png');
+				messageOut.setFooter(`Read More: ${page.raw.fullurl}\n\nPowered by WikiJS and Wikipedia`, 'https://raw.githubusercontent.com/dijs/wiki/HEAD/img/wikijs.png');
 				messageOut.setTitle(page.raw.title);
 			} else {
 				messageOut.setDescription('No results. Try again?');

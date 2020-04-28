@@ -4,7 +4,6 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { hexColor } from '@lib/helpers/resolvers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 import { specialEmbed } from '@lib/helpers/embed-helpers';
@@ -26,10 +25,8 @@ export default class EmbedColorCommand extends Command {
 			`,
 			name: 'embedcolor',
 			permissionLevel: 6, // MANAGE_GUILD
-			usage: '[color:string]'
+			usage: '(color:hexcolor)'
 		});
-
-		this.createCustomResolver('color', hexColor);
 	}
 
 	/**

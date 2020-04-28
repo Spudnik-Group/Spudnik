@@ -258,7 +258,7 @@ module.exports = {
 		"no-template-curly-in-string": "error",
 		"no-ternary": 0,
 		"no-this-before-super": "error",
-		"no-throw-literal": "error",
+		"no-throw-literal": 0,
 		"no-trailing-spaces": "error",
 		"no-undef-init": 0,
 		"no-undef": "error",

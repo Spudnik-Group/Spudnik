@@ -7,6 +7,7 @@ import axios from 'axios';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { SpudConfig } from '@lib/config';
 import { baseEmbed } from '@lib/helpers/embed-helpers';
+import { shorten } from '@lib/utils/util';
 
 const { breweryDbApiKey } = SpudConfig;
 
@@ -26,7 +27,7 @@ export default class BrewCommand extends Command {
 			usage: '<query:...string>'
 		});
 
-		this.customizeResponse('query', 'Please supply a query');
+		this.customizeResponse('query', 'Please supply the name of a beer or brewery to look up.');
 	}
 
 	/**
@@ -47,72 +48,92 @@ export default class BrewCommand extends Command {
 			.setFooter('powered by BreweryDB', 'http://s3.amazonaws.com/brewerydb/Powered-By-BreweryDB.png');
 
 		try {
-			const { data: response } = await axios(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(query)}&key=${breweryDbApiKey}`);
+			const { data: response } = await axios(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(query)}&key=${breweryDbApiKey}&withBreweries=Y&withLocations=Y`);
 
 			if (response.data) {
 				const result = response.data[0];
 
 				if (result.description) {
-					let thumbnail = '';
-
-					if (result.labels) {
-						thumbnail = result.labels.medium;
+					if (result.type === 'beer') {
+						brewEmbed
+							.addField(
+								'Brewery',
+								result.breweries.length ? result.breweries[0].name : 'N/A'
+							)
+							.addField(
+								'Style',
+								result.style.name
+							)
+							.addField(
+								'Serving Temperature',
+								result.servingTemperatureDisplay
+							)
+							.addField(
+								'ABV (Alcohol By Volume)',
+								`${result.abv}%`,
+								true
+							)
+							.addField(
+								'IBU (International Bitterness Units)',
+								`${result.ibu}/100`,
+								true
+							)
+							.addField(
+								'Glass',
+								result.glass.name,
+								true
+							)
+							.addField(
+								'Availability',
+								result.available.name,
+								true
+							)
+							.addField(
+								'Retired',
+								result.isRetired,
+								true
+							)
+							.thumbnail = {
+								url: result.labels.medium
+							};
+					} else {
+						brewEmbed
+							.addField(
+								'Location',
+								`${result.locations[0].locality}, ${result.locations[0].region}`
+							)
+							.addField(
+								'Website',
+								result.website ? result.website : 'N/A'
+							)
+							.addField(
+								'In Business',
+								result.isInBusiness,
+								true
+							)
+							.addField(
+								'Mass Owned',
+								result.isMassOwned,
+								true
+							)
+							.addField(
+								'Year Established',
+								result.established,
+								true
+							)
+							.thumbnail = {
+								url: result.images.squareMedium
+							};
 					}
 
-					if (result.images) {
-						thumbnail = result.images.squareMedium;
-					}
-
-					if (result.name) {
-						brewEmbed.setTitle(result.name);
-					}
-
-					if (result.style) {
-						brewEmbed.addField(
-							`Style: ${result.style.name}`,
-							result.style.description
-						);
-					}
-
-					if (result.abv) {
-						brewEmbed.addField(
-							'ABV (Alcohol By Volume)',
-							`${result.abv}%`,
+					brewEmbed
+						.addField(
+							'Organic',
+							result.isOrganic,
 							true
-						);
-					}
-
-					if (result.ibu) {
-						brewEmbed.addField(
-							'IBU (International Bitterness Units)',
-							`${result.ibu}/100`,
-							true
-						);
-					}
-
-					if (result.website) {
-						brewEmbed.addField(
-							'Website',
-							result.website,
-							true
-						);
-					}
-
-					if (result.established) {
-						brewEmbed.addField(
-							'Year Established',
-							result.established,
-							true
-						);
-					}
-
-					if (thumbnail !== '') {
-						brewEmbed.thumbnail = {
-							url: thumbnail
-						};
-					}
-
-					brewEmbed.setDescription(`\n${result.description}\n\n`);
+						)
+						.setTitle(result.name)
+						.setDescription(`\n${shorten(result.description)}\n\n`);
 				} else {
 					brewEmbed.setDescription(`${response.data[0].name} is a good beer/brewery, but I don't have a good way to describe it.`);
 				}

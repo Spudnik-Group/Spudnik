@@ -2,10 +2,10 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { getRandomInt } from '@lib/helpers/base';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { Permissions } from 'discord.js';
 import { coinflip } from '../../extras/data';
+import { getRandomInt } from '@lib/utils/util';
 
 /**
  * Simulate a coin flip.

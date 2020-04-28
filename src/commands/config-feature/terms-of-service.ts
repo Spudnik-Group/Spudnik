@@ -5,9 +5,8 @@
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
 import { Command, CommandStore, KlasaMessage, Possible, Timestamp } from 'klasa';
-import * as markdownescape from 'markdown-escape';
 import { GuildSettings, TosMessage } from '@lib/types/settings/GuildSettings';
-import { resolveChannel } from '@lib/helpers/base';
+import { resolveChannel, escapeMarkdown } from '@lib/helpers/base';
 import { getEmbedColor, modLogMessage } from '@lib/helpers/custom-helpers';
 
 /**
@@ -27,31 +26,43 @@ export default class TermsOfServiceCommand extends Command {
 				\`channel <#channelMention>\` - set the channel to display the terms of service in.
 				\`title <info block number> <text>\` - edit the title of a terms of service info block.
 				\`body <info block number> <text>\` - edit the body of a terms of service info block.
-				\`get <info block number> (raw:boolean)\` - returns the requested block number
+				\`get <info block number> (raw:boolean)\` - returns the requested block number.
 				\`list\` - return all the terms of service embedded blocks.
 				\`status\` - return the terms of service feature configuration details.
+				\`welcome enabled <boolean>\` - enable/disable terms of service welcome message.
+				\`welcome text <text>\` - set the welcome text to prompt users to accept the terms of service.
 			`,
 			name: 'tos',
 			permissionLevel: 6, // MANAGE_GUILD
 			subcommands: true,
-			usage: '<channel|title|body|get|list|status> [item:item] [text:...string]'
+			usage: '<channel|title|body|get|welcome|list|status> (item:item) (text:text)'
 		});
 
 		this
 			.createCustomResolver('item', (arg: string, possible: Possible, message: KlasaMessage, [subCommand]: [string]) => {
-				if (subCommand === 'channel' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw new Error('Please provide a channel for the TOS message to be displayed in.');
-				if (['title', 'body'].includes(subCommand) && !arg) throw new Error('Please include the index of the TOS message you would like to update.');
-				if (subCommand === 'get' && !arg) throw new Error('Please include the index of the TOS message you would like to view.');
+				if (subCommand.toLocaleLowerCase() === 'channel' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw 'Please provide a channel for the TOS message to be displayed in.';
+
+				if (['title', 'body'].includes(subCommand.toLocaleLowerCase()) && !arg) throw 'Please include the index of the TOS message you would like to update.';
+				if (subCommand.toLocaleLowerCase() === 'get' && !arg) throw 'Please include the index of the TOS message you would like to view.';
+				if (['title', 'body', 'get'].includes(subCommand)) {
+					if (!Number(arg)) throw 'ID must be an integer.';
+					else if (Number(arg) < 1) throw 'ID must be a positive integer.';
+				}
+
+				if (subCommand.toLocaleLowerCase() === 'welcome' && !arg) throw 'Insufficent parameters, run `help tos` for details.';
 
 				return arg;
 			})
 			.createCustomResolver('text', (arg: string, possible: Possible, message: KlasaMessage, [subCommand]: [string]) => {
-				if (['title', 'body'].includes(subCommand) && !arg) throw new Error('Please include the new text.');
-				if (subCommand === 'get' && (['true', 'false', 't', 'f'].includes(arg))) throw new Error('Please supply a valid boolean option for `raw` option.');
+				if (['title', 'body'].includes(subCommand.toLocaleLowerCase()) && !arg) throw 'Please include the new text.';
+				if (subCommand.toLocaleLowerCase() === 'get' && !['true', 'false', 't', 'f', '1', '0', undefined].includes(arg.toLocaleLowerCase())) throw 'Please supply a valid boolean option for `raw` option.';
+				if (subCommand.toLocaleLowerCase() === 'get' && ['true', 't', '1'].includes(arg.toLocaleLowerCase())) return 'raw';
 
 				// Check text length against Discord embed limits
-				if (subCommand === 'title' && arg.length > 256) throw new Error('Discord message embed titles are limited to 256 characters; please supply a shorter title.');
-				if (subCommand === 'body' && arg.length > 2048) throw new Error('Discord message embed bodies are limited to 2048 characters; please supply a shorter body.');
+				if (subCommand.toLocaleLowerCase() === 'title' && arg.length > 256) throw 'Discord message embed titles are limited to 256 characters; please supply a shorter title.';
+				if (subCommand.toLocaleLowerCase() === 'body' && arg.length > 2048) throw 'Discord message embed bodies are limited to 2048 characters; please supply a shorter body.';
+
+				if (subCommand.toLocaleLowerCase() === 'welcome' && !arg) throw 'Insufficent parameters, run `help tos` for details.';
 
 				return arg;
 			});
@@ -69,7 +80,7 @@ export default class TermsOfServiceCommand extends Command {
 		const newTosChannel = msg.guild.channels.get(resolveChannel(item));
 
 		if (tosChannel && newTosChannel && tosChannel === newTosChannel.id) {
-			return msg.sendSimpleEmbed(`Terms of Service channel already set to ${item}!`, 3000);
+			return msg.sendSimpleEmbed(`Terms of Service channel already set to ${item}.`);
 		}
 		try {
 			await msg.guild.settings.update(GuildSettings.Tos.Channel, newTosChannel.id);
@@ -205,14 +216,15 @@ export default class TermsOfServiceCommand extends Command {
 				.setDescription(stripIndents`
 					**ID:** ${tosMessage.id}
 					**Title:** ${tosMessage.title}
-					**Body:** ${(text.toString().toLowerCase() === 'raw') ? markdownescape(tosMessage.body.toString()) : tosMessage.body.toString()}
+					**Body (${(text.toString().toLowerCase() === 'raw') ? 'raw' : 'formatted'}):** ${(text.toString().toLowerCase() === 'raw') ? escapeMarkdown(tosMessage.body.toString(), false, false) : tosMessage.body.toString()}
 				`)
 				.setFooter('Use the `tos status` command to see the details of this feature')
 				.setTimestamp();
 
 			return this.sendSuccess(msg, tosEmbed);
 		}
-		// TODO?
+		return msg.sendSimpleError(`No terms of service message found matching ID of \`${item}\`.`);
+
 
 	}
 
@@ -236,7 +248,7 @@ export default class TermsOfServiceCommand extends Command {
 					return msg.sendEmbed(tosEmbed);
 				});
 			} else {
-				return msg.sendSimpleError('There are no terms of service messages set.', 3000);
+				return msg.sendSimpleError('There are no terms of service messages set.');
 			}
 		}
 	}
@@ -249,10 +261,18 @@ export default class TermsOfServiceCommand extends Command {
 			},
 			color: getEmbedColor(msg)
 		});
-		const tosChannel = msg.guild.settings.get(GuildSettings.Tos.Channel);
+		const channel = msg.guild.settings.get(GuildSettings.Tos.Channel);
+		const defaultRole = msg.guild.settings.get(GuildSettings.Tos.Role);
+		const welcomeEnabled = msg.guild.settings.get(GuildSettings.Tos.Welcome.Enabled);
+		const welcomeMessage = msg.guild.settings.get(GuildSettings.Tos.Welcome.Message);
 		const tosMessages = msg.guild.settings.get(GuildSettings.Tos.Messages).sort((a: TosMessage, b: TosMessage) => a.id - b.id);
 
-		tosEmbed.description = `Channel: ${tosChannel ? `<#${tosChannel}>` : 'None set.'}\nMessage List:\n`;
+		tosEmbed.description = stripIndents`
+			Channel: ${channel ? `<#${channel}>` : 'None set.'}\n
+			Default (TOS) Role: ${defaultRole ? `<@${defaultRole}>` : 'None set.'}\n
+			Welcome Message (${welcomeEnabled ? 'Enabled' : 'Disabled'}): ${welcomeMessage}\n
+			Message List:\n`;
+
 		if (tosMessages.length) {
 			let tosList = '';
 
@@ -266,7 +286,57 @@ export default class TermsOfServiceCommand extends Command {
 		}
 		tosEmbed.setFooter('Use the `tos get` command to see the full message content');
 
-		// Send the success response
+		return msg.sendEmbed(tosEmbed);
+	}
+
+	public async welcome(msg: KlasaMessage, [item, ...text]: string[]): Promise<KlasaMessage | KlasaMessage[]> {
+		const tosEmbed: MessageEmbed = new MessageEmbed({
+			author: {
+				icon_url: 'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/ballot-box-with-check_2611.png',
+				name: 'Terms of Service'
+			},
+			color: getEmbedColor(msg)
+		});
+
+		if (item.toLocaleLowerCase() === 'message') {
+			try {
+				await msg.guild.settings.update(GuildSettings.Tos.Welcome.Message, text);
+
+				// Set up embed message
+				tosEmbed
+					.setDescription(stripIndents`
+							**Member:** ${msg.author.tag} (${msg.author.id})
+							**Action:** Terms of Service Welcome Message set to:\n
+							${text}
+						`)
+					.setFooter('Use the `tos status` command to see the details of this feature')
+					.setTimestamp();
+
+				return this.sendSuccess(msg, tosEmbed);
+			} catch (err) {
+				return this.catchError(msg, { subCommand: 'channel', item }, err);
+			}
+		} else if (item.toLocaleLowerCase() === 'enabled') {
+			try {
+				const value = ['true', 't', '1'].includes(text.join().toLocaleLowerCase()) ? true : false;
+
+				await msg.guild.settings.update(GuildSettings.Tos.Welcome.Enabled, value);
+
+				// Set up embed message
+				tosEmbed
+					.setDescription(stripIndents`
+							**Member:** ${msg.author.tag} (${msg.author.id})
+							**Action:** Terms of Service Welcome ${value ? 'Enabled' : 'Disabled'}
+						`)
+					.setFooter('Use the `tos status` command to see the details of this feature')
+					.setTimestamp();
+
+				return this.sendSuccess(msg, tosEmbed);
+			} catch (err) {
+				return this.catchError(msg, { subCommand: 'channel', item }, err);
+			}
+		}
+
 		return msg.sendEmbed(tosEmbed);
 	}
 

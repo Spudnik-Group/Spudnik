@@ -2,9 +2,9 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { getRandomInt } from '@lib/helpers/base';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import * as fishes from '../../extras/fish';
+import { getRandomInt } from '@lib/utils/util';
 
 /**
  * Starts a game of Slots.
