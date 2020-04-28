@@ -51,32 +51,39 @@ export default class BrewCommand extends Command {
 			const { data: response } = await axios(`http://api.brewerydb.com/v2/search?q=${encodeURIComponent(query)}&key=${breweryDbApiKey}&withBreweries=Y&withLocations=Y`);
 
 			if (response.data) {
-				// build RichMenu
-				const menu: RichMenu = new RichMenu(baseEmbed(msg)
-					.setAuthor(
-						'BreweryDB',
-						'https://emojipedia-us.s3.amazonaws.com/thumbs/120/twitter/103/beer-mug_1f37a.png',
-						'http://www.brewerydb.com/'
-					)
-					.setFooter('powered by BreweryDB', 'http://s3.amazonaws.com/brewerydb/Powered-By-BreweryDB.png')
-					.setDescription('Use the arrow reactions to scroll between pages.\nUse number reactions to select an option.'));
+				let result;
 
-				response.data.forEach((item: any) => {
-					if (!item.name || !item.description) return;
-					menu.addOption(item.name, shorten(item.description, 50));
-				});
+				if (response.data.length > 1) {
+					// build RichMenu
+					const menu: RichMenu = new RichMenu(baseEmbed(msg)
+						.setAuthor(
+							'BreweryDB',
+							'https://emojipedia-us.s3.amazonaws.com/thumbs/120/twitter/103/beer-mug_1f37a.png',
+							'http://www.brewerydb.com/'
+						)
+						.setFooter('powered by BreweryDB', 'http://s3.amazonaws.com/brewerydb/Powered-By-BreweryDB.png')
+						.setDescription('Use the arrow reactions to scroll between pages.\nUse number reactions to select an option.'));
 
-				const collector: ReactionHandler = await menu.run(await msg.send('Taking a look in the beer fridge...'));
+					response.data.forEach((item: any) => {
+						menu.addOption(`${item.name} (${item.type})`, item.description ? shorten(item.description, 50) : 'No description available.');
+					});
 
-				// wait for selection
-				const choice: number = await collector.selection;
-				if (!choice) {
-					await collector.message.delete();
-					return;
+					const collector: ReactionHandler = await menu.run(await msg.send('Taking a look in the beer fridge...'));
+
+					// wait for selection
+					const choice: number = await collector.selection;
+					if (choice === null || choice === undefined) {
+						await collector.message.delete();
+						return;
+					}
+
+					result = response.data[choice];
+				} else {
+					result = response.data.shift();
 				}
 
 				// display selection details
-				this.buildEmbed(brewEmbed, response.data[choice]);
+				this.buildEmbed(brewEmbed, result);
 			} else {
 				brewEmbed.setDescription("Damn, I've never heard of that. Where do I need to go to find it?");
 			}
@@ -96,11 +103,11 @@ export default class BrewCommand extends Command {
 			embed
 				.addField(
 					'Brewery',
-					result.breweries.length ? result.breweries[0].name : 'N/A'
+					result.breweries ? (result.breweries.length ? result.breweries[0].name : 'N/A') : 'N/A'
 				)
 				.addField(
 					'Style',
-					result.style.name
+					result.style ? result.style.name : 'A beer.'
 				)
 				.addField(
 					'Serving Temperature',
@@ -113,17 +120,17 @@ export default class BrewCommand extends Command {
 				)
 				.addField(
 					'IBU (International Bitterness Units)',
-					`${result.ibu}/100`,
+					result.ibu ? `${result.ibu}/100` : 'N/A',
 					true
 				)
 				.addField(
 					'Glass',
-					result.glass.name,
+					result.glass ? result.glass.name : 'A glass.',
 					true
 				)
 				.addField(
 					'Availability',
-					result.available.name,
+					result.available ? result.available.name : 'Unsure.',
 					true
 				)
 				.addField(
@@ -132,7 +139,7 @@ export default class BrewCommand extends Command {
 					true
 				)
 				.thumbnail = {
-					url: result.labels.medium
+					url: result.labels ? result.labels.medium : null
 				};
 		} else {
 			embed
@@ -171,7 +178,7 @@ export default class BrewCommand extends Command {
 				true
 			)
 			.setTitle(result.name)
-			.setDescription(`\n${shorten(result.description)}\n\n`);
+			.setDescription(`\n${result.description ? shorten(result.description) : 'No description available.'}\n\n`);
 	}
 
 }
