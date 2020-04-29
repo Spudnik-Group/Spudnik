@@ -65,7 +65,7 @@ export default class CocktailCommand extends Command {
 
 					// wait for selection
 					const choice: number = await collector.selection;
-					if (!choice) {
+					if (choice === null || choice === undefined) {
 						await collector.message.delete();
 						return;
 					}
