@@ -36,7 +36,7 @@ export default class TermsOfServiceCommand extends Command {
 			name: 'tos',
 			permissionLevel: 6, // MANAGE_GUILD
 			subcommands: true,
-			usage: '<channel|title|body|get|welcome|list|status> (item:item) [text:...string]'
+			usage: '<channel|title|body|get|welcome|list|status> (item:item) [text:string] [...]'
 		});
 
 		this.createCustomResolver('item', (arg: string, possible: Possible, message: KlasaMessage, [subCommand]: [string]) => {
@@ -82,10 +82,12 @@ export default class TermsOfServiceCommand extends Command {
 
 	}
 
-	public async title(msg: KlasaMessage, [item, text]: [string, string]): Promise<KlasaMessage | KlasaMessage[]> {
-		if (!text) {
+	public async title(msg: KlasaMessage, [item, ...text]: [string, string[]]): Promise<KlasaMessage | KlasaMessage[]> {
+		const updatedText = text.join(' ');
+
+		if (!updatedText) {
 			return msg.sendSimpleError(`Please include the new text.`);
-		} else if (text.length > 256) {
+		} else if (updatedText.length > 256) {
 			return msg.sendSimpleError('Discord message embed titles are limited to 256 characters; please supply a shorter title.');
 		}
 
@@ -99,12 +101,12 @@ export default class TermsOfServiceCommand extends Command {
 		});
 
 		if (existingTosMessage) {
-			existingTosMessage.title = text;
+			existingTosMessage.title = updatedText;
 		} else {
 			existingTosMessage = {
 				body: '',
 				id: Number(item),
-				title: text
+				title: updatedText
 			};
 		}
 
@@ -122,14 +124,16 @@ export default class TermsOfServiceCommand extends Command {
 
 			return this.sendSuccess(msg, tosEmbed);
 		} catch (err) {
-			return this.catchError(msg, { subCommand: 'title', item, text }, err);
+			return this.catchError(msg, { subCommand: 'title', item, text: updatedText }, err);
 		}
 	}
 
-	public async body(msg: KlasaMessage, [item, text]: [string, string]): Promise<KlasaMessage | KlasaMessage[]> {
-		if (!text) {
+	public async body(msg: KlasaMessage, [item, ...text]: [string, string]): Promise<KlasaMessage | KlasaMessage[]> {
+		const updatedText = text.join(' ');
+
+		if (!updatedText) {
 			return msg.sendSimpleError('Please include the new text.');
-		} else if (text.length > 2048) {
+		} else if (updatedText.length > 2048) {
 			return msg.sendSimpleError('Discord message embed bodies are limited to 2048 characters; please supply a shorter body.');
 		}
 
@@ -143,10 +147,10 @@ export default class TermsOfServiceCommand extends Command {
 		});
 
 		if (existingTosMessage) {
-			existingTosMessage.body = text;
+			existingTosMessage.body = updatedText;
 		} else {
 			existingTosMessage = {
-				body: text,
+				body: updatedText,
 				id: Number(item),
 				title: ''
 			};
@@ -166,7 +170,7 @@ export default class TermsOfServiceCommand extends Command {
 
 			return this.sendSuccess(msg, tosEmbed);
 		} catch (err) {
-			return this.catchError(msg, { subCommand: 'title', item, text }, err);
+			return this.catchError(msg, { subCommand: 'title', item, text: updatedText }, err);
 		}
 	}
 
@@ -249,28 +253,28 @@ export default class TermsOfServiceCommand extends Command {
 		return msg.sendEmbed(tosEmbed);
 	}
 
-	public async welcome(msg: KlasaMessage, [item, text]: [string, string]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async welcome(msg: KlasaMessage, [item, ...text]: [string, string[]]): Promise<KlasaMessage | KlasaMessage[]> {
 		const tosEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Tos);
+
+		const updatedText = text.join(' ');
 
 		if (item === 'message') {
 			try {
-				console.log(text);
-
 				if (!text) {
 					return msg.sendSimpleError('Please include the new text.');
-				} else if (text.length > 2048) {
+				} else if (updatedText.length > 2048) {
 					return msg.sendSimpleError('Discord message embed bodies are limited to 2048 characters; please supply a shorter body.');
-				} else if (((text.replace('{user}', '').length)) > 2048) {
+				} else if (((updatedText.replace('{user}', '').length)) > 2048) {
 					return msg.sendSimpleError('Discord message embed bodies are limited to 2048 characters; please supply a shorter body.');
 				}
 
-				await msg.guild.settings.update(GuildSettings.Tos.Welcome.Message, text);
+				await msg.guild.settings.update(GuildSettings.Tos.Welcome.Message, updatedText);
 
 				tosEmbed
 					.setDescription(stripIndents`
 							**Member:** ${msg.author.tag} (${msg.author.id})
 							**Action:** Terms of Service Welcome Message set to:\n
-							${text}
+							${updatedText}
 						`)
 					.setFooter('Use the `tos status` command to see the details of this feature');
 
@@ -280,7 +284,7 @@ export default class TermsOfServiceCommand extends Command {
 			}
 		} else if (item === 'enabled') {
 			try {
-				const value = ['true', 't', '1'].includes(text) ? true : false;
+				const value = ['true', 't', '1'].includes(updatedText) ? true : false;
 
 				await msg.guild.settings.update(GuildSettings.Tos.Welcome.Enabled, value);
 
@@ -331,6 +335,11 @@ export default class TermsOfServiceCommand extends Command {
 			case 'body':
 				{
 					tosUserWarn = `Failed setting tos message #${args.item}!`;
+					break;
+				}
+			case 'welcome':
+				{
+					tosUserWarn = `Failed updating tos welcome value.`;
 					break;
 				}
 		}
