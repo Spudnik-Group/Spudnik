@@ -7,7 +7,6 @@ Client.defaultGuildSchema
 		.add('disabled', 'string', { array: true })
 		.add('disabledCategories', 'string', { array: true }))
 	.add('roles', (folder: SchemaFolder) => folder
-		.add('default', 'Role')
 		.add('muted', 'Role')
 		.add('selfAssignable', 'Role', { array: true }))
 	.add('starboard', (folder: SchemaFolder) => folder
@@ -30,6 +29,10 @@ Client.defaultGuildSchema
 		.add('channel', 'TextChannel'))
 	.add('tos', (folder: SchemaFolder) => folder
 		.add('channel', 'TextChannel')
+		.add('role', 'Role')
+		.add('welcome', (folder2: SchemaFolder) => folder2
+			.add('enabled', 'boolean')
+			.add('message', 'string', { 'default': '' }))
 		.add('messages', 'any', { array: true }))
 	.add('embedColor', 'string', { 'default': '555555' })
 	.add('language', 'Language', { 'default': 'en-US' })

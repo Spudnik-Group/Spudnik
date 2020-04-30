@@ -6,12 +6,15 @@ import { Event } from 'klasa';
 import { SpudConfig } from '@lib//config/spud-config';
 import { TextChannel, GuildMember, Permissions } from 'discord.js';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import { delay } from '@lib/utils/util';
 
 export default class extends Event {
 
 	public async run(member: GuildMember): Promise<void> {
 		const { guild } = member;
+
 		if (SpudConfig.botListGuilds.includes(guild.id)) return; // Guild is on Blacklist, ignore.
+
 		const welcomeEnabled = guild.settings.get(GuildSettings.Welcome.Enabled);
 		const welcomeMessage = guild.settings.get(GuildSettings.Welcome.Message);
 		const welcomeChannel = guild.settings.get(GuildSettings.Welcome.Channel);
@@ -42,6 +45,8 @@ export default class extends Event {
 
 				const REACTIONS = { YES: '✅', NO: '❎' };
 
+				await delay(5000);
+
 				await messageSent.react(REACTIONS.YES);
 				await messageSent.react(REACTIONS.NO);
 
@@ -55,6 +60,7 @@ export default class extends Event {
 
 				if (Boolean(reactions.size) && reactions.firstKey() === REACTIONS.YES) {
 					await member.roles.add(role.id);
+					await messageSent.delete();
 				}
 			} else {
 				this.client.emit('warn', `There was an error trying to welcome a new guild member in ${guild}, the channel/role may no longer exist.`);
