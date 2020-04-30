@@ -183,6 +183,14 @@ export const specialEmbed = (msg: KlasaMessage, name: string): MessageEmbed => {
 				);
 			break;
 		}
+		case 'tos': {
+			embedOut
+				.setAuthor(
+					'Terms of Service',
+					'https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/ballot-box-with-check_2611.png'
+				);
+			break;
+		}
 	}
 
 	return embedOut;
