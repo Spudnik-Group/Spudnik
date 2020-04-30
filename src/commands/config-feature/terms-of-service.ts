@@ -109,7 +109,7 @@ export default class TermsOfServiceCommand extends Command {
 		}
 
 		try {
-			await msg.guild.settings.update(GuildSettings.Tos.Messages, existingTosMessage, { arrayAction: 'add' });
+			await msg.guild.settings.update(GuildSettings.Tos.Messages, existingTosMessage, { arrayAction: 'overwrite' });
 
 			const tosEmbed: MessageEmbed = specialEmbed(msg, 'tos');
 
@@ -153,7 +153,7 @@ export default class TermsOfServiceCommand extends Command {
 		}
 
 		try {
-			await msg.guild.settings.update(GuildSettings.Tos.Messages, existingTosMessage, { arrayAction: 'add' });
+			await msg.guild.settings.update(GuildSettings.Tos.Messages, existingTosMessage, { arrayAction: 'overwrite' });
 
 			const tosEmbed: MessageEmbed = specialEmbed(msg, 'tos');
 
@@ -312,22 +312,27 @@ export default class TermsOfServiceCommand extends Command {
 		let tosUserWarn = '';
 
 		switch (args.subCommand.toLowerCase()) {
-			case 'get': {
-				tosUserWarn = `Failed getting tos message #${args.item}`;
-				break;
-			}
-			case 'channel': {
-				tosUserWarn = `Failed setting new tos channel to <#${args.item}>!`;
-				break;
-			}
-			case 'title': {
-				tosUserWarn = `Failed setting tos message #${args.item}!`;
-				break;
-			}
-			case 'body': {
-				tosUserWarn = `Failed setting tos message #${args.item}!`;
-				break;
-			}
+			case 'get':
+				{
+					tosUserWarn = `Failed getting tos message #${args.item}`;
+					break;
+				}
+			case 'channel':
+				{
+					tosUserWarn = `Failed setting new tos channel to <#${args.item}>!`;
+					break;
+				}
+			case 'title':
+			case 'body':
+				{
+					tosUserWarn = `Failed setting tos message #${args.item}!`;
+					break;
+				}
+			case 'body':
+				{
+					tosUserWarn = `Failed setting tos message #${args.item}!`;
+					break;
+				}
 		}
 		tosWarn += stripIndents`
 			**Error Message:** ${err}`;
