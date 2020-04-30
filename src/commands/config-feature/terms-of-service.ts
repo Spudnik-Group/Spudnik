@@ -317,31 +317,26 @@ export default class TermsOfServiceCommand extends Command {
 
 		switch (args.subCommand.toLowerCase()) {
 			case 'get':
-				{
-					tosUserWarn = `Failed getting tos message #${args.item}`;
-					break;
-				}
+			{
+				tosUserWarn = `Failed getting tos message #${args.item}`;
+				break;
+			}
 			case 'channel':
-				{
-					tosUserWarn = `Failed setting new tos channel to <#${args.item}>!`;
-					break;
-				}
+			{
+				tosUserWarn = `Failed setting new tos channel to <#${args.item}>!`;
+				break;
+			}
 			case 'title':
 			case 'body':
-				{
-					tosUserWarn = `Failed setting tos message #${args.item}!`;
-					break;
-				}
-			case 'body':
-				{
-					tosUserWarn = `Failed setting tos message #${args.item}!`;
-					break;
-				}
+			{
+				tosUserWarn = `Failed setting tos message #${args.item}!`;
+				break;
+			}
 			case 'welcome':
-				{
-					tosUserWarn = `Failed updating tos welcome value.`;
-					break;
-				}
+			{
+				tosUserWarn = `Failed updating tos welcome value.`;
+				break;
+			}
 		}
 		tosWarn += stripIndents`
 			**Error Message:** ${err}`;

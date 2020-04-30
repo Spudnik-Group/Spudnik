@@ -72,7 +72,7 @@ export default class ModlogCommand extends Command {
 	}
 
 	public async off(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const modlogEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Modlog)
+		const modlogEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Modlog);
 		const modlogEnabled = msg.guild.settings.get(GuildSettings.Modlog.Enabled);
 
 		if (modlogEnabled) {

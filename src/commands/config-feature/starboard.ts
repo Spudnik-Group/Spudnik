@@ -115,7 +115,7 @@ export default class StarboardCommand extends Command {
 	 * @memberof StarboardCommand
 	 */
 	public async on(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const starboardEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Starboard)
+		const starboardEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Starboard);
 		const starboard = msg.guild.settings.get(GuildSettings.Starboard.Channel);
 		const starboardEnabled = msg.guild.settings.get(GuildSettings.Starboard.Enabled);
 
@@ -151,7 +151,7 @@ export default class StarboardCommand extends Command {
 	 * @memberof StarboardCommand
 	 */
 	public async off(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const starboardEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Starboard)
+		const starboardEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Starboard);
 		const starboardEnabled: boolean = msg.guild.settings.get(GuildSettings.Starboard.Enabled);
 
 		if (starboardEnabled) {
