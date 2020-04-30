@@ -6,7 +6,7 @@ import { stripIndents } from 'common-tags';
 import { GuildMember, MessageEmbed } from 'discord.js';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings, Warning } from '@lib/types/settings/GuildSettings';
-import { specialEmbed } from '@lib/helpers/embed-helpers';
+import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 
 /**
  * Clears warns for a member of the guild.
@@ -39,7 +39,7 @@ export default class ClearWarnsCommand extends Command {
 	 * @memberof ClearWarnsCommand
 	 */
 	public async run(msg: KlasaMessage, [member, reason]: [GuildMember, string]): Promise<KlasaMessage | KlasaMessage[]> {
-		const warnEmbed: MessageEmbed = specialEmbed(msg, 'clear-warn');
+		const warnEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.ClearWarn);
 		const guildWarnings = msg.guild.settings.get(GuildSettings.Warnings);
 
 		if (guildWarnings.length) {

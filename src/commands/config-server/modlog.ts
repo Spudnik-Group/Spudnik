@@ -6,7 +6,7 @@ import { stripIndents } from 'common-tags';
 import { MessageEmbed, Channel } from 'discord.js';
 import { Command, CommandStore, KlasaMessage, Possible, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
-import { specialEmbed } from '@lib/helpers/embed-helpers';
+import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 import { resolveChannel } from '@lib/helpers/base';
 import { modLogMessage } from '@lib/helpers/custom-helpers';
 
@@ -43,7 +43,7 @@ export default class ModlogCommand extends Command {
 	}
 
 	public async on(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const modlogEmbed: MessageEmbed = specialEmbed(msg, 'modlog');
+		const modlogEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Modlog);
 		const modlogChannel = msg.guild.settings.get(GuildSettings.Modlog.Channel);
 		const modlogEnabled = msg.guild.settings.get(GuildSettings.Modlog.Enabled);
 
@@ -72,7 +72,7 @@ export default class ModlogCommand extends Command {
 	}
 
 	public async off(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const modlogEmbed: MessageEmbed = specialEmbed(msg, 'modlog');
+		const modlogEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Modlog)
 		const modlogEnabled = msg.guild.settings.get(GuildSettings.Modlog.Enabled);
 
 		if (modlogEnabled) {
@@ -96,7 +96,7 @@ export default class ModlogCommand extends Command {
 	}
 
 	public async channel(msg: KlasaMessage, [channel]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
-		const modlogEmbed: MessageEmbed = specialEmbed(msg, 'modlog');
+		const modlogEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Modlog);
 		const modlogChannel = msg.guild.settings.get(GuildSettings.Modlog.Channel);
 
 		if (channel) {
@@ -134,7 +134,7 @@ export default class ModlogCommand extends Command {
 	 * @memberof ModlogCommand
 	 */
 	public async status(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const modlogEmbed: MessageEmbed = specialEmbed(msg, 'modlog');
+		const modlogEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Modlog);
 		const modlogChannel = msg.guild.settings.get(GuildSettings.Modlog.Channel);
 		const modlogEnabled = msg.guild.settings.get(GuildSettings.Modlog.Enabled);
 

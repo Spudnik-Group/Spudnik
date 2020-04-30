@@ -6,7 +6,7 @@ import { stripIndents } from 'common-tags';
 import { MessageEmbed, Permissions } from 'discord.js';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
-import { specialEmbed } from '@lib/helpers/embed-helpers';
+import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 import { modLogMessage } from '@lib/helpers/custom-helpers';
 
 /**
@@ -31,7 +31,7 @@ export default class AdblockCommand extends Command {
 
 	public async off(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const adblockEnabled = msg.guild.settings.get(GuildSettings.AdblockEnabled);
-		const adblockEmbed: MessageEmbed = specialEmbed(msg, 'adblock');
+		const adblockEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Adblock);
 
 		if (adblockEnabled) {
 			try {
@@ -54,7 +54,7 @@ export default class AdblockCommand extends Command {
 
 	public async on(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const adblockEnabled = msg.guild.settings.get(GuildSettings.AdblockEnabled);
-		const adblockEmbed: MessageEmbed = specialEmbed(msg, 'adblock');
+		const adblockEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Adblock);
 
 		if (adblockEnabled) {
 			return msg.sendSimpleEmbed('Adblock feature already enabled!', 3000);

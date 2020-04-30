@@ -6,7 +6,7 @@ import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
-import { specialEmbed } from '@lib/helpers/embed-helpers';
+import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 
 /**
  * Change the default embed color for the server.
@@ -38,7 +38,7 @@ export default class EmbedColorCommand extends Command {
 	 * @memberof EmbedColorCommand
 	 */
 	public async run(msg: KlasaMessage, [color]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
-		const embedColorEmbed: MessageEmbed = specialEmbed(msg, 'embed-color');
+		const embedColorEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.EmbedColor);
 
 		if (color) {
 			try {

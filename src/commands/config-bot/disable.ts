@@ -8,7 +8,7 @@ import { modLogMessage, isCommandCategoryEnabled, isCommandEnabled } from '@lib/
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import * as fs from 'fs';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
-import { specialEmbed } from '@lib/helpers/embed-helpers';
+import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 import { commandOrCategory } from '@lib/helpers/resolvers';
 
 /**
@@ -42,7 +42,7 @@ export default class DisableCommand extends Command {
 	 * @memberof DisableCommand
 	 */
 	public async run(msg: KlasaMessage, [cmdOrCat]: [Command|string]): Promise<KlasaMessage | KlasaMessage[]> {
-		const disableEmbed: MessageEmbed = specialEmbed(msg, 'disable');
+		const disableEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Disable);
 
 		if (typeof cmdOrCat === 'string') {
 			// Category

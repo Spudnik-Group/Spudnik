@@ -6,7 +6,7 @@ import { stripIndents } from 'common-tags';
 import { MessageEmbed, Role, Permissions } from 'discord.js';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
-import { specialEmbed } from '@lib/helpers/embed-helpers';
+import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 import { modLogMessage } from '@lib/helpers/custom-helpers';
 
 /**
@@ -43,7 +43,7 @@ export default class DefaultRoleCommand extends Command {
 	 * @memberof RoleManagementCommands
 	 */
 	public async run(msg: KlasaMessage, [role]: [Role]): Promise<KlasaMessage | KlasaMessage[]> {
-		const roleEmbed = specialEmbed(msg, 'role-manager');
+		const roleEmbed = specialEmbed(msg, specialEmbedTypes.RoleManager);
 		const guildDefaultRoleId: string = msg.guild.settings.get(GuildSettings.Tos.Role);
 		const guildDefaultRole: Role = msg.guild.roles.get(guildDefaultRoleId);
 

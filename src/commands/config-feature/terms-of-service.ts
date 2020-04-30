@@ -8,7 +8,7 @@ import { Command, CommandStore, KlasaMessage, Possible, Timestamp } from 'klasa'
 import { GuildSettings, TosMessage } from '@lib/types/settings/GuildSettings';
 import { resolveChannel, escapeMarkdown } from '@lib/helpers/base';
 import { modLogMessage } from '@lib/helpers/custom-helpers';
-import { specialEmbed } from '@lib/helpers/embed-helpers';
+import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 
 /**
  * Sets/Shows the terms of service for a guild.
@@ -57,7 +57,7 @@ export default class TermsOfServiceCommand extends Command {
 	}
 
 	public async channel(msg: KlasaMessage, [item]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
-		const tosEmbed: MessageEmbed = specialEmbed(msg, 'tos');
+		const tosEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Tos);
 		const tosChannel: string = msg.guild.settings.get(GuildSettings.Tos.Channel);
 		const newTosChannel = msg.guild.channels.get(resolveChannel(item));
 
@@ -111,7 +111,7 @@ export default class TermsOfServiceCommand extends Command {
 		try {
 			await msg.guild.settings.update(GuildSettings.Tos.Messages, existingTosMessage, { arrayAction: 'overwrite' });
 
-			const tosEmbed: MessageEmbed = specialEmbed(msg, 'tos');
+			const tosEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Tos);
 
 			tosEmbed
 				.setDescription(stripIndents`
@@ -155,7 +155,7 @@ export default class TermsOfServiceCommand extends Command {
 		try {
 			await msg.guild.settings.update(GuildSettings.Tos.Messages, existingTosMessage, { arrayAction: 'overwrite' });
 
-			const tosEmbed: MessageEmbed = specialEmbed(msg, 'tos');
+			const tosEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Tos);
 
 			tosEmbed
 				.setDescription(stripIndents`
@@ -182,7 +182,7 @@ export default class TermsOfServiceCommand extends Command {
 		const tosMessage = msg.guild.settings.get(GuildSettings.Tos.Messages).find((message: TosMessage) => (Number(message.id) === Number(item)) ? true : false);
 
 		if (tosMessage) {
-			const tosEmbed: MessageEmbed = specialEmbed(msg, 'tos');
+			const tosEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Tos);
 
 			tosEmbed
 				.setDescription(stripIndents`
@@ -199,7 +199,7 @@ export default class TermsOfServiceCommand extends Command {
 	}
 
 	public async list(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const tosEmbed: MessageEmbed = specialEmbed(msg, 'tos');
+		const tosEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Tos);
 		const tosChannel = msg.guild.settings.get(GuildSettings.Tos.Channel);
 		const tosMessages = msg.guild.settings.get(GuildSettings.Tos.Messages).sort((a: TosMessage, b: TosMessage) => a.id - b.id);
 
@@ -218,7 +218,7 @@ export default class TermsOfServiceCommand extends Command {
 	}
 
 	public async status(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const tosEmbed: MessageEmbed = specialEmbed(msg, 'tos');
+		const tosEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Tos);
 
 		const channel = msg.guild.settings.get(GuildSettings.Tos.Channel);
 		const defaultRole = msg.guild.settings.get(GuildSettings.Tos.Role);
@@ -250,7 +250,7 @@ export default class TermsOfServiceCommand extends Command {
 	}
 
 	public async welcome(msg: KlasaMessage, [item, text]: [string, string]): Promise<KlasaMessage | KlasaMessage[]> {
-		const tosEmbed: MessageEmbed = specialEmbed(msg, 'tos');
+		const tosEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Tos);
 
 		if (item === 'message') {
 			try {

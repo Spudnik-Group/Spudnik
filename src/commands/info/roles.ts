@@ -5,7 +5,7 @@
 import { MessageEmbed, Role } from 'discord.js';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
-import { specialEmbed } from '@lib/helpers/embed-helpers';
+import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 
 /**
  * Lists default and self-assignable roles.
@@ -31,7 +31,7 @@ export default class RolesCommand extends Command {
 	 * @memberof RolesCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const roleEmbed: MessageEmbed = specialEmbed(msg, 'role-manager');
+		const roleEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.RoleManager);
 		const guildAssignableRoles: string[] = msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);
 		const guildDefaultRole: string = msg.guild.settings.get(GuildSettings.Tos.Role);
 		const guildMutedRole: string = msg.guild.settings.get(GuildSettings.Roles.Muted);

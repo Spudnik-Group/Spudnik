@@ -6,7 +6,7 @@ import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildMember, MessageEmbed, Permissions } from 'discord.js';
 import { modLogMessage } from '@lib/helpers/custom-helpers';
 import { stripIndents } from 'common-tags';
-import { specialEmbed } from '@lib/helpers/embed-helpers';
+import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 
 export default class SoftbanCommand extends Command {
 
@@ -20,7 +20,7 @@ export default class SoftbanCommand extends Command {
 	}
 
 	public async run(msg: KlasaMessage, [member, reason, when]: [GuildMember, string, string]): Promise<KlasaMessage | KlasaMessage[]> {
-		const banEmbed: MessageEmbed = specialEmbed(msg, 'soft-ban');
+		const banEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.SoftBan);
 
 		// Check if user is able to ban the mentioned user
 		if (!member.bannable || member.roles.highest.position >= msg.member.roles.highest.position) {

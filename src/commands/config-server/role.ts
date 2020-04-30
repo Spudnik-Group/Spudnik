@@ -5,7 +5,7 @@
 import { stripIndents } from 'common-tags';
 import { Collection, Message, Role, Permissions } from 'discord.js';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
-import { specialEmbed } from '@lib/helpers/embed-helpers';
+import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 import { modLogMessage } from '@lib/helpers/custom-helpers';
 import { isNormalInteger } from '@lib/utils/util';
 
@@ -43,7 +43,7 @@ export default class RoleCommand extends Command {
 	 * @memberof RoleManagementCommands
 	 */
 	public async add(msg: KlasaMessage, [name, color]: [Role|string, string]): Promise<KlasaMessage | KlasaMessage[]> {
-		const roleEmbed = specialEmbed(msg, 'role-manager');
+		const roleEmbed = specialEmbed(msg, specialEmbedTypes.RoleManager);
 
 		try {
 			let roleMetaData = {};
@@ -88,7 +88,7 @@ export default class RoleCommand extends Command {
 	 * @memberof RoleManagementCommands
 	 */
 	public async remove(msg: KlasaMessage, [name]: [Role|string]): Promise<KlasaMessage | KlasaMessage[]> {
-		const roleEmbed = specialEmbed(msg, 'role-manager');
+		const roleEmbed = specialEmbed(msg, specialEmbedTypes.RoleManager);
 		const rolesFound: Collection<string, Role> = msg.guild.roles.filter((role: Role) => role.name.toLocaleLowerCase() === (typeof name === 'string' ? name.toLocaleLowerCase() : name.name));
 
 		if (rolesFound.size > 1) {

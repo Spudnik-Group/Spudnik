@@ -6,7 +6,7 @@ import { stripIndents } from 'common-tags';
 import { GuildMember, MessageEmbed, Role, Permissions } from 'discord.js';
 import { modLogMessage } from '@lib/helpers/custom-helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
-import { specialEmbed } from '@lib/helpers/embed-helpers';
+import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 
 /**
  * Ban a member and optionally delete past messages.
@@ -36,7 +36,7 @@ export default class BanCommand extends Command {
 	 * @memberof BanCommand
 	 */
 	public async run(msg: KlasaMessage, [member, reason]: [any, string]): Promise<KlasaMessage | KlasaMessage[]> {
-		const banEmbed: MessageEmbed = specialEmbed(msg, 'ban');
+		const banEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Ban);
 
 		try {
 			// Check if user is a guild member

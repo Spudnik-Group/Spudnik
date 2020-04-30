@@ -9,7 +9,7 @@ import { Command, CommandStore, KlasaMessage } from 'klasa';
 import * as fs from 'fs';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 import { commandOrCategory } from '@lib/helpers/resolvers';
-import { specialEmbed } from '@lib/helpers/embed-helpers';
+import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 
 /**
  * Enables a command or command group.
@@ -42,7 +42,7 @@ export default class EnableCommand extends Command {
 	 * @memberof EnableCommand
 	 */
 	public async run(msg: KlasaMessage, [cmdOrCat]: [Command|string]): Promise<KlasaMessage | KlasaMessage[]> {
-		const enableEmbed: MessageEmbed = specialEmbed(msg, 'enable');
+		const enableEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Enable);
 
 		if (typeof cmdOrCat === 'string') {
 			// Category

@@ -6,15 +6,41 @@ import { getEmbedColor } from './custom-helpers';
 import { MessageEmbed } from 'discord.js';
 import { KlasaMessage } from 'klasa';
 
+export enum specialEmbedTypes {
+	RoleManager,
+	DeleteCommandMessages,
+	Disable,
+	Enable,
+	EmbedColor,
+	Prefix,
+	Announcement,
+	Goodbye,
+	Starboard,
+	Welcome,
+	Adblock,
+	Modlog,
+	Kick,
+	Move,
+	Mute,
+	UnMute,
+	Prune,
+	Ban,
+	SoftBan,
+	UnBan,
+	Warn,
+	ClearWarn,
+	Tos
+}
+
 // TODO: add jsdoc
 export const baseEmbed = (msg: KlasaMessage): MessageEmbed => new MessageEmbed().setColor(getEmbedColor(msg));
 
 // TODO: add jsdoc
-export const specialEmbed = (msg: KlasaMessage, name: string): MessageEmbed => {
+export const specialEmbed = (msg: KlasaMessage, name: specialEmbedTypes): MessageEmbed => {
 	const embedOut: MessageEmbed = baseEmbed(msg)
 		.setTimestamp();
 	switch (name) {
-		case 'role-manager': {
+		case specialEmbedTypes.RoleManager: {
 			embedOut
 				.setAuthor(
 					'Role Manager',
@@ -23,11 +49,11 @@ export const specialEmbed = (msg: KlasaMessage, name: string): MessageEmbed => {
 				.setFooter('Use the `iam`/`iamnot` commands to manage your roles');
 			break;
 		}
-		case 'delete-command-messages': {
+		case specialEmbedTypes.DeleteCommandMessages: {
 			embedOut.setAuthor('🛑 Delete Command Messages');
 			break;
 		}
-		case 'disable': {
+		case specialEmbedTypes.Disable: {
 			embedOut
 				.setAuthor(
 					'Disable',
@@ -35,7 +61,7 @@ export const specialEmbed = (msg: KlasaMessage, name: string): MessageEmbed => {
 				);
 			break;
 		}
-		case 'enable': {
+		case specialEmbedTypes.Enable: {
 			embedOut
 				.setAuthor(
 					'Enable',
@@ -43,7 +69,7 @@ export const specialEmbed = (msg: KlasaMessage, name: string): MessageEmbed => {
 				);
 			break;
 		}
-		case 'embed-color': {
+		case specialEmbedTypes.EmbedColor: {
 			embedOut
 				.setAuthor(
 					'Embed Color',
@@ -51,7 +77,7 @@ export const specialEmbed = (msg: KlasaMessage, name: string): MessageEmbed => {
 				);
 			break;
 		}
-		case 'prefix': {
+		case specialEmbedTypes.Prefix: {
 			embedOut
 				.setAuthor(
 					'Prefix',
@@ -59,7 +85,7 @@ export const specialEmbed = (msg: KlasaMessage, name: string): MessageEmbed => {
 				);
 			break;
 		}
-		case 'announcement': {
+		case specialEmbedTypes.Announcement: {
 			embedOut
 				.setAuthor(
 					'Announcement',
@@ -67,7 +93,7 @@ export const specialEmbed = (msg: KlasaMessage, name: string): MessageEmbed => {
 				);
 			break;
 		}
-		case 'goodbye': {
+		case specialEmbedTypes.Goodbye: {
 			embedOut
 				.setAuthor(
 					'Server Goodbye Message',
@@ -75,7 +101,7 @@ export const specialEmbed = (msg: KlasaMessage, name: string): MessageEmbed => {
 				);
 			break;
 		}
-		case 'starboard': {
+		case specialEmbedTypes.Starboard: {
 			embedOut
 				.setAuthor(
 					'Star Board',
@@ -83,7 +109,7 @@ export const specialEmbed = (msg: KlasaMessage, name: string): MessageEmbed => {
 				);
 			break;
 		}
-		case 'welcome': {
+		case specialEmbedTypes.Welcome: {
 			embedOut
 				.setAuthor(
 					'Server Welcome Message',
@@ -91,11 +117,11 @@ export const specialEmbed = (msg: KlasaMessage, name: string): MessageEmbed => {
 				);
 			break;
 		}
-		case 'adblock': {
+		case specialEmbedTypes.Adblock: {
 			embedOut.setAuthor('🛑 Adblock');
 			break;
 		}
-		case 'modlog': {
+		case specialEmbedTypes.Modlog: {
 			embedOut
 				.setAuthor(
 					'Mod Log',
@@ -103,7 +129,7 @@ export const specialEmbed = (msg: KlasaMessage, name: string): MessageEmbed => {
 				);
 			break;
 		}
-		case 'kick': {
+		case specialEmbedTypes.Kick: {
 			embedOut
 				.setAuthor(
 					'Get Out! - уходить!!',
@@ -111,7 +137,7 @@ export const specialEmbed = (msg: KlasaMessage, name: string): MessageEmbed => {
 				);
 			break;
 		}
-		case 'move': {
+		case specialEmbedTypes.Move: {
 			embedOut
 				.setAuthor(
 					'Move it!',
@@ -119,7 +145,7 @@ export const specialEmbed = (msg: KlasaMessage, name: string): MessageEmbed => {
 				);
 			break;
 		}
-		case 'mute': {
+		case specialEmbedTypes.Mute: {
 			embedOut
 				.setAuthor(
 					'Mute',
@@ -127,7 +153,7 @@ export const specialEmbed = (msg: KlasaMessage, name: string): MessageEmbed => {
 				);
 			break;
 		}
-		case 'un-mute': {
+		case specialEmbedTypes.UnMute: {
 			embedOut
 				.setAuthor(
 					'Un-Mute',
@@ -135,7 +161,7 @@ export const specialEmbed = (msg: KlasaMessage, name: string): MessageEmbed => {
 				);
 			break;
 		}
-		case 'prune': {
+		case specialEmbedTypes.Prune: {
 			embedOut
 				.setAuthor(
 					'Prune',
@@ -143,7 +169,7 @@ export const specialEmbed = (msg: KlasaMessage, name: string): MessageEmbed => {
 				);
 			break;
 		}
-		case 'ban': {
+		case specialEmbedTypes.Ban: {
 			embedOut
 				.setAuthor(
 					'Ban Hammer',
@@ -151,7 +177,7 @@ export const specialEmbed = (msg: KlasaMessage, name: string): MessageEmbed => {
 				);
 			break;
 		}
-		case 'soft-ban': {
+		case specialEmbedTypes.SoftBan: {
 			embedOut
 				.setAuthor(
 					'Ban Hammer (Soft)',
@@ -159,7 +185,7 @@ export const specialEmbed = (msg: KlasaMessage, name: string): MessageEmbed => {
 				);
 			break;
 		}
-		case 'un-ban': {
+		case specialEmbedTypes.UnBan: {
 			embedOut
 				.setAuthor(
 					'Un-Ban',
@@ -167,7 +193,7 @@ export const specialEmbed = (msg: KlasaMessage, name: string): MessageEmbed => {
 				);
 			break;
 		}
-		case 'warn': {
+		case specialEmbedTypes.Warn: {
 			embedOut
 				.setAuthor(
 					'Warning',
@@ -175,7 +201,7 @@ export const specialEmbed = (msg: KlasaMessage, name: string): MessageEmbed => {
 				);
 			break;
 		}
-		case 'clear-warn': {
+		case specialEmbedTypes.ClearWarn: {
 			embedOut
 				.setAuthor(
 					'Clear Warnings',
@@ -183,7 +209,7 @@ export const specialEmbed = (msg: KlasaMessage, name: string): MessageEmbed => {
 				);
 			break;
 		}
-		case 'tos': {
+		case specialEmbedTypes.Tos: {
 			embedOut
 				.setAuthor(
 					'Terms of Service',

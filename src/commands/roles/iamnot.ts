@@ -5,7 +5,7 @@
 import { Permissions, Role, MessageEmbed } from 'discord.js';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
-import { specialEmbed } from '@lib/helpers/embed-helpers';
+import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 
 /**
  * Allows a member to unassign a role from themselves.
@@ -37,7 +37,7 @@ export default class IAmNotCommand extends Command {
 	 * @memberof IAmNotCommand
 	 */
 	public async run(msg: KlasaMessage, [roleName]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
-		const roleEmbed: MessageEmbed = specialEmbed(msg, 'role-manager');
+		const roleEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.RoleManager);
 		const guildAssignableRoles = msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);
 		let role: Role;
 

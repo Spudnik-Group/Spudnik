@@ -5,7 +5,7 @@
 import { stripIndents } from 'common-tags';
 import { GuildMember, MessageEmbed, Permissions } from 'discord.js';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
-import { specialEmbed } from '@lib/helpers/embed-helpers';
+import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 import { modLogMessage } from '@lib/helpers/custom-helpers';
 
 /**
@@ -37,7 +37,7 @@ export default class KickCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage, [member, reason]: [GuildMember, string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const memberToKick: GuildMember = member;
-		const kickEmbed: MessageEmbed = specialEmbed(msg, 'kick');
+		const kickEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Kick);
 
 		// Check if user is able to kick the mentioned user
 		if (!memberToKick.kickable || !(msg.member.roles.highest.comparePositionTo(memberToKick.roles.highest) > 0)) {

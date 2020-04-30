@@ -6,7 +6,7 @@ import { stripIndents } from 'common-tags';
 import { GuildMember, MessageEmbed } from 'discord.js';
 import { CommandStore, Command, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings, Warning } from '@lib/types/settings/GuildSettings';
-import { specialEmbed } from '@lib/helpers/embed-helpers';
+import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 
 /**
  * Warn a member of the guild.
@@ -36,7 +36,7 @@ export default class WarnCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage, [member, points, reason]: [GuildMember, number, string]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (points < 0) return msg.sendSimpleError('Points must be a positive number', 3000);
-		const warnEmbed: MessageEmbed = specialEmbed(msg, 'warn');
+		const warnEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Warn);
 		const guildWarnings = msg.guild.settings.get(GuildSettings.Warnings);
 
 		try {

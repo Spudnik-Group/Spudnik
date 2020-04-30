@@ -6,7 +6,7 @@ import { stripIndents } from 'common-tags';
 import { MessageEmbed, Permissions, User } from 'discord.js';
 import { modLogMessage } from '@lib/helpers/custom-helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
-import { specialEmbed } from '@lib/helpers/embed-helpers';
+import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 
 /**
  * Deletes previous messages.
@@ -62,7 +62,7 @@ export default class PruneCommand extends Command {
 		try {
 			await msg.channel.bulkDelete(messagesToDelete.reverse());
 			// Log the event in the mod log
-			const modlogEmbed: MessageEmbed = specialEmbed(msg, 'prune')
+			const modlogEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Prune)
 				.setDescription(stripIndents`
 					**Moderator:** ${msg.author.tag} (${msg.author.id})
 					**Action:** Prune

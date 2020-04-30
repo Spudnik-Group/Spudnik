@@ -6,7 +6,7 @@ import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
-import { specialEmbed } from '@lib/helpers/embed-helpers';
+import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 
 /**
  * Returns or sets the command prefix.
@@ -41,7 +41,7 @@ export default class PrefixCommand extends Command {
 	 * @memberof PrefixCommand
 	 */
 	public async run(msg: KlasaMessage, [prefix]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
-		const prefixEmbed: MessageEmbed = specialEmbed(msg, 'prefix');
+		const prefixEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Prefix);
 
 		// Just output the prefix
 		if (!prefix) {

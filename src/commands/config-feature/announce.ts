@@ -8,7 +8,7 @@ import { modLogMessage } from '@lib/helpers/custom-helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp, Possible } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 import { resolveChannel } from '@lib/helpers/base';
-import { specialEmbed } from '@lib/helpers/embed-helpers';
+import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 
 /**
  * Have the bot post an announcement to a pre-configured or specified channel.
@@ -50,8 +50,8 @@ export default class AnnounceCommand extends Command {
 	 */
 	public async direct(msg: KlasaMessage, [channel, text]: Array<string>): Promise<KlasaMessage | KlasaMessage[]> {
 		if (!text) throw new Error('Please include the text for the announcement.');
-		const announceEmbed = specialEmbed(msg, 'announcement');
-		const modlogEmbed = specialEmbed(msg, 'announcement');
+		const announceEmbed = specialEmbed(msg, specialEmbedTypes.Announcement);
+		const modlogEmbed = specialEmbed(msg, specialEmbedTypes.Announcement);
 		const announceChannel = (msg.guild.channels.get(resolveChannel(channel)) as TextChannel);
 
 		try {
@@ -86,7 +86,7 @@ export default class AnnounceCommand extends Command {
 	 * @memberof AnnounceCommand
 	 */
 	public async channel(msg: KlasaMessage, [channel]: string): Promise<KlasaMessage | KlasaMessage[]> {
-		const announceEmbed = specialEmbed(msg, 'announcement');
+		const announceEmbed = specialEmbed(msg, specialEmbedTypes.Announcement);
 		const announceChannel = msg.guild.settings.get(GuildSettings.Announce.Channel);
 		const channelID = msg.guild.channels.get(resolveChannel(channel)).id;
 
@@ -118,8 +118,8 @@ export default class AnnounceCommand extends Command {
 	 * @memberof AnnounceCommand
 	 */
 	public async send(msg: KlasaMessage, [text]: string): Promise<KlasaMessage | KlasaMessage[]> {
-		const announceEmbed = specialEmbed(msg, 'announcement');
-		const modlogEmbed = specialEmbed(msg, 'announcement');
+		const announceEmbed = specialEmbed(msg, specialEmbedTypes.Announcement);
+		const modlogEmbed = specialEmbed(msg, specialEmbedTypes.Announcement);
 		const announceChannel = (msg.guild.channels.get(msg.guild.settings.get(GuildSettings.Announce.Channel)) as TextChannel);
 
 		if (announceChannel) {

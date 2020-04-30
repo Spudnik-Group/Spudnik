@@ -6,7 +6,7 @@ import { stripIndents } from 'common-tags';
 import { MessageEmbed, Permissions } from 'discord.js';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
-import { specialEmbed } from '@lib/helpers/embed-helpers';
+import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 
 /**
  * Enable or disable the DeleteCommandMessages feature.
@@ -40,7 +40,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 	 */
 	public async on(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const deleteCommandMessagesEnabled = msg.guild.settings.get(GuildSettings.Commands.DeleteCommandMessages);
-		const deleteCommandMessagesEmbed: MessageEmbed = specialEmbed(msg, 'delete-command-messages');
+		const deleteCommandMessagesEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.DeleteCommandMessages);
 
 		if (deleteCommandMessagesEnabled) {
 			return msg.sendSimpleEmbed('DeleteCommandMessages feature already enabled!', 3000);
@@ -70,7 +70,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 	 */
 	public async off(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const deleteCommandMessagesEnabled = msg.guild.settings.get(GuildSettings.Commands.DeleteCommandMessages);
-		const deleteCommandMessagesEmbed: MessageEmbed = specialEmbed(msg, 'delete-command-messages');
+		const deleteCommandMessagesEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.DeleteCommandMessages);
 
 		if (deleteCommandMessagesEnabled) {
 			try {

@@ -7,7 +7,7 @@ import { MessageEmbed, Role, Permissions } from 'discord.js';
 import { modLogMessage } from '@lib/helpers/custom-helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
-import { specialEmbed } from '@lib/helpers/embed-helpers';
+import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 
 /**
  * Manage setting a mute role.
@@ -43,7 +43,7 @@ export default class MuteRoleCommand extends Command {
 	 * @memberof RoleManagementCommands
 	 */
 	public async run(msg: KlasaMessage, [role]: [Role]): Promise<KlasaMessage | KlasaMessage[]> {
-		const roleEmbed = specialEmbed(msg, 'role-manager');
+		const roleEmbed = specialEmbed(msg, specialEmbedTypes.RoleManager);
 		const guildMuteRole = await msg.guild.roles.fetch(msg.guild.settings.get(GuildSettings.Roles.Muted));
 
 		if (role) {

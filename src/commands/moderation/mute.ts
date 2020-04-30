@@ -7,7 +7,7 @@ import { MessageEmbed, Permissions, GuildMember } from 'discord.js';
 import { modLogMessage } from '@lib/helpers/custom-helpers';
 import { stripIndents } from 'common-tags';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
-import { specialEmbed } from '@lib/helpers/embed-helpers';
+import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 
 export default class MuteCommand extends Command {
 
@@ -22,7 +22,7 @@ export default class MuteCommand extends Command {
 	}
 
 	public async run(msg: KlasaMessage, [member, reason, when]: [GuildMember, string, string]): Promise<KlasaMessage | KlasaMessage[]> {
-		const muteEmbed: MessageEmbed = specialEmbed(msg, 'mute');
+		const muteEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Mute);
 
 		// Check if user is able to mute the mentioned user
 		if (member.roles.highest.position >= msg.member.roles.highest.position) {

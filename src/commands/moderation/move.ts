@@ -6,7 +6,7 @@ import { GuildMember, Message, MessageEmbed, TextChannel, Permissions, MessageAt
 import { modLogMessage } from '@lib/helpers/custom-helpers';
 import { stripIndents } from 'common-tags';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-import { baseEmbed, specialEmbed } from '@lib/helpers/embed-helpers';
+import { baseEmbed, specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 
 /**
  * Moves messages to different channels.
@@ -88,7 +88,7 @@ export default class MoveCommand extends Command {
 				await originalMessage.delete();
 
 				// Log the event in the mod log
-				const moveModMessage: MessageEmbed = specialEmbed(msg, 'move')
+				const moveModMessage: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Move)
 					.setDescription(stripIndents`
 						**Moderator:** ${msg.author.tag} (${msg.author.id})
 						**Member:** ${originalMessageAuthor.user.tag} (${originalMessageAuthor.id})

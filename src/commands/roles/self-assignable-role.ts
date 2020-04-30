@@ -7,7 +7,7 @@ import { MessageEmbed, Role } from 'discord.js';
 import { modLogMessage } from '@lib/helpers/custom-helpers';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
-import { specialEmbed } from '@lib/helpers/embed-helpers';
+import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 
 /**
  * Manage self-assignable roles.
@@ -42,7 +42,7 @@ export default class SelfAssignableRoleCommand extends Command {
 	 * @memberof SelfAssignableRolesCommand
 	 */
 	public async add(msg: KlasaMessage, [role]: [Role]): Promise<KlasaMessage | KlasaMessage[]> {
-		const roleEmbed = specialEmbed(msg, 'role-manager');
+		const roleEmbed = specialEmbed(msg, specialEmbedTypes.RoleManager);
 		const guildAssignableRoles: string[] = msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);
 
 		if (guildAssignableRoles.includes(role.id)) {
@@ -65,7 +65,7 @@ export default class SelfAssignableRoleCommand extends Command {
 	}
 
 	public async remove(msg: KlasaMessage, [role]: [Role]): Promise<KlasaMessage | KlasaMessage[]> {
-		const roleEmbed = specialEmbed(msg, 'role-manager');
+		const roleEmbed = specialEmbed(msg, specialEmbedTypes.RoleManager);
 		const guildAssignableRoles: string[] = msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);
 
 		if (!guildAssignableRoles.includes(role.id)) {

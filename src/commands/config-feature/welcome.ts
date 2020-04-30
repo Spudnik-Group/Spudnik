@@ -9,7 +9,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
 import { basicFeatureContent } from '@lib/helpers/resolvers';
 import { modLogMessage } from '@lib/helpers/custom-helpers';
 import { resolveChannel } from '@lib/helpers/base';
-import { specialEmbed } from '@lib/helpers/embed-helpers';
+import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 
 /**
  * Manage notifications when someone joins the guild.
@@ -49,7 +49,7 @@ export default class WelcomeCommand extends Command {
 	 * @memberof WelcomeCommand
 	 */
 	public async message(msg: KlasaMessage, [content]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
-		const welcomeEmbed = specialEmbed(msg, 'welcome');
+		const welcomeEmbed = specialEmbed(msg, specialEmbedTypes.Welcome);
 
 		try {
 			await msg.guild.settings.update(GuildSettings.Welcome.Message, content);
@@ -77,7 +77,7 @@ export default class WelcomeCommand extends Command {
 	 * @memberof WelcomeCommand
 	 */
 	public async channel(msg: KlasaMessage, [content]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
-		const welcomeEmbed = specialEmbed(msg, 'welcome');
+		const welcomeEmbed = specialEmbed(msg, specialEmbedTypes.Welcome);
 		const welcomeChannel = msg.guild.settings.get(GuildSettings.Welcome.Channel);
 		const channelID = msg.guild.channels.get(resolveChannel(content)).id;
 
@@ -109,7 +109,7 @@ export default class WelcomeCommand extends Command {
 	 * @memberof WelcomeCommand
 	 */
 	public async on(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const welcomeEmbed = specialEmbed(msg, 'welcome');
+		const welcomeEmbed = specialEmbed(msg, specialEmbedTypes.Welcome);
 		const welcomeChannel = msg.guild.settings.get(GuildSettings.Welcome.Channel);
 		const welcomeEnabled = msg.guild.settings.get(GuildSettings.Welcome.Enabled);
 
@@ -145,7 +145,7 @@ export default class WelcomeCommand extends Command {
 	 * @memberof WelcomeCommand
 	 */
 	public async off(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const welcomeEmbed = specialEmbed(msg, 'welcome');
+		const welcomeEmbed = specialEmbed(msg, specialEmbedTypes.Welcome);
 		const welcomeEnabled = msg.guild.settings.get(GuildSettings.Welcome.Enabled);
 
 		if (welcomeEnabled) {
@@ -176,7 +176,7 @@ export default class WelcomeCommand extends Command {
 	 * @memberof WelcomeCommand
 	 */
 	public async status(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const welcomeEmbed = specialEmbed(msg, 'welcome');
+		const welcomeEmbed = specialEmbed(msg, specialEmbedTypes.Welcome);
 		const welcomeChannel = msg.guild.settings.get(GuildSettings.Welcome.Channel);
 		const welcomeMessage = msg.guild.settings.get(GuildSettings.Welcome.Message);
 		const welcomeEnabled = msg.guild.settings.get(GuildSettings.Welcome.Enabled);
