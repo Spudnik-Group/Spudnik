@@ -4,7 +4,7 @@
 
 import { MessageEmbed } from 'discord.js';
 import axios from 'axios';
-import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { Command, CommandStore, KlasaMessage, ReactionHandler, RichMenu } from 'klasa';
 import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 /**
@@ -44,48 +44,38 @@ export default class CocktailCommand extends Command {
 		try {
 			const { data: response } = await axios(queryURL);
 
-			if (typeof response !== 'undefined' && response.drinks !== null) {
-				const result = response.drinks[0];
-				const ingredients = this.findSimilarProps(result, 'strIngredient');
-				const ratios = this.findSimilarProps(result, 'strMeasure');
+			if (response && response.drinks) {
+				let result;
 
-				if (result.strInstructions) {
-					if (result.strGlass) {
-						cocktailEmbed.addField(
-							'Glass:',
-							result.strGlass,
-							true
-						);
+				if (response.drinks.length > 1) {
+					// build RichMenu
+					const menu: RichMenu = new RichMenu(baseEmbed(msg)
+						.setAuthor(
+							'CocktailDB',
+							'https://emojipedia-us.s3.amazonaws.com/thumbs/240/twitter/103/cocktail-glass_1f378.png',
+							'http://www.thecocktaildb.com/'
+						)
+						.setDescription('Use the arrow reactions to scroll between pages.\nUse number reactions to select an option.'));
+
+					response.drinks.forEach((item: any) => {
+						menu.addOption(item.strDrink, `Glass: ${item.strGlass}`);
+					});
+
+					const collector: ReactionHandler = await menu.run(await msg.send('Taking a look at the bar...'));
+
+					// wait for selection
+					const choice: number = await collector.selection;
+					if (choice === null || choice === undefined) {
+						await collector.message.delete();
+						return;
 					}
 
-					if (ingredients) {
-						let ingredientsList = '';
-						ingredients.forEach((value: any, index: number) => {
-							if (value !== '' && value !== '\n' && value !== null) {
-								if (ratios[index] !== '' && ratios[index] !== '\n' && ratios[index] !== null) {
-									ingredientsList += `* ${value} - ${ratios[index]}\n`;
-								} else {
-									ingredientsList += `* ${value}\n`;
-								}
-							}
-						});
-						cocktailEmbed.addField(
-							'Ingredients:',
-							ingredientsList,
-							true
-						);
-					}
-
-					cocktailEmbed.addField(
-						'Instructions:',
-						result.strInstructions
-					);
-
-					cocktailEmbed.setTitle(`__${result.strDrink}__`);
-					cocktailEmbed.setThumbnail(result.strDrinkThumb ? `${result.strDrinkThumb}/preview` : 'https://emojipedia-us.s3.amazonaws.com/thumbs/240/twitter/103/tropical-drink_1f379.png');
+					result = response.drinks[choice];
 				} else {
-					cocktailEmbed.setDescription(`${response.data.drinks[0].strDrink} is a good drink, but I don't have a good way to describe it.`);
+					result = response.drinks.shift();
 				}
+
+				this.buildEmbed(cocktailEmbed, result);
 			} else {
 				cocktailEmbed.setDescription("Damn, I've never heard of that. Where do I need to go to find it?");
 			}
@@ -101,6 +91,45 @@ export default class CocktailCommand extends Command {
 
 	private findSimilarProps(obj: any, propName: string): string[] {
 		return Object.keys(obj).filter((k: string) => k.startsWith(propName)).map((key: string) => obj[key]);
+	}
+
+	private buildEmbed(embed: MessageEmbed, result: any): void {
+		const ingredients = this.findSimilarProps(result, 'strIngredient');
+		const ratios = this.findSimilarProps(result, 'strMeasure');
+
+		if (result.strGlass) {
+			embed.addField(
+				'Glass:',
+				result.strGlass,
+				true
+			);
+		}
+
+		if (ingredients) {
+			let ingredientsList = '';
+			ingredients.forEach((value: any, index: number) => {
+				if (value !== '' && value !== '\n' && value !== null) {
+					if (ratios[index] !== '' && ratios[index] !== '\n' && ratios[index] !== null) {
+						ingredientsList += `* ${value} - ${ratios[index]}\n`;
+					} else {
+						ingredientsList += `* ${value}\n`;
+					}
+				}
+			});
+			embed.addField(
+				'Ingredients:',
+				ingredientsList,
+				true
+			);
+		}
+
+		embed.addField(
+			'Instructions:',
+			result.strInstructions
+		);
+
+		embed.setTitle(`__${result.strDrink}__`);
+		embed.setThumbnail(result.strDrinkThumb ? `${result.strDrinkThumb}/preview` : 'https://emojipedia-us.s3.amazonaws.com/thumbs/240/twitter/103/tropical-drink_1f379.png');
 	}
 
 }
