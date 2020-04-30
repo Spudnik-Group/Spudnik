@@ -32,8 +32,7 @@ Client.defaultGuildSchema
 		.add('role', 'Role')
 		.add('welcome', (folder2: SchemaFolder) => folder2
 			.add('enabled', 'boolean')
-			.add('message', 'string', { 'default': '' })
-		)
+			.add('message', 'string', { 'default': '' }))
 		.add('messages', 'any', { array: true }))
 	.add('embedColor', 'string', { 'default': '555555' })
 	.add('language', 'Language', { 'default': 'en-US' })
