@@ -4,7 +4,7 @@
 
 import { MessageEmbed } from 'discord.js';
 import * as WikiJS from 'wikijs';
-import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { Command, CommandStore, KlasaMessage, ReactionHandler, RichMenu } from 'klasa';
 import { baseEmbed } from '@lib/helpers/embed-helpers';
 import { shorten } from '@lib/utils/util';
 
@@ -35,35 +35,64 @@ export default class WikiCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage, [query]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		try {
-			const data: any = query ? await WikiJS.default().search(query, 1) : WikiJS.default().random();
-			const page: any = await WikiJS.default().page(data.results[0]);
-			const summary: string = await page.summary();
+			const data: any = query ? await WikiJS.default().search(query, 5) : await WikiJS.default().random();
+			let result;
 
-			const messageOut: MessageEmbed = baseEmbed(msg);
+			if (data.results) {
+				// build RichMenu
+				const menu: RichMenu = new RichMenu(baseEmbed(msg)
+					.setFooter(`Powered by WikiJS and Wikipedia`, 'https://raw.githubusercontent.com/dijs/wiki/HEAD/img/wikijs.png')
+					.setDescription('Use the arrow reactions to scroll between pages.\nUse number reactions to select an option.'));
 
-			const sumText = summary.split('\n');
-			let paragraph = sumText.shift();
+				data.results.forEach((item: any) => {
+					menu.addOption(item, '-');
+				});
 
-			if (paragraph) {
-				// Wikipedia API Limitation:
-				// IPA phonetics are not returned in the summary but the parenthesis that they are encapsulated in are...
-				paragraph = paragraph.replace(' ()', '').replace('()', '');
-				messageOut.setDescription(`${shorten(paragraph)}...`);
+				const collector: ReactionHandler = await menu.run(await msg.send('Taking a look in the database...'));
 
-				const thumbnail = await page.mainImage();
-				messageOut.setThumbnail(thumbnail || 'https://i.imgur.com/fnhlGh5.png');
-				messageOut.setFooter(`Read More: ${page.raw.fullurl}\n\nPowered by WikiJS and Wikipedia`, 'https://raw.githubusercontent.com/dijs/wiki/HEAD/img/wikijs.png');
-				messageOut.setTitle(page.raw.title);
+				// wait for selection
+				const choice: number = await collector.selection;
+				if (choice === null || choice === undefined) {
+					await collector.message.delete();
+					return;
+				}
+
+				result = data.results[choice];
 			} else {
-				messageOut.setDescription('No results. Try again?');
+				result = data.shift();
 			}
 
+			const page: any = await WikiJS.default().page(result);
+			const embed: MessageEmbed = baseEmbed(msg);
+
+			await this.buildEmbed(embed, page);
+
 			// Send the success response
-			return msg.sendEmbed(messageOut);
+			return msg.sendEmbed(embed);
 		} catch (err) {
 			msg.client.emit('warn', `Error in command ref:wiki: ${err}`);
 
 			return msg.sendSimpleError('There was an error with the request. Try again?', 3000);
+		}
+	}
+
+	private async buildEmbed(embed: MessageEmbed, page: any): Promise<void> {
+		const summary: string = await page.summary();
+		const sumText = summary.split('\n');
+		let paragraph = sumText.shift();
+
+		if (paragraph) {
+			// Wikipedia API Limitation:
+			// IPA phonetics are not returned in the summary but the parenthesis that they are encapsulated in are...
+			paragraph = paragraph.replace(' ()', '').replace('()', '');
+			embed
+				.setDescription(`${shorten(paragraph)}...`)
+				.setThumbnail(await page.mainImage() || 'https://i.imgur.com/fnhlGh5.png')
+				.addField('Read More:', page.raw.fullurl)
+				.setFooter(`Powered by WikiJS and Wikipedia`, 'https://raw.githubusercontent.com/dijs/wiki/HEAD/img/wikijs.png')
+				.setTitle(page.raw.title);
+		} else {
+			embed.setDescription('No results. Try again?');
 		}
 	}
 

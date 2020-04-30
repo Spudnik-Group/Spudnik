@@ -4,7 +4,7 @@
 
 import { oneLine } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { Command, CommandStore, KlasaMessage, RichMenu, ReactionHandler } from 'klasa';
 import { SpudConfig } from '@lib/config';
 import * as mw from 'mw-dict';
 import { baseEmbed } from '@lib/helpers/embed-helpers';
@@ -47,28 +47,40 @@ export default class DefineCommand extends Command {
 			.setFooter(
 				'powered by Merriam-Webster\'s Collegiate® Dictionary',
 				'http://www.dictionaryapi.com/images/info/branding-guidelines/mw-logo-light-background-50x50.png'
-			)
-			.setTitle(`Definition Result: ${word}`);
+			);
 
 		try {
-			const result = await dict.lookup(word);
-			if (result[0].functional_label) {
-				dictionaryEmbed.addField('Functional Label:', result[0].functional_label);
+			const results = await dict.lookup(word);
+			let result;
+
+			if (results.length > 1) {
+				// build RichMenu
+				const menu: RichMenu = new RichMenu(baseEmbed(msg)
+					.setFooter(
+						'powered by Merriam-Webster\'s Collegiate® Dictionary',
+						'http://www.dictionaryapi.com/images/info/branding-guidelines/mw-logo-light-background-50x50.png'
+					)
+					.setDescription('Use the arrow reactions to scroll between pages.\nUse number reactions to select an option.'));
+
+				results.forEach((item: any) => {
+					menu.addOption(item.word, shorten(this.renderDefinition(item.definition), 50));
+				});
+
+				const collector: ReactionHandler = await menu.run(await msg.send('Flipping through Webster\'s Collegiate Dictionary...'));
+
+				// wait for selection
+				const choice: number = await collector.selection;
+				if (choice === null || choice === undefined) {
+					await collector.message.delete();
+					return;
+				}
+
+				result = results[choice];
+			} else {
+				result = results.shift();
 			}
 
-			if (result[0].pronunciation[0]) {
-				dictionaryEmbed.addField('Pronunciation:', result[0].pronunciation[0]);
-			}
-
-			if (result[0].etymology) {
-				dictionaryEmbed.addField('Etymology:', result[0].etymology);
-			}
-
-			if (result[0].popularity) {
-				dictionaryEmbed.addField('Popularity:', result[0].popularity);
-			}
-
-			dictionaryEmbed.setDescription(shorten(this.renderDefinition(result[0].definition)));
+			this.buildEmbed(dictionaryEmbed, result);
 
 			// Send the success response
 			return msg.sendEmbed(dictionaryEmbed);
@@ -89,6 +101,28 @@ export default class DefineCommand extends Command {
 				${def.senses && def.senses.length ? this.renderDefinition(def.senses) : ''}
 			`)
 			.join('\n');
+	}
+
+	private buildEmbed(embed: MessageEmbed, result: any): void {
+		if (result.functional_label) {
+			embed.addField('Functional Label:', result.functional_label);
+		}
+
+		if (result.pronunciation[0]) {
+			embed.addField('Pronunciation:', result.pronunciation[0]);
+		}
+
+		if (result.etymology) {
+			embed.addField('Etymology:', result.etymology);
+		}
+
+		if (result.popularity) {
+			embed.addField('Popularity:', result.popularity);
+		}
+
+		embed
+			.setDescription(shorten(this.renderDefinition(result.definition)))
+			.setTitle(`Definition Result: ${result.word}`);
 	}
 
 }
