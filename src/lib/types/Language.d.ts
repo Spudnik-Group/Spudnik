@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import { SchemaEntry } from 'klasa';
-import { StatsGeneral, StatsUptime, StatsUsage } from '@root/commands/utility/stats';
+import { StatsGeneral, StatsUptime, StatsUsage } from '@root/commands/bot-info/stats';
 
 export interface LanguageKeys {
 	DEFAULT: (key: string) => string;

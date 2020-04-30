@@ -40,7 +40,7 @@ export default class ClearWarnsCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage, [member, reason]: [GuildMember, string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const warnEmbed: MessageEmbed = specialEmbed(msg, 'clear-warn');
-		const guildWarnings = await msg.guild.settings.get(GuildSettings.Warnings);
+		const guildWarnings = msg.guild.settings.get(GuildSettings.Warnings);
 
 		if (guildWarnings.length) {
 			// Warnings present for current guild

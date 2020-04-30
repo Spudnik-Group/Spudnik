@@ -78,7 +78,7 @@ export default class WelcomeCommand extends Command {
 	 */
 	public async channel(msg: KlasaMessage, [content]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const welcomeEmbed = specialEmbed(msg, 'welcome');
-		const welcomeChannel = await msg.guild.settings.get(GuildSettings.Welcome.Channel);
+		const welcomeChannel = msg.guild.settings.get(GuildSettings.Welcome.Channel);
 		const channelID = msg.guild.channels.get(resolveChannel(content)).id;
 
 		if (welcomeChannel && welcomeChannel === channelID) {
@@ -110,8 +110,8 @@ export default class WelcomeCommand extends Command {
 	 */
 	public async on(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const welcomeEmbed = specialEmbed(msg, 'welcome');
-		const welcomeChannel = await msg.guild.settings.get(GuildSettings.Welcome.Channel);
-		const welcomeEnabled = await msg.guild.settings.get(GuildSettings.Welcome.Enabled);
+		const welcomeChannel = msg.guild.settings.get(GuildSettings.Welcome.Channel);
+		const welcomeEnabled = msg.guild.settings.get(GuildSettings.Welcome.Enabled);
 
 		if (welcomeChannel) {
 			if (welcomeEnabled) {
@@ -146,7 +146,7 @@ export default class WelcomeCommand extends Command {
 	 */
 	public async off(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const welcomeEmbed = specialEmbed(msg, 'welcome');
-		const welcomeEnabled = await msg.guild.settings.get(GuildSettings.Welcome.Enabled);
+		const welcomeEnabled = msg.guild.settings.get(GuildSettings.Welcome.Enabled);
 
 		if (welcomeEnabled) {
 			try {
@@ -177,9 +177,9 @@ export default class WelcomeCommand extends Command {
 	 */
 	public async status(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const welcomeEmbed = specialEmbed(msg, 'welcome');
-		const welcomeChannel = await msg.guild.settings.get(GuildSettings.Welcome.Channel);
-		const welcomeMessage = await msg.guild.settings.get(GuildSettings.Welcome.Message);
-		const welcomeEnabled = await msg.guild.settings.get(GuildSettings.Welcome.Enabled);
+		const welcomeChannel = msg.guild.settings.get(GuildSettings.Welcome.Channel);
+		const welcomeMessage = msg.guild.settings.get(GuildSettings.Welcome.Message);
+		const welcomeEnabled = msg.guild.settings.get(GuildSettings.Welcome.Enabled);
 
 		// Set up embed message
 		welcomeEmbed.setDescription(stripIndents`

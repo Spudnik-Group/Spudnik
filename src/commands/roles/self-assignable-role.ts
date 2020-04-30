@@ -16,7 +16,7 @@ import { specialEmbed } from '@lib/helpers/embed-helpers';
  * @class SelfAssignableRoleCommand
  * @extends {Command}
  */
-export default class SelfAssignableRolesCommand extends Command {
+export default class SelfAssignableRoleCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -24,7 +24,7 @@ export default class SelfAssignableRolesCommand extends Command {
 				'sar'
 			],
 			description: 'Used to configure the self-assignable roles feature.',
-			name: 'self-assignable-roles',
+			name: 'self-assignable-role',
 			permissionLevel: 2,
 			subcommands: true,
 			usage: '<add|remove> <role:role>'
@@ -43,7 +43,7 @@ export default class SelfAssignableRolesCommand extends Command {
 	 */
 	public async add(msg: KlasaMessage, [role]: [Role]): Promise<KlasaMessage | KlasaMessage[]> {
 		const roleEmbed = specialEmbed(msg, 'role-manager');
-		const guildAssignableRoles: string[] = await msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);
+		const guildAssignableRoles: string[] = msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);
 
 		if (guildAssignableRoles.includes(role.id)) {
 			return msg.sendSimpleError(`${role.name} is already in the list of assignable roles for this guild.`, 3000);
@@ -66,7 +66,7 @@ export default class SelfAssignableRolesCommand extends Command {
 
 	public async remove(msg: KlasaMessage, [role]: [Role]): Promise<KlasaMessage | KlasaMessage[]> {
 		const roleEmbed = specialEmbed(msg, 'role-manager');
-		const guildAssignableRoles: string[] = await msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);
+		const guildAssignableRoles: string[] = msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);
 
 		if (!guildAssignableRoles.includes(role.id)) {
 			return msg.sendSimpleError(`Could not find role with name ${role.name} in the list of assignable roles for this guild.`, 3000);

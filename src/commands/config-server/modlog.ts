@@ -73,7 +73,7 @@ export default class ModlogCommand extends Command {
 
 	public async off(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const modlogEmbed: MessageEmbed = specialEmbed(msg, 'modlog');
-		const modlogEnabled = await msg.guild.settings.get(GuildSettings.Modlog.Enabled);
+		const modlogEnabled = msg.guild.settings.get(GuildSettings.Modlog.Enabled);
 
 		if (modlogEnabled) {
 			try {
@@ -97,7 +97,7 @@ export default class ModlogCommand extends Command {
 
 	public async channel(msg: KlasaMessage, [channel]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const modlogEmbed: MessageEmbed = specialEmbed(msg, 'modlog');
-		const modlogChannel = await msg.guild.settings.get(GuildSettings.Modlog.Channel);
+		const modlogChannel = msg.guild.settings.get(GuildSettings.Modlog.Channel);
 
 		if (channel) {
 			const channelID = msg.guild.channels.get(channel).id;
@@ -135,8 +135,8 @@ export default class ModlogCommand extends Command {
 	 */
 	public async status(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const modlogEmbed: MessageEmbed = specialEmbed(msg, 'modlog');
-		const modlogChannel = await msg.guild.settings.get(GuildSettings.Modlog.Channel);
-		const modlogEnabled = await msg.guild.settings.get(GuildSettings.Modlog.Enabled);
+		const modlogChannel = msg.guild.settings.get(GuildSettings.Modlog.Channel);
+		const modlogEnabled = msg.guild.settings.get(GuildSettings.Modlog.Enabled);
 
 		// Set up embed message
 		modlogEmbed.setDescription(stripIndents`Modlog feature: ${modlogEnabled ? '_Enabled_' : '_Disabled_'}

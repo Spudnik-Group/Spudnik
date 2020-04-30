@@ -78,7 +78,7 @@ export default class GoodbyeCommand extends Command {
 	 */
 	public async channel(msg: KlasaMessage, [content]: string): Promise<KlasaMessage | KlasaMessage[]> {
 		const goodbyeEmbed = specialEmbed(msg, 'goodbye');
-		const goodbyeChannel = await msg.guild.settings.get(GuildSettings.Goodbye.Channel);
+		const goodbyeChannel = msg.guild.settings.get(GuildSettings.Goodbye.Channel);
 		const channelID = msg.guild.channels.get(resolveChannel(content)).id;
 
 		if (goodbyeChannel && goodbyeChannel === channelID) {
@@ -110,8 +110,8 @@ export default class GoodbyeCommand extends Command {
 	 */
 	public async on(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const goodbyeEmbed = specialEmbed(msg, 'goodbye');
-		const goodbyeChannel = await msg.guild.settings.get(GuildSettings.Goodbye.Channel);
-		const goodbyeEnabled = await msg.guild.settings.get(GuildSettings.Goodbye.Enabled);
+		const goodbyeChannel = msg.guild.settings.get(GuildSettings.Goodbye.Channel);
+		const goodbyeEnabled = msg.guild.settings.get(GuildSettings.Goodbye.Enabled);
 
 		if (goodbyeChannel) {
 			if (goodbyeEnabled) {
@@ -146,7 +146,7 @@ export default class GoodbyeCommand extends Command {
 	 */
 	public async off(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const goodbyeEmbed = specialEmbed(msg, 'goodbye');
-		const goodbyeEnabled = await msg.guild.settings.get(GuildSettings.Goodbye.Enabled);
+		const goodbyeEnabled = msg.guild.settings.get(GuildSettings.Goodbye.Enabled);
 
 		if (goodbyeEnabled) {
 			try {

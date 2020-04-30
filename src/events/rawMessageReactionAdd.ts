@@ -17,41 +17,29 @@ export default class extends Event {
 		if (!event.guild_id) return; // Ignore non-guild events
 
 		const guild: Guild = await this.client.guilds.get(event.guild_id);
-		const channel: GuildChannel = await guild.channels.get(event.channel_id);
-
 		if (SpudConfig.botListGuilds.includes(guild.id)) return; // Guild is on Blacklist, ignore.
+
+		const starboardEnabled: boolean = await guild.settings.get(GuildSettings.Starboard.Enabled);
+		const starboardChannel = await guild.settings.get(GuildSettings.Starboard.Channel);
+		const starboard: GuildChannel = await guild.channels.get(starboardChannel);
+		if (!starboardEnabled || !starboard || !starboardChannel) return; // Ignore if starboard isn't set up
+
+		const channel: GuildChannel = await guild.channels.get(event.channel_id);
 		if ((channel as TextChannel).nsfw) return; // Ignore NSFW channels
-		if (!(channel as TextChannel).permissionsFor(this.client.user.id).has('READ_MESSAGE_HISTORY')) return; // Bot doesn't have the right permissions to retrieve the message
+		if (starboard === channel) return; // Can't star items in starboard channel
 
-		const message: Message = await (channel as TextChannel).messages.fetch(event.message_id);
-		const starboardEnabled: boolean = guild.settings.get(GuildSettings.Starboard.Enabled);
-
+		const message: Message = await (channel as TextChannel).messages.fetch(event.message_id, false);
 		if (message.author.id === event.user_id) return; // You can't star your own messages
 		if (message.author.bot) return; // You can't star bot messages
-		if (!starboardEnabled) return; // Ignore if starboard isn't set up
 
 		const currentEmojiKey: any = (event.emoji.id) ? `${event.emoji.name}:${event.emoji.id}` : event.emoji.name;
-		const starboardTrigger: string = guild.settings.get(GuildSettings.Starboard.Trigger);
+		const emojiRegex = /(?:[\u2700-\u27bf]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff]|[\u0023-\u0039]\ufe0f?\u20e3|\u3299|\u3297|\u303d|\u3030|\u24c2|\ud83c[\udd70-\udd71]|\ud83c[\udd7e-\udd7f]|\ud83c\udd8e|\ud83c[\udd91-\udd9a]|\ud83c[\udde6-\uddff]|[\ud83c[\ude01-\ude02]|\ud83c\ude1a|\ud83c\ude2f|[\ud83c[\ude32-\ude3a]|[\ud83c[\ude50-\ude51]|\u203c|\u2049|[\u25aa-\u25ab]|\u25b6|\u25c0|[\u25fb-\u25fe]|\u00a9|\u00ae|\u2122|\u2139|\ud83c\udc04|[\u2600-\u26FF]|\u2b05|\u2b06|\u2b07|\u2b1b|\u2b1c|\u2b50|\u2b55|\u231a|\u231b|\u2328|\u23cf|[\u23e9-\u23f3]|[\u23f8-\u23fa]|\ud83c\udccf|\u2934|\u2935|[\u2190-\u21ff])/g;
+		if (!currentEmojiKey.match(emojiRegex)) return; // We don't support any emojis outside of the normal unicode ones
+		const starboardTrigger: string = await guild.settings.get(GuildSettings.Starboard.Trigger);
 
 		// Check for starboard reaction
 		if (starboardTrigger === currentEmojiKey) {
-			const starboardChannel = guild.settings.get(GuildSettings.Starboard.Channel);
-			const starboard: GuildChannel = guild.channels.get(starboardChannel);
-
-			if (!starboard || !starboardChannel) return; // Ignore if starboard isn't set up
-			if (starboard === channel) return; // Can't star items in starboard channel
-			if (!starboard.permissionsFor(this.client.user.id).has('SEND_MESSAGES')
-				|| !starboard.permissionsFor(this.client.user.id).has('EMBED_LINKS')
-				|| !starboard.permissionsFor(this.client.user.id).has('ATTACH_FILES')) {
-				// Bot doesn't have the right permissions in the starboard channel
-				// TODO: add a modlog error message here, this shouldn't silently fail
-				return;
-			}
-
-			const reaction = message.reactions.get(currentEmojiKey);
-			const starboardMessages = await (starboard as TextChannel).messages.fetch({ limit: 100 });
-
-			const stars = reaction.count;
+			const reactions = await message.reactions.get(currentEmojiKey);
 			const starboardEmbed: MessageEmbed = new MessageEmbed()
 				.setAuthor(message.guild.name, message.guild.iconURL())
 				.setThumbnail(message.author.displayAvatarURL())
@@ -60,10 +48,13 @@ export default class extends Event {
 				.addField('Jump', `[Link](${message.url})`, true)
 				.setColor(guild.settings.get(GuildSettings.EmbedColor))
 				.setTimestamp(message.createdTimestamp)
-				.setFooter(`⭐ ${stars} | ${message.id} `);
+				.setFooter(`⭐ ${reactions.count} | ${message.id} `);
 
 			if (message.content.length > 1) starboardEmbed.addField('Message', message.content); // Add message
+			// TODO: fix this? forcing type casting as any seems really shitty
 			if (message.attachments.size > 0) starboardEmbed.setImage((message.attachments as any).first().attachment); // Add attachments
+
+			const starboardMessages = await (starboard as TextChannel).messages.fetch({ limit: 100 }, false);
 			// eslint-disable-next-line array-callback-return
 			const existingStar = starboardMessages.find((m: Message): boolean => {
 				// Need this filter if there are non-starboard posts in the starboard channel.
@@ -81,8 +72,6 @@ export default class extends Event {
 				existingStar.edit({ embed: starboardEmbed })
 					.catch((err: Error) => {
 						this.client.emit('warn', `Failed to edit starboard embed. Message ID: ${message.id}\nError: ${err}`);
-
-
 					});
 			} else {
 				// Fresh star, add to starboard

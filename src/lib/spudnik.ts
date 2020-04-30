@@ -36,10 +36,10 @@ export default class Spudnik extends Client {
 		console.log(chalk.blue('---Spudnik Stage 2 Engaged.---'));
 
 		this.login(SpudConfig.token).catch((err: any) => {
-			if(process.env.NODE_ENV === 'production') {
+			if (process.env.NODE_ENV === 'production') {
 				console.log(chalk.red(err));
 			}
-			
+
 			process.exit();
 		});
 	}

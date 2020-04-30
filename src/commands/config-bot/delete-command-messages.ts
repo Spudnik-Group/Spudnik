@@ -39,7 +39,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 	 * @memberof DeleteCommandMessagesCommand
 	 */
 	public async on(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const deleteCommandMessagesEnabled = await msg.guild.settings.get(GuildSettings.Commands.DeleteCommandMessages);
+		const deleteCommandMessagesEnabled = msg.guild.settings.get(GuildSettings.Commands.DeleteCommandMessages);
 		const deleteCommandMessagesEmbed: MessageEmbed = specialEmbed(msg, 'delete-command-messages');
 
 		if (deleteCommandMessagesEnabled) {
@@ -69,7 +69,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 	 * @memberof DeleteCommandMessagesCommand
 	 */
 	public async off(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const deleteCommandMessagesEnabled = await msg.guild.settings.get(GuildSettings.Commands.DeleteCommandMessages);
+		const deleteCommandMessagesEnabled = msg.guild.settings.get(GuildSettings.Commands.DeleteCommandMessages);
 		const deleteCommandMessagesEmbed: MessageEmbed = specialEmbed(msg, 'delete-command-messages');
 
 		if (deleteCommandMessagesEnabled) {

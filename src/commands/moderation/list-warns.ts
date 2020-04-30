@@ -43,7 +43,7 @@ export default class ListWarnsCommand extends Command {
 				'Warnings List',
 				'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/warning-sign_26a0.png'
 			);
-		const guildWarnings = await msg.guild.settings.get(GuildSettings.Warnings);
+		const guildWarnings = msg.guild.settings.get(GuildSettings.Warnings);
 
 		if (guildWarnings.length) {
 			// Warnings present for current guild

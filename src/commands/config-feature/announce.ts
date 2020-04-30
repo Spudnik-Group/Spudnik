@@ -87,7 +87,7 @@ export default class AnnounceCommand extends Command {
 	 */
 	public async channel(msg: KlasaMessage, [channel]: string): Promise<KlasaMessage | KlasaMessage[]> {
 		const announceEmbed = specialEmbed(msg, 'announcement');
-		const announceChannel = await msg.guild.settings.get(GuildSettings.Announce.Channel);
+		const announceChannel = msg.guild.settings.get(GuildSettings.Announce.Channel);
 		const channelID = msg.guild.channels.get(resolveChannel(channel)).id;
 
 		if (announceChannel && announceChannel === channelID) {
@@ -120,7 +120,7 @@ export default class AnnounceCommand extends Command {
 	public async send(msg: KlasaMessage, [text]: string): Promise<KlasaMessage | KlasaMessage[]> {
 		const announceEmbed = specialEmbed(msg, 'announcement');
 		const modlogEmbed = specialEmbed(msg, 'announcement');
-		const announceChannel = (msg.guild.channels.get(await msg.guild.settings.get(GuildSettings.Announce.Channel)) as TextChannel);
+		const announceChannel = (msg.guild.channels.get(msg.guild.settings.get(GuildSettings.Announce.Channel)) as TextChannel);
 
 		if (announceChannel) {
 			try {

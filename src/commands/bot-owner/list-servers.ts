@@ -46,7 +46,7 @@ export default class ListServersCommand extends Command {
 		for (let i = 0; i < noOfPages; i++) {
 			guilds = guilds.slice(i * 5, (i * 5) + 5);
 			display.addPage((template: MessageEmbed) => {
-				guilds.forEach((guild: Guild) => {
+				guilds.forEach(async (guild: Guild) => {
 					template.addField(
 						guild.name,
 						stripIndents`
@@ -56,7 +56,7 @@ export default class ListServersCommand extends Command {
 							**Bot Invited**: ${new Timestamp('MMMM d YYYY [at] HH:mm').display(guild.joinedTimestamp)}
 							**Owner**: ${guild.owner.user.tag} (${guild.ownerID})
 							**Region**: ${guild.region}
-							**Prefix**: ${msg.guildSettings.get(GuildSettings.Prefix) ? msg.guildSettings.get(GuildSettings.Prefix) : '!'}
+							**Prefix**: ${await guild.settings.get(GuildSettings.Prefix) ? await guild.settings.get(GuildSettings.Prefix) : '!'}
 		
 							--
 						`

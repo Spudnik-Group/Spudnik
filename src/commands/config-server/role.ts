@@ -89,7 +89,7 @@ export default class RoleCommand extends Command {
 	 */
 	public async remove(msg: KlasaMessage, [name]: [Role|string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const roleEmbed = specialEmbed(msg, 'role-manager');
-		const rolesFound: Collection<string, Role> = await msg.guild.roles.filter((role: Role) => role.name.toLocaleLowerCase() === (typeof name === 'string' ? name.toLocaleLowerCase() : name.name));
+		const rolesFound: Collection<string, Role> = msg.guild.roles.filter((role: Role) => role.name.toLocaleLowerCase() === (typeof name === 'string' ? name.toLocaleLowerCase() : name.name));
 
 		if (rolesFound.size > 1) {
 			const rolesFoundArray = rolesFound.array();

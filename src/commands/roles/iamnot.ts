@@ -38,7 +38,7 @@ export default class IAmNotCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage, [roleName]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const roleEmbed: MessageEmbed = specialEmbed(msg, 'role-manager');
-		const guildAssignableRoles = await msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);
+		const guildAssignableRoles = msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);
 		let role: Role;
 
 		if (typeof roleName === 'string') {

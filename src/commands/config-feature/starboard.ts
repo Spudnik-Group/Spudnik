@@ -32,7 +32,7 @@ export default class StarboardCommand extends Command {
 			`,
 			name: 'starboard',
 			permissionLevel: 6, // MANAGE_GUILD
-			requiredPermissions: [Permissions.FLAGS.EMBED_LINKS, Permissions.FLAGS.READ_MESSAGE_HISTORY, Permissions.FLAGS.ATTACH_FILES],
+			requiredPermissions: [Permissions.FLAGS.EMBED_LINKS, Permissions.FLAGS.READ_MESSAGE_HISTORY, Permissions.FLAGS.ATTACH_FILES, Permissions.FLAGS.MANAGE_MESSAGES],
 			subcommands: true,
 			usage: '<on|off|status|channel|trigger> (content:content)'
 		});
@@ -193,19 +193,6 @@ export default class StarboardCommand extends Command {
 			Channel set to: <#${starboard}>
 			Reaction Trigger set to: ${starboardTrigger}
 		`);
-
-		if (starboard) {
-			const botCanRead: boolean = msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('READ_MESSAGE_HISTORY');
-			const botCanPostLinks: boolean = msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('EMBED_LINKS');
-			const botCanPostAttachments: boolean = msg.guild.channels.get(starboard).permissionsFor(msg.client.user.id).has('ATTACH_FILES');
-
-			starboardEmbed.description += stripIndents`
-
-						Permissions:
-						* READ_MESSAGE_HISTORY: ${botCanRead}
-						* EMBED_LINKS: ${botCanPostLinks}
-						* ATTACH_FILES: ${botCanPostAttachments}`;
-		}
 
 		// Send the success response
 		return msg.sendEmbed(starboardEmbed);

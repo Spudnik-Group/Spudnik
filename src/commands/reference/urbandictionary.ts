@@ -4,12 +4,10 @@
 
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
-import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { Command, CommandStore, KlasaMessage, ReactionHandler, RichMenu } from 'klasa';
 import * as UD from 'urban-dictionary';
 import { baseEmbed } from '@lib/helpers/embed-helpers';
 import { shorten } from '@lib/utils/util';
-import { RichMenu } from 'klasa';
-import { ReactionHandler } from 'klasa';
 
 /**
  * Post an Urban Dictionary definition.

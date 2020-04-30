@@ -32,9 +32,9 @@ export default class RolesCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const roleEmbed: MessageEmbed = specialEmbed(msg, 'role-manager');
-		const guildAssignableRoles: string[] = await msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);
-		const guildDefaultRole: string = await msg.guild.settings.get(GuildSettings.Tos.Role);
-		const guildMutedRole: string = await msg.guild.settings.get(GuildSettings.Roles.Muted);
+		const guildAssignableRoles: string[] = msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);
+		const guildDefaultRole: string = msg.guild.settings.get(GuildSettings.Tos.Role);
+		const guildMutedRole: string = msg.guild.settings.get(GuildSettings.Roles.Muted);
 
 		if (guildAssignableRoles.length) {
 			const rolesListOut: string[] = [];

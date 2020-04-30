@@ -53,7 +53,7 @@ export default class AdblockCommand extends Command {
 	}
 
 	public async on(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const adblockEnabled = await msg.guild.settings.get(GuildSettings.AdblockEnabled);
+		const adblockEnabled = msg.guild.settings.get(GuildSettings.AdblockEnabled);
 		const adblockEmbed: MessageEmbed = specialEmbed(msg, 'adblock');
 
 		if (adblockEnabled) {
