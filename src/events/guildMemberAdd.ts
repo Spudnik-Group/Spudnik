@@ -7,6 +7,10 @@ import { SpudConfig } from '@lib//config/spud-config';
 import { TextChannel, GuildMember, Permissions } from 'discord.js';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 import { delay } from '@lib/utils/util';
+import { modLogMessage } from '@lib/helpers/custom-helpers';
+import { KlasaMessage } from 'klasa';
+import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
+import { stripIndents } from 'common-tags';
 
 export default class extends Event {
 
@@ -35,7 +39,7 @@ export default class extends Event {
 			}
 		}
 
-		if (tosWelcomeEnabled && tosWelcomeMessage && tosWelcomeChannel && tosRole) {
+		if (!!member.user.bot && tosWelcomeEnabled && tosWelcomeMessage && tosWelcomeChannel && tosRole) {
 			const message = tosWelcomeMessage.replace('{guild}', guild.name).replace('{user}', `<@${member.id}>`);
 			const channel = guild.channels.get(tosWelcomeChannel);
 			const role = guild.roles.get(tosRole);
@@ -58,9 +62,28 @@ export default class extends Event {
 					messageSent.reactions.removeAll().catch((err: any) => this.client.emit('warn', `There was an error trying to remove all reactions from a message; ${err}`));
 				}
 
+				const roleEmbed = specialEmbed(messageSent as KlasaMessage, specialEmbedTypes.RoleManager);
+
 				if (Boolean(reactions.size) && reactions.firstKey() === REACTIONS.YES) {
 					await member.roles.add(role.id);
 					await messageSent.delete();
+
+					roleEmbed.setDescription(stripIndents`
+						**Member:** ${messageSent.author.tag} (${messageSent.author.id})
+						**Action:** The default (TOS) role of <@&${role.id}> for the guild ${messageSent.guild.name} has been applied.
+					`);
+
+					await modLogMessage(messageSent as KlasaMessage, roleEmbed);
+				} else if (Boolean(reactions.size) && reactions.firstKey() === REACTIONS.NO) {
+					await member.kick('User did not accept TOS.');
+					await messageSent.delete();
+
+					roleEmbed.setDescription(stripIndents`
+						**Member:** ${messageSent.author.tag} (${messageSent.author.id})
+						**Action:** User did not accept TOS.
+					`);
+
+					await modLogMessage(messageSent as KlasaMessage, roleEmbed);
 				}
 			} else {
 				this.client.emit('warn', `There was an error trying to welcome a new guild member in ${guild}, the channel/role may no longer exist.`);
