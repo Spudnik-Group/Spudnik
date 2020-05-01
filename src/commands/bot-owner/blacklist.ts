@@ -24,7 +24,7 @@ export default class BlacklistCommand extends Command {
 			guarded: true,
 			hidden: true,
 			permissionLevel: 9, // BOT OWNER
-			usage: '<User:user|Guild:guild|guild:string> [...]'
+			usage: '<User:user|Guild:guild|GuildID:string{17,18}> [...]'
 		});
 	}
 
@@ -65,13 +65,13 @@ export default class BlacklistCommand extends Command {
 				}
 			}
 
-			await this.client.settings.update([['userBlacklist', queries[0]], ['guildBlacklist', queries[1]]]);
+			await this.client.settings.update([[ClientSettings.Blacklist.Users, queries[0]], [ClientSettings.Blacklist.Guilds, queries[1]]]);
 
 			return msg.sendLocale('COMMAND_BLACKLIST_SUCCESS', changes);
 		} catch (err) {
 			// Emit warn event for debugging
 			msg.client.emit('warn', stripIndents`
-				Error occurred in \`delete-command-messages\` command!
+				Error occurred in \`blacklist\` command!
 				**Server:** ${msg.guild.name} (${msg.guild.id})
 				**Author:** ${msg.author.tag} (${msg.author.id})
 				**Time:** ${new Timestamp('MMMM D YYYY [at] HH:mm:ss [UTC]Z').display(msg.createdTimestamp)}
