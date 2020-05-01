@@ -37,7 +37,7 @@ export default class FeedbackCommand extends Command {
 			
 			Make a [Feature Suggestion](<https://feathub.com/Spudnik-Group/Spudnik>)
 			File a [GitHub Issue](<https://github.com/Spudnik-Group/Spudnik/issues/new/choose>)
-			Email the Devs: comrades@spudnik.io
+			OR E-mail the Devs: comrades@spudnik.io
 		`);
 	}
 
