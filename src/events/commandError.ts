@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2020 Spudnik Group
+ */
+
 import { Event, KlasaMessage, Command } from 'klasa';
 
 export default class extends Event {
