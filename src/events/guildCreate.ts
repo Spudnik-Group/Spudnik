@@ -11,7 +11,7 @@ export default class extends Event {
 		if (!guild.available) return;
 		if (this.client.settings.get(ClientSettings.Blacklist.Guilds).includes(guild.id)) {
 			guild.leave();
-			this.client.emit('warn', `Blacklisted guild detected: ${guild.name} [${guild.id}]`);
+			this.client.emit('botOwnerLog', ['Blacklisted Guild Tried Adding The Bot', `Guild: ${guild.name} [${guild.id}]`]);
 		}
 	}
 

@@ -17,6 +17,7 @@ export const SpudConfig = {
 	debug: process.env.SPUD_DEBUG ? Boolean(process.env.SPUD_DEBUG) : false,
 	rollbarApiKey: process.env.SPUD_ROLLBARAPI || '',
 	issueLogChannel: process.env.SPUD_ISSUELOG || '',
+	botOwnerLogChannel: process.env.SPUD_OWNERLOG || '',
 	// Command-Specific API Keys
 	wolframApiKey: process.env.SPUD_WOLFRAMAPI || '',
 	tmdbAPIkey: process.env.SPUD_MOVIEDBAPI || '',
