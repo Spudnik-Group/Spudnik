@@ -39,6 +39,13 @@ export const KlasaConfig: KlasaClientOptions = {
 	restTimeOffset: 500,
 
 	/**
+	 * Settings Options
+	 */
+	settings: {
+		preserve: false
+	},
+
+	/**
 	 * Caching Options
 	 */
 	commandMessageLifetime: 1800,
