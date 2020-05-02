@@ -55,7 +55,8 @@ export default class SelfAssignableRoleCommand extends Command {
 			// Set up embed message
 			roleEmbed.setDescription(stripIndents`
 				**Member:** ${msg.author.tag} (${msg.author.id})
-				**Action:** Added role <@&${role.id}> to the list of assignable roles.
+				**Action:** Added role to the list of self-assignable roles
+				**Role:** ${role.name} (${role.id})
 			`);
 
 			return this.sendSuccess(msg, roleEmbed);
@@ -78,7 +79,8 @@ export default class SelfAssignableRoleCommand extends Command {
 			// Set up embed message
 			roleEmbed.setDescription(stripIndents`
 				**Member:** ${msg.author.tag} (${msg.author.id})
-				**Action:** Removed role <@&${role.id}> from the list of assignable roles.
+				**Action:** Removed role from the list of self-assignable roles
+				**Role:** ${role.name} (${role.id})
 			`);
 
 			return this.sendSuccess(msg, roleEmbed);

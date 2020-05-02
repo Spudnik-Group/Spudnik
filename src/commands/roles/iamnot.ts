@@ -6,6 +6,8 @@ import { Permissions, Role, MessageEmbed } from 'discord.js';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
+import { stripIndents } from 'common-tags';
+import { modLogMessage } from '@lib/helpers/custom-helpers';
 
 /**
  * Allows a member to unassign a role from themselves.
@@ -38,6 +40,7 @@ export default class IAmNotCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage, [roleName]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const roleEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.RoleManager);
+		const modlogEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.RoleManager);
 		const guildAssignableRoles = msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);
 		let role: Role;
 
@@ -51,12 +54,18 @@ export default class IAmNotCommand extends Command {
 			if (msg.member.roles.has(role.id)) {
 				await msg.member.roles.remove(role.id);
 
-				roleEmbed.setDescription(`<@${msg.member.id}>, you no longer have the ${role.name} role.`);
+				roleEmbed.setDescription(`<@${msg.member.id}>, you no longer have the <@&${role.id}> role.`);
+				modlogEmbed.setDescription(stripIndents`
+					**Member:** ${msg.member.user.tag} (${msg.member.id})
+					**Action:** self-removed role
+					**Role:** ${role.name} (${role.id})
+				`);
 
+				await modLogMessage(msg, modlogEmbed);
 				return msg.sendEmbed(roleEmbed);
 			}
 
-			return msg.sendSimpleError(`<@${msg.member.id}>, you do not have the role ${role.name}.`, 3000);
+			return msg.sendSimpleError(`<@${msg.member.id}>, you do not have the role <@&${role.id}>.`, 3000);
 
 		}
 
