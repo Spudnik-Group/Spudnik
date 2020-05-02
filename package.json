@@ -49,6 +49,7 @@
         "remove-markdown": "0.3.0",
         "rollbar": "^2.5.1",
         "soap": "^0.29.0",
+        "unescape": "^1.0.1",
         "urban-dictionary": "^2.2.1",
         "url-unshort": "^5.0.0",
         "utf-8-validate": "^5.0.2",
