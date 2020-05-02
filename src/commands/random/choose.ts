@@ -40,7 +40,7 @@ export default class ChooseCommand extends Command {
 
 		return msg.sendEmbed(baseEmbed(msg)
 			.setAuthor(`${msg.client.user.username}`, msg.client.user.displayAvatarURL())
-			.setDescription(`I choose ${options[getRandomInt(0, options.length)]}`)
+			.setDescription(`I choose ${options[getRandomInt(0, options.length - 1)]}`)
 			.setTitle(':thinking:'), '', { reply: msg.author });
 	}
 
