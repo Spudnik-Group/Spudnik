@@ -54,9 +54,11 @@ export default class MuteRoleCommand extends Command {
 					// Set up embed message
 					roleEmbed.setDescription(stripIndents`
 						**Member:** ${msg.author.tag} (${msg.author.id})
-						**Action:** Set <@&${role.id}> as the Muted role for the server.
+						**Action:** Set Muted role for the server
+						**Role:**${role.name} (${role.id})
 					`);
 
+					await modLogMessage(msg, roleEmbed);
 					return this.sendSuccess(msg, roleEmbed);
 				} catch (err) {
 					return this.catchError(msg, role, 'set', err);
@@ -67,14 +69,14 @@ export default class MuteRoleCommand extends Command {
 		} else {
 			try {
 				await msg.guild.settings.reset(GuildSettings.Roles.Muted);
+
 				// Set up embed message
 				roleEmbed.setDescription(stripIndents`
 					**Member:** ${msg.author.tag} (${msg.author.id})
-					**Action:** Removed Muted role.
-
-					_You must include a valid role/roleID when setting the Muted role._
+					**Action:** Removed Muted role
 				`);
 
+				await modLogMessage(msg, roleEmbed);
 				return this.sendSuccess(msg, roleEmbed);
 			} catch (err) {
 				return this.catchError(msg, role, 'reset', err);
@@ -91,7 +93,7 @@ export default class MuteRoleCommand extends Command {
 			**Time:** ${new Timestamp('MMMM D YYYY [at] HH:mm:ss [UTC]Z').display(msg.createdTimestamp)}
 			${action === 'set' ? `**Input:** \`Role name: ${role}` : ''}
 			**Error Message:** ${err}\n
-			`;
+		`;
 		const roleUserWarn = `${action === 'set' ? 'Setting' : 'Resetting'} muted role failed!`;
 
 		// Emit warn event for debugging
