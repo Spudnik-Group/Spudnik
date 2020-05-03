@@ -23,7 +23,6 @@ export default class IAmNotCommand extends SpudnikCommand {
 		super(store, file, directory, {
 			description: 'Used to remove a self-assignable role from yourself.',
 			name: 'iamnot',
-			requiredGuildPermissions: Permissions.FLAGS.MANAGE_ROLES,
 			requiredPermissions: Permissions.FLAGS.MANAGE_ROLES,
 			requiredSettings: ['roles.selfAssignable'],
 			usage: '<roleName:role|roleName:...string>'

@@ -19,7 +19,7 @@ export default class ChangelogCommand extends Command {
 		super(store, file, directory, {
 			description: 'Returns GitHub release notes for the 3 most recent releases.',
 			name: 'changelog',
-			requiredPermissions: Permissions.FLAGS['EMBED_LINKS']
+			requiredPermissions: Permissions.FLAGS.EMBED_LINKS
 		});
 	}
 

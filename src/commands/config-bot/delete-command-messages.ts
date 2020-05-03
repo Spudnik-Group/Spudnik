@@ -25,7 +25,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 			description: 'Enable or disable the Delete Command Messages feature.',
 			name: 'delete-command-messages',
 			permissionLevel: 1, // MANAGE_MESSAGES
-			requiredPermissions: Permissions.FLAGS['MANAGE_MESSAGES'],
+			requiredPermissions: Permissions.FLAGS.MANAGE_MESSAGES,
 			subcommands: true,
 			usage: '<on|off>'
 		});

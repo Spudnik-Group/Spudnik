@@ -23,7 +23,7 @@ export default class NickCommand extends Command {
 			`,
 			name: 'nick',
 			permissionLevel: 6, // MANAGE_GUILD
-			requiredPermissions: Permissions.FLAGS['MANAGE_NICKNAMES'],
+			requiredPermissions: Permissions.FLAGS.MANAGE_NICKNAMES,
 			usage: '[nickName:string]'
 		});
 	}

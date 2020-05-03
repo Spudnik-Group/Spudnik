@@ -5,10 +5,11 @@
 import { stripIndents } from 'common-tags';
 import { Channel, MessageEmbed, Permissions } from 'discord.js';
 import { modLogMessage } from '@lib/helpers/custom-helpers';
-import { Command, CommandStore, KlasaMessage, Possible, Timestamp } from 'klasa';
+import { CommandStore, KlasaMessage, Possible, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 import { resolveChannel } from '@lib/helpers/base';
 import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
+import { SpudnikCommand } from '@lib/structures/SpudnikCommand';
 
 /**
  * Adjusts starboard settings.
@@ -17,7 +18,7 @@ import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
  * @class StarboardCommand
  * @extends {Command}
  */
-export default class StarboardCommand extends Command {
+export default class StarboardCommand extends SpudnikCommand {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -32,7 +33,7 @@ export default class StarboardCommand extends Command {
 			`,
 			name: 'starboard',
 			permissionLevel: 6, // MANAGE_GUILD
-			requiredPermissions: [Permissions.FLAGS.EMBED_LINKS, Permissions.FLAGS.READ_MESSAGE_HISTORY, Permissions.FLAGS.ATTACH_FILES, Permissions.FLAGS.MANAGE_MESSAGES],
+			requiredPermissions: Permissions.FLAGS.EMBED_LINKS | Permissions.FLAGS.READ_MESSAGE_HISTORY | Permissions.FLAGS.ATTACH_FILES | Permissions.FLAGS.MANAGE_MESSAGES,
 			subcommands: true,
 			usage: '<on|off|status|channel|trigger> (content:content)'
 		});
