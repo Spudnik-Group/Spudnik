@@ -3,11 +3,12 @@
  */
 
 import { Permissions, Role, MessageEmbed } from 'discord.js';
-import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 import { stripIndents } from 'common-tags';
 import { modLogMessage } from '@lib/helpers/custom-helpers';
+import { SpudnikCommand } from '@lib/structures/SpudnikCommand';
 
 /**
  * Allows a member to unassign a role from themselves.
@@ -16,12 +17,13 @@ import { modLogMessage } from '@lib/helpers/custom-helpers';
  * @class IAmNotCommand
  * @extends {Command}
  */
-export default class IAmNotCommand extends Command {
+export default class IAmNotCommand extends SpudnikCommand {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Used to remove a self-assignable role from yourself.',
 			name: 'iamnot',
+			requiredGuildPermissions: Permissions.FLAGS.MANAGE_ROLES,
 			requiredPermissions: Permissions.FLAGS.MANAGE_ROLES,
 			requiredSettings: ['roles.selfAssignable'],
 			usage: '<roleName:role|roleName:...string>'
