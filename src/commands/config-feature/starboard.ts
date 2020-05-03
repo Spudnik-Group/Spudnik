@@ -191,7 +191,7 @@ export default class StarboardCommand extends SpudnikCommand {
 
 		// Set up embed message
 		starboardEmbed.setDescription(stripIndents`Star Board feature: ${starboardEnabled ? '_Enabled_' : '_Disabled_'}
-			Channel set to: <#${starboard}>
+			Channel ${starboard ? `set to: <#${starboard}>` : 'not set'}
 			Reaction Trigger set to: ${starboardTrigger}
 		`);
 
