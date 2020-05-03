@@ -2,7 +2,7 @@ import { PermissionResolvable, Permissions } from 'discord.js';
 import { Command, CommandOptions, CommandStore, KlasaMessage, util } from 'klasa';
 
 export abstract class SpudnikCommand extends Command {
-    
+
 	public requiredGuildPermissions: Permissions;
 
 	public constructor(store: CommandStore, file: string[], directory: string, options: SpudnikCommandOptions = {}) {

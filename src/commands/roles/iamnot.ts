@@ -86,7 +86,7 @@ export default class IAmNotCommand extends SpudnikCommand {
 				**Time:** ${new Timestamp('MMMM D YYYY [at] HH:mm:ss [UTC]Z').display(msg.createdTimestamp)}
 				**Error Message:** ${err}\n
 			`;
-			
+
 			// Emit warn event for debugging
 			msg.client.emit('warn', roleWarn);
 
