@@ -64,7 +64,9 @@ export default class MuteRoleCommand extends Command {
 					return this.catchError(msg, role, 'set', err);
 				}
 			} else {
-				return msg.sendSimpleError(`Muted role already set to <@&${role.id}>`, 3000);
+				roleEmbed.setDescription(`Server mute role already set to <@&${role.id}>`);
+
+				return msg.sendEmbed(roleEmbed);
 			}
 		} else {
 			try {

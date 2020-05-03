@@ -2,14 +2,13 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Event } from 'klasa';
+import { Event, KlasaMessage } from 'klasa';
 import { SpudConfig } from '@lib//config/spud-config';
 import { TextChannel, GuildMember, Permissions } from 'discord.js';
+import { modLogMessage } from '@lib/helpers/custom-helpers';
+import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 import { delay } from '@lib/utils/util';
-import { modLogMessage } from '@lib/helpers/custom-helpers';
-import { KlasaMessage } from 'klasa';
-import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 import { stripIndents } from 'common-tags';
 
 export default class extends Event {
@@ -39,7 +38,7 @@ export default class extends Event {
 			}
 		}
 
-		if (!!member.user.bot && tosWelcomeEnabled && tosWelcomeMessage && tosWelcomeChannel && tosRole) {
+		if (Boolean(member.user.bot) && tosWelcomeEnabled && tosWelcomeMessage && tosWelcomeChannel && tosRole) {
 			const message = tosWelcomeMessage.replace('{guild}', guild.name).replace('{user}', `<@${member.id}>`);
 			const channel = guild.channels.get(tosWelcomeChannel);
 			const role = guild.roles.get(tosRole);

@@ -65,12 +65,14 @@ export default class IAmNotCommand extends Command {
 				return msg.sendEmbed(roleEmbed);
 			}
 
-			return msg.sendSimpleError(`<@${msg.member.id}>, you do not have the role <@&${role.id}>.`, 3000);
+			roleEmbed.setDescription(`<@${msg.member.id}>, you do not have the role <@&${role.id}>.`);
 
+			return msg.sendEmbed(roleEmbed);
 		}
 
-		return msg.sendSimpleError(`Cannot find ${roleName} in list of assignable roles.\n\nUse \`!roles\` to see the list of self-assignable roles.`, 5000);
+		roleEmbed.setDescription(`Cannot find ${roleName} in list of assignable roles.\n\nUse \`!roles\` to see the list of self-assignable roles.`);
 
+		return msg.sendEmbed(roleEmbed);
 	}
 
 }

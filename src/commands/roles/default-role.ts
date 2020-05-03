@@ -63,7 +63,9 @@ export default class DefaultRoleCommand extends Command {
 					return this.catchError(msg, role, 'set', err);
 				}
 			} else {
-				return msg.sendSimpleError(`Default role already set to <@&${role.id}>`, 3000);
+				roleEmbed.setDescription(`Default role already set to <@&${role.id}>`);
+
+				return msg.sendEmbed(roleEmbed);
 			}
 		} else {
 			try {
