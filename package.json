@@ -61,7 +61,7 @@
         "@discordjs/collection": "0.1.5",
         "@types/common-tags": "1.8.0",
         "@types/module-alias": "2.0.0",
-        "@types/node": "10.17.18",
+        "@types/node": "10.17.21",
         "@typescript-eslint/eslint-plugin": "2.27.0",
         "@typescript-eslint/parser": "2.27.0",
         "common-tags": "1.8.0",
