@@ -18,7 +18,7 @@ export default class Dec2BinCommand extends Command {
 		super(store, file, directory, {
 			description: 'Converts hexadecimal to decimal',
 			name: 'dec2bin',
-			usage: '<numberToConvert:int>'
+			usage: '<numberToConvert:regex/^[0-9]+$/>'
 		});
 	}
 
