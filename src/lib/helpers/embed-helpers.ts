@@ -29,7 +29,8 @@ export enum specialEmbedTypes {
 	UnBan,
 	Warn,
 	ClearWarn,
-	Tos
+	Tos,
+	Leave
 }
 
 // TODO: add jsdoc
@@ -58,6 +59,14 @@ export const specialEmbed = (msg: KlasaMessage, name: specialEmbedTypes): Messag
 				.setAuthor(
 					'Disable',
 					'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/146/cross-mark_274c.png'
+				);
+			break;
+		}
+		case specialEmbedTypes.Leave: {
+			embedOut
+				.setAuthor(
+					'Leave',
+					'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/241/door_1f6aa.png'
 				);
 			break;
 		}
