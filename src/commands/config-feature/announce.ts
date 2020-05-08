@@ -32,9 +32,9 @@ export default class AnnounceCommand extends Command {
 		});
 
 		this.createCustomResolver('content', (arg: string, possible: Possible, message: KlasaMessage, [subCommand]: [string]) => {
-			if (subCommand === 'channel' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw new Error('Please provide a valid channel for the announcements to be displayed in.');
-			if (subCommand === 'send' && !arg) throw new Error('Please include the text for the announcement.');
-			if (subCommand === 'direct' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw new Error('Please provide a valid channel for the announcement to be displayed in.');
+			if (subCommand === 'channel' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw 'Please provide a valid channel for the announcements to be displayed in.';
+			if (subCommand === 'send' && !arg) throw 'Please include the text for the announcement.';
+			if (subCommand === 'direct' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw 'Please provide a valid channel for the announcement to be displayed in.';
 
 			return arg;
 		});
@@ -49,7 +49,7 @@ export default class AnnounceCommand extends Command {
 	 * @memberof AnnounceCommand
 	 */
 	public async direct(msg: KlasaMessage, [channel, text]: Array<string>): Promise<KlasaMessage | KlasaMessage[]> {
-		if (!text) throw new Error('Please include the text for the announcement.');
+		if (!text) throw 'Please include the text for the announcement.';
 		const announceEmbed = specialEmbed(msg, specialEmbedTypes.Announcement);
 		const modlogEmbed = specialEmbed(msg, specialEmbedTypes.Announcement);
 		const announceChannel = (msg.guild.channels.get(resolveChannel(channel)) as TextChannel);

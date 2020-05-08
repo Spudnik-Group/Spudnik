@@ -45,7 +45,7 @@ export default class TypingTestCommand extends Command {
 
 		this.createCustomResolver('difficulty', (arg: string) => {
 			if (difficulties.includes(arg.toLowerCase())) return arg;
-			throw new Error(`Please provide a valid difficulty level. Options are: ${list(difficulties, 'or')}.`);
+			throw `Please provide a valid difficulty level. Options are: ${list(difficulties, 'or')}.`;
 		});
 	}
 

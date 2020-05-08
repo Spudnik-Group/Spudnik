@@ -36,7 +36,7 @@ export default class ModlogCommand extends Command {
 		});
 
 		this.createCustomResolver('channel', (arg: string, possible: Possible, message: KlasaMessage, [subCommand]: [string]) => {
-			if (subCommand === 'channel' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw new Error('Please provide a channel for the modlog messages to be displayed in.');
+			if (subCommand === 'channel' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw 'Please provide a channel for the modlog messages to be displayed in.';
 
 			return resolveChannel(arg);
 		});

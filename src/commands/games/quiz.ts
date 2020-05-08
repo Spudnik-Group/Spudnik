@@ -36,17 +36,17 @@ export default class QuizCommand extends Command {
 				**Difficulties**: ${difficulties.join(', ')}
 			`,
 			name: 'quiz',
-			usage: '(type:string) (difficulty:string)'
+			usage: '(type:type) (difficulty:difficulty)'
 		});
 
 		this
 			.createCustomResolver('type', (arg: string) => {
 				if (types.includes(arg.toLowerCase())) return arg;
-				throw new Error(`Please provide a valid quiz type. Options are: ${list(types, 'or')}.`);
+				throw `Please provide a valid quiz type. Options are: ${list(types, 'or')}.`;
 			})
 			.createCustomResolver('difficulty', (arg: string) => {
 				if (difficulties.includes(arg.toLowerCase())) return arg;
-				throw new Error(`Please provide a valid difficulty level. Options are: ${list(difficulties, 'or')}.`);
+				throw `Please provide a valid difficulty level. Options are: ${list(difficulties, 'or')}.`;
 			});
 	}
 

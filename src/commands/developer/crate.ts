@@ -23,7 +23,7 @@ export default class CrateCommand extends Command {
 		try {
 			const { data } = await axios(`https://crates.io/api/v1/crates/${encodeURIComponent(name)}`);
 			const { crate, versions: [latest] } = data;
-			if (!crate) throw new Error('That crate doesn\'t exist.');
+			if (!crate) throw 'That crate doesn\'t exist.';
 
 			const embed = baseEmbed(msg)
 				.setThumbnail('https://doc.rust-lang.org/cargo/images/Cargo-Logo-Small.png')

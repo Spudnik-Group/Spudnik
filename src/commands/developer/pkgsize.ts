@@ -23,7 +23,7 @@ export default class PackagesizeCommand extends Command {
 		try {
 			const { data } = await axios(`https://packagephobia.now.sh/api.json?p=${encodeURIComponent(name)}`);
 			const { publishSize, installSize } = data;
-			if (!publishSize && !installSize) throw new Error("That package doesn't exist.");
+			if (!publishSize && !installSize) throw "That package doesn't exist.";
 
 			return msg.sendEmbed(baseEmbed(msg)
 				.setDescription(stripIndents`

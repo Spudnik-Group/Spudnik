@@ -3,7 +3,7 @@
  */
 
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-import * as fishes from '../../extras/fish';
+import { fishes } from '../../extras/fish';
 import { getRandomInt } from '@lib/utils/util';
 
 /**
