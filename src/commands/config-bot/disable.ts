@@ -4,12 +4,13 @@
 
 import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
-import { modLogMessage, isCommandCategoryEnabled, isCommandEnabled } from '@lib/helpers/custom-helpers';
+import { modLogMessage, isCommandCategoryEnabled, isCommandEnabled, isValidCommandCategory } from '@lib/helpers/custom-helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-import * as fs from 'fs';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 import { commandOrCategory } from '@lib/helpers/resolvers';
+
+const requiredCategories = ['bot-info', 'config-bot', 'help'];
 
 /**
  * Disables a command or command category.
@@ -46,43 +47,33 @@ export default class DisableCommand extends Command {
 
 		if (typeof cmdOrCat === 'string') {
 			// Category
-			const groups: any[] = fs.readdirSync('commands')
-				.filter((path: string) => fs.statSync(`commands/${path}`).isDirectory());
-			const parsedGroup: string = cmdOrCat.toLowerCase();
+			if (!isValidCommandCategory(cmdOrCat)) return msg.sendSimpleEmbed(`No commands or command categories matching that name. Use \`${msg.guild.settings.get(GuildSettings.Prefix)}commands\` to view a list of command categories.`, 3000);
+			if (!isCommandCategoryEnabled(msg, cmdOrCat)) return msg.sendSimpleError(`The \`${cmdOrCat}\` category is already disabled.`, 3000);
+			if (requiredCategories.includes(cmdOrCat)) return msg.sendSimpleError(`You cannot disable the \`${cmdOrCat}\` category.`, 3000);
 
-			if (!isCommandCategoryEnabled(msg, cmdOrCat)) {
-				return msg.sendSimpleError(`The \`${cmdOrCat}\` category is already disabled.`, 3000);
-			} else if (groups.find((g: string) => g === parsedGroup)) {
-				await msg.guild.settings.update(GuildSettings.Commands.DisabledCategories, cmdOrCat.toLowerCase());
+			await msg.guild.settings.update(GuildSettings.Commands.DisabledCategories, cmdOrCat.toLowerCase());
 
-				disableEmbed.setDescription(stripIndents`
-					**Moderator:** ${msg.author.tag} (${msg.author.id})
-					**Action:** Disabled the \`${cmdOrCat}\` category.`);
+			disableEmbed.setDescription(stripIndents`
+				**Moderator:** ${msg.author.tag} (${msg.author.id})
+				**Action:** Disabled the \`${cmdOrCat}\` category.`);
 
-				await modLogMessage(msg, disableEmbed);
+			await modLogMessage(msg, disableEmbed);
 
-				return msg.sendEmbed(disableEmbed);
-			}
-			return msg.sendSimpleEmbed(`No groups matching that name. Use \`${msg.guild.settings.get(GuildSettings.Prefix)}commands\` to view a list of command groups.`, 3000);
-
+			return msg.sendEmbed(disableEmbed);
 		}
 		// Command
-		if (!isCommandEnabled(msg, cmdOrCat)) {
-			return msg.sendSimpleError(`The \`${cmdOrCat.name}\` command is already disabled.`, 3000);
-		}
-		if (cmdOrCat.guarded) {
-			return msg.sendSimpleError(`You cannot disable the \`${cmdOrCat.name}\` command.`, 3000);
-		}
+		if (!isCommandEnabled(msg, cmdOrCat)) return msg.sendSimpleError(`The \`${cmdOrCat.name}\` command is already disabled.`, 3000);
+		if (cmdOrCat.guarded) return msg.sendSimpleError(`You cannot disable the \`${cmdOrCat.name}\` command.`, 3000);
+
 		await msg.guild.settings.update(GuildSettings.Commands.Disabled, cmdOrCat.name.toLowerCase());
 
 		disableEmbed.setDescription(stripIndents`
 				**Moderator:** ${msg.author.tag} (${msg.author.id})
 				**Action:** Disabled the \`${cmdOrCat.name}\` command.`);
+
 		await modLogMessage(msg, disableEmbed);
 
 		return msg.sendEmbed(disableEmbed);
-
-
 	}
 
 }

@@ -86,7 +86,7 @@ export default class PrefixCommand extends Command {
 		}
 
 		prefixEmbed.setDescription(stripIndents`
-			${response} To run commands, use ${newPrefix ? newPrefix : lowercase === 'default' ? '!' : ''}\`commandName\`.
+			${response} To run commands, use ${newPrefix ? (newPrefix === 'default' ? '!' : newPrefix) : '@Spudnik '}\`commandName\`.
 		`);
 
 		return msg.sendEmbed(prefixEmbed);
