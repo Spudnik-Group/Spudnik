@@ -25,7 +25,7 @@ export default class HelpCommand extends Command {
 			guarded: true,
 			name: 'help',
 			requiredPermissions: Permissions.FLAGS.EMBED_LINKS,
-			usage: '[command:cmd]'
+			usage: '(command:cmd)'
 		});
 	}
 
