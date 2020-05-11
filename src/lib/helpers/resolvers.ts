@@ -3,10 +3,10 @@
  */
 
 import { Command, Possible, KlasaMessage } from 'klasa';
-import * as fs from 'fs';
 import { standardPlatforms } from '@lib/constants/game-platforms';
 import { resolveChannel } from './base';
 import { list } from '@lib/utils/util';
+import { isValidCommandCategory } from './custom-helpers';
 
 // TODO: add jsdoc
 export const commandOrCategory = (cmdOrCategory: string): string => {
@@ -14,10 +14,7 @@ export const commandOrCategory = (cmdOrCategory: string): string => {
 	const command = this.client.commands.array().find((command: Command) => command.name.toLowerCase() === cmdOrCategory.toLowerCase());
 	if (command) return cmdOrCategory; // Valid command name
 
-	const categories: any[] = fs.readdirSync('commands')
-		.filter((path: string) => fs.statSync(`commands/${path}`).isDirectory());
-	const category = categories.find((category: any) => category === cmdOrCategory.toLowerCase());
-	if (category) return cmdOrCategory; // Valid category name
+	if (isValidCommandCategory(cmdOrCategory)) return cmdOrCategory; // Valid category name
 
 	throw 'Please provide a valid command or command category name';
 };
