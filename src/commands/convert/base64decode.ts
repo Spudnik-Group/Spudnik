@@ -33,8 +33,8 @@ export default class Base64DecodeCommand extends Command {
 	public async run(msg: KlasaMessage, [stringToDecode]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const returnMessage = baseEmbed(msg)
 			.setAuthor('Base64 Decoded String:')
-			.addField('Input:', stringToDecode)
-			.addField('Output:', Convert.base64decode(stringToDecode));
+			.addField('Input:', `\`${stringToDecode}\``)
+			.addField('Output:', `\`${Convert.base64decode(stringToDecode)}\``);
 
 		return msg.sendEmbed(returnMessage);
 	}
