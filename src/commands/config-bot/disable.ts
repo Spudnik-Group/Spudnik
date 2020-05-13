@@ -28,7 +28,7 @@ export default class DisableCommand extends Command {
 			guarded: true,
 			name: 'disable',
 			permissionLevel: 6, // MANAGE_GUILD
-			usage: '<cmdOrCat:command|cmdOrCat:string>'
+			usage: '<cmdOrCat:optional-command|cmdOrCat:string>'
 		});
 
 		this.createCustomResolver('cmdOrCat', commandOrCategory);

@@ -17,10 +17,10 @@ export default class ChannelTopicCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['ct'],
+			aliases: ['ct', 'channel-topic'],
 			description: 'Returns the purpose of the specified channel, or the current one.',
 			name: 'topic',
-			usage: '[channel:channel]'
+			usage: '(channel:optional-channel)'
 		});
 	}
 
@@ -37,7 +37,7 @@ export default class ChannelTopicCommand extends Command {
 		// Send the success response
 		return msg.sendEmbed(
 			baseEmbed(msg)
-				.setDescription(`Channel Topic: ${(channel.topic === null || channel.topic.trim().length) ? 'There doesn\'t seem to be a topic for this channel. Maybe ask the mods?' : channel.topic}`)
+				.setDescription(`Channel Topic: ${(channel.topic === null || !channel.topic.trim().length) ? 'There doesn\'t seem to be a topic for this channel. Maybe ask the mods?' : channel.topic}`)
 				.setThumbnail(msg.guild.iconURL())
 				.setTitle(channel.name)
 		);

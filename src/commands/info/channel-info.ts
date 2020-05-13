@@ -17,10 +17,10 @@ export default class ChannelIDCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['cinfo'],
+			aliases: ['cinfo', 'channel-info'],
 			description: 'Returns info on the specified channel, or the current one.',
 			name: 'channelInfo',
-			usage: '[channel:channel]'
+			usage: '(channel:optional-channel)'
 		});
 	}
 

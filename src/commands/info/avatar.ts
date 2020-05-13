@@ -11,7 +11,7 @@ export default class AvatarCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows a user\'s avatar',
-			usage: '[user:user]'
+			usage: '(user:optional-user)'
 		});
 	}
 

@@ -7,7 +7,7 @@ import { Argument, ArgumentStore, Possible, KlasaMessage } from 'klasa';
 export default class extends Argument {
 
 	public constructor(store: ArgumentStore, file: string[], directory: string) {
-		super(store, file, directory, { aliases: ['cmd'] });
+		super(store, file, directory, { aliases: ['optional-command'] });
 	}
 
 	public run(arg: string, possible: Possible, message: KlasaMessage): any {

@@ -7,19 +7,7 @@ import { stripIndents } from 'common-tags';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
 import { baseEmbed } from '@lib/helpers/embed-helpers';
 import { trimArray } from '@lib/utils/util';
-
-const activities = {
-	LISTENING: 'Listening to',
-	PLAYING: 'Playing',
-	STREAMING: 'Streaming',
-	WATCHING: 'Watching'
-};
-const statuses = {
-	dnd: '❤ Do Not Disturb',
-	idle: '💛 Idle',
-	offline: '💔 Offline',
-	online: '💚 Online'
-};
+import { statuses, activities } from '@lib/constants';
 
 /**
  * Returns statistics about a user.
@@ -38,7 +26,7 @@ export default class UserCommand extends Command {
 				Supplying no usermention returns details about the calling user.
 			`,
 			name: 'user',
-			usage: '[user:user]'
+			usage: '(user:optional-user)'
 		});
 	}
 
@@ -49,26 +37,25 @@ export default class UserCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof UserCommand
 	 */
-	public async run(msg: KlasaMessage, [user]: [User]): Promise<KlasaMessage | KlasaMessage[]> {
-		const currentUser: User = user ? user : msg.author;
-		const avatarFormat = currentUser.avatar && currentUser.avatar.startsWith('a_') ? 'gif' : 'png';
+	public async run(msg: KlasaMessage, [user = msg.author]: [User]): Promise<KlasaMessage | KlasaMessage[]> {
+		const avatarFormat = user.avatar && user.avatar.startsWith('a_') ? 'gif' : 'png';
 		const userEmbed = baseEmbed(msg)
-			.setThumbnail(currentUser.displayAvatarURL({ format: avatarFormat }))
-			.addField('❯ Name', currentUser.tag, true)
-			.addField('❯ ID', currentUser.id, true)
-			.addField('❯ Discord Join Date', new Timestamp('MM/DD/YYYY h:mm A').display(currentUser.createdAt), true)
-			.addField('❯ Bot?', currentUser.bot ? 'Yes' : 'No', true)
+			.setThumbnail(user.displayAvatarURL({ format: avatarFormat }))
+			.addField('❯ Name', user.tag, true)
+			.addField('❯ ID', user.id, true)
+			.addField('❯ Discord Join Date', new Timestamp('MM/DD/YYYY h:mm A').display(user.createdAt), true)
+			.addField('❯ Bot?', user.bot ? 'Yes' : 'No', true)
 			.addField('❯ Status', statuses[user.presence.status], true);
 
 		try {
 			// Check if user is a member of the guild
-			const member: GuildMember = await msg.guild.members.fetch(currentUser.id);
+			const member: GuildMember = await msg.guild.members.fetch(user.id);
 			const roles = member.roles
 				.sort((a: Role, b: Role) => b.position - a.position)
 				.map((role: Role) => role.name);
 			userEmbed
-				.setDescription(member.presence.activities
-					? `${activities[member.presence.activities[0].type]} **${member.presence.activities[0].name}**`
+				.setDescription(member.presence.activities.length
+					? `${activities[member.presence.activities[0].type]} **${member.presence.activities[0].state ? member.presence.activities[0].state : member.presence.activities[0].name}**`
 					: '')
 				.addField('❯ Server Join Date', new Timestamp('MM/DD/YYYY h:mm A').display(member.joinedAt), true)
 				.addField('❯ Nickname', member.nickname || 'None', true)
