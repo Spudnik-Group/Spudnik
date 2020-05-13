@@ -45,8 +45,8 @@ export default class GoCommand extends Command {
 		const gameID = SteamGames[game.toUpperCase()];
 
 		return msg.sendEmbed(baseEmbed(msg)
-			.setAuthor(`${msg.author.username}`, `${msg.author.displayAvatarURL()}`)
-			.setThumbnail(`${msg.author.displayAvatarURL()}`)
+			.setAuthor(`${msg.author.username}`, `${msg.author.displayAvatarURL({ size: 128, format: 'png', dynamic: true })}`)
+			.setThumbnail(`${msg.author.displayAvatarURL({ size: 128, format: 'png', dynamic: true })}`)
 			.setTitle('Let\'s Play!')
 			.setDescription(`**Launch game:** steam://run/${gameID}`)
 			.setImage(`http://cdn.edgecast.steamstatic.com/steam/apps/${gameID}/header.jpg`));

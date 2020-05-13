@@ -57,7 +57,7 @@ export default class extends Event {
 				if (reactions) {
 					const starboardEmbed: MessageEmbed = new MessageEmbed()
 						.setAuthor(message.guild.name, message.guild.iconURL())
-						.setThumbnail(message.author.displayAvatarURL())
+						.setThumbnail(message.author.displayAvatarURL({ size: 128, format: 'png', dynamic: true }))
 						.addField('Author', message.author.toString(), true)
 						.addField('Channel', (channel as TextChannel).toString(), true)
 						.addField('Jump', `[Link](${message.url})`, true)

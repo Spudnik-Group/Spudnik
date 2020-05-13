@@ -48,7 +48,7 @@ export default class MoveCommand extends Command {
 				const moveMessage = baseEmbed(msg)
 					.setAuthor(
 						`${originalMessageAuthor.displayName}`,
-						`${originalMessageAuthor.user.displayAvatarURL()}`
+						`${originalMessageAuthor.user.displayAvatarURL({ size: 128, format: 'png', dynamic: true })}`
 					)
 					.setDescription(`${originalMessage.content}\n\n`)
 					.setTimestamp(originalMessage.createdTimestamp)

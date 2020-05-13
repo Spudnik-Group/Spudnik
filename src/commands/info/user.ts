@@ -38,9 +38,8 @@ export default class UserCommand extends Command {
 	 * @memberof UserCommand
 	 */
 	public async run(msg: KlasaMessage, [user = msg.author]: [User]): Promise<KlasaMessage | KlasaMessage[]> {
-		const avatarFormat = user.avatar && user.avatar.startsWith('a_') ? 'gif' : 'png';
 		const userEmbed = baseEmbed(msg)
-			.setThumbnail(user.displayAvatarURL({ format: avatarFormat }))
+			.setThumbnail(user.displayAvatarURL({ size: 128, format: 'png', dynamic: true }))
 			.addField('❯ Name', user.tag, true)
 			.addField('❯ ID', user.id, true)
 			.addField('❯ Discord Join Date', new Timestamp('MM/DD/YYYY h:mm A').display(user.createdAt), true)

@@ -18,7 +18,7 @@ export default class AvatarCommand extends Command {
 	public async run(msg: KlasaMessage, [user = msg.author]: [User]): Promise<KlasaMessage | KlasaMessage[]> {
 		return msg.sendEmbed(baseEmbed(msg)
 			.addField('Avatar', user.tag)
-			.setImage(user.displayAvatarURL({ size: 512 })));
+			.setImage(user.displayAvatarURL({ size: 256, format: 'png', dynamic: true })));
 	}
 
 }
