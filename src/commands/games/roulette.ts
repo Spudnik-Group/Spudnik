@@ -32,8 +32,6 @@ export default class RouletteCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Play a game of roulette.',
-			extendedHelp: 'syntax: \`!roulette <space choice>\`',
-			name: 'roulette',
 			usage: '<space:string>'
 		});
 

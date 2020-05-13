@@ -21,10 +21,6 @@ export default class MdnReferenceCommand extends Command {
 		super(store, file, directory, {
 			aliases: ['jsdocs'],
 			description: 'Returns results for the supplied query from the MDN.',
-			extendedHelp: stripIndents`
-				syntax: \`!mdn <query>\`
-			`,
-			name: 'mdn',
 			requiredPermissions: ['EMBED_LINKS'],
 			usage: '<query:...string>'
 		});

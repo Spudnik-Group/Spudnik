@@ -31,7 +31,6 @@ export default class StarboardCommand extends SpudnikCommand {
 				\`on\` - enable the star board feature.
 				\`off\` - disable the star board feature.
 			`,
-			name: 'starboard',
 			permissionLevel: 6, // MANAGE_GUILD
 			requiredPermissions: Permissions.FLAGS.EMBED_LINKS | Permissions.FLAGS.READ_MESSAGE_HISTORY | Permissions.FLAGS.ATTACH_FILES | Permissions.FLAGS.MANAGE_MESSAGES,
 			subcommands: true,

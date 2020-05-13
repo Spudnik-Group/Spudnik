@@ -19,7 +19,6 @@ export default class UpvoteCommand extends Command {
 		super(store, file, directory, {
 			description: 'Returns links to upvote the bot on bot listing sites.',
 			guarded: true,
-			name: 'upvote',
 			requiredPermissions: Permissions.FLAGS.EMBED_LINKS
 		});
 	}

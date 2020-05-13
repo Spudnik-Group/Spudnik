@@ -25,7 +25,6 @@ export default class UserCommand extends Command {
 			extendedHelp: stripIndents`
 				Supplying no usermention returns details about the calling user.
 			`,
-			name: 'user',
 			usage: '(user:optional-user)'
 		});
 	}

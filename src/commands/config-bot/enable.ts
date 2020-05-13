@@ -24,7 +24,6 @@ export default class EnableCommand extends Command {
 			aliases: ['enable-command', 'cmd-off', 'command-off'],
 			description: 'Enables a command or command group.',
 			guarded: true,
-			name: 'enable',
 			permissionLevel: 6, // MANAGE_GUILD
 			usage: '<cmdOrCat:optional-command|cmdOrCat:string>'
 		});

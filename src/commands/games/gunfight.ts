@@ -29,8 +29,6 @@ export default class GunFightCommand extends Command {
 		super(store, file, directory, {
 			aliases: ['western-gunfight'],
 			description: 'Engage in a western gunfight against another user. High noon.',
-			extendedHelp: 'syntax: \`!gunfight <@usermention>\`',
-			name: 'gunfight',
 			usage: '<opponent:user>'
 		});
 	}

@@ -19,7 +19,6 @@ export default class BaconCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Blesses you with a random bacon gif.',
-			name: 'bacon',
 			requiredPermissions: Permissions.FLAGS.ATTACH_FILES
 		});
 	}

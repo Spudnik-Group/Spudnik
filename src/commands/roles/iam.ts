@@ -14,15 +14,14 @@ import { SpudnikCommand } from '@lib/structures/SpudnikCommand';
  * Allows a member to assign a role to themselves.
  *
  * @export
- * @class IAmNotCommand
+ * @class IAmCommand
  * @extends {Command}
  */
-export default class IAmNotCommand extends SpudnikCommand {
+export default class IAmCommand extends SpudnikCommand {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Used to add a self-assignable role to yourself.',
-			name: 'iam',
 			requiredPermissions: Permissions.FLAGS.MANAGE_ROLES,
 			requiredSettings: ['roles.selfAssignable'],
 			usage: '<roleName:role|roleName:...string>'
@@ -37,7 +36,7 @@ export default class IAmNotCommand extends SpudnikCommand {
 	 * @param {KlasaMessage} msg
 	 * @param {{ query: string }} args
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
-	 * @memberof IAmNotCommand
+	 * @memberof IAmCommand
 	 */
 	public async run(msg: KlasaMessage, [roleName]: [Role|string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const roleEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.RoleManager);

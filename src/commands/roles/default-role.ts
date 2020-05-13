@@ -20,14 +20,11 @@ export default class DefaultRoleCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: [
-				'dr'
-			],
+			aliases: ['dr', 'default-role'],
 			description: 'Used to configure the default role for the server.',
 			extendedHelp: stripIndents`
 				If no role is provided, the default role is cleared.
 			`,
-			name: 'default-role',
 			permissionLevel: 2,
 			requiredPermissions: Permissions.FLAGS.MANAGE_ROLES,
 			usage: '[role:role]'

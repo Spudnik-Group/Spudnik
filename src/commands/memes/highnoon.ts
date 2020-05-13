@@ -17,7 +17,6 @@ export default class HighNoonCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Displays the High Noon XKCD comic.',
-			name: 'highnoon',
 			requiredPermissions: Permissions.FLAGS.ATTACH_FILES
 		});
 	}

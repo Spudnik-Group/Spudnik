@@ -20,14 +20,11 @@ export default class MuteRoleCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: [
-				'mr'
-			],
+			aliases: ['mr', 'mute-role'],
 			description: 'Used to configure the role for the `mute` command.',
 			extendedHelp: stripIndents`
 				If no role is provided, the default role is cleared.
 			`,
-			name: 'mute-role',
 			permissionLevel: 2,
 			requiredPermissions: Permissions.FLAGS.MANAGE_ROLES,
 			usage: '[role:role]'

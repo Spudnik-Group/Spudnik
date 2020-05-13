@@ -25,7 +25,6 @@ export default class GoCommand extends Command {
 			extendedHelp: stripIndents`
 				Only a few games have been added at this time, submit a ticket on our GitHub to request specific ones.
 			`,
-			name: 'go',
 			usage: '<game:string>'
 		});
 	}

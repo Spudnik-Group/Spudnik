@@ -23,7 +23,6 @@ export default class HelpCommand extends Command {
 		super(store, file, directory, {
 			description: 'Used to return helpful information on the bot, or detailed information for a specified command.',
 			guarded: true,
-			name: 'help',
 			requiredPermissions: Permissions.FLAGS.EMBED_LINKS,
 			usage: '(command:cmd)'
 		});

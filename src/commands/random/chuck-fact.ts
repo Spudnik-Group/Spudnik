@@ -17,9 +17,8 @@ export default class ChuckFactCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['chucknorris', 'norrisfact', 'chuck-norris'],
-			description: 'Returns a random Chuck Norris fact.',
-			name: 'chuck-fact'
+			aliases: ['chucknorris', 'norrisfact', 'chuck-norris', 'chuck-fact'],
+			description: 'Returns a random Chuck Norris fact.'
 		});
 	}
 

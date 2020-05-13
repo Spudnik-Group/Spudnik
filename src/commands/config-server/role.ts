@@ -26,7 +26,6 @@ export default class RoleCommand extends Command {
 				\`add "role name" (hexcolor)\` - adds the role to your guild with the supplied color.
 				\`remove role name\` - removes the role from your guild.
 			`,
-			name: 'role',
 			permissionLevel: 2, // MANAGE_ROLES
 			requiredPermissions: Permissions.FLAGS.MANAGE_ROLES,
 			subcommands: true,

@@ -29,8 +29,6 @@ export default class EmojiEmojiRevolutionCommand extends Command {
 		super(store, file, directory, {
 			aliases: ['eer'],
 			description: 'Can you type arrow emoji faster than anyone else has ever typed them before?',
-			extendedHelp: 'syntax: \`!emoji-emoji-revolution <@usermention>\`',
-			name: 'emoji-emoji-revolution',
 			usage: '<opponent:user>'
 		});
 

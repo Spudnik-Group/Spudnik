@@ -25,9 +25,8 @@ export default class GoogleFeudCommand extends Command {
 	 */
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
+			aliases: ['google-fued'],
 			description: 'Attempt to determine the top suggestions for a Google search.',
-			extendedHelp: 'syntax: \`!google-feud (question)\`',
-			name: 'google-feud',
 			usage: '<question:...string>'
 		});
 

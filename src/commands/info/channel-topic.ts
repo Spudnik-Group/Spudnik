@@ -17,9 +17,8 @@ export default class ChannelTopicCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['ct', 'channel-topic'],
+			aliases: ['ct', 'channel-topic', 'topic'],
 			description: 'Returns the purpose of the specified channel, or the current one.',
-			name: 'topic',
 			usage: '(channel:optional-channel)'
 		});
 	}

@@ -22,7 +22,6 @@ export default class XkcdCommand extends Command {
 			description: 'Returns a given XKCD comic number (or the latest if nothing specified)',
 			extendedHelp: stripIndents`
 				Supplying no comic number returns the latest comic.`,
-			name: 'xkcd',
 			usage: '[comicNumber:number]'
 		});
 	}

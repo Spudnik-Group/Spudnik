@@ -18,7 +18,6 @@ export default class SupportCommand extends Command {
 		super(store, file, directory, {
 			description: 'Returns a link to my support server!',
 			guarded: true,
-			name: 'support',
 			requiredPermissions: Permissions.FLAGS.EMBED_LINKS
 		});
 	}

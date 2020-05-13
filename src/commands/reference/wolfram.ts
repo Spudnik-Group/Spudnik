@@ -16,7 +16,6 @@ export default class WolframCommand extends Command {
 		super(store, file, directory, {
 			aliases: ['wa'],
 			description: 'Query Wolfram Alpha with any mathematical question.',
-			name: 'wolfram',
 			usage: '<query:...string>'
 		});
 

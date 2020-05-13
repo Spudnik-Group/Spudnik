@@ -31,7 +31,6 @@ export default class GoodbyeCommand extends Command {
 				\`on\` - enable the goodbye message feature.
 				\`off\` - disable the goodbye message feature.
 			`,
-			name: 'goodbye',
 			permissionLevel: 6, // MANAGE_GUILD
 			subcommands: true,
 			usage: '<message|channel|on|off|status> (content:content)'

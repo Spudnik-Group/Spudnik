@@ -18,7 +18,6 @@ export default class DonateCommand extends Command {
 		super(store, file, directory, {
 			description: 'Returns options to donate to help support development and hosting of the bot.',
 			guarded: true,
-			name: 'donate',
 			requiredPermissions: Permissions.FLAGS.EMBED_LINKS
 		});
 	}

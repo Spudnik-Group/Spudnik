@@ -26,7 +26,6 @@ export default class PrefixCommand extends Command {
 				If the prefix is "none", the prefix will be removed entirely, only allowing mentions to run commands.
 			`,
 			guarded: true,
-			name: 'prefix',
 			permissionLevel: 6, // MANAGE_GUILD
 			usage: '[prefix:string]'
 		});

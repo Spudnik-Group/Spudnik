@@ -21,6 +21,7 @@ export default class ModlogCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
+			aliases: ['mod-log'],
 			description: 'Enable or disable the modlog feature.',
 			extendedHelp: stripIndents`
 				**Subcommand Usage**:
@@ -29,7 +30,6 @@ export default class ModlogCommand extends Command {
 				\`on\` - enable the mod log feature.
 				\`off\` - disable the mod log feature.
 			`,
-			name: 'modlog',
 			permissionLevel: 6, // MANAGE_GUILD
 			subcommands: true,
 			usage: '<on|off|status|channel> (channel:channel)'

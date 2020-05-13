@@ -19,9 +19,9 @@ export default class CommandsCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
+			aliases: ['cmds'],
 			description: 'Returns a list of command groups, or all commands in a given group.',
 			guarded: true,
-			name: 'commands',
 			requiredPermissions: Permissions.FLAGS.EMBED_LINKS,
 			usage: '[categoryName:string]'
 		});

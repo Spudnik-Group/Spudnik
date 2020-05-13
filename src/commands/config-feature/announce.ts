@@ -25,7 +25,6 @@ export default class AnnounceCommand extends Command {
 			extendedHelp: stripIndents`
 				Supplying no channel clears the announcement channel.
 			`,
-			name: 'announce',
 			permissionLevel: 6, // MANAGE_GUILD
 			subcommands: true,
 			usage: '<channel|send|direct> <content:content> [text:...string]'

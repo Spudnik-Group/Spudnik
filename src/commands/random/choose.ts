@@ -18,7 +18,6 @@ export default class ChooseCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Have the bot choose something for you.',
-			name: 'choose',
 			usage: '<choice:string> <choice:string> [...]',
 			usageDelim: ', '
 		});

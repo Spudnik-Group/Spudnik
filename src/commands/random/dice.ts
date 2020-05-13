@@ -20,7 +20,6 @@ export default class RollCommand extends Command {
 		super(store, file, directory, {
 			description: 'Roll one die with x sides + any modifiers, with an optional reason.',
 			extendedHelp: 'syntax: `!roll "[# of sides | [# of dice]d[# of sides]+modifiers]" [reason] >`',
-			name: 'roll',
 			usage: '[roll:string] [reason:...string]'
 		});
 	}

@@ -19,7 +19,6 @@ export default class FeedbackCommand extends Command {
 		super(store, file, directory, {
 			description: 'Provides links to suggest features, submit bugs, or email the devs.',
 			guarded: true,
-			name: 'feedback',
 			requiredPermissions: Permissions.FLAGS.EMBED_LINKS
 		});
 	}

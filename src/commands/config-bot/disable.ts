@@ -26,7 +26,6 @@ export default class DisableCommand extends Command {
 			aliases: ['disable-command', 'cmd-off', 'command-off'],
 			description: 'Disables a command or command category.',
 			guarded: true,
-			name: 'disable',
 			permissionLevel: 6, // MANAGE_GUILD
 			usage: '<cmdOrCat:optional-command|cmdOrCat:string>'
 		});

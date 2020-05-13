@@ -21,7 +21,6 @@ export default class UrbanCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns the Urban Dictionary result of the supplied query. If no query is supplied, returns a random thing.',
-			name: 'urban',
 			nsfw: true,
 			usage: '[query:...string]'
 		});

@@ -30,7 +30,6 @@ export default class HungerGamesCommand extends Command {
 		super(store, file, directory, {
 			aliases: ['hunger-games-simulator', 'brant-steele'],
 			description: 'Simulate a Hunger Games match with up to 24 tributes.',
-			name: 'hunger-games',
 			usage: '<tributes:user> [...]'
 		});
 	}

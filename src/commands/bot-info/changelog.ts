@@ -18,7 +18,6 @@ export default class ChangelogCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns GitHub release notes for the 3 most recent releases.',
-			name: 'changelog',
 			requiredPermissions: Permissions.FLAGS.EMBED_LINKS
 		});
 	}

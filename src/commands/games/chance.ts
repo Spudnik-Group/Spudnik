@@ -23,8 +23,6 @@ export default class ChanceCommand extends Command {
 		super(store, file, directory, {
 			aliases: ['1-in', 'one-in', 'lottery-classic'],
 			description: 'Attempt to win with a 1 in 1000 (or your choice) chance of winning.',
-			extendedHelp: 'syntax: \`!chance <chance of winning>\`',
-			name: 'chance',
 			usage: '(chance:int{1})'
 		});
 

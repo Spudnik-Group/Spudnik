@@ -16,7 +16,6 @@ export default class MovieCommand extends Command {
 		super(store, file, directory, {
 			aliases: ['movies', 'film', 'films'],
 			description: 'Finds a movie on TMDB.org',
-			name: 'movie',
 			usage: '<query:...string>'
 		});
 

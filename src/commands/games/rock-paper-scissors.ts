@@ -24,8 +24,6 @@ export default class RockPaperScissorsCommand extends Command {
 		super(store, file, directory, {
 			aliases: ['rps'],
 			description: 'Play Rock-Paper-Scissors.',
-			extendedHelp: 'syntax: \`!rock-paper-scissors <choice>\`',
-			name: 'rock-paper-scissors',
 			usage: '<choice:string>'
 		});
 	}

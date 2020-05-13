@@ -30,8 +30,6 @@ export default class CardsAgainstHumanityCommand extends Command {
 		super(store, file, directory, {
 			aliases: ['crude-cards', 'pretend-youre-xyzzy', 'cah'],
 			description: 'Compete to see who can come up with the best card to fill in the blank.',
-			extendedHelp: 'syntax: \`!cards-against-humanity <maxpoints> (midgamejoin)\`',
-			name: 'cards-against-humanity',
 			usage: '<maxPts:int{1,20}> (noMidJoin:boolean)'
 		});
 

@@ -31,11 +31,9 @@ export default class QuizCommand extends Command {
 			aliases: ['jeopardy'],
 			description: 'Answer a quiz question.',
 			extendedHelp: stripIndents`
-				syntax: \`!quiz (quizType) (difficulty)\`
 				**Types**: ${types.join(', ')}
 				**Difficulties**: ${difficulties.join(', ')}
 			`,
-			name: 'quiz',
 			usage: '(type:type) (difficulty:difficulty)'
 		});
 

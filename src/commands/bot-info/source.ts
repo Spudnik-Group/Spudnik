@@ -18,7 +18,6 @@ export default class SourceCommand extends Command {
 		super(store, file, directory, {
 			description: 'Returns a link to my source code!',
 			guarded: true,
-			name: 'source',
 			requiredPermissions: Permissions.FLAGS.EMBED_LINKS
 		});
 	}

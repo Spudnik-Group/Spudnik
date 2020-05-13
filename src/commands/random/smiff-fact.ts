@@ -17,9 +17,8 @@ export default class SmiffFactCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['smith-fact', 'willsmith'],
-			description: 'Returns a random Will Smith fact.',
-			name: 'smiff-fact'
+			aliases: ['smith-fact', 'willsmith', 'smiff-fact'],
+			description: 'Returns a random Will Smith fact.'
 		});
 	}
 

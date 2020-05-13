@@ -21,8 +21,7 @@ export default class ServerCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['server-stats'],
-			description: 'Returns statistics about the server.',
-			name: 'server'
+			description: 'Returns statistics about the server.'
 		});
 	}
 

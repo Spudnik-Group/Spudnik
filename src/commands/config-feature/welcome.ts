@@ -31,7 +31,6 @@ export default class WelcomeCommand extends Command {
 				\`on\` - enable the welcome message feature.
 				\`off\` - disable the welcome message feature.
 			`,
-			name: 'welcome',
 			permissionLevel: 6, // MANAGE_GUILD
 			subcommands: true,
 			usage: '<message|channel|on|off|status> (content:content)'

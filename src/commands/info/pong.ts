@@ -17,8 +17,7 @@ export default class PongCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'Used to return the ping.',
-			name: 'pong'
+			description: 'Used to return the ping.'
 		});
 	}
 

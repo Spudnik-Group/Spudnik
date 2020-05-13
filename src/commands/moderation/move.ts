@@ -20,7 +20,6 @@ export default class MoveCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Moves a message to a different channel.',
-			name: 'move',
 			permissionLevel: 1, // MANAGE_MESSAGES
 			requiredPermissions: Permissions.FLAGS.MANAGE_MESSAGES,
 			usage: '<message:msg> <channel:channel> [reason:...string]'

@@ -20,11 +20,8 @@ export default class SelfAssignableRoleCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: [
-				'sar'
-			],
+			aliases: ['sar', 'self-assignable-role'],
 			description: 'Used to configure the self-assignable roles feature.',
-			name: 'self-assignable-role',
 			permissionLevel: 2,
 			subcommands: true,
 			usage: '<add|remove> <role:role>'
