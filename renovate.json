@@ -9,7 +9,12 @@
   "extends": [
     "config:base",
     ":label(devops)",
-    ":automergeMinor"
+    ":automergeAll",
+    ":separateMajorReleases",
+    ":combinePatchMinorReleases",
+    "group:monorepos",
+    "group:recommended",
+    "helpers:disableTypesNodeMajor"
   ],
   "supportPolicy": [
     "lts"
