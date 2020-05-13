@@ -21,7 +21,6 @@ export default class PlayingCommand extends Command {
 			extendedHelp: stripIndents`
 				Supplying no game name provides you with a list of all users who are marked with the "Playing" status type.
 				Supplying a game name provides you with a list of all users with that game name as their status (case insensitive)`,
-			name: 'playing',
 			usage: '[game:...string]'
 		});
 	}
@@ -39,11 +38,17 @@ export default class PlayingCommand extends Command {
 		const gamePlayers: { [id: string]: Array<GuildMember> } = {};
 
 		msg.guild.members.forEach((member: GuildMember) => {
-			if (member.user.bot || !member.presence.activities) {
+			if (member.user.bot || !member.presence.activities.length) {
 				return;
 			}
 
-			const game = member.presence.activities.find((x: Activity) => x.name.includes(gameSearch));
+			const game = member.presence.activities.find((activity: Activity) => {
+				if (member.presence.activities.length > 1 && activity.name === 'Custom Status') {
+					return false;
+				}
+
+				return activity.name.toLowerCase().includes(gameSearch);
+			});
 			if (!game) {
 				return;
 			}
@@ -54,14 +59,12 @@ export default class PlayingCommand extends Command {
 			gamePlayers[game.name].push(member);
 		});
 
-		const sortedMessage = Object.keys(gamePlayers).sort()
-			.map((game: string) => `**${gamePlayers[game][0].presence.activities.find((x: Activity) => x.name === game).name}**\n${
-				gamePlayers[game].sort((a: GuildMember, b: GuildMember) => {
-					const aName = a.displayName.toLowerCase();
-					const bName = b.displayName.toLowerCase();
-
-					return aName < bName ? -1 : aName > bName ? 1 : 0;
-				}).map((member: GuildMember) => `<@${member.id}>`)
+		const sortedMessage = Object.keys(gamePlayers)
+			.sort()
+			.map((game: string) => `**${gamePlayers[game][0].presence.activities.find((activity: Activity) => activity.name === game).name}**\n${
+				gamePlayers[game]
+					.sort((a: GuildMember, b: GuildMember) => a.displayName.localeCompare(b.displayName))
+					.map((member: GuildMember) => `<@${member.id}>`)
 					.join('\n')}`)
 			.join('\n\n');
 

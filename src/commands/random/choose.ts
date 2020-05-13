@@ -18,8 +18,7 @@ export default class ChooseCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Have the bot choose something for you.',
-			usage: '<choice:string> <choice:string> [...]',
-			usageDelim: ', '
+			usage: '<choice:string> <choice:string> [...]'
 		});
 	}
 
@@ -32,14 +31,9 @@ export default class ChooseCommand extends Command {
 	 * @memberof ChooseCommand
 	 */
 	public async run(msg: KlasaMessage, [...choices]: string[]): Promise<KlasaMessage | KlasaMessage[]> {
-		const options: string[] = choices;
-		if (options.length < 2) {
-			return msg.sendSimpleError(`I can't choose for you if you don't give me more options!`, 3000);
-		}
-
 		return msg.sendEmbed(baseEmbed(msg)
 			.setAuthor(`${msg.client.user.username}`, msg.client.user.displayAvatarURL({ size: 128, format: 'png', dynamic: true }))
-			.setDescription(`I choose ${options[getRandomInt(0, options.length - 1)]}`)
+			.setDescription(`I choose ${choices[getRandomInt(0, choices.length - 1)]}`)
 			.setTitle(':thinking:'), '', { reply: msg.author });
 	}
 

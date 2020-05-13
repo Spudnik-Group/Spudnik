@@ -34,7 +34,7 @@ export default class ChuckFactCommand extends Command {
 			const { data } = await axios.get('http://api.icndb.com/jokes/random');
 
 			// Send the success response
-			return msg.sendSimpleEmbedWithTitle(unescape(data.value.joke), 'Chuck Norris Fact');
+			return msg.sendSimpleEmbedWithTitle(`\"${unescape(data.value.joke)}\"`, 'Chuck Norris Fact');
 		} catch (err) {
 			msg.client.emit('warn', `Error in command facts:chuck-fact: ${err}`);
 

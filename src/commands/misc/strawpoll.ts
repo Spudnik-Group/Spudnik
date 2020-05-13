@@ -19,8 +19,7 @@ export default class StrawpollCommand extends Command {
 		super(store, file, directory, {
 			aliases: ['poll'],
 			description: 'Generates a Strawpoll with the provided options.',
-			name: 'strawpoll',
-			usage: '<title:string> <options:string> [...]'
+			usage: '<title:string> <option:string> <option:string> [...]'
 		});
 	}
 
@@ -47,7 +46,9 @@ export default class StrawpollCommand extends Command {
 		} catch (err) {
 			msg.client.emit('warn', `Error in command misc:strawpoll: ${err}`);
 
-			return msg.sendSimpleError('There was an error with the request. Try again?', 3000);
+			return msg.sendSimpleError(stripIndents`
+				There was an error with the request. Try again?
+				${err}`, 3000);
 		}
 	}
 

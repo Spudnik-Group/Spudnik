@@ -20,7 +20,7 @@ export default class EightBallCommand extends Command {
 		super(store, file, directory, {
 			aliases: ['8ball'],
 			description: 'Ask the magic 8 ball a question.',
-			usage: '<query:string>'
+			usage: '<query:...string>'
 		});
 	}
 
