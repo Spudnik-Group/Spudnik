@@ -25,8 +25,7 @@ export default class HangmanCommand extends Command {
 	 */
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'Prevent a man from being hanged by guessing a word as fast as you can.',
-			name: 'hangman'
+			description: 'Prevent a man from being hanged by guessing a word as fast as you can.'
 		});
 	}
 

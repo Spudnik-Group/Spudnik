@@ -2,7 +2,6 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
 import axios from 'axios';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
@@ -27,10 +26,6 @@ export default class NPMCommand extends Command {
 		super(store, file, directory, {
 			aliases: ['npmpackage', 'npmpkg', 'nodepackagemanager'],
 			description: 'Returns details for an NPM package.',
-			extendedHelp: stripIndents`
-				syntax: \`!npm <package-name>\`
-			`,
-			name: 'npm',
 			requiredPermissions: ['EMBED_LINKS'],
 			usage: '<query:...string>'
 		});

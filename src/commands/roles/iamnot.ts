@@ -22,7 +22,6 @@ export default class IAmNotCommand extends SpudnikCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Used to remove a self-assignable role from yourself.',
-			name: 'iamnot',
 			requiredPermissions: Permissions.FLAGS.MANAGE_ROLES,
 			requiredSettings: ['roles.selfAssignable'],
 			usage: '<roleName:role|roleName:...string>'

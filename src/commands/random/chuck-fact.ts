@@ -17,9 +17,8 @@ export default class ChuckFactCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['chucknorris', 'norrisfact', 'chuck-norris'],
-			description: 'Returns a random Chuck Norris fact.',
-			name: 'chuck-fact'
+			aliases: ['chucknorris', 'norrisfact', 'chuck-norris', 'chuck-fact'],
+			description: 'Returns a random Chuck Norris fact.'
 		});
 	}
 
@@ -35,7 +34,7 @@ export default class ChuckFactCommand extends Command {
 			const { data } = await axios.get('http://api.icndb.com/jokes/random');
 
 			// Send the success response
-			return msg.sendSimpleEmbedWithTitle(unescape(data.value.joke), 'Chuck Norris Fact');
+			return msg.sendSimpleEmbedWithTitle(`\"${unescape(data.value.joke)}\"`, 'Chuck Norris Fact');
 		} catch (err) {
 			msg.client.emit('warn', `Error in command facts:chuck-fact: ${err}`);
 

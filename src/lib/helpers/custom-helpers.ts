@@ -6,6 +6,7 @@ import { TextChannel, MessageEmbed } from 'discord.js';
 import { oneLine } from 'common-tags';
 import { KlasaMessage, Command } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import * as fs from 'fs';
 
 /**
  * Get Embed Color.
@@ -71,7 +72,19 @@ export const getPermissionsFromLevel = (permissionsLevel: number): string => {
 };
 
 // TODO: add jsdoc
-export const isCommandCategoryEnabled = (msg: KlasaMessage, commandCategory: string): boolean => !msg.guild.settings.get(GuildSettings.Commands.DisabledCategories).includes(commandCategory.toLowerCase());
+export const getCommandCategories = (): string[] => fs.readdirSync('commands').filter((path: string) => fs.statSync(`commands/${path}`).isDirectory());
+
+// TODO: add jsdoc
+export const isValidCommandCategory = (categoryName: string): boolean => {
+	const categories: any[] = fs.readdirSync('commands')
+		.filter((path: string) => fs.statSync(`commands/${path}`).isDirectory());
+	const parsedCategory: string = categoryName.toLowerCase();
+
+	return Boolean(categories.find((g: string) => g === parsedCategory));
+};
+
+// TODO: add jsdoc
+export const isCommandCategoryEnabled = (msg: KlasaMessage, categoryName: string): boolean => !msg.guild.settings.get(GuildSettings.Commands.DisabledCategories).includes(categoryName.toLowerCase());
 
 // TODO: add jsdoc
 export const isCommandEnabled = (msg: KlasaMessage, command: Command): boolean => !msg.guild.settings.get(GuildSettings.Commands.Disabled).includes(command.name.toLowerCase());

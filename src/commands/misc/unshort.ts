@@ -19,7 +19,6 @@ export default class UnshortCommand extends Command {
 		super(store, file, directory, {
 			aliases: ['unshorten'],
 			description: 'Unshorten a link.',
-			name: 'unshort',
 			requiredPermissions: Permissions.FLAGS.EMBED_LINKS,
 			usage: '<query:string>'
 		});

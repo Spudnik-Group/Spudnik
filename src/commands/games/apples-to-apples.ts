@@ -30,8 +30,6 @@ export default class ApplesToApplesCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Compete to see who can come up with the best card to match an adjective.',
-			extendedHelp: 'syntax: \`!apples-to-apples <maxpoints>\`',
-			name: 'apples-to-apples',
 			usage: '<maxpoints:integer{1,20}>'
 		});
 

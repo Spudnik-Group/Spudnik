@@ -48,11 +48,11 @@ export const KlasaConfig: KlasaClientOptions = {
 	/**
 	 * Caching Options
 	 */
-	commandMessageLifetime: 1800,
-	messageCacheLifetime: 900,
-	messageCacheMaxSize: 300,
+	commandMessageLifetime: 1,
+	messageCacheLifetime: 1,
+	messageCacheMaxSize: 1,
 	// The above 2 options are ignored while the interval is 0
-	messageSweepInterval: 60,
+	messageSweepInterval: 1,
 
 	/**
 	 * Command Handler Options

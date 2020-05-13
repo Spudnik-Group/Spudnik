@@ -45,7 +45,7 @@ export default class extends Task {
 
 	private async query(url: string, body: string, token: string | null, list: Lists): Promise<any> {
 		try {
-			if (!token) throw new Error(`No token for ${list}`);
+			if (!token) throw `No token for ${list}`;
 
 			await axios.post(url, body, {
 				headers: { 'Content-Type': 'application/json', 'Authorization': token },

@@ -20,7 +20,6 @@ export default class KickCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Kicks a user.',
-			name: 'kick',
 			permissionLevel: 3, // KICK_MEMBERS
 			requiredPermissions: Permissions.FLAGS.KICK_MEMBERS,
 			usage: '<member:member> [reason:...string]'

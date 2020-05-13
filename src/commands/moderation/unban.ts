@@ -20,7 +20,6 @@ export default class UnBanCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Un-Bans the user.',
-			name: 'unban',
 			permissionLevel: 4, // BAN_MEMBERS
 			requiredPermissions: Permissions.FLAGS.BAN_MEMBERS,
 			usage: '<user:user> [reason:...string]'

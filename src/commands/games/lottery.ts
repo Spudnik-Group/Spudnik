@@ -25,8 +25,6 @@ export default class LotteryCommand extends Command {
 		super(store, file, directory, {
 			aliases: ['lotto'],
 			description: 'Attempt to win the lottery with 6 numbers.',
-			extendedHelp: 'syntax: \`!lottery <choices>\`',
-			name: 'lottery',
 			usage: '<choice:int{1,70}> [...]'
 		});
 	}

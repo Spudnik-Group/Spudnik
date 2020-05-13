@@ -19,12 +19,8 @@ export default class ClearWarnsCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: [
-				'clear-warn',
-				'warn-clear'
-			],
+			aliases: ['clear-warn', 'warn-clear', 'clear-warns'],
 			description: 'Clear warnings for the specified member.',
-			name: 'clear-warns',
 			permissionLevel: 3, // KICK_MEMBERS
 			usage: '<member:member> [reason:...string]'
 		});

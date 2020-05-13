@@ -19,11 +19,10 @@ export default class ListServersCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['ls'],
+			aliases: ['ls', 'list-servers'],
 			description: 'Returns a list of servers the bot is in.',
 			guarded: true,
 			hidden: true,
-			name: 'list-servers',
 			permissionLevel: 9 // BOT OWNER
 		});
 	}

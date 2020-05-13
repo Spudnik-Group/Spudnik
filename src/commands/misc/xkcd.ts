@@ -22,7 +22,6 @@ export default class XkcdCommand extends Command {
 			description: 'Returns a given XKCD comic number (or the latest if nothing specified)',
 			extendedHelp: stripIndents`
 				Supplying no comic number returns the latest comic.`,
-			name: 'xkcd',
 			usage: '[comicNumber:number]'
 		});
 	}
@@ -57,7 +56,9 @@ export default class XkcdCommand extends Command {
 		} catch (err) {
 			msg.client.emit('warn', `Error in command misc:xkcd: ${err}`);
 
-			return msg.sendSimpleError('There was an error with the request. Try again?', 3000);
+			return msg.sendSimpleError(stripIndents`
+				There was an error with the request. Try again?
+				${err}`, 3000);
 		}
 	}
 

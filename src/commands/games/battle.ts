@@ -27,8 +27,6 @@ export default class BattleCommand extends Command {
 		super(store, file, directory, {
 			aliases: ['fight', 'death-battle'],
 			description: 'Engage in a turn-based battle against another user or the AI.',
-			extendedHelp: 'syntax: \`!battle (@usermention)\`',
-			name: 'battle',
 			usage: '(opponent:user)'
 		});
 	}

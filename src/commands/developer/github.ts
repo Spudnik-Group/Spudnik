@@ -2,7 +2,6 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { stripIndents } from 'common-tags';
 import { MessageEmbed, Permissions } from 'discord.js';
 import axios from 'axios';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
@@ -21,10 +20,6 @@ export default class GithubCommand extends Command {
 		super(store, file, directory, {
 			aliases: ['gh'],
 			description: 'Returns details for a GitHub repository.',
-			extendedHelp: stripIndents`
-				syntax: \`!github <repo-name>\`
-			`,
-			name: 'github',
 			requiredPermissions: Permissions.FLAGS.EMBED_LINKS,
 			usage: '<query:string>'
 		});
@@ -39,6 +34,7 @@ export default class GithubCommand extends Command {
 	 * @memberof GithubCommand
 	 */
 	public async run(msg: KlasaMessage, [query]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
+		// TODO: change this to an arg
 		if (!query.includes('/')) return msg.sendSimpleError('Invalid repository, it must be in the format: `username/repositoryname`');
 
 		const githubEmbed: MessageEmbed = baseEmbed(msg)

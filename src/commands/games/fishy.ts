@@ -3,38 +3,37 @@
  */
 
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-import * as fishes from '../../extras/fish';
+import { fishes } from '../../extras/fish';
 import { getRandomInt } from '@lib/utils/util';
 
 /**
- * Starts a game of Slots.
+ * Starts a game of Fishy.
  *
  * @export
- * @class SlotsCommand
+ * @class FishyCommand
  * @extends {Command}
  */
-export default class SlotsCommand extends Command {
+export default class FishyCommand extends Command {
 
 	/**
-	 * Creates an instance of SlotsCommand.
+	 * Creates an instance of FishyCommand.
 	 *
 	 * @param {CommandoClient} client
-	 * @memberof SlotsCommand
+	 * @memberof FishyCommand
 	 */
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['fish', 'fishing'],
-			description: 'Go fishing.',
-			name: 'fishy'
+			description: 'Go fishing.'
 		});
 	}
 
 	/**
-	 * Run the "Slots" command.
+	 * Run the "Fishy" command.
 	 *
 	 * @param {KlasaMessage} msg
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
-	 * @memberof SlotsCommand
+	 * @memberof FishyCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const fishID = Math.floor(Math.random() * 10) + 1;

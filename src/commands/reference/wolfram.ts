@@ -16,7 +16,6 @@ export default class WolframCommand extends Command {
 		super(store, file, directory, {
 			aliases: ['wa'],
 			description: 'Query Wolfram Alpha with any mathematical question.',
-			name: 'wolfram',
 			usage: '<query:...string>'
 		});
 
@@ -42,7 +41,7 @@ export default class WolframCommand extends Command {
 				}
 			}).then((body: any) => body.data.queryresult.pods);
 
-			if (!pods || pods.error) throw new Error("Couldn't find an answer to that question!");
+			if (!pods || pods.error) throw "Couldn't find an answer to that question!";
 
 			responseEmbed.addField(
 				'**Input Interpretation:**',
@@ -101,7 +100,7 @@ export default class WolframCommand extends Command {
 			}
 
 			if (!somethingReturned) {
-				throw new Error(`Couldn't interpret an answer to that question! Try looking manually?\nhttps://www.wolframalpha.com/input/?i=${encodeURIComponent(pods[0].subpods[0].plaintext)}`);
+				throw `Couldn't interpret an answer to that question! Try looking manually?\nhttps://www.wolframalpha.com/input/?i=${encodeURIComponent(pods[0].subpods[0].plaintext)}`;
 			}
 
 			// Send the success response

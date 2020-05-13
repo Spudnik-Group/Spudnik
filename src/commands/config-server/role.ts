@@ -24,9 +24,8 @@ export default class RoleCommand extends Command {
 			extendedHelp: stripIndents`
 				**Subcommand Usage**:
 				\`add "role name" (hexcolor)\` - adds the role to your guild with the supplied color.
-				\`remove "role name" ("reason")\` - removes the role from your guild.
+				\`remove role name\` - removes the role from your guild.
 			`,
-			name: 'role',
 			permissionLevel: 2, // MANAGE_ROLES
 			requiredPermissions: Permissions.FLAGS.MANAGE_ROLES,
 			subcommands: true,
@@ -135,6 +134,7 @@ export default class RoleCommand extends Command {
 			const roleToDelete = rolesFound.first();
 
 			try {
+				// TODO: add a reason
 				await roleToDelete.delete()
 					.then(async (deletedRole: Role) => {
 						roleEmbed.setDescription(stripIndents`

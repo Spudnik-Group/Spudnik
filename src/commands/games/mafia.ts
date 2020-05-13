@@ -29,8 +29,7 @@ export default class MafiaCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['town-of-salem', 'werewolf'],
-			description: 'Who is the Mafia? Who is the doctor? Who is the detective? Will the Mafia kill them all?',
-			name: 'mafia'
+			description: 'Who is the Mafia? Who is the doctor? Who is the detective? Will the Mafia kill them all?'
 		});
 	}
 

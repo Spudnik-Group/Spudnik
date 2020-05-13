@@ -21,6 +21,7 @@ export default class TermsOfServiceCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
+			aliases: ['tos'],
 			description: 'Used to configure the Terms of Service for a guild.',
 			extendedHelp: stripIndents`
 				**Subcommand Usage**:
@@ -33,7 +34,6 @@ export default class TermsOfServiceCommand extends Command {
 				\`welcome enabled <boolean>\` - enable/disable terms of service welcome message.
 				\`welcome message <text>\` - set the welcome text to prompt users to accept the terms of service.
 			`,
-			name: 'tos',
 			permissionLevel: 6, // MANAGE_GUILD
 			subcommands: true,
 			usage: '<channel|title|body|get|welcome|list|status> (item:item) [text:string] [...]'

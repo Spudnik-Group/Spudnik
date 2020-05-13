@@ -18,7 +18,6 @@ export default class Base64EncodeCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Base64 encodes a string',
-			name: 'base64encode',
 			usage: '<stringToEncode:...string>'
 		});
 	}

@@ -19,7 +19,6 @@ export default class CoinFlipCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Flips a coin for you.',
-			name: 'coinflip',
 			requiredPermissions: Permissions.FLAGS.ATTACH_FILES
 		});
 	}

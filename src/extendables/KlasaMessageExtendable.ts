@@ -60,7 +60,7 @@ export default class extends Extendable {
 	public async sendSimpleError(this: KlasaMessage, description: string, timeout?: number | null): Promise<KlasaMessage | KlasaMessage[]> {
 		const promise: Promise<KlasaMessage | KlasaMessage[]> = this.sendEmbed(new MessageEmbed({
 			author: {
-				iconURL: this.client.user.displayAvatarURL(),
+				iconURL: this.client.user.displayAvatarURL({ size: 128, format: 'png', dynamic: true }),
 				name: `${this.client.user.username}`
 			},
 			color: 16711680,
@@ -85,7 +85,7 @@ export default class extends Extendable {
 	public async sendSimpleSuccess(this: KlasaMessage, description: string, timeout?: number | null): Promise<KlasaMessage | KlasaMessage[]> {
 		const promise: Promise<KlasaMessage | KlasaMessage[]> = this.sendEmbed(new MessageEmbed({
 			author: {
-				iconURL: this.client.user.displayAvatarURL(),
+				iconURL: this.client.user.displayAvatarURL({ size: 128, format: 'png', dynamic: true }),
 				name: `${this.client.user.username}`
 			},
 			color: 3447003,
@@ -110,7 +110,7 @@ export default class extends Extendable {
 	public async sendSimpleImage(this: KlasaMessage, description: string | null, url: string): Promise<KlasaMessage | KlasaMessage[]> {
 		return this.sendEmbed(new MessageEmbed({
 			author: {
-				iconURL: this.client.user.displayAvatarURL(),
+				iconURL: this.client.user.displayAvatarURL({ size: 128, format: 'png', dynamic: true }),
 				name: `${this.client.user.username}`
 			},
 			description,

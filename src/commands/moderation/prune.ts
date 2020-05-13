@@ -19,11 +19,7 @@ export default class PruneCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: [
-				'clean',
-				'purge',
-				'clear'
-			],
+			aliases: ['clean', 'purge', 'clear'],
 			description: 'Deletes messages.',
 			extendedHelp: stripIndents`
 				List of filters:
@@ -34,7 +30,6 @@ export default class PruneCommand extends Command {
 				\`me\`: Messages sent by you
 				\`links\`: Messages containing a link
 			`,
-			name: 'prune',
 			permissionLevel: 1, // MANAGE_MESSAGES
 			requiredPermissions: Permissions.FLAGS.MANAGE_MESSAGES,
 			usage: '[limit:integer] [links|invites|bots|me|uploads|user:user]'

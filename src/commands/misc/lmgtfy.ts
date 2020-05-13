@@ -16,10 +16,10 @@ export default class LmgtfyCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
+			aliases: ['google-this'],
 			description: 'Returns a Let Me Google That For You link, so you can school a n00b.',
-			name: 'lmgtfy',
 			requiredPermissions: Permissions.FLAGS.EMBED_LINKS,
-			usage: '<query:string>'
+			usage: '<query:...string>'
 		});
 	}
 

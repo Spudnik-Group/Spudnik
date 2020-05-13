@@ -16,7 +16,6 @@ export default class TVShowCommand extends Command {
 		super(store, file, directory, {
 			aliases: ['tvshows', 'tv', 'tvseries', 'tv-show'],
 			description: 'Finds a TV show on TMDB.org',
-			name: 'tvshow',
 			usage: '<query:...string>'
 		});
 

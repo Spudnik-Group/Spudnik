@@ -19,7 +19,6 @@ export default class CocktailCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns information about the supplied cocktail name. If no query is supplied, returns a random drink.',
-			name: 'cocktail',
 			usage: '[query:...string]'
 		});
 	}

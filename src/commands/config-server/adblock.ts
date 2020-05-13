@@ -21,7 +21,6 @@ export default class AdblockCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Enable or disable the adblock feature.',
-			name: 'adblock',
 			permissionLevel: 1, // MANAGE_MESSAGES
 			requiredPermissions: Permissions.FLAGS.MANAGE_MESSAGES,
 			subcommands: true,

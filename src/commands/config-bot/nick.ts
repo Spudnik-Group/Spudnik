@@ -17,11 +17,11 @@ export default class NickCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
+			aliases: ['nickname'],
 			description: 'Used to change the bot\'s nickname on your server, or reset it.',
 			extendedHelp: stripIndents`
 				Supplying no nickname resets the nickname to default.
 			`,
-			name: 'nick',
 			permissionLevel: 6, // MANAGE_GUILD
 			requiredPermissions: Permissions.FLAGS.MANAGE_NICKNAMES,
 			usage: '[nickName:string]'

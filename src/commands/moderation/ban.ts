@@ -20,7 +20,6 @@ export default class BanCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Bans the member, with a supplied reason',
-			name: 'ban',
 			permissionLevel: 4, // BAN_MEMBERS
 			requiredPermissions: Permissions.FLAGS.BAN_MEMBERS,
 			usage: '<member:user> <reason:...string>'

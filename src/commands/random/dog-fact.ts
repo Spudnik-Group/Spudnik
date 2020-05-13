@@ -16,8 +16,8 @@ export default class DogFactCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'Returns a random dog fact.',
-			name: 'dog-fact'
+			aliases: ['dog-fact'],
+			description: 'Returns a random dog fact.'
 		});
 	}
 

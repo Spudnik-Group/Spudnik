@@ -17,7 +17,6 @@ export default class MagicCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Displays a magical gif of Shia Labeouf.',
-			name: 'magic',
 			requiredPermissions: Permissions.FLAGS.ATTACH_FILES
 		});
 	}

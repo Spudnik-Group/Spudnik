@@ -20,7 +20,6 @@ export default class WarnCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Warn a member with a specified amount of points',
-			name: 'warn',
 			permissionLevel: 1, // MANAGE_MESSAGES
 			usage: '<member:member> <points:int> [reason:...string]'
 		});

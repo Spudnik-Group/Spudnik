@@ -17,7 +17,6 @@ export default class Hex2BinCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Converts hexadecimal to decimal',
-			name: 'hex2bin',
 			usage: '<numberToConvert:regex/^(0[x|X])?[0-9A-Fa-f]+$/>'
 		});
 	}

@@ -20,7 +20,6 @@ export default class WikiCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns the Wikipedia result of the supplied query. If no query is supplied, returns a random Wikipedia result.',
-			name: 'wiki',
 			usage: '[query:...string]'
 		});
 	}

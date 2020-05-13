@@ -18,9 +18,9 @@ export default class EightBallCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
+			aliases: ['8ball'],
 			description: 'Ask the magic 8 ball a question.',
-			name: '8ball',
-			usage: '<query:string>'
+			usage: '<query:...string>'
 		});
 	}
 

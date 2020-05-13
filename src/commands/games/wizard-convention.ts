@@ -28,9 +28,8 @@ export default class WizardConventionCommand extends Command {
 	 */
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['wiz-convention'],
-			description: 'Who is the Dragon? Who is the healer? Who is the mind reader? Will the Dragon eat them all?',
-			name: 'wizard-convention'
+			aliases: ['wiz-convention', 'wizard-convention'],
+			description: 'Who is the Dragon? Who is the healer? Who is the mind reader? Will the Dragon eat them all?'
 		});
 
 	}

@@ -18,7 +18,6 @@ export default class GitGudCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Informs someone that they should "git gud".',
-			name: 'gitgud',
 			usage: '[mention:member]'
 		});
 	}
@@ -34,10 +33,14 @@ export default class GitGudCommand extends Command {
 	public async run(msg: KlasaMessage, [mention]: [GuildMember]): Promise<KlasaMessage | KlasaMessage[]> {
 		const gitgudImageURL = 'http://i.imgur.com/NqpPXHu.jpg';
 
-		if (mention && mention !== null) {
-			return msg.sendEmbed(baseEmbed(msg).setImage(gitgudImageURL), '', {
-				reply: mention
-			});
+		if (mention) {
+			return msg.sendEmbed(
+				baseEmbed(msg)
+					.setImage(gitgudImageURL)
+					.setAuthor(msg.client.user.username, msg.client.user.displayAvatarURL({ size: 128, format: 'png', dynamic: true })),
+				'',
+				{ reply: mention }
+			);
 		}
 
 		return msg.sendSimpleImage(null, gitgudImageURL);

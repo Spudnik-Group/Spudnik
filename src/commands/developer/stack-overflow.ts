@@ -2,7 +2,6 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { stripIndents } from 'common-tags';
 import { MessageEmbed, Permissions } from 'discord.js';
 import axios from 'axios';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
@@ -23,10 +22,6 @@ export default class StackOverflowCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Returns results for the supplied query from Stack Overflow.',
-			extendedHelp: stripIndents`
-				syntax: \`!stack-overflow <query>\`
-			`,
-			name: 'stack-overflow',
 			requiredPermissions: Permissions.FLAGS.EMBED_LINKS,
 			usage: '<query:...string>'
 		});

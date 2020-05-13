@@ -20,7 +20,6 @@ export default class MoveCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Moves a message to a different channel.',
-			name: 'move',
 			permissionLevel: 1, // MANAGE_MESSAGES
 			requiredPermissions: Permissions.FLAGS.MANAGE_MESSAGES,
 			usage: '<message:msg> <channel:channel> [reason:...string]'
@@ -48,7 +47,7 @@ export default class MoveCommand extends Command {
 				const moveMessage = baseEmbed(msg)
 					.setAuthor(
 						`${originalMessageAuthor.displayName}`,
-						`${originalMessageAuthor.user.displayAvatarURL()}`
+						`${originalMessageAuthor.user.displayAvatarURL({ size: 128, format: 'png', dynamic: true })}`
 					)
 					.setDescription(`${originalMessage.content}\n\n`)
 					.setTimestamp(originalMessage.createdTimestamp)

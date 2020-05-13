@@ -11,14 +11,14 @@ export default class AvatarCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows a user\'s avatar',
-			usage: '[user:user]'
+			usage: '(user:optional-user)'
 		});
 	}
 
 	public async run(msg: KlasaMessage, [user = msg.author]: [User]): Promise<KlasaMessage | KlasaMessage[]> {
 		return msg.sendEmbed(baseEmbed(msg)
 			.addField('Avatar', user.tag)
-			.setImage(user.displayAvatarURL({ size: 512 })));
+			.setImage(user.displayAvatarURL({ size: 256, format: 'png', dynamic: true })));
 	}
 
 }

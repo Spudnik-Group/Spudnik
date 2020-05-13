@@ -10,17 +10,16 @@ import { baseEmbed } from '@lib/helpers/embed-helpers';
  * Returns info on the specified channel, or the current one.
  *
  * @export
- * @class ChannelIDCommand
+ * @class ChannelInfoCommand
  * @extends {Command}
  */
-export default class ChannelIDCommand extends Command {
+export default class ChannelInfoCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['cinfo'],
+			aliases: ['cinfo', 'channel-info'],
 			description: 'Returns info on the specified channel, or the current one.',
-			name: 'channelInfo',
-			usage: '[channel:channel]'
+			usage: '(channel:optional-channel)'
 		});
 	}
 
@@ -29,7 +28,7 @@ export default class ChannelIDCommand extends Command {
 	 *
 	 * @param {KlasaMessage} msg
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
-	 * @memberof ChannelIDCommand
+	 * @memberof ChannelInfoCommand
 	 */
 	public async run(msg: KlasaMessage, [content = msg.channel]: [Channel]): Promise<KlasaMessage | KlasaMessage[]> {
 		const channel = content as TextChannel;

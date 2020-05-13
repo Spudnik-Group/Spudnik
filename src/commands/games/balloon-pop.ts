@@ -27,9 +27,7 @@ export default class BalloonPopCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Don\'t let yourself be the last one to pump the balloon before it pops!',
-			extendedHelp: 'syntax: \`!balloon-pop (@usermention)\`',
-			name: 'balloon-pop',
-			usage: '(opponent:user)'
+			usage: '[opponent:user]'
 		});
 
 	}

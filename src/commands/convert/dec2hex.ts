@@ -17,7 +17,6 @@ export default class Dec2HexCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Converts decimal to hexadecimal',
-			name: 'dec2hex',
 			usage: '<numberToConvert:regex/^[0-9]+$/>'
 		});
 	}
