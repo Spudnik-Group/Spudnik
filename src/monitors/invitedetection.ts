@@ -20,7 +20,10 @@ export default class extends Monitor {
 	public async run(msg: KlasaMessage): Promise<any> {
 		if (!msg.guild || !msg.guild.settings.get(GuildSettings.AdblockEnabled)) return null;
 		if (await msg.hasAtLeastPermissionLevel(6)) return null;
-		if (!/(https?:\/\/)?(www\.)?(discord\.(gg|li|me|io)|discordapp\.com\/invite)\/.+/.test(msg.content)) return null;
+		if (!/(https?:\/\/)?(www\.)?(discord\.(gg|li|me|io|com)|discordapp\.com\/invite)\/.+/.test(msg.content)) return null;
+
+		// TODO: add modlog message here
+
 		await msg.delete()
 			.catch((err: Error) => this.client.emit('log', err, 'error'));
 
