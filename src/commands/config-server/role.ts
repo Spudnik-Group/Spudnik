@@ -29,7 +29,7 @@ export default class RoleCommand extends Command {
 			permissionLevel: 2, // MANAGE_ROLES
 			requiredPermissions: Permissions.FLAGS.MANAGE_ROLES,
 			subcommands: true,
-			usage: '<add|remove> <name:Role|name:string> (color:hexcolor)'
+			usage: '<add|remove> <name:role|name:string> (color:hexcolor)'
 		});
 	}
 
@@ -69,9 +69,9 @@ export default class RoleCommand extends Command {
 		}
 
 		roleEmbed.setDescription(stripIndents`
-					**Member:** ${msg.author.tag} (${msg.author.id})
-					**Action:** Added role '${name}' to the guild.
-				`);
+			**Member:** ${msg.author.tag} (${msg.author.id})
+			**Action:** Added role '${name}' to the guild.
+		`);
 
 		await modLogMessage(msg, roleEmbed);
 
