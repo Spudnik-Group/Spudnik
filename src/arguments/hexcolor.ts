@@ -8,7 +8,7 @@ export default class extends Argument {
 
 	public run(arg: string): any {
 		if (!arg) return; // allow no input
-		if (RegExp(/^#(?:[0-9A-Fa-f]{3}){1,2}$/i).test(arg)) {
+		if (RegExp(/^#([A-Fa-f0-9]{6})$/i).test(arg)) {
 			return arg;
 		}
 
