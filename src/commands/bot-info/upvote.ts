@@ -33,8 +33,7 @@ export default class UpvoteCommand extends Command {
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		return msg.sendSimpleEmbed(stripIndents`
 			Upvote Spudnik for the Motherland!
-			* [discord.boats](https://discordapp.com/channels/294483428651302924/453976646341361675/563127272635236373)
-			* [cloudlist.xyz](https://www.cloudlist.xyz/bots/398591330806398989)
+			* [discord.boats](https://discord.boats/bot/398591330806398989)
 			* [top.gg](https://top.gg/bot/398591330806398989)
 			* [botsfordiscord.com](https://botsfordiscord.com/bot/398591330806398989)
 			* [discordbotlist.com](https://discordbotlist.com/bots/398591330806398989)
@@ -44,6 +43,7 @@ export default class UpvoteCommand extends Command {
 
 			Review Spudnik for the Motherland!
 			* [discordapps.dev](https://discordapps.dev/en-GB/bots/398591330806398989)
+			* [bots.ondiscord.xyz](https://bots.ondiscord.xyz/bots/398591330806398989)
 		`);
 	}
 
