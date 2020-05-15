@@ -5,10 +5,16 @@ import { SpudnikCommand } from '@lib/structures/SpudnikCommand';
 export default class extends Inhibitor {
 
 	private defaultPerms: Readonly<BitField<PermissionString>> = new Permissions(
-        Permissions.FLAGS.VIEW_CHANNEL | Permissions.FLAGS.SEND_MESSAGES | Permissions.FLAGS.SEND_TTS_MESSAGES |
-        Permissions.FLAGS.EMBED_LINKS | Permissions.FLAGS.ATTACH_FILES | Permissions.FLAGS.READ_MESSAGE_HISTORY |
-        Permissions.FLAGS.MENTION_EVERYONE | Permissions.FLAGS.USE_EXTERNAL_EMOJIS | Permissions.FLAGS.ADD_REACTIONS
-    ).freeze();
+		Permissions.FLAGS.VIEW_CHANNEL
+		| Permissions.FLAGS.SEND_MESSAGES
+		| Permissions.FLAGS.SEND_TTS_MESSAGES
+		| Permissions.FLAGS.EMBED_LINKS
+		| Permissions.FLAGS.ATTACH_FILES
+		| Permissions.FLAGS.READ_MESSAGE_HISTORY
+		| Permissions.FLAGS.MENTION_EVERYONE
+		| Permissions.FLAGS.USE_EXTERNAL_EMOJIS
+		| Permissions.FLAGS.ADD_REACTIONS
+	).freeze();
 
 	public run(message: KlasaMessage, command: Command): void {
 		let missing: PermissionString[];
