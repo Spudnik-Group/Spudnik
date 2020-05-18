@@ -26,7 +26,7 @@ export default class GoodbyeCommand extends Command {
 			extendedHelp: stripIndents`
 				**Subcommand Usage**:
 				\`status\` - return the goodbye feature configuration details.
-				\`message (text to say goodbye/heckle)\` - set the goodbye message. Use { guild } for guild name, and { user } to reference the user leaving.
+				\`message <text to say send>\` - set the goodbye message. Use { guild } for guild name, and { user } to reference the user leaving.
 				\`channel <#channelMention>\` - set the channel for the goodbye message to be displayed.
 				\`on\` - enable the goodbye message feature.
 				\`off\` - disable the goodbye message feature.

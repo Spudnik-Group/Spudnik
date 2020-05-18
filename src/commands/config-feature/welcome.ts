@@ -26,7 +26,7 @@ export default class WelcomeCommand extends Command {
 			extendedHelp: stripIndents`
 				**Subcommand Usage**:
 				\`status\` - return the welcome feature configuration details.
-				\`message (text to welcome/heckle)\` - set the welcome message. Use { guild } for guild name, and { user } to reference the user joining.
+				\`message <text to send>\` - set the welcome message. Use { guild } for guild name, and { user } to reference the user joining.
 				\`channel <#channelMention>\` - set the channel for the welcome message to be displayed.
 				\`on\` - enable the welcome message feature.
 				\`off\` - disable the welcome message feature.

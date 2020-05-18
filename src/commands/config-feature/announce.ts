@@ -22,16 +22,17 @@ export default class AnnounceCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Have the bot post an announcement to a pre-configured or specified channel.',
+			// TODO: add subcommand usage
 			extendedHelp: stripIndents`
-				Supplying no channel clears the announcement channel.
 			`,
 			permissionLevel: 6, // MANAGE_GUILD
 			subcommands: true,
+			// TODO: add status subcommand
 			usage: '<channel|send|direct> <content:content> [text:...string]'
 		});
 
 		this.createCustomResolver('content', (arg: string, possible: Possible, message: KlasaMessage, [subCommand]: [string]) => {
-			if (subCommand === 'channel' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw 'Please provide a valid channel for the announcements to be displayed in.';
+			if (subCommand === 'channel' && (arg && !message.guild.channels.get(resolveChannel(arg)))) throw 'Please provide a valid channel for the announcements to be displayed in.';
 			if (subCommand === 'send' && !arg) throw 'Please include the text for the announcement.';
 			if (subCommand === 'direct' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw 'Please provide a valid channel for the announcement to be displayed in.';
 
