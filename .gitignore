@@ -20,3 +20,6 @@ package-lock.json
 
 # config stuff you shouldnt commit
 scripts/custom_init.sh
+
+# proprietary stuff
+src/commands/special-owner/*
