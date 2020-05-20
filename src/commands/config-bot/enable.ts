@@ -4,7 +4,7 @@
 
 import { MessageEmbed } from 'discord.js';
 import { stripIndents } from 'common-tags';
-import { modLogMessage, isCommandCategoryEnabled, isCommandEnabled, isValidCommandCategory } from '@lib/helpers/custom-helpers';
+import { modLogMessage, isCommandCategoryEnabled, isCommandEnabled } from '@lib/helpers/custom-helpers';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 import { commandOrCategory } from '@lib/helpers/resolvers';
@@ -25,10 +25,10 @@ export default class EnableCommand extends Command {
 			description: 'Enables a command or command group.',
 			guarded: true,
 			permissionLevel: 6, // MANAGE_GUILD
-			usage: '<cmdOrCat:optional-command|cmdOrCat:string>'
+			usage: '<commandOrCategory:commandOrCategory>'
 		});
 
-		this.createCustomResolver('cmdOrCat', commandOrCategory);
+		this.createCustomResolver('commandOrCategory', commandOrCategory);
 	}
 
 	/**
@@ -44,7 +44,6 @@ export default class EnableCommand extends Command {
 
 		if (typeof cmdOrCat === 'string') {
 			// Category
-			if (!isValidCommandCategory(cmdOrCat)) return msg.sendSimpleEmbed(`No commands or command categories matching that name. Use \`${msg.guild.settings.get(GuildSettings.Prefix)}commands\` to view a list of command categories.`, 3000);
 			if (isCommandCategoryEnabled(msg, cmdOrCat)) return msg.sendSimpleError(`The \`${cmdOrCat}\` category is already enabled.`, 3000);
 
 			await msg.guild.settings.update(GuildSettings.Commands.DisabledCategories, cmdOrCat.toLowerCase());

@@ -2,17 +2,17 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Command, Possible, KlasaMessage } from 'klasa';
+import { Possible, KlasaMessage, Command } from 'klasa';
 import { standardPlatforms } from '@lib/constants/game-platforms';
 import { resolveChannel } from './base';
 import { list } from '@lib/utils/util';
 import { isValidCommandCategory } from './custom-helpers';
 
 // TODO: add jsdoc
-export const commandOrCategory = (cmdOrCategory: string): string => {
+export const commandOrCategory = (cmdOrCategory: string, possible: Possible, message: KlasaMessage): Command | string => {
 	if (!cmdOrCategory) throw 'Please provide a valid command or command category name';
-	const command = this.client.commands.array().find((command: Command) => command.name.toLowerCase() === cmdOrCategory.toLowerCase());
-	if (command) return cmdOrCategory; // Valid command name
+	const command = message.client.commands.get(cmdOrCategory.toLowerCase());
+	if (command) return command; // Valid command name
 
 	if (isValidCommandCategory(cmdOrCategory)) return cmdOrCategory; // Valid category name
 
