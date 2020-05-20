@@ -14,7 +14,6 @@ export namespace GuildSettings {
 	}
 
 	export namespace Roles {
-		export const Muted = T<string>('roles.muted');
 		export const SelfAssignable = T<string[]>('roles.selfAssignable');
 	}
 

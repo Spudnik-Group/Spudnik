@@ -57,10 +57,10 @@ export default class MoveCommand extends Command {
 						true
 					);
 
-				if (reason) {
+				if (reason !== undefined) {
 					moveMessage.addField(
 						'Moved for:',
-						`${reason}\n`,
+						`${reason.trim()}\n`,
 						true
 					);
 				}
@@ -72,7 +72,11 @@ export default class MoveCommand extends Command {
 
 				if (originalMessage.embeds.length === 0) {
 					// Send the message to the correct channel
-					await (destinationChannel as TextChannel).send(moveMessage);
+					try {
+						await (destinationChannel as TextChannel).send(moveMessage);
+					} catch(err) {
+						console.log(err);
+					}
 				} else {
 					// Build the messages array
 					const messages: MessageEmbed[] = [];
@@ -80,7 +84,11 @@ export default class MoveCommand extends Command {
 					messages.concat(originalMessage.embeds);
 
 					// Send the messages to the correct channel
-					await (destinationChannel as TextChannel).send(messages);
+					try {
+						await (destinationChannel as TextChannel).send(messages);
+					} catch(err) {
+						console.log(err);
+					}
 				}
 
 				// Delete the original message, now that it's been moved
@@ -93,7 +101,7 @@ export default class MoveCommand extends Command {
 						**Member:** ${originalMessageAuthor.user.tag} (${originalMessageAuthor.id})
 						**Action:** Move
 						**Channels:** _from_ - <#${originalChannel.id}> > _to_ - <#${destinationChannel.id}>
-						**Reason:** ${reason}
+						**Reason:** ${reason || '_None provided_'}
 					`);
 
 				await modLogMessage(msg, moveModMessage);

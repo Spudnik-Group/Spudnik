@@ -7,7 +7,6 @@ Client.defaultGuildSchema
 		.add('disabled', 'string', { array: true })
 		.add('disabledCategories', 'string', { array: true }))
 	.add('roles', (folder: SchemaFolder) => folder
-		.add('muted', 'Role')
 		.add('selfAssignable', 'Role', { array: true }))
 	.add('starboard', (folder: SchemaFolder) => folder
 		.add('enabled', 'boolean')

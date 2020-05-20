@@ -18,7 +18,7 @@ export default class RolesCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'Lists default, muted, and self-assignable roles.'
+			description: 'Lists default and self-assignable roles.'
 		});
 	}
 
@@ -33,7 +33,6 @@ export default class RolesCommand extends Command {
 		const roleEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.RoleManager);
 		const guildAssignableRoles: string[] = msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);
 		const guildDefaultRole: string = msg.guild.settings.get(GuildSettings.Tos.Role);
-		const guildMutedRole: string = msg.guild.settings.get(GuildSettings.Roles.Muted);
 
 		if (guildAssignableRoles.length) {
 			const rolesListOut: string[] = [];
@@ -52,12 +51,8 @@ export default class RolesCommand extends Command {
 			roleEmbed.addField('Default (TOS) Role', `<@&${guildDefaultRole}>`, true);
 		}
 
-		if (guildMutedRole) {
-			roleEmbed.addField('Muted Role', `<@&${guildMutedRole}>`, true);
-		}
-
 		if (Array.isArray(roleEmbed.fields) && roleEmbed.fields.length === 0) {
-			roleEmbed.setDescription('This guild does not have a default role, muted role, or any self-assignable roles set.');
+			roleEmbed.setDescription('This guild does not have a default role or any self-assignable roles set.');
 		}
 
 		// Send the response
