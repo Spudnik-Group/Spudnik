@@ -43,11 +43,11 @@ export default class BattleCommand extends Command {
 		const opponent = opp ? opp : this.client.user;
 
 		if (opponent.id === msg.author.id) {
-			return msg.sendMessage('You may not fight yourself.', { reply: msg.author });
+			return msg.sendSimpleEmbedReply('You may not fight yourself.');
 		}
 
 		if (fighting.has(msg.channel.id)) {
-			return msg.sendMessage('Only one fight may be occurring per channel.', { reply: msg.author });
+			return msg.sendSimpleEmbedReply('Only one fight may be occurring per channel.');
 		}
 
 		fighting.add(msg.channel.id);
@@ -114,6 +114,7 @@ export default class BattleCommand extends Command {
 						continue;
 					}
 					choice = turn.first()!.content.toLowerCase();
+					await turn.first().delete();
 				} else {
 					const choices = ['fight', 'guard', 'special'];
 					choice = choices[Math.floor(Math.random() * choices.length)];
