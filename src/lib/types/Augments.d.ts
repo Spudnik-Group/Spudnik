@@ -12,6 +12,7 @@ declare module 'klasa' {
 		sendSimpleError(content: string, timeout?: number | null): Promise<KlasaMessage | KlasaMessage[]>;
 		sendSimpleSuccess(content: string, timeout?: number | null): Promise<KlasaMessage | KlasaMessage[]>;
 		sendSimpleImage(content: string, url: string, timeout?: number | null): Promise<KlasaMessage | KlasaMessage[]>;
+		sendSimpleEmbedReply(content: string | null): Promise<KlasaMessage | KlasaMessage[]>;
 	}
 
 	interface MessageAskOptions {

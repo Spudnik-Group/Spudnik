@@ -39,24 +39,24 @@ export default class RockPaperScissorsCommand extends Command {
 		const response = choices[Math.floor(Math.random() * choices.length)];
 
 		if (choice.toLowerCase() === 'rock') {
-			if (response === 'rock') return msg.sendMessage('Rock! Aw... A tie...', { reply: msg.author });
-			if (response === 'paper') return msg.sendMessage('Paper! Yes! I win!', { reply: msg.author });
-			if (response === 'scissors') return msg.sendMessage('Scissors! Aw... I lose...', { reply: msg.author });
+			if (response === 'rock') return msg.sendSimpleEmbedReply('Rock! Aw... A tie...');
+			if (response === 'paper') return msg.sendSimpleEmbedReply('Paper! Yes! I win!');
+			if (response === 'scissors') return msg.sendSimpleEmbedReply('Scissors! Aw... I lose...');
 		}
 
 		if (choice.toLowerCase() === 'paper') {
-			if (response === 'rock') return msg.sendMessage('Rock! Aw... I lose...', { reply: msg.author });
-			if (response === 'paper') return msg.sendMessage('Paper! Aw... A tie...', { reply: msg.author });
-			if (response === 'scissors') return msg.sendMessage('Scissors! Yes! I win!', { reply: msg.author });
+			if (response === 'rock') return msg.sendSimpleEmbedReply('Rock! Aw... I lose...');
+			if (response === 'paper') return msg.sendSimpleEmbedReply('Paper! Aw... A tie...');
+			if (response === 'scissors') return msg.sendSimpleEmbedReply('Scissors! Yes! I win!');
 		}
 
 		if (choice.toLowerCase() === 'scissors') {
-			if (response === 'rock') return msg.sendMessage('Rock! Yes! I win!', { reply: msg.author });
-			if (response === 'paper') return msg.sendMessage('Paper! Aw... I lose...', { reply: msg.author });
-			if (response === 'scissors') return msg.sendMessage('Scissors! Aw... A tie...', { reply: msg.author });
+			if (response === 'rock') return msg.sendSimpleEmbedReply('Rock! Yes! I win!');
+			if (response === 'paper') return msg.sendSimpleEmbedReply('Paper! Aw... I lose...');
+			if (response === 'scissors') return msg.sendSimpleEmbedReply('Scissors! Aw... A tie...');
 		}
 
-		return msg.sendMessage('I win by default, you little cheater.', { reply: msg.author });
+		return msg.sendSimpleEmbedReply('I win by default, you little cheater.');
 	}
 
 }

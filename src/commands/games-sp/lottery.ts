@@ -40,10 +40,10 @@ export default class LotteryCommand extends Command {
 		const lotto = Array.from({ length: 6 }, () => Math.floor(Math.random() * 70) + 1);
 		const similarities = lotto.filter((num: number, i: number) => choices[i] === num).length;
 
-		return msg.sendMessage(stripIndents`
+		return msg.sendSimpleEmbedReply(stripIndents`
 			${lotto.join(', ')}
 			You matched **${similarities}** numbers, which gives you **${prizes[similarities]}**! Congrats!
-		`, { reply: msg.author });
+		`);
 	}
 
 }

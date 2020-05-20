@@ -43,7 +43,7 @@ export default class ApplesToApplesCommand extends Command {
 	 * @memberof ApplesToApplesCommand
 	 */
 	public async run(msg: KlasaMessage, [maxPts]: [number]): Promise<KlasaMessage | KlasaMessage[]> {
-		if (this.playing.has(msg.channel.id)) return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author });
+		if (this.playing.has(msg.channel.id)) return msg.sendSimpleEmbedReply('Only one game may be occurring per channel.');
 		this.playing.add(msg.channel.id);
 		try {
 			await msg.sendMessage('You will need at least 2 more players, at maximum 10. To join, type `join game`.');
@@ -190,7 +190,7 @@ export default class ApplesToApplesCommand extends Command {
 		} catch (err) {
 			this.playing.delete(msg.channel.id);
 
-			return msg.sendMessage(`Oh no, an error occurred: \`${err.message}\`. Try again later!`, { reply: msg.author });
+			return msg.sendSimpleEmbedReply(`Error: \`${err.message}\`. Try again?`);
 		}
 	}
 

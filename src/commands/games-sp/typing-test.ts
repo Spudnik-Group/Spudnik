@@ -66,9 +66,9 @@ export default class TypingTestCommand extends Command {
 			max: 1,
 			time
 		});
-		if (!msgs.size || msgs.first().content !== sentence) return msg.sendMessage('Sorry! You lose!', { reply: msg.author });
+		if (!msgs.size || msgs.first().content !== sentence) return msg.sendSimpleEmbedReply('Sorry! You lose!');
 
-		return msg.sendMessage(`Nice job! 10/10! You deserve some cake! (Took ${(Date.now() - now) / 1000} seconds)`, { reply: msg.author });
+		return msg.sendSimpleEmbedReply(`Nice job! 10/10! You deserve some cake! (Took ${(Date.now() - now) / 1000} seconds)`);
 	}
 
 }

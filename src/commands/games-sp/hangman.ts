@@ -38,7 +38,7 @@ export default class HangmanCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		if (this.playing.has(msg.channel.id)) {
-			return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author });
+			return msg.sendSimpleEmbedReply('Only one game may be occurring per channel.');
 		}
 
 		this.playing.add(msg.channel.id);
@@ -111,7 +111,7 @@ export default class HangmanCommand extends Command {
 		} catch (err) {
 			this.playing.delete(msg.channel.id);
 
-			return msg.sendMessage(`Oh no, an error occurred: \`${err.message}\`. Try again later!`, { reply: msg.author });
+			return msg.sendSimpleEmbedReply(`Oh no, an error occurred: \`${err.message}\`. Try again later!`);
 		}
 	}
 

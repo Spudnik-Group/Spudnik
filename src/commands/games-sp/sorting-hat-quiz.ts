@@ -41,7 +41,7 @@ export default class SortingHatQuizCommand extends Command {
 	 * @memberof SortingHatQuizCommand
 	 */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		if (this.playing.has(msg.channel.id)) return msg.sendMessage('Only one quiz may be occurring per channel.', { reply: msg.author });
+		if (this.playing.has(msg.channel.id)) return msg.sendSimpleEmbedReply('Only one quiz may be occurring per channel.');
 		this.playing.add(msg.channel.id);
 		try {
 			const points: any = {
@@ -83,7 +83,7 @@ export default class SortingHatQuizCommand extends Command {
 					time: 120000
 				});
 
-				if (!choice.size) return msg.sendMessage('Oh no, you ran out of time! Too bad.');
+				if (!choice.size) return msg.sendMessage('Time\'s Up!');
 
 				const answer = answers[choices.indexOf(choice.first().content.toUpperCase())];
 
@@ -96,7 +96,7 @@ export default class SortingHatQuizCommand extends Command {
 
 			this.playing.delete(msg.channel.id);
 
-			return msg.sendMessage(stripIndents`
+			return msg.sendSimpleEmbedReply(stripIndents`
 				You are a member of... **${houses[house]}**!
 				_${descriptions[house]}_
 			`);

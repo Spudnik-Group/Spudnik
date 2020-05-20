@@ -43,9 +43,9 @@ export default class HungerGamesCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage, [...tributes]: [User[]]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (tributes.length < 2) return msg.sendMessage(`...${tributes[0]} wins, as they were the only tribute.`);
-		if (tributes.length > 24) return msg.sendMessage('Please do not enter more than 24 tributes.', { reply: msg.author });
-		if (new Set(tributes).size !== tributes.length) return msg.sendMessage('Please do not enter the same tribute twice.', { reply: msg.author });
-		if (this.playing.has(msg.channel.id)) return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author });
+		if (tributes.length > 24) return msg.sendSimpleEmbedReply('Please do not enter more than 24 tributes.');
+		if (new Set(tributes).size !== tributes.length) return msg.sendSimpleEmbedReply('Please do not enter the same tribute twice.');
+		if (this.playing.has(msg.channel.id)) return msg.sendSimpleEmbedReply('Only one game may be occurring per channel.');
 
 		this.playing.add(msg.channel.id);
 

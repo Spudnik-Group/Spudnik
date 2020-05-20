@@ -43,14 +43,14 @@ export default class SlotsCommand extends Command {
 		if (slotOne === slotTwo && slotOne === slotThree) {
 			return msg.sendMessage(stripIndents`
 				${slotOne}|${slotTwo}|${slotThree}
-				Wow! You won! Great job... er... luck!
+				Nice win!
 			`);
 		}
 
-		return msg.sendMessage(stripIndents`
+		return msg.sendSimpleEmbedReply(stripIndents`
 			${slotOne}|${slotTwo}|${slotThree}
-			Aww... You lost... Guess it's just bad luck, huh?
-		`, { reply: msg.author });
+			Sorry, you lose!
+		`);
 	}
 
 }

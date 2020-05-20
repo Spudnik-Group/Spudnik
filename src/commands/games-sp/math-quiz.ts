@@ -82,10 +82,10 @@ export default class MathQuizCommand extends Command {
 			time: 10000
 		});
 
-		if (!msgs.size) return msg.sendMessage(`Sorry, time is up! It was ${answer}.`, { reply: msg.author });
-		if (msgs.first().content !== answer.toString()) return msg.sendMessage(`Nope, sorry, it's ${answer}.`, { reply: msg.author });
+		if (!msgs.size) return msg.sendSimpleEmbedReply(`Sorry, time is up! It was ${answer}.`);
+		if (msgs.first().content !== answer.toString()) return msg.sendSimpleEmbedReply(`Nope, sorry, it's ${answer}.`);
 
-		return msg.sendMessage('Nice job! 10/10! You deserve some cake!', { reply: msg.author });
+		return msg.sendSimpleEmbedReply('Nice job! 10/10! You deserve some cake!');
 	}
 
 }

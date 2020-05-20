@@ -43,7 +43,7 @@ export default class CardsAgainstHumanityCommand extends Command {
 	 * @memberof CardsAgainstHumanityCommand
 	 */
 	public async run(msg: KlasaMessage, [maxPts, noMidJoin]: [number, boolean]): Promise<KlasaMessage | KlasaMessage[]> {
-		if (this.playing.has(msg.channel.id)) return msg.sendMessage('Only one game may be occurring per channel.', { reply: msg.author });
+		if (this.playing.has(msg.channel.id)) return msg.sendSimpleEmbedReply('Only one game may be occurring per channel.');
 		const midJoinDisabled = noMidJoin ? noMidJoin : false;
 		this.playing.add(msg.channel.id);
 		let joinLeaveCollector = null;
@@ -159,7 +159,7 @@ export default class CardsAgainstHumanityCommand extends Command {
 
 			if (pointViewCollector) (pointViewCollector).stop();
 
-			return msg.sendMessage(`Oh no, an error occurred: \`${err.message}\`. Try again later!`, { reply: msg.author });
+			return msg.sendSimpleEmbedReply(`Oh no, an error occurred: \`${err.message}\`. Try again later!`);
 		}
 	}
 

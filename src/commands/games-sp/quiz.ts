@@ -65,7 +65,7 @@ export default class QuizCommand extends Command {
 					type
 				}
 			});
-			if (!body.results) return msg.sendMessage('Oh no, a question could not be fetched. Try again later!', { reply: msg.author });
+			if (!body.results) return msg.sendSimpleEmbedReply('Oh no, a question could not be fetched. Try again later!');
 			const answers = body.results[0].incorrect_answers.map((answer: string) => decodeURIComponent(answer.toLowerCase()));
 			const correct = decodeURIComponent(body.results[0].correct_answer.toLowerCase());
 			answers.push(correct);
@@ -80,13 +80,13 @@ export default class QuizCommand extends Command {
 				max: 1,
 				time: 15000
 			});
-			if (!msgs.size) return msg.sendMessage(`Sorry, time is up! It was ${correct}.`, { reply: msg.author });
+			if (!msgs.size) return msg.sendSimpleEmbedReply(`Sorry, time is up! It was ${correct}.`);
 			const win = shuffled[choices.indexOf(msgs.first().content.toUpperCase())] === correct;
-			if (!win) return msg.sendMessage(`Nope, sorry, it's ${correct}.`, { reply: msg.author });
+			if (!win) return msg.sendSimpleEmbedReply(`Nope, sorry, it's ${correct}.`);
 
-			return msg.sendMessage('Nice job! 10/10! You deserve some cake!', { reply: msg.author });
+			return msg.sendSimpleEmbedReply('Nice job! 10/10! You deserve some cake!');
 		} catch (err) {
-			return msg.sendMessage(`Oh no, an error occurred: \`${err.message}\`. Try again later!`, { reply: msg.author });
+			return msg.sendSimpleEmbedReply(`Oh no, an error occurred: \`${err.message}\`. Try again later!`);
 		}
 	}
 

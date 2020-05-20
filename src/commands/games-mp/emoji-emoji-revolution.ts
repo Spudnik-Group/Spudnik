@@ -42,9 +42,9 @@ export default class EmojiEmojiRevolutionCommand extends Command {
 	 * @memberof EmojiEmojiRevolutionCommand
 	 */
 	public async run(msg: KlasaMessage, [opponent]: [User]): Promise<KlasaMessage | KlasaMessage[]> {
-		if (opponent.bot) return msg.sendMessage('Bots may not be played against.', { reply: msg.author });
-		if (opponent.id === msg.author.id) return msg.sendMessage('You may not play against yourself.', { reply: msg.author });
-		if (this.playing.has(msg.channel.id)) return msg.sendMessage('Only one fight may be occurring per channel.', { reply: msg.author });
+		if (opponent.bot) return msg.sendSimpleEmbedReply('Bots may not be played against.');
+		if (opponent.id === msg.author.id) return msg.sendSimpleEmbedReply('You may not play against yourself.');
+		if (this.playing.has(msg.channel.id)) return msg.sendSimpleEmbedReply('Only one fight may be occurring per channel.');
 
 		this.playing.add(msg.channel.id);
 

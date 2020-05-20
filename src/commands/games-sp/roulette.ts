@@ -62,7 +62,7 @@ export default class RouletteCommand extends Command {
 		const color = num ? red.includes(num) ? 'RED' : 'BLACK' : null;
 		const win = this.verifyWin(space, num);
 
-		return msg.sendMessage(`The result is **${num}${color ? ` ${color}` : ''}**. ${win ? 'You win!' : 'You lose...'}`, { reply: msg.author });
+		return msg.sendSimpleEmbedReply(`The result is **${num}${color ? ` ${color}` : ''}**. ${win ? 'You win!' : 'You lose...'}`);
 	}
 
 	private verifyWin(choice: string, result: any): boolean {

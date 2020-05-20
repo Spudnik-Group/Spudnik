@@ -35,12 +35,11 @@ export default class extends Extendable {
 
 	public async sendSimpleEmbedWithAuthorAndTitle(this: KlasaMessage, description: string, author: MessageEmbedAuthor | null, title: string | null, timeout?: number | null): Promise<KlasaMessage | KlasaMessage[]> {
 		const color = await this.guild.settings.get(GuildSettings.EmbedColor);
-		const promise: Promise<KlasaMessage | KlasaMessage[]> = this.sendEmbed(new MessageEmbed({
-			author,
-			color,
-			description,
-			title
-		}));
+		const promise: Promise<KlasaMessage | KlasaMessage[]> = this.sendEmbed(new MessageEmbed()
+			.setAuthor(author)
+			.setColor(color)
+			.setDescription(description)
+			.setTitle(title));
 
 		if (timeout) {
 			promise.then((reply: Message | Message[]) => {
@@ -58,14 +57,10 @@ export default class extends Extendable {
 	}
 
 	public async sendSimpleError(this: KlasaMessage, description: string, timeout?: number | null): Promise<KlasaMessage | KlasaMessage[]> {
-		const promise: Promise<KlasaMessage | KlasaMessage[]> = this.sendEmbed(new MessageEmbed({
-			author: {
-				iconURL: this.client.user.displayAvatarURL({ size: 128, format: 'png', dynamic: true }),
-				name: `${this.client.user.username}`
-			},
-			color: 16711680,
-			description
-		}));
+		const promise: Promise<KlasaMessage | KlasaMessage[]> = this.sendEmbed(new MessageEmbed()
+			.setAuthor(this.client.user.username, this.client.user.displayAvatarURL({ size: 128, format: 'png', dynamic: true }))
+			.setDescription(description)
+			.setColor(16711680));
 
 		if (timeout) {
 			promise.then((reply: Message | Message[]) => {
@@ -83,14 +78,10 @@ export default class extends Extendable {
 	}
 
 	public async sendSimpleSuccess(this: KlasaMessage, description: string, timeout?: number | null): Promise<KlasaMessage | KlasaMessage[]> {
-		const promise: Promise<KlasaMessage | KlasaMessage[]> = this.sendEmbed(new MessageEmbed({
-			author: {
-				iconURL: this.client.user.displayAvatarURL({ size: 128, format: 'png', dynamic: true }),
-				name: `${this.client.user.username}`
-			},
-			color: 3447003,
-			description
-		}));
+		const promise: Promise<KlasaMessage | KlasaMessage[]> = this.sendEmbed(new MessageEmbed()
+			.setAuthor(this.client.user.username, this.client.user.displayAvatarURL({ size: 128, format: 'png', dynamic: true }))
+			.setDescription(description)
+			.setColor(3447003));
 
 		if (timeout) {
 			promise.then((reply: Message | Message[]) => {
@@ -108,14 +99,16 @@ export default class extends Extendable {
 	}
 
 	public async sendSimpleImage(this: KlasaMessage, description: string | null, url: string): Promise<KlasaMessage | KlasaMessage[]> {
-		return this.sendEmbed(new MessageEmbed({
-			author: {
-				iconURL: this.client.user.displayAvatarURL({ size: 128, format: 'png', dynamic: true }),
-				name: `${this.client.user.username}`
-			},
-			description,
-			image: { url }
-		}));
+		return this.sendEmbed(new MessageEmbed()
+			.setAuthor(this.client.user.username, this.client.user.displayAvatarURL({ size: 128, format: 'png', dynamic: true }))
+			.setDescription(description)
+			.setImage(url));
+	}
+
+	public async sendSimpleEmbedReply(this: KlasaMessage, description: string | null): Promise<KlasaMessage | KlasaMessage[]> {
+		return this.sendEmbed(new MessageEmbed()
+			.setAuthor(this.client.user.username, this.client.user.displayAvatarURL({ size: 128, format: 'png', dynamic: true }))
+			.setDescription(description), { reply: this.author });
 	}
 
 }

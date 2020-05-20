@@ -52,7 +52,7 @@ export default class FishyCommand extends Command {
 		const fish = fishes[rarity];
 		const worth = getRandomInt(fish.min, fish.max);
 
-		return msg.sendMessage(`You caught a ${fish.symbol}. I bet it'd sell for around $${worth}.`, { reply: msg.author });
+		return msg.sendSimpleEmbedReply(`You caught a ${fish.symbol}. I bet it'd sell for around $${worth}.`);
 	}
 
 }
