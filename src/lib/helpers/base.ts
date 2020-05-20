@@ -86,6 +86,7 @@ export const awaitPlayers = async (msg: KlasaMessage, max: number, min: number, 
 
 	return verify.map((message: KlasaMessage) => message.author);
 };
+
 /**
  * Verify's a potential player entering an instance of a text-based game.
  *
@@ -108,6 +109,8 @@ export const verify = async (channel: Channel, user: User, time: number = 30000)
 	if (!verify.size) return 0;
 
 	const choice = verify.first().content.toLowerCase();
+
+	await verify.first().delete();
 
 	if (yes.includes(choice)) return true;
 	if (no.includes(choice)) return false;

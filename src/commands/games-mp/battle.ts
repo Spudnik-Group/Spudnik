@@ -6,7 +6,7 @@ import { stripIndents } from 'common-tags';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { verify } from '@lib/helpers/base';
 import { User } from 'discord.js';
-import { getRandomInt } from '@lib/utils/util';
+import { getRandomInt, delay } from '@lib/utils/util';
 
 /**
  * Allows users to battle each other or the bot.
@@ -102,46 +102,72 @@ export default class BattleCommand extends Command {
 						**${msg.author.username}**: ${userHP}HP
 						**${opponent.username}**: ${oppoHP}HP
 					`);
+
 					const filter = (res: any): boolean =>
 						res.author.id === user.id && ['fight', 'guard', 'special', 'run'].includes(res.content.toLowerCase());
 					const turn = await msg.channel.awaitMessages(filter, {
 						max: 1,
 						time: 30000
 					});
+
 					if (!turn.size) {
 						await msg.sendMessage('Sorry, time is up!');
+
 						reset();
+
 						continue;
 					}
+
 					choice = turn.first()!.content.toLowerCase();
+
 					await turn.first().delete();
 				} else {
 					const choices = ['fight', 'guard', 'special'];
+
 					choice = choices[Math.floor(Math.random() * choices.length)];
 				}
 
 				if (choice === 'fight') {
 					const damage = Math.floor(Math.random() * (guard ? 10 : 100)) + 1;
+
 					await msg.sendMessage(`${user} deals **${damage}** damage!`);
+
 					dealDamage(damage);
+
+					await delay(1500);
+
 					reset();
 				} else if (choice === 'guard') {
 					await msg.sendMessage(`${user} guards!`);
+
 					guard = true;
+
+					await delay(1500);
+
 					reset(false);
 				} else if (choice === 'special') {
 					const miss = Math.floor(Math.random() * 4);
+
 					if (miss) {
 						await msg.sendMessage(`${user}'s attack missed!`);
 					} else {
 						const damage = getRandomInt(100, guard ? 150 : 300);
+
 						await msg.sendMessage(`${user} deals **${damage}** damage!`);
+
 						dealDamage(damage);
 					}
+
+					await delay(1500);
+
 					reset();
 				} else if (choice === 'run') {
 					await msg.sendMessage(`${user} flees!`);
+
+					await delay(1500);
+
 					forfeit();
+
 					break;
 				} else {
 					await msg.sendMessage('I do not understand what you want to do.');

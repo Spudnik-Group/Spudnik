@@ -66,6 +66,7 @@ export default class HangmanCommand extends Command {
 					===========
 					\`\`\`
 				`);
+
 				const filter = (res: any): boolean => {
 					const choice = res.content.toLowerCase();
 
@@ -103,6 +104,8 @@ export default class HangmanCommand extends Command {
 					if (choice.length === 1) incorrect.push(choice);
 					points++;
 				}
+
+				await guess.first().delete();
 			}
 			this.playing.delete(msg.channel.id);
 			if (word.length === confirmation.length || guessed) return msg.sendMessage(`You won, it was ${word}!`);

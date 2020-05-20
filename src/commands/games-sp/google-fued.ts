@@ -28,7 +28,7 @@ export default class GoogleFeudCommand extends Command {
 		super(store, file, directory, {
 			aliases: ['google-fued'],
 			description: 'Attempt to determine the top suggestions for a Google search.',
-			usage: '<question:...string>'
+			usage: '(question:question)'
 		});
 
 		this.createCustomResolver('question', (arg: string) => arg ? arg : questions[Math.floor(Math.random() * questions.length)]);
@@ -78,8 +78,11 @@ export default class GoogleFeudCommand extends Command {
 
 				if (suggestions.includes(choice)) {
 					display[suggestions.indexOf(choice)] = choice;
+
+					await msgs.first().delete();
 				} else {
 					--tries;
+					// TODO: add a red X reaction to failed tries?
 				}
 			}
 

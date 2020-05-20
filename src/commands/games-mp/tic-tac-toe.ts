@@ -28,7 +28,7 @@ export default class TicTacToeCommand extends Command {
 		super(store, file, directory, {
 			aliases: ['tic-tac-toe'],
 			description: 'Play a game of tic-tac-toe with another user.',
-			usage: '<opponent:User>'
+			usage: '<opponent:user>'
 		});
 
 	}
@@ -97,6 +97,8 @@ export default class TicTacToeCommand extends Command {
 
 				sides[Number.parseInt(choice, 10)] = sign;
 				taken.push(choice);
+
+				await turn.first().delete();
 
 				if (
 					(sides[0] === sides[1] && sides[0] === sides[2])

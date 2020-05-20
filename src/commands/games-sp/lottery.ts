@@ -37,6 +37,7 @@ export default class LotteryCommand extends Command {
 	 * @memberof LotteryCommand
 	 */
 	public async run(msg: KlasaMessage, [...choices]: number[]): Promise<KlasaMessage | KlasaMessage[]> {
+		if (choices.length < 6) throw 'You need to choose 6 numbers to play the lotto!';
 		const lotto = Array.from({ length: 6 }, () => Math.floor(Math.random() * 70) + 1);
 		const similarities = lotto.filter((num: number, i: number) => choices[i] === num).length;
 

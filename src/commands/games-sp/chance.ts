@@ -3,6 +3,7 @@
  */
 
 import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { stripIndents } from 'common-tags';
 
 /**
  * Starts a game of Chance.
@@ -23,7 +24,7 @@ export default class ChanceCommand extends Command {
 		super(store, file, directory, {
 			aliases: ['1-in', 'one-in', 'lottery-classic'],
 			description: 'Attempt to win with a 1 in 1000 (or your choice) chance of winning.',
-			usage: '(chance:int{1})'
+			usage: '[chance:int{1}]'
 		});
 
 	}
@@ -35,11 +36,19 @@ export default class ChanceCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof ChanceCommand
 	 */
-	public async run(msg: KlasaMessage, [chance]: [number]): Promise<KlasaMessage | KlasaMessage[]> {
-		const loss = Math.floor(Math.random() * (chance ? Number(chance) : 1000));
-		if (!loss) return msg.sendSimpleEmbedReply('Nailed it! You won!');
+	public async run(msg: KlasaMessage, [chance = 1000]: [number]): Promise<KlasaMessage | KlasaMessage[]> {
+		const loss = Math.floor(Math.random() * chance);
+		if (!loss) {
+			return msg.sendSimpleEmbedReply(stripIndents`
+				Chance: 1 out of ${chance}
+				Nailed it! You won!
+			`);
+		}
 
-		return msg.sendSimpleEmbedReply('Sorry, you lost!');
+		return msg.sendSimpleEmbedReply(stripIndents`
+			Chance: 1 out of ${chance}
+			Sorry, you lost!
+		`);
 	}
 
 }

@@ -44,7 +44,9 @@ export default class ApplesToApplesCommand extends Command {
 	 */
 	public async run(msg: KlasaMessage, [maxPts]: [number]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (this.playing.has(msg.channel.id)) return msg.sendSimpleEmbedReply('Only one game may be occurring per channel.');
+
 		this.playing.add(msg.channel.id);
+
 		try {
 			await msg.sendMessage('You will need at least 2 more players, at maximum 10. To join, type `join game`.');
 			const awaitedPlayers = await awaitPlayers(msg, 10, 3);

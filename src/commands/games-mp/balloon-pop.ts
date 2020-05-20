@@ -5,7 +5,7 @@
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { verify } from '@lib/helpers/base';
 import { User } from 'discord.js';
-import { getRandomInt } from '@lib/utils/util';
+import { getRandomInt, delay } from '@lib/utils/util';
 
 /**
  * Starts a game of Balloon Pop.
@@ -43,11 +43,15 @@ export default class BalloonPopCommand extends Command {
 		const opponent = opp ? opp : this.client.user;
 		if (opponent.id === msg.author.id) return msg.sendSimpleEmbedReply('You may not play against yourself.');
 		if (this.playing.has(msg.channel.id)) return msg.sendSimpleEmbedReply('Only one game may be occurring per channel.');
+
 		this.playing.add(msg.channel.id);
+
 		try {
 			if (!opponent.bot) {
 				await msg.sendMessage(`${opponent}, do you accept this challenge?`);
+
 				const verification = await verify(msg.channel, opponent);
+
 				if (!verification) {
 					this.playing.delete(msg.channel.id);
 
@@ -58,23 +62,35 @@ export default class BalloonPopCommand extends Command {
 			let winner = null;
 			let remains = 500;
 			let turns = 0;
+
 			while (!winner) {
 				const user = userTurn ? msg.author : opponent;
 				let pump;
+
 				++turns;
+
 				if (!opponent.bot || (opponent.bot && userTurn)) {
 					await msg.sendMessage(`${user}, do you pump the balloon?`);
+
 					pump = await verify(msg.channel, user);
 				} else {
 					pump = Boolean(Math.floor(Math.random() * 2));
 				}
+
 				if (pump) {
 					await msg.sendMessage(`${user} pumps the balloon!`);
+
+					await delay(1500);
+
 					remains -= getRandomInt(25, 75);
+
 					const popped = Math.floor(Math.random() * remains);
+
 					if (popped <= 0) {
 						await msg.sendMessage('The balloon pops!');
+
 						winner = userTurn ? opponent : msg.author;
+
 						break;
 					}
 					if (turns >= 3) {
@@ -83,15 +99,20 @@ export default class BalloonPopCommand extends Command {
 					}
 				} else {
 					await msg.sendMessage(`${user} steps back!`);
+
+					await delay(1500);
+
 					turns = 0;
 					userTurn = !userTurn;
 				}
 			}
+
 			this.playing.delete(msg.channel.id);
 
 			return msg.sendMessage(`And the winner is... ${winner}! Great job!`);
 		} catch (err) {
 			this.playing.delete(msg.channel.id);
+
 			throw err;
 		}
 	}

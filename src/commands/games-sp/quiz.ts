@@ -39,10 +39,12 @@ export default class QuizCommand extends Command {
 
 		this
 			.createCustomResolver('type', (arg: string) => {
+				if (!arg) return arg;
 				if (types.includes(arg.toLowerCase())) return arg;
 				throw `Please provide a valid quiz type. Options are: ${list(types, 'or')}.`;
 			})
 			.createCustomResolver('difficulty', (arg: string) => {
+				if (!arg) return arg;
 				if (difficulties.includes(arg.toLowerCase())) return arg;
 				throw `Please provide a valid difficulty level. Options are: ${list(difficulties, 'or')}.`;
 			});
@@ -55,7 +57,7 @@ export default class QuizCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof QuizCommand
 	 */
-	public async run(msg: KlasaMessage, [type, difficulty]: [string, string]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [type = 'boolean', difficulty = 'easy']: [string, string]): Promise<KlasaMessage | KlasaMessage[]> {
 		try {
 			const { data: body } = await axios.get('https://opentdb.com/api.php', {
 				params: {

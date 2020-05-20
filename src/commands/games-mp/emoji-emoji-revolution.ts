@@ -5,7 +5,8 @@
 import { stripIndents } from 'common-tags';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { verify } from '@lib/helpers/base';
-import { User } from 'discord.js';
+import { User, Message } from 'discord.js';
+import { delay } from '@lib/utils/util';
 const emojis = ['⬆', '↗', '➡', '↘', '⬇', '↙', '⬅', '↖'];
 
 /**
@@ -77,6 +78,9 @@ export default class EmojiEmojiRevolutionCommand extends Command {
 
 				if (!win.size) {
 					await msg.sendMessage('Hmm... No one even tried that round.');
+
+					await delay(1500);
+
 					continue;
 				}
 
@@ -85,14 +89,18 @@ export default class EmojiEmojiRevolutionCommand extends Command {
 				if (winner.id === msg.author.id) {
 					++aPts;
 				} else {
-				 ++oPts;
+					++oPts;
 				}
+
+				await win.array().forEach((message: Message) => message.delete());
 
 				await msg.sendMessage(stripIndents`
 					${winner} won this round!
 					**${msg.author.username}**: ${aPts}
 					**${opponent.username}**: ${oPts}
 				`);
+
+				await delay(1500);
 			}
 
 			this.playing.delete(msg.channel.id);
