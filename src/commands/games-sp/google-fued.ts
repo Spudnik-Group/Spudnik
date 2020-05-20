@@ -5,6 +5,7 @@
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { MessageEmbed } from 'discord.js';
 import { questions } from '../../extras/google-feud';
+import axios from 'axios';
 
 /**
  * Starts a game of Google Feud.
@@ -41,7 +42,7 @@ export default class GoogleFeudCommand extends Command {
 	 * @memberof GoogleFeudCommand
 	 */
 	public async run(msg: KlasaMessage, [question]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
-		if (this.playing.has(msg.channel.id)) return msg.sendMessage('Only one fight may be occurring per channel.', { reply: msg.author });
+		if (this.playing.has(msg.channel.id)) return msg.sendSimpleEmbedReply('Only one fight may be occurring per channel.');
 		this.playing.add(msg.channel.id);
 
 		try {
@@ -90,18 +91,16 @@ export default class GoogleFeudCommand extends Command {
 		} catch (err) {
 			this.playing.delete(msg.channel.id);
 
-			return msg.sendMessage(`Oh no, an error occurred: \`${err.message}\`. Try again later!`, { reply: msg.author });
+			msg.client.emit('warn', `Error in command games-sp:google-fued: ${err}`);
+
+			return msg.sendSimpleError('There was an error with the request. Try again?', 3000);
 		}
 	}
 
 	private async fetchSuggestions(question: any): Promise<any> {
-		const { text } = await require('node-superfetch')
-			.get('https://suggestqueries.google.com/complete/search')
-			.query({
-				client: 'firefox',
-				q: question
-			});
-		const suggestions = JSON.parse(text)[1].filter((suggestion: any) => suggestion.toLowerCase() !== question.toLowerCase());
+		const { data } = await axios
+			.get(`https://suggestqueries.google.com/complete/search?client=firefox&q=${encodeURIComponent(question)}`);
+		const suggestions = data[1].filter((suggestion: any) => suggestion.toLowerCase() !== question.toLowerCase());
 
 		if (!suggestions.length) return null;
 
