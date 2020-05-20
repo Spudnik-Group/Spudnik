@@ -50,7 +50,6 @@ export default class SortingHatQuizCommand extends Command {
 				r: 0,
 				s: 0
 			};
-
 			const blacklist: any[] = [];
 			const questionNums = ['2', '3', '4', '5', '6', '7'];
 			let turn = 1;
@@ -66,7 +65,9 @@ export default class SortingHatQuizCommand extends Command {
 					const possible = questionNums.filter((num: string) => !blacklist.includes(num));
 					const value = possible[Math.floor(Math.random() * possible.length)];
 					const group = questions[value];
+
 					blacklist.push(value);
+
 					question = group[Math.floor(Math.random() * group.length)];
 				}
 
@@ -90,6 +91,8 @@ export default class SortingHatQuizCommand extends Command {
 				for (const [house, amount] of Object.entries(answer.points)) points[house] += amount;
 
 				++turn;
+
+				await choice.first().delete();
 			}
 
 			const house = Object.keys(points).sort((a: string, b: string) => points[b] - points[a])[0];

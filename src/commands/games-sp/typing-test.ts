@@ -38,10 +38,11 @@ export default class TypingTestCommand extends Command {
 			extendedHelp: stripIndents`
 				**Difficulties**: ${difficulties.join(', ')}
 			`,
-			usage: '<difficulty:string>'
+			usage: '(difficulty:difficulty)'
 		});
 
 		this.createCustomResolver('difficulty', (arg: string) => {
+			if (!arg) return arg;
 			if (difficulties.includes(arg.toLowerCase())) return arg;
 			throw `Please provide a valid difficulty level. Options are: ${list(difficulties, 'or')}.`;
 		});
@@ -54,7 +55,7 @@ export default class TypingTestCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof TypingTestCommand
 	 */
-	public async run(msg: KlasaMessage, [difficulty]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [difficulty = 'easy']: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const sentence = sentences[Math.floor(Math.random() * sentences.length)];
 		const time = times[difficulty];
 		await msg.reply(stripIndents`
