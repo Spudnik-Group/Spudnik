@@ -22,7 +22,7 @@ export default class KickCommand extends Command {
 			description: 'Kicks a user.',
 			permissionLevel: 3, // KICK_MEMBERS
 			requiredPermissions: Permissions.FLAGS.KICK_MEMBERS,
-			usage: '<member:member> [reason:...string]'
+			usage: '<member:user> [reason:...string]'
 		});
 	}
 
@@ -40,7 +40,7 @@ export default class KickCommand extends Command {
 
 		// Check if user is able to kick the mentioned user
 		if (!memberToKick.kickable || !(msg.member.roles.highest.comparePositionTo(memberToKick.roles.highest) > 0)) {
-			return msg.sendSimpleError(`I can't kick ${memberToKick}. Do they have the same or a higher role than me or you?`, 3000);
+			return msg.sendSimpleError(`I can't kick ${memberToKick}. Do they have the same or a higher role than you or me?`, 3000);
 		}
 
 		try {
@@ -50,7 +50,7 @@ export default class KickCommand extends Command {
 				**Moderator:** ${msg.author.tag} (${msg.author.id})
 				**Member:** ${memberToKick.user.tag} (${memberToKick.id})
 				**Action:** Kick
-				**Reason:** ${reason}
+				**Reason:** ${reason || '_None Provided_'}
 			`);
 
 			await modLogMessage(msg, kickEmbed);
@@ -68,7 +68,7 @@ export default class KickCommand extends Command {
 			**Error Message:** ${err}`);
 
 			// Inform the user the command failed
-			return msg.sendSimpleError(`Kicking ${member} for ${reason} failed!`, 3000);
+			return msg.sendSimpleError(`Kicking ${member}${reason ? ` for ${reason}` : ''} failed!`, 3000);
 		}
 	}
 

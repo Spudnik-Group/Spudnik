@@ -32,7 +32,7 @@ export default class PruneCommand extends Command {
 			`,
 			permissionLevel: 1, // MANAGE_MESSAGES
 			requiredPermissions: Permissions.FLAGS.MANAGE_MESSAGES,
-			usage: '[limit:integer] [links|invites|bots|me|uploads|user:user]'
+			usage: '<limit:integer{1,100}> [links|invites|bots|me|uploads|user:user]'
 		});
 	}
 
@@ -66,7 +66,7 @@ export default class PruneCommand extends Command {
 				`);
 			await modLogMessage(msg, modlogEmbed);
 
-			return msg.sendSimpleEmbed(`Pruned ${limit} messages`, 5000);
+			return msg.sendSimpleEmbed(`Pruned ${limit} message${(limit > 1) ? 's' : ''}`, 5000);
 		} catch (err) {
 			return this.catchError(msg, { limit, filter: filter.toString() }, err);
 		}

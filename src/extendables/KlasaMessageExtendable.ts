@@ -36,10 +36,10 @@ export default class extends Extendable {
 	public async sendSimpleEmbedWithAuthorAndTitle(this: KlasaMessage, description: string, author: MessageEmbedAuthor | null, title: string | null, timeout?: number | null): Promise<KlasaMessage | KlasaMessage[]> {
 		const color = await this.guild.settings.get(GuildSettings.EmbedColor);
 		const promise: Promise<KlasaMessage | KlasaMessage[]> = this.sendEmbed(new MessageEmbed()
-			.setAuthor(author)
+			.setAuthor(author || '')
 			.setColor(color)
 			.setDescription(description)
-			.setTitle(title));
+			.setTitle(title || ''));
 
 		if (timeout) {
 			promise.then((reply: Message | Message[]) => {

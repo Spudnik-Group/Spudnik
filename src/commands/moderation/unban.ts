@@ -3,9 +3,9 @@
  */
 
 import { stripIndents } from 'common-tags';
-import { MessageEmbed, User, Permissions } from 'discord.js';
-import { modLogMessage } from '@lib/helpers/custom-helpers';
+import { MessageEmbed, Permissions, User } from 'discord.js';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
+import { modLogMessage } from '@lib/helpers/custom-helpers';
 import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 
 /**
@@ -22,7 +22,7 @@ export default class UnBanCommand extends Command {
 			description: 'Un-Bans the user.',
 			permissionLevel: 4, // BAN_MEMBERS
 			requiredPermissions: Permissions.FLAGS.BAN_MEMBERS,
-			usage: '<user:user> [reason:...string]'
+			usage: '<member:user> [reason:...string]'
 		});
 	}
 
@@ -30,44 +30,40 @@ export default class UnBanCommand extends Command {
 	 * Run the "unban" command.
 	 *
 	 * @param {KlasaMessage} msg
-	 * @param {{ user: GuildMember, reason: string }} args
+	 * @param {{ user: User, reason: string }} args
 	 * @returns {(Promise<Message | Message[] | any>)}
 	 * @memberof UnBanCommand
 	 */
-	public async run(msg: KlasaMessage, [user, reason]: [User, string]): Promise<KlasaMessage | KlasaMessage[]> {
+	public async run(msg: KlasaMessage, [member, reason]: [User, string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const unbanEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.UnBan);
 
 		try {
-			await msg.guild.members.unban(user, `Un-Banned by: ${msg.author.tag} (${msg.author.id}) for: ${reason}`);
+			await msg.guild.members.unban(member, `Un-Banned by: ${msg.author.tag} (${msg.author.id}) for: ${reason}`);
 
 			// Set up embed message
 			unbanEmbed.setDescription(stripIndents`
 				**Moderator:** ${msg.author.tag} (${msg.author.id})
-				**User:** ${user.tag} (${user.id})
-				**Action:** UnBan
-				**Reason:** ${reason}`);
+				**User:** ${member.tag} (${member.id})
+				**Action:** Unban
+				**Reason:** ${reason || '_None provided_'}`);
 
 			await modLogMessage(msg, unbanEmbed);
 
 			// Send the success response
 			return msg.sendEmbed(unbanEmbed);
 		} catch (err) {
-			return this.catchError(msg, { user, reason }, err);
+			// Emit warn event for debugging
+			msg.client.emit('warn', stripIndents`
+			Error occurred in \`kick\` command!
+			**Server:** ${msg.guild.name} (${msg.guild.id})
+			**Author:** ${msg.author.tag} (${msg.author.id})
+			**Time:** ${new Timestamp('MMMM D YYYY [at] HH:mm:ss [UTC]Z').display(msg.createdTimestamp)}
+			**Input:** \`${member.tag} (${member.id})\` || \`${reason}\`
+			**Error Message:** ${err}`);
+
+			// Inform the user the command failed
+			return msg.sendSimpleError(`Unbanning ${member}${reason ? ` for ${reason}` : ''} failed!`, 3000);
 		}
-	}
-
-	private catchError(msg: KlasaMessage, args: { user: User; reason: string }, err: Error): Promise<KlasaMessage | KlasaMessage[]> {
-		// Emit warn event for debugging
-		msg.client.emit('warn', stripIndents`
-		Error occurred in \`unban\` command!
-		**Server:** ${msg.guild.name} (${msg.guild.id})
-		**Author:** ${msg.author.tag} (${msg.author.id})
-		**Time:** ${new Timestamp('MMMM D YYYY [at] HH:mm:ss [UTC]Z').display(msg.createdTimestamp)}
-		**Input:** \`${args.user.tag} (${args.user.id})\` || \`${args.reason}\`
-		**Error Message:** ${err}`);
-
-		// Inform the user the command failed
-		return msg.sendSimpleError(`Unbanning ${args.user} for ${args.reason} failed!`, 3000);
 	}
 
 }
