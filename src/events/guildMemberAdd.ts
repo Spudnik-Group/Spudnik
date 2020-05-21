@@ -38,7 +38,7 @@ export default class extends Event {
 			}
 		}
 
-		if (Boolean(member.user.bot) && tosWelcomeEnabled && tosWelcomeMessage && tosWelcomeChannel && tosRole) {
+		if (!Boolean(member.user.bot) && tosWelcomeEnabled && tosWelcomeMessage && tosWelcomeChannel && tosRole) {
 			const message = tosWelcomeMessage.replace('{guild}', guild.name).replace('{user}', `<@${member.id}>`);
 			const channel = guild.channels.get(tosWelcomeChannel);
 			const role = guild.roles.get(tosRole);
