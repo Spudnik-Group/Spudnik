@@ -2,16 +2,12 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Event, EventStore } from 'klasa';
+import { Event } from 'klasa';
 import { TextChannel, Message, GuildChannel, Guild, MessageEmbed } from 'discord.js';
 import { SpudConfig } from '@lib//config/spud-config';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 
 export default class extends Event {
-
-	public constructor(store: EventStore, file: string[], directory: string) {
-		super(store, file, directory, { name: 'MESSAGE_REACTION_REMOVE', emitter: store.client.ws });
-	}
 
 	public async run(event: any): Promise<void> {
 		if (!event.guild_id) return; // Ignore non-guild events
