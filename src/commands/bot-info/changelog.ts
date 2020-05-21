@@ -5,6 +5,7 @@
 import { CommandStore, KlasaMessage, Command } from 'klasa';
 import { Permissions } from 'discord.js';
 import axios, { AxiosResponse } from 'axios';
+import { shorten } from '@lib/utils/util';
 
 /**
  * Returns GitHub release notes for the 3 most recent releases.
@@ -45,7 +46,7 @@ export default class ChangelogCommand extends Command {
 				output += `
 
 					- *${release.name}* -
-					${release.body}`;
+					${shorten(release.body, 250)}`;
 			});
 
 			output += `
