@@ -1,8 +1,4 @@
 {
-  "assignees": [
-    "naterchrdsn",
-    "develogix"
-  ],
   "baseBranches": [
     "staging"
   ],
@@ -10,7 +6,6 @@
     "config:base",
     ":label(devops)",
     ":automergeAll",
-    ":separateMajorReleases",
     ":combinePatchMinorReleases",
     "group:monorepos",
     "group:recommended",

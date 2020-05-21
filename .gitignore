@@ -14,3 +14,12 @@ node_modules
 
 #other node stuffs
 package-lock.json
+
+#other annoying things
+**/.DS_Store
+
+# config stuff you shouldnt commit
+scripts/custom_init.sh
+
+# proprietary stuff
+src/commands/special-owner/*

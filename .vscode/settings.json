@@ -1,0 +1,19 @@
+{
+    "fileHeaderComment.parameter":{
+        "*":{
+            "commentbegin": "/*",
+            "commentprefix": " *",
+            "commentend": " */",
+            "company": "Spudnik Group",
+            "blankline": ""
+        }
+    },
+    "fileHeaderComment.template":{
+        "*":[
+            "${commentBegin}",
+            "${commentprefix} Copyright (c) ${year} ${company}",
+            "${commentend}",
+            "${blankline}"
+        ]
+    }
+}

@@ -3,24 +3,25 @@
 		"target": "esnext",
 		"module": "commonjs",
 		"lib": [
-			"esnext"
+			"esnext",
+			"dom"
 		],
 		"sourceMap": true,
 		"allowJs": true,
 		"checkJs": true,
-		"outDir": "./dist",
+		"outDir": "dist",
 		"removeComments": true,
 		"strict": false,
-		"noImplicitAny": true,
 		"noUnusedLocals": true,
 		"moduleResolution": "node",
-		"baseUrl": ".",
+		"baseUrl": "./src",
+		"allowSyntheticDefaultImports": true,
 		"experimentalDecorators": true,
-		"resolveJsonModule": true
-	},
-	"include": [
-		"./launch.ts",
-		"./src/**/*.json",
-		"./src/**/*.ts"
-	]
+		"forceConsistentCasingInFileNames": true,
+		"paths": {
+            "@utils/*": ["./lib/util/*"],
+			"@lib/*": ["./lib/*"],
+			"@root/*": ["./*"]
+        }
+	}
 }
