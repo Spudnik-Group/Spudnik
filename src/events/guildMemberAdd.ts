@@ -68,7 +68,7 @@ export default class extends Event {
 					await messageSent.delete();
 
 					roleEmbed.setDescription(stripIndents`
-						**Member:** ${messageSent.author.tag} (${messageSent.author.id})
+						**Member:** ${member.user.tag} (${member.id})
 						**Action:** The default (TOS) role of <@&${role.id}> for the guild ${messageSent.guild.name} has been applied.
 					`);
 
