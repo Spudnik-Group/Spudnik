@@ -18,6 +18,7 @@ export default class RollCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
+			aliases: ['roll'],
 			description: 'Roll one die with x sides + any modifiers, with an optional reason.',
 			extendedHelp: 'syntax: `!roll "[# of sides | [# of dice]d[# of sides]+modifiers]" [reason] >`',
 			usage: '[roll:string] [reason:...string]'

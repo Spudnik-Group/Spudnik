@@ -16,7 +16,7 @@ export default class MathFactCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['math-fact'],
+			aliases: ['mathfact'],
 			description: 'Returns a random math fact.'
 		});
 	}

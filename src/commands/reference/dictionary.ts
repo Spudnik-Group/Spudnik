@@ -24,6 +24,7 @@ export default class DefineCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
+			aliases: ['define'],
 			description: 'Returns the definition of a supplied word. Uses the Merriam-Webster Collegiate Dictionary API.',
 			usage: '<query:...string>'
 		});

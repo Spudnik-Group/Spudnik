@@ -28,7 +28,7 @@ export default class EmojiEmojiRevolutionCommand extends Command {
 	 */
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['eer'],
+			aliases: ['eer', 'emojiemojirevolution'],
 			description: 'Can you type arrow emoji faster than anyone else has ever typed them before?',
 			usage: '<opponent:user>'
 		});

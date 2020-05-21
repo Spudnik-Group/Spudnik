@@ -21,6 +21,7 @@ export default class StackOverflowCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
+			aliases: ['stackoverflow'],
 			description: 'Returns results for the supplied query from Stack Overflow.',
 			requiredPermissions: Permissions.FLAGS.EMBED_LINKS,
 			usage: '<query:...string>'

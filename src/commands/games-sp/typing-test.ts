@@ -33,7 +33,7 @@ export default class TypingTestCommand extends Command {
 	 */
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['typing-game', 'typing-test'],
+			aliases: ['typing-game', 'typingtest'],
 			description: 'See how fast you can type a sentence in a given time limit.',
 			extendedHelp: stripIndents`
 				**Difficulties**: ${difficulties.join(', ')}

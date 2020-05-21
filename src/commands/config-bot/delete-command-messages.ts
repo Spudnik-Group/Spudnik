@@ -20,7 +20,7 @@ export default class DeleteCommandMessagesCommand extends Command {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: [
-				'delete-command-messages'
+				'deletecommandmessages'
 			],
 			description: 'Enable or disable the Delete Command Messages feature.',
 			permissionLevel: 1, // MANAGE_MESSAGES

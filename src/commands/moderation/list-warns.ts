@@ -19,7 +19,7 @@ export default class ListWarnsCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['list-warn', 'warn-list', 'warns', 'list-warns'],
+			aliases: ['list-warn', 'warn-list', 'warns', 'listwarns'],
 			description: 'List warns for the guild.'
 		});
 	}

@@ -26,6 +26,7 @@ export default class BalloonPopCommand extends Command {
 	 */
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
+			aliases: ['balloonpop'],
 			description: 'Don\'t let yourself be the last one to pump the balloon before it pops!',
 			usage: '[opponent:user]'
 		});

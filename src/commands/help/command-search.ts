@@ -18,7 +18,7 @@ export default class CommandSearchCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['command-search'],
+			aliases: ['commandsearch'],
 			description: 'Search for a command with the given text.',
 			guarded: true,
 			requiredPermissions: Permissions.FLAGS.EMBED_LINKS,
