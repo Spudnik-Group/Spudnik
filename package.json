@@ -74,7 +74,7 @@
         "eslint-plugin-unicorn": "20.0.0",
         "js-base64": "2.5.2",
         "nodemon": "1.19.4",
-        "typescript": "3.9.2"
+        "typescript": "3.9.3"
     },
     "_moduleAliases": {
         "@utils": "./dist/lib/util",
