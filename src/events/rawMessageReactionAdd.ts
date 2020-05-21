@@ -10,6 +10,7 @@ export default class extends Event {
 		super(store, file, directory, { name: 'MESSAGE_REACTION_ADD', emitter: store.client.ws });
 	}
 
+	// eslint-disable-next-line @typescript-eslint/require-await
 	public async run(event: any): Promise<void> {
 		this.client.emit('starboardMessageReactionAdd', event);
 	}
