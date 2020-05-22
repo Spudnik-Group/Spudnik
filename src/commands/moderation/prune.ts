@@ -68,7 +68,7 @@ export default class PruneCommand extends Command {
 
 			return msg.sendSimpleEmbed(`Pruned ${limit} message${(limit > 1) ? 's' : ''}`, 5000);
 		} catch (err) {
-			return this.catchError(msg, { limit, filter: filter?.toString() }, err);
+			return this.catchError(msg, { limit, filter: filter !== null ? filter.toString() : '' }, err);
 		}
 	}
 
