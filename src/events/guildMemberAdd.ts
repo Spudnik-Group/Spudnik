@@ -44,6 +44,8 @@ export default class extends Event {
 			const role = guild.roles.get(tosRole);
 
 			if (channel && role) {
+				await delay(2500);
+
 				const messageSent = await (channel as TextChannel).send(message);
 
 				const REACTIONS = { YES: '✅', NO: '❎' };
