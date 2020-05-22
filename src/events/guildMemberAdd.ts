@@ -64,8 +64,12 @@ export default class extends Event {
 				const roleEmbed = specialEmbed(messageSent as KlasaMessage, specialEmbedTypes.RoleManager);
 
 				if (Boolean(reactions.size) && reactions.firstKey() === REACTIONS.YES) {
-					await member.roles.add(role.id);
-					await messageSent.delete();
+					try {
+						await member.roles.add(role.id);
+						await messageSent.delete();
+					} catch (err) {
+						await (channel as TextChannel).send(`erm... ${err}`);
+					}
 
 					roleEmbed.setDescription(stripIndents`
 						**Member:** ${member.user.tag} (${member.id})
