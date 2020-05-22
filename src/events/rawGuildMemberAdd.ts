@@ -2,9 +2,9 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Event, KlasaMessage } from 'klasa';
+import { Event, EventStore, KlasaMessage } from 'klasa';
 import { SpudConfig } from '@lib//config/spud-config';
-import { TextChannel, GuildMember, Permissions } from 'discord.js';
+import { TextChannel, Permissions } from 'discord.js';
 import { modLogMessage } from '@lib/helpers/custom-helpers';
 import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
@@ -13,8 +13,13 @@ import { stripIndents } from 'common-tags';
 
 export default class extends Event {
 
-	public async run(member: GuildMember): Promise<void> {
-		const { guild } = member;
+	public constructor(store: EventStore, file: string[], directory: string) {
+		super(store, file, directory, { name: 'GUILD_MEMBER_ADD', emitter: store.client.ws });
+	}
+
+	public async run(data: any): Promise<void> {
+		const guild = this.client.guilds.get(data.guild_id);
+		const member = guild.members.add(data);
 
 		if (SpudConfig.botListGuilds.includes(guild.id)) return; // Guild is on Blacklist, ignore.
 
@@ -37,6 +42,8 @@ export default class extends Event {
 				this.client.emit('warn', `There was an error trying to welcome a new guild member in ${guild}, the channel may no longer exist.`);
 			}
 		}
+
+		console.log('4');
 
 		if (!Boolean(member.user.bot) && tosWelcomeEnabled && tosWelcomeMessage && tosWelcomeChannel && tosRole) {
 			const message = tosWelcomeMessage.replace('{guild}', guild.name).replace('{user}', `<@${member.id}>`);
