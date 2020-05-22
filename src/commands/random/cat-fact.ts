@@ -16,7 +16,7 @@ export default class CatFactCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['cat-fact'],
+			aliases: ['catfact'],
 			description: 'Returns a random cat fact.'
 		});
 	}

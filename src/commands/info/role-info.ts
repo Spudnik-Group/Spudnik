@@ -14,7 +14,7 @@ export default class RoleInfoComand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['role-info'],
+			aliases: ['roleinfo'],
 			description: 'Get information on a role with an id or a mention.',
 			usage: '<Role:role>'
 		});

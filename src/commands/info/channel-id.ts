@@ -17,7 +17,7 @@ export default class ChannelIDCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['cid', 'channel-id', 'channelid', 'channelID'],
+			aliases: ['cid', 'channelid', 'channelID'],
 			description: 'Returns the id of the specified channel, or the current one.',
 			usage: '(channel:optional-channel)'
 		});

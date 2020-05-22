@@ -33,7 +33,7 @@ export default class MathQuizCommand extends Command {
 	 */
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['math-game', 'math-quiz'],
+			aliases: ['math-game', 'mathquiz'],
 			description: 'See how fast you can answer a math problem in a given time limit.',
 			extendedHelp: stripIndents`
 				**Difficulties**: ${difficulties.join(', ')}

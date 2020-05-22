@@ -28,7 +28,7 @@ export default class SortingHatQuizCommand extends Command {
 	 */
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['sorting-hat', 'pottermore', 'hogwarts', 'sorting-hat-quiz'],
+			aliases: ['sorting-hat', 'pottermore', 'hogwarts', 'sortinghatquiz'],
 			description: 'Take a quiz to determine your Hogwarts house.'
 		});
 	}

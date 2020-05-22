@@ -38,7 +38,7 @@ export default class extends Event {
 			}
 		}
 
-		if (Boolean(member.user.bot) && tosWelcomeEnabled && tosWelcomeMessage && tosWelcomeChannel && tosRole) {
+		if (!Boolean(member.user.bot) && tosWelcomeEnabled && tosWelcomeMessage && tosWelcomeChannel && tosRole) {
 			const message = tosWelcomeMessage.replace('{guild}', guild.name).replace('{user}', `<@${member.id}>`);
 			const channel = guild.channels.get(tosWelcomeChannel);
 			const role = guild.roles.get(tosRole);
@@ -68,7 +68,7 @@ export default class extends Event {
 					await messageSent.delete();
 
 					roleEmbed.setDescription(stripIndents`
-						**Member:** ${messageSent.author.tag} (${messageSent.author.id})
+						**Member:** ${member.user.tag} (${member.id})
 						**Action:** The default (TOS) role of <@&${role.id}> for the guild ${messageSent.guild.name} has been applied.
 					`);
 

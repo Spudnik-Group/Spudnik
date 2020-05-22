@@ -16,7 +16,7 @@ export default class YearFactCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['year-fact'],
+			aliases: ['yearfact'],
 			description: 'Returns a random year fact.'
 		});
 	}

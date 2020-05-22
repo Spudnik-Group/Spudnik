@@ -28,7 +28,7 @@ export default class CardsAgainstHumanityCommand extends Command {
 	 */
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['crude-cards', 'pretend-youre-xyzzy', 'cah'],
+			aliases: ['crude-cards', 'pretend-youre-xyzzy', 'cah', 'cards-against-humanity'],
 			description: 'Compete to see who can come up with the best card to fill in the blank.',
 			nsfw: true,
 			usage: '<maxPts:int{1,20}> [noMidJoin:boolean]'

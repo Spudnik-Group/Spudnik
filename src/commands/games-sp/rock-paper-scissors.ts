@@ -22,7 +22,7 @@ export default class RockPaperScissorsCommand extends Command {
 	 */
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['rps'],
+			aliases: ['rps', 'rock-paper-scissors'],
 			description: 'Play Rock-Paper-Scissors.',
 			usage: '<choice:string>'
 		});

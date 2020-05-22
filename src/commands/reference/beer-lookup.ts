@@ -22,6 +22,7 @@ export default class BrewCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
+			aliases: ['brew'],
 			description: 'Returns information about a brewery or brew. Uses the BreweryDB API.',
 			usage: '<query:...string>'
 		});

@@ -19,7 +19,7 @@ export default class EmbedColorCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['embed-color'],
+			aliases: ['embedcolor'],
 			description: 'Used to change the default embed color the bot uses for responses, or reset it.',
 			extendedHelp: stripIndents`
 				Supplying no hex color resets the embed color to default.

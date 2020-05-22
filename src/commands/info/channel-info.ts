@@ -17,7 +17,7 @@ export default class ChannelInfoCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['cinfo', 'channel-info'],
+			aliases: ['cinfo', 'channelinfo'],
 			description: 'Returns info on the specified channel, or the current one.',
 			usage: '(channel:optional-channel)'
 		});

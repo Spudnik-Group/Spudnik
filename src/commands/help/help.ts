@@ -24,7 +24,7 @@ export default class HelpCommand extends Command {
 			description: 'Used to return helpful information on the bot, or detailed information for a specified command.',
 			guarded: true,
 			requiredPermissions: Permissions.FLAGS.EMBED_LINKS,
-			usage: '(command:cmd)'
+			usage: '[command:cmd]'
 		});
 	}
 

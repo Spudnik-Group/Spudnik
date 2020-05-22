@@ -16,7 +16,7 @@ export default class DateFactCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['date-fact'],
+			aliases: ['datefact'],
 			description: 'Returns a random date fact.'
 		});
 	}

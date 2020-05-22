@@ -74,7 +74,7 @@ export default class MoveCommand extends Command {
 					// Send the message to the correct channel
 					try {
 						await (destinationChannel as TextChannel).send(moveMessage);
-					} catch(err) {
+					} catch (err) {
 						console.log(err);
 					}
 				} else {
@@ -86,7 +86,7 @@ export default class MoveCommand extends Command {
 					// Send the messages to the correct channel
 					try {
 						await (destinationChannel as TextChannel).send(messages);
-					} catch(err) {
+					} catch (err) {
 						console.log(err);
 					}
 				}

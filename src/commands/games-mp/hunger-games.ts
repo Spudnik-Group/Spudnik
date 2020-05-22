@@ -28,7 +28,7 @@ export default class HungerGamesCommand extends Command {
 	 */
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['hunger-games-simulator', 'brant-steele'],
+			aliases: ['hunger-games-simulator', 'brant-steele', 'hungergames'],
 			description: 'Simulate a Hunger Games match with up to 24 tributes.',
 			usage: '<tributes:user> [...]'
 		});

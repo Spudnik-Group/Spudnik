@@ -12,6 +12,7 @@ export default class SoftbanCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
+			aliases: ['soft-ban'],
 			description: 'Soft-Bans the user, with a supplied reason',
 			permissionLevel: 4, // BAN_MEMBERS
 			requiredPermissions: Permissions.FLAGS.BAN_MEMBERS,

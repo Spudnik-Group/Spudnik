@@ -31,7 +31,7 @@ Client.defaultGuildSchema
 		.add('role', 'Role')
 		.add('welcome', (folder2: SchemaFolder) => folder2
 			.add('enabled', 'boolean')
-			.add('message', 'string', { 'default': '' }))
+			.add('message', 'string', { 'default': 'Hi {user}, Welcome to {guild}! Terms of service are above, in 5 seconds reactions will appear below to accept or reject. You must react to the message that you are highlighted in.' }))
 		.add('messages', 'any', { array: true }))
 	.add('embedColor', 'string', { 'default': '555555' })
 	.add('language', 'Language', { 'default': 'en-US' })

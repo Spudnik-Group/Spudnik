@@ -26,7 +26,7 @@ export default class TicTacToeCommand extends Command {
 	 */
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['tic-tac-toe'],
+			aliases: ['tictactoe'],
 			description: 'Play a game of tic-tac-toe with another user.',
 			usage: '<opponent:user>'
 		});
