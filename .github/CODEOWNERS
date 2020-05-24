@@ -2,18 +2,7 @@
 # Each line is a file pattern followed by one or more owners.
 .gitignore        @spudnik-group/authors
 .travis.yml       @spudnik-group/authors
-CODEOWNERS        @spudnik-group/authors
 LICENSE           @spudnik-group/authors
 README.md         @spudnik-group/authors
-Spudnik.png       @spudnik-group/authors
-Spudnik_icon.png  @spudnik-group/authors
-app.yaml          @spudnik-group/authors
-assets.zip.enc    @spudnik-group/authors
-package.json      @spudnik-group/authors
-tsconfig.json     @spudnik-group/authors
-tslint.json       @spudnik-group/authors
-typings.d.ts      @spudnik-group/authors
-typings.json      @spudnik-group/authors
-scripts/*         @spudnik-group/authors
 src/lib/*         @spudnik-group/authors
 src/launch.ts     @spudnik-group/authors
