@@ -192,7 +192,7 @@ export default class extends Language {
 		COMMAND_STATS: (color, stats, uptime, usage) => new MessageEmbed()
 			.setColor(color)
 			.setDescription('**Spudnik Statistics**')
-			.addField('❯ Uptime', Duration.toNow(Date.now() - (uptime.CLIENT * 1000)), true)
+			.addField('❯ Uptime', Duration.toNow(Date.now() - (uptime.CLIENT / 1000)), true)
 			.addField('❯ Process Stats', stripIndents`
 						• Memory Usage: ${usage.RAM_USED}
 						• Node Version: ${process.version}
