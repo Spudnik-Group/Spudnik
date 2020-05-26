@@ -6,10 +6,7 @@
     "config:base",
     ":label(devops)",
     ":automergeAll",
-    ":combinePatchMinorReleases",
-    "group:monorepos",
-    "group:recommended",
-    "helpers:disableTypesNodeMajor"
+    ":automergeBranch"
   ],
   "supportPolicy": [
     "lts"

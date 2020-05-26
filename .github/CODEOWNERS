@@ -1,5 +1,3 @@
-# Lines starting with '#' are comments.
-# Each line is a file pattern followed by one or more owners.
 .gitignore        @spudnik-group/authors
 .travis.yml       @spudnik-group/authors
 LICENSE           @spudnik-group/authors
