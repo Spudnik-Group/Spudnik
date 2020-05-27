@@ -4,7 +4,7 @@
 
 # Spudnik
 
-### Spudnik is a free and open source Discord chat bot focused on guild management and adding interesting and useful functionality to your server. It was built on top of some of the most popular and widely used frameworks for extendibility, and written with organization and stability in mind. It also ships with ZERO weeb commands/references!
+### Spudnik is a Discord bot focused on guild management and adding interesting and useful functionality to your server. It was built on top of some of the most popular and widely used frameworks for extendibility, and written with organization and stability in mind. It also ships with ZERO weeb commands/references!
 
 [![Add to Discord][img-button-add]][url-invite] [![Join Support Server][img-button-support]][url-support]
 
@@ -12,31 +12,29 @@
 
 [![Documentation][img-button-docs]][url-docs] [![Feature Requests][img-button-feathub]][url-feathub] [![Project Board][img-button-project]][url-github-project-board]
 
-If you are hosting an instance of Spudnik yourself, please make sure it is for private use only in your own Discord servers. Do not make it a public bot, advertise it as your own, or list it on public sites. We will make sure it is taken down as an impostor.
-
-Instead, fork the bot and contribute! Ongoing contributors will be invited to join the team and help grow the community!
+If you are hosting an instance of Spudnik yourself, please make sure it is for private use only in your own Discord servers. Do not make it a public bot, advertise it as your own, or list it on public sites.
 
 </div>
 
 [url-docs-commands]: https://docs.spudnik.io/commands/
 [url-docs-getting-started]: https://docs.spudnik.io/getting-started/
 
+[img-button-docs]: https://i.imgur.com/Lmp9cb1.png
 [url-docs]: https://docs.spudnik.io/
-[img-button-docs]: https://i.imgur.com/bLyWo9q.png
 
-[img-banner]: https://i.imgur.com/y0dl0sN.png
+[img-banner]: https://i.imgur.com/3SWhvKR.png
 [url-homepage]: https://spudnik.io
 
-[img-button-feathub]: https://i.imgur.com/hznbDlJ.png
+[img-button-feathub]: https://i.imgur.com/PAifeov.png
 [url-feathub]: https://feathub.com/Spudnik-Group/Spudnik
 
-[img-button-add]: https://i.imgur.com/v3WWi7e.png
+[img-button-add]: https://i.imgur.com/lUbJiw1.png
 [url-invite]: https://spudnik.io/invite
 
-[img-button-support]: https://i.imgur.com/NCr9cL8.png
+[img-button-support]: https://i.imgur.com/uNzWSEd.png
 [url-support]: https://spudnik.io/support
 
-[img-button-project]: https://i.imgur.com/jqWPmk4.png
+[img-button-project]: https://i.imgur.com/s5wWEmN.png
 [url-github-project-board]: https://github.com/orgs/Spudnik-Group/projects/1
 
 [img-current-release]: https://img.shields.io/github/release/Spudnik-Group/Spudnik.svg?style=flat-square

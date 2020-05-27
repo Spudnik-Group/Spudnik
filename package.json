@@ -18,7 +18,7 @@
     ],
     "main": "dist/launch.js",
     "scripts": {
-        "preinstall": "npm i -g node-gyp typescript@3.6.5 rimraf",
+        "preinstall": "npm i -g node-gyp typescript@3.9.3 rimraf",
         "lint": "eslint --ext ts src/**",
         "clean:all": "npm run clean:node_modules && npm run clean:dist",
         "clean:node_modules": "rimraf ./node_modules",
