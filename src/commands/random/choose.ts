@@ -30,7 +30,7 @@ export default class ChooseCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof ChooseCommand
 	 */
-	public async run(msg: KlasaMessage, [...choices]: string[]): Promise<KlasaMessage | KlasaMessage[]> {
+	public run(msg: KlasaMessage, [...choices]: string[]): Promise<KlasaMessage | KlasaMessage[]> {
 		return msg.sendEmbed(baseEmbed(msg)
 			.setAuthor(`${msg.client.user.username}`, msg.client.user.displayAvatarURL({ size: 128, format: 'png', dynamic: true }))
 			.setDescription(`I choose ${choices[getRandomInt(0, choices.length - 1)]}`)

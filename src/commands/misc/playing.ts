@@ -33,7 +33,7 @@ export default class PlayingCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof PlayingCommand
 	 */
-	public async run(msg: KlasaMessage, [game]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
+	public run(msg: KlasaMessage, [game]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const gameSearch = game ? game.toLowerCase() : '';
 		const gamePlayers: { [id: string]: Array<GuildMember> } = {};
 

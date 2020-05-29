@@ -32,7 +32,7 @@ export default class EightBallCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof EightBallCommand
 	 */
-	public async run(msg: KlasaMessage, [query]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
+	public run(msg: KlasaMessage, [query]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		let response = 'Error getting answer. Try again later?';
 		if (eightBall && eightBall.length > 0) {
 			response = eightBall[getRandomInt(0, eightBall.length) - 1];

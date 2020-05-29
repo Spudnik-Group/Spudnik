@@ -29,7 +29,7 @@ export default class SourceCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof SourceCommand
 	 */
-	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+	public run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		return msg.sendSimpleEmbed('<https://github.com/Spudnik-Group/Spudnik>');
 	}
 

@@ -29,7 +29,7 @@ export default class SupportCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof SupportCommand
 	 */
-	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+	public run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		return msg.sendSimpleEmbed('<https://spudnik.io/support>');
 	}
 

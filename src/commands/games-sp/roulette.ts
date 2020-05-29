@@ -57,7 +57,7 @@ export default class RouletteCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof RouletteCommand
 	 */
-	public async run(msg: KlasaMessage, [space]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
+	public run(msg: KlasaMessage, [space]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const num: number = Math.floor(Math.random() * 37);
 		const color = num ? red.includes(num) ? 'RED' : 'BLACK' : null;
 		const win = this.verifyWin(space, num);

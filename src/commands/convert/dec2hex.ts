@@ -28,7 +28,7 @@ export default class Dec2HexCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof Dec2HexCommand
 	 */
-	public async run(msg: KlasaMessage, [numberToConvert]: [number]): Promise<KlasaMessage | KlasaMessage[]> {
+	public run(msg: KlasaMessage, [numberToConvert]: [number]): Promise<KlasaMessage | KlasaMessage[]> {
 		return msg.sendSimpleEmbedWithAuthor(`${numberToConvert} = 0x${Convert.dec2hex(numberToConvert.toString()).toUpperCase()}`, { name: 'Decimal to Hexadecimal Conversion:' });
 	}
 

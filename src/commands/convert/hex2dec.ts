@@ -28,7 +28,7 @@ export default class Hex2DecCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof Hex2DecCommand
 	 */
-	public async run(msg: KlasaMessage, [numberToConvert]: [any]): Promise<KlasaMessage | KlasaMessage[]> {
+	public run(msg: KlasaMessage, [numberToConvert]: [any]): Promise<KlasaMessage | KlasaMessage[]> {
 		numberToConvert = numberToConvert.input;
 		numberToConvert = numberToConvert.toLowerCase().startsWith('0x') ? `0x${numberToConvert.toLowerCase().replace('0x', '').toUpperCase()}` : `0x${numberToConvert.toUpperCase()}`;
 

@@ -31,7 +31,7 @@ export default class LmgtfyCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof LmgtfyCommand
 	 */
-	public async run(msg: KlasaMessage, [query]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
+	public run(msg: KlasaMessage, [query]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		return msg.sendSimpleEmbed(`<http://lmgtfy.com/?q=${encodeURI(query)}>`);
 	}
 

@@ -30,7 +30,7 @@ export default class FeedbackCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof FeedbackCommand
 	 */
-	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+	public run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		return msg.sendSimpleEmbed(stripIndents`
 			*Give us Feedback!*
 			

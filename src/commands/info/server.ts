@@ -32,7 +32,7 @@ export default class ServerCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof ServerCommand
 	 */
-	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+	public run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const serverEmbed: MessageEmbed = baseEmbed(msg)
 			.setDescription('**Server Statistics**')
 			.setThumbnail(msg.guild.iconURL({ format: 'png' }))

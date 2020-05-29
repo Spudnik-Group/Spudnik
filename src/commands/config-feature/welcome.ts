@@ -174,7 +174,7 @@ export default class WelcomeCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof WelcomeCommand
 	 */
-	public async status(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+	public status(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const welcomeEmbed = specialEmbed(msg, specialEmbedTypes.Welcome);
 		const welcomeChannel = msg.guild.settings.get(GuildSettings.Welcome.Channel);
 		const welcomeMessage = msg.guild.settings.get(GuildSettings.Welcome.Message);

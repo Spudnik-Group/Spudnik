@@ -36,7 +36,7 @@ export default class SlotsCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof SlotsCommand
 	 */
-	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+	public run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const slotOne = slots[Math.floor(Math.random() * slots.length)];
 		const slotTwo = slots[Math.floor(Math.random() * slots.length)];
 		const slotThree = slots[Math.floor(Math.random() * slots.length)];

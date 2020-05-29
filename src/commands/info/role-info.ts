@@ -21,7 +21,7 @@ export default class RoleInfoComand extends Command {
 		this.timestamp = new Timestamp('dddd, MMMM d YYYY');
 	}
 
-	public async run(msg: KlasaMessage, [role]: [Role]): Promise<KlasaMessage | KlasaMessage[]> {
+	public run(msg: KlasaMessage, [role]: [Role]): Promise<KlasaMessage | KlasaMessage[]> {
 		const allPermissions = Object.entries(role.permissions.serialize()).filter((perm: [string, boolean]) => perm[1]).map(([perm]: [string, boolean]) => perms[perm])
 			.join(', ');
 		const defaultRole = msg.guild.settings.get(GuildSettings.Tos.Role);

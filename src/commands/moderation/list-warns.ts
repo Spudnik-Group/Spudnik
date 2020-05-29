@@ -32,7 +32,7 @@ export default class ListWarnsCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof ListWarnsCommand
 	 */
-	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+	public run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const warnEmbed: MessageEmbed = baseEmbed(msg)
 			.setAuthor(
 				'Warnings List',

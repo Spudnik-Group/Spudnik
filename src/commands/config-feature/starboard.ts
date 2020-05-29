@@ -182,7 +182,7 @@ export default class StarboardCommand extends SpudnikCommand {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof StarboardCommand
 	 */
-	public async status(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+	public status(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const starboardEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Starboard);
 		const starboard = msg.guild.settings.get(GuildSettings.Starboard.Channel);
 		const starboardTrigger: string = msg.guild.settings.get(GuildSettings.Starboard.Trigger);

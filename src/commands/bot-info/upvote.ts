@@ -30,7 +30,7 @@ export default class UpvoteCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof UpvoteCommand
 	 */
-	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+	public run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		return msg.sendSimpleEmbed(stripIndents`
 			Upvote Spudnik for the Motherland!
 			* [arcane-center.xyz](https://arcane-center.xyz/bot/398591330806398989)

@@ -36,7 +36,7 @@ export default class HelpCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof HelpCommand
 	 */
-	public async run(msg: KlasaMessage, [command]: [Command]): Promise<KlasaMessage | KlasaMessage[]> {
+	public run(msg: KlasaMessage, [command]: [Command]): Promise<KlasaMessage | KlasaMessage[]> {
 		const helpEmbed: MessageEmbed = baseEmbed(msg);
 
 		if (command) {
