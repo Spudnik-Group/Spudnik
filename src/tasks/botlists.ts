@@ -5,14 +5,12 @@
 import { Task, Colors } from 'klasa';
 import axios from 'axios';
 import { SpudConfig } from '@lib//config';
-import { Guild } from 'discord.js';
 
-enum Lists {
-	BotsForDiscord = 'botsfordiscord.com',
-	DiscordBotList = 'discordbotlist.com',
-	DiscordBotsOrg = 'discordbots.org',
-	DiscordBotsGG = 'discord.bots.gg',
-	BotsOnDiscord = 'bots.ondiscord.xyz'
+enum ExtraLists {
+	LBots = 'lbots.org',
+	ListMyBots = 'listmybots.xyz',
+	CloudList = 'cloudlist.xyz',
+	DiscordbotWorld = 'discordbot.world'
 }
 
 export default class extends Task {
@@ -20,41 +18,90 @@ export default class extends Task {
 	public async run(): Promise<void> {
 		if (SpudConfig.debug) return;
 
-		this.client.emit('verbose', new Colors({ text: 'lightblue' }).format('[BOTLIST UPDATE]'));
+		this.client.emit('log', new Colors({ text: 'lightblue' }).format('[BOTLIST UPDATE]'));
 
-		const guilds = this.client.guilds.size.toString();
-		const users = this.client.guilds.reduce((acc: number, val: Guild) => acc + val.memberCount, 0).toString();
+		const body = {
+			'server_count': this.client.guilds.size,
+			'bot_id': this.client.user.id,
+			'arcane-center.xyz': SpudConfig.arcanecenterApiKey,
+			'botlist.space': SpudConfig.botlistspaceApiKey,
+			'bots.ondiscord.xyz': SpudConfig.bodApiKey,
+			'botsfordiscord.com': SpudConfig.bfdApiKey,
+			'discord.boats': SpudConfig.discordboatsApiKey,
+			'discord.bots.gg': SpudConfig.botsggApiKey,
+			'discordapps.dev': SpudConfig.discordappsApiKey,
+			'discordbotlist.com': SpudConfig.dblApiKey,
+			'discordextremelist.xyz': SpudConfig.delApiKey,
+			'glennbotlist.xyz': SpudConfig.glennApiKey,
+			'mythicalbots.xyz': SpudConfig.mythicalApiKey,
+			'top.gg': SpudConfig.topggApiKey,
+			'yabl.xyz': SpudConfig.yablApiKey
+		};
 
-		await Promise.all([
-			this.query(`https://discordbots.org/api/bots/${this.client.user!.id}/stats`,
-				`{"server_count":${guilds}}`, SpudConfig.dbApiKey, Lists.DiscordBotsOrg),
-			this.query(`https://discord.bots.gg/api/v1/bots/${this.client.user!.id}/stats`,
-				`{"guildCount":${guilds}}`, SpudConfig.botsggApiKey, Lists.DiscordBotsGG),
-			this.query(`https://botsfordiscord.com/api/bot/${this.client.user!.id}`,
-				`{"server_count":${guilds}}`, SpudConfig.bfdApiKey, Lists.BotsForDiscord),
-			this.query(`https://discordbotlist.com/api/bots/${this.client.user!.id}/stats`,
-				`{"guilds":${guilds},"users":${users}}`, SpudConfig.dblApiKey ? `Bot ${SpudConfig.dblApiKey}` : null, Lists.DiscordBotList),
-			this.query(`https://bots.ondiscord.xyz/bot-api/bots/${this.client.user!.id}/guilds`,
-				`{"guildCount":${guilds}}`, SpudConfig.bodApiKey, Lists.BotsOnDiscord)
-		]);
+		try {
+			const { data: botBlockResponse } = await axios.post('https://botblock.org/api/count', body, {
+				headers: { 'Content-Type': 'application/json' }
+			});
+
+			if (botBlockResponse.success.length) {
+				Object.keys(botBlockResponse.success).forEach((key: string) => {
+					this.client.emit('log', `Posted statistics successfully to ${key}`);
+				});
+			}
+			if (botBlockResponse.failure.length) {
+				Object.keys(botBlockResponse.failure).forEach((key: string) => {
+					this.client.emit('log', `Failed to post statistics to ${key} - ${botBlockResponse.failure.key[1]}`);
+				});
+			}
+
+			await Promise.all([
+				this.query(
+					`https://www.cloudlist.xyz/api/stats/${this.client.user.id}`,
+					JSON.stringify({ count: this.client.guilds.size }),
+					SpudConfig.cloudlistApi,
+					ExtraLists.CloudList
+				),
+				this.query(
+					`https://lbots.org/api/v1/bots/${this.client.user.id}/stats`,
+					JSON.stringify({ guild_count: this.client.guilds.size }),
+					SpudConfig.lbotsApi,
+					ExtraLists.LBots
+				),
+				this.query(
+					`https://listmybots.com/api/bot/${this.client.user.id}`,
+					JSON.stringify({ count: this.client.guilds.size }),
+					SpudConfig.lmbApi,
+					ExtraLists.ListMyBots
+				),
+				this.query(
+					`https://discordbot.world/api/bot/${this.client.user.id}/stats`,
+					JSON.stringify({ guild_count: this.client.guilds.size }),
+					SpudConfig.dbwApi,
+					ExtraLists.DiscordbotWorld
+				)
+			]);
+		} catch (err) {
+			this.client.emit('log', `Failed to post statistics - ${err}`);
+		}
+
 	}
 
 	public async init(): Promise<void> {
 		return this.run();
 	}
 
-	private async query(url: string, body: string, token: string | null, list: Lists): Promise<any> {
+	private async query(url: string, body: string, token: string | null, list: ExtraLists): Promise<any> {
 		try {
 			if (!token) throw `No token for ${list}`;
 
 			await axios.post(url, body, {
 				headers: { 'Content-Type': 'application/json', 'Authorization': token },
 				method: 'POST'
-			}).then(() => this.client.emit('verbose', `Posted statistics successfully to ${list}`));
+			}).then(() => this.client.emit('log', `Posted statistics successfully to ${list}`));
 
 			return list;
 		} catch (err) {
-			return this.client.emit('warn', `Failed to post statistics to ${list} - ${err}`);
+			return this.client.emit('log', `Failed to post statistics to ${list} - ${err}`);
 		}
 	}
 
