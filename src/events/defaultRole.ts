@@ -13,12 +13,12 @@ import { delay } from '@lib/utils/util';
 export default class extends Event {
 
 	public async run(guild: Guild, member: GuildMember): Promise<void> {
-        const tosWelcomeEnabled = guild.settings.get(GuildSettings.Tos.Welcome.Enabled);
+		const tosWelcomeEnabled = guild.settings.get(GuildSettings.Tos.Welcome.Enabled);
 		const tosWelcomeMessage = guild.settings.get(GuildSettings.Tos.Welcome.Message);
 		const tosWelcomeChannel = guild.settings.get(GuildSettings.Tos.Channel);
 		const tosRole = guild.settings.get(GuildSettings.Tos.Role);
 
-        if (!member.user.bot && tosWelcomeEnabled && tosWelcomeMessage && tosWelcomeChannel && tosRole) {
+		if (!member.user.bot && tosWelcomeEnabled && tosWelcomeMessage && tosWelcomeChannel && tosRole) {
 			const message = tosWelcomeMessage.replace('{guild}', guild.name).replace('{user}', `<@${member.id}>`);
 			const channel = guild.channels.get(tosWelcomeChannel);
 			const role = guild.roles.get(tosRole);
@@ -70,6 +70,6 @@ export default class extends Event {
 				this.client.emit('warn', `There was an error trying to welcome a new guild member in ${guild}, the channel/role may no longer exist.`);
 			}
 		}
-    }
+	}
 
 }

@@ -16,7 +16,6 @@ module.exports = {
 		"@typescript-eslint/array-type": 0,
 		"@typescript-eslint/await-thenable": 0,
 		"@typescript-eslint/camelcase": 0,
-		"@typescript-eslint/class-name-casing": "error",
 		"@typescript-eslint/consistent-type-definitions": "error",
 		"@typescript-eslint/explicit-function-return-type": "error",
 		"@typescript-eslint/explicit-member-accessibility": "error",

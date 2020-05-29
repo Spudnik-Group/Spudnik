@@ -5,7 +5,7 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
 export default class extends Event {
 
 	public async run(guild: Guild, member: GuildMember): Promise<void> {
-        const welcomeEnabled = guild.settings.get(GuildSettings.Welcome.Enabled);
+		const welcomeEnabled = guild.settings.get(GuildSettings.Welcome.Enabled);
 		const welcomeMessage = guild.settings.get(GuildSettings.Welcome.Message);
 		const welcomeChannel = guild.settings.get(GuildSettings.Welcome.Channel);
 
@@ -19,6 +19,6 @@ export default class extends Event {
 				this.client.emit('warn', `There was an error trying to welcome a new guild member in ${guild}, the channel may no longer exist.`);
 			}
 		}
-    }
+	}
 
 }
