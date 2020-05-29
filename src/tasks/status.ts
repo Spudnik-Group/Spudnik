@@ -9,14 +9,14 @@ import { createPick } from '@lib//utils/util';
 export default class extends Task {
 
 	public run(): Promise<Presence> {
-		this.client.emit('verbose', new Colors({ text: 'lightblue' }).format('[STATUS UPDATE]'));
+		this.client.emit('log', new Colors({ text: 'lightblue' }).format('[STATUS UPDATE]'));
 
 		const defaultPrefix = this.client.options.prefix;
 		const guildCount = this.client.guilds.array().length;
 		let userCount = this.client.guilds.map((guild: Guild) => guild.memberCount).reduce((a: number, b: number): number => a + b).toString();
 
 		if (parseInt(userCount, 10) > 10000) {
-			userCount = `${(Math.round(parseInt(userCount, 10) / 1000) * 1000).toString()}k`;
+			userCount = `${(Math.round(parseInt(userCount, 10) / 1000)).toString()}k`;
 		}
 
 		const statuses = createPick<PresenceData>([
