@@ -202,7 +202,7 @@ export default class TermsOfServiceCommand extends Command {
 		return msg.sendSimpleError(`No terms of service message found matching ID of \`${item}\`.`);
 	}
 
-	public async list(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+	public list(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const tosEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Tos);
 		const tosChannel = msg.guild.settings.get(GuildSettings.Tos.Channel);
 		const tosMessages = msg.guild.settings.get(GuildSettings.Tos.Messages).sort((a: TosMessage, b: TosMessage) => a.id - b.id);
@@ -221,7 +221,7 @@ export default class TermsOfServiceCommand extends Command {
 		}
 	}
 
-	public async status(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+	public status(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const tosEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Tos);
 
 		const channel = msg.guild.settings.get(GuildSettings.Tos.Channel);

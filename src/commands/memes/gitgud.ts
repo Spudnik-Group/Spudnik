@@ -30,7 +30,7 @@ export default class GitGudCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof GitGudCommand
 	 */
-	public async run(msg: KlasaMessage, [mention]: [GuildMember]): Promise<KlasaMessage | KlasaMessage[]> {
+	public run(msg: KlasaMessage, [mention]: [GuildMember]): Promise<KlasaMessage | KlasaMessage[]> {
 		const gitgudImageURL = 'http://i.imgur.com/NqpPXHu.jpg';
 
 		if (mention) {

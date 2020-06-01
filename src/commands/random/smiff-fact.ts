@@ -29,7 +29,7 @@ export default class SmiffFactCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof SmiffFactCommand
 	 */
-	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+	public run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		return msg.sendSimpleEmbedWithTitle(smiff[getRandomInt(0, smiff.length) - 1], 'Will Smith Fact');
 	}
 

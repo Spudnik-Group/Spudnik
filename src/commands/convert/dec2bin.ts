@@ -28,7 +28,7 @@ export default class Dec2BinCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof Dec2BinCommand
 	 */
-	public async run(msg: KlasaMessage, [numberToConvert]: [number]): Promise<KlasaMessage | KlasaMessage[]> {
+	public run(msg: KlasaMessage, [numberToConvert]: [number]): Promise<KlasaMessage | KlasaMessage[]> {
 		return msg.sendSimpleEmbedWithAuthor(`${numberToConvert} = ${Convert.dec2bin(numberToConvert.toString())}`, { name: 'Decimal to Binary Conversion:' });
 	}
 

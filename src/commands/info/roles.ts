@@ -29,7 +29,7 @@ export default class RolesCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof RolesCommand
 	 */
-	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+	public run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const roleEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.RoleManager);
 		const guildAssignableRoles: string[] = msg.guild.settings.get(GuildSettings.Roles.SelfAssignable);
 		const guildDefaultRole: string = msg.guild.settings.get(GuildSettings.Tos.Role);

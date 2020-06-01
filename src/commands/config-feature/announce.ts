@@ -32,7 +32,7 @@ export default class AnnounceCommand extends Command {
 		});
 
 		this.createCustomResolver('content', (arg: string, possible: Possible, message: KlasaMessage, [subCommand]: [string]) => {
-			if (subCommand === 'channel' && (arg && !message.guild.channels.get(resolveChannel(arg)))) throw 'Please provide a valid channel for the announcements to be displayed in.';
+			if (subCommand === 'channel' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw 'Please provide a valid channel for the announcements to be displayed in.';
 			if (subCommand === 'send' && !arg) throw 'Please include the text for the announcement.';
 			if (subCommand === 'direct' && (!arg || !message.guild.channels.get(resolveChannel(arg)))) throw 'Please provide a valid channel for the announcement to be displayed in.';
 

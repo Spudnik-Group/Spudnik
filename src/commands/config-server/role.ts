@@ -96,31 +96,29 @@ export default class RoleCommand extends Command {
 			roleEmbed.setDescription(stripIndents`
 						More than one role was found matching the provided name.
 						Which role would you like to delete?\n
-						${rolesFoundArray.map((role: Role, i: number) => `**${i + 1}** - \`${role.id}\` - <@&${role.id}> - ${role.members.size} members`).join('\n')}`);
+						${rolesFoundArray.map((role: Role, i: number) => `**${i}** - \`${role.id}\` - <@&${role.id}> - ${role.members.size} members`).join('\n')}`);
 
 			await msg.sendEmbed(roleEmbed);
 
 			const filter = (res: Message): boolean => (res.author.id === msg.author.id);
 
 			try {
-				const responses = await msg.channel.awaitMessages(filter, { max: 1 });
-				const response = responses.first();
+				const response = (await msg.channel.awaitMessages(filter, { max: 1 })).first();
 
 				if (isNormalInteger(response.content) && ((Number(response.content) > -1) && (Number(response.content) < rolesFoundArray.length))) {
+					const roleToDelete = rolesFoundArray[Number(response.content)];
 					try {
-						await rolesFoundArray[Number(response.content) - 1].delete()
-							.then(async (deletedRole: Role) => {
-								roleEmbed.setDescription(stripIndents`
-												**Member:** ${msg.author.tag} (${msg.author.id})
-												**Action:** Removed role \`${deletedRole.name}\` from the guild.
-											`);
-
-								await modLogMessage(msg, roleEmbed);
-
-								return msg.sendEmbed(roleEmbed);
-							})
+						await roleToDelete.delete()
 							.catch((err: Error) => this.catchError(msg, { subCommand: 'remove', name: name.toString() }, err));
 
+						roleEmbed.setDescription(stripIndents`
+							**Member:** ${msg.author.tag} (${msg.author.id})
+							**Action:** Removed role \`${roleToDelete.name}\` from the guild.
+						`);
+
+						await modLogMessage(msg, roleEmbed);
+
+						return msg.sendEmbed(roleEmbed);
 					} catch (err) {
 						return this.catchError(msg, { subCommand: 'remove', name: name.toString() }, err);
 					}
@@ -136,17 +134,16 @@ export default class RoleCommand extends Command {
 			try {
 				// TODO: add a reason
 				await roleToDelete.delete()
-					.then(async (deletedRole: Role) => {
-						roleEmbed.setDescription(stripIndents`
-									**Member:** ${msg.author.tag} (${msg.author.id})
-									**Action:** Removed role \`${deletedRole.name}\` from the guild.
-								`);
-
-						await modLogMessage(msg, roleEmbed);
-
-						return msg.sendEmbed(roleEmbed);
-					})
 					.catch((err: Error) => this.catchError(msg, { subCommand: 'remove', name: name.toString() }, err));
+
+				roleEmbed.setDescription(stripIndents`
+							**Member:** ${msg.author.tag} (${msg.author.id})
+							**Action:** Removed role \`${roleToDelete.name}\` from the guild.
+						`);
+
+				await modLogMessage(msg, roleEmbed);
+
+				return msg.sendEmbed(roleEmbed);
 			} catch (err) {
 				return this.catchError(msg, { subCommand: 'remove', name: name.toString() }, err);
 			}

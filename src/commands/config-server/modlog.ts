@@ -133,7 +133,7 @@ export default class ModlogCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof ModlogCommand
 	 */
-	public async status(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+	public status(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const modlogEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Modlog);
 		const modlogChannel = msg.guild.settings.get(GuildSettings.Modlog.Channel);
 		const modlogEnabled = msg.guild.settings.get(GuildSettings.Modlog.Enabled);

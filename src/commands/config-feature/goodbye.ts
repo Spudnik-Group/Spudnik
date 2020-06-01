@@ -175,7 +175,7 @@ export default class GoodbyeCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof GoodbyeCommand
 	 */
-	public async status(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+	public status(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const goodbyeEmbed = specialEmbed(msg, specialEmbedTypes.Goodbye);
 		const goodbyeChannel = msg.guild.settings.get(GuildSettings.Goodbye.Channel);
 		const goodbyeMessage = msg.guild.settings.get(GuildSettings.Goodbye.Message);

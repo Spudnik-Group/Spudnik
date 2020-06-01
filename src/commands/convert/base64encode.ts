@@ -29,7 +29,7 @@ export default class Base64EncodeCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof Base64EncodeCommand
 	 */
-	public async run(msg: KlasaMessage, [stringToEncode]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
+	public run(msg: KlasaMessage, [stringToEncode]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const returnMessage = baseEmbed(msg)
 			.setAuthor('Base64 Encoded String:')
 			.addField('Input:', `\`${stringToEncode}\``)

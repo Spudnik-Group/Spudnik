@@ -30,7 +30,7 @@ export default class StatsCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof StatsCommand
 	 */
-	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+	public run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		return msg.sendLocale('COMMAND_STATS', [getEmbedColor(msg), this.generalStatistics, this.uptimeStatistics, this.usageStatistics]);
 	}
 

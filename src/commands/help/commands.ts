@@ -35,7 +35,7 @@ export default class CommandsCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof CommandsCommand
 	 */
-	public async run(msg: KlasaMessage, [categoryName]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
+	public run(msg: KlasaMessage, [categoryName]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		const commandsEmbed: MessageEmbed = baseEmbed(msg)
 			.setFooter(`Comrade! I bring ${this.client.commands.size} commands in this version!`);
 

@@ -28,7 +28,7 @@ export default class Bin2HexCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof Bin2HexCommand
 	 */
-	public async run(msg: KlasaMessage, [numberToConvert]: [number]): Promise<KlasaMessage | KlasaMessage[]> {
+	public run(msg: KlasaMessage, [numberToConvert]: [number]): Promise<KlasaMessage | KlasaMessage[]> {
 		return msg.sendSimpleEmbedWithAuthor(`${numberToConvert} = 0x${Convert.bin2hex(numberToConvert.toString()).toUpperCase()}`, { name: 'Binary to Hexadecimal Conversion:' });
 	}
 

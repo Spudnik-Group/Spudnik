@@ -195,12 +195,12 @@ export default class extends Language {
 			.addField('❯ Uptime', Duration.toNow(Date.now() - (uptime.CLIENT / 1000)), true)
 			.addField('❯ Process Stats', stripIndents`
 						• Memory Usage: ${usage.RAM_USED}
-						• Node Version: ${process.version}
+						• Node Version: ${stats.NODE_JS}
 						• Version: ${stats.VERSION}`, true)
 			.addField('❯ General Stats', stripIndents`
-						• Guilds: ${this.client.guilds.size}
-						• Channels: ${this.client.channels.size}
-						• Users: ${this.client.guilds.map(guild => guild.memberCount).reduce((a, b) => a + b)}
+						• Guilds: ${stats.GUILDS}
+						• Channels: ${stats.CHANNELS}
+						• Users: ${stats.USERS}
 						• Commands: ${this.client.commands.size}`, true)
 			.addField('❯ Spudnik Command', '[Join](https://spudnik.io/support)', true)
 			.addField('❯ Source Code', '[View](https://github.com/Spudnik-Group/Spudnik)', true)

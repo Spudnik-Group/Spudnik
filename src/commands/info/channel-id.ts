@@ -30,7 +30,7 @@ export default class ChannelIDCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof ChannelIDCommand
 	 */
-	public async run(msg: KlasaMessage, [content = msg.channel]: [Channel]): Promise<KlasaMessage | KlasaMessage[]> {
+	public run(msg: KlasaMessage, [content = msg.channel]: [Channel]): Promise<KlasaMessage | KlasaMessage[]> {
 		const channel = content as TextChannel;
 
 		// Send the success response

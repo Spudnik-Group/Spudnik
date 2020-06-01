@@ -28,7 +28,7 @@ export default class MagicCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof MagicCommand
 	 */
-	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+	public run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		return msg.sendSimpleImage(null, 'https://media.giphy.com/media/12NUbkX6p4xOO4/giphy.gif');
 	}
 

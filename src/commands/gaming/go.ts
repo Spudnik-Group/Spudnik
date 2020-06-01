@@ -37,7 +37,7 @@ export default class GoCommand extends Command {
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
 	 * @memberof GoCommand
 	 */
-	public async run(msg: KlasaMessage, [game]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
+	public run(msg: KlasaMessage, [game]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
 		if (!Object.keys(SteamGames).includes(game.toUpperCase())) {
 			return msg.sendSimpleError(`Sorry, only a few games are supported at this time: \n ${steamGameNames}`, 5000);
 		}

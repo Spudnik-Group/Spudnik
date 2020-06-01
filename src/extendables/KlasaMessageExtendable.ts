@@ -21,11 +21,11 @@ export default class extends Extendable {
 			: awaitMessage(this, promptOptions);
 	}
 
-	public async sendSimpleEmbed(this: KlasaMessage, description: string, timeout?: number | null): Promise<KlasaMessage | KlasaMessage[]> {
+	public sendSimpleEmbed(this: KlasaMessage, description: string, timeout?: number | null): Promise<KlasaMessage | KlasaMessage[]> {
 		return this.sendSimpleEmbedWithAuthorAndTitle(description, null, null, timeout);
 	}
 
-	public async sendSimpleEmbedWithAuthor(this: KlasaMessage, description: string, author: MessageEmbedAuthor, timeout?: number | null): Promise<KlasaMessage | KlasaMessage[]> {
+	public sendSimpleEmbedWithAuthor(this: KlasaMessage, description: string, author: MessageEmbedAuthor, timeout?: number | null): Promise<KlasaMessage | KlasaMessage[]> {
 		return this.sendSimpleEmbedWithAuthorAndTitle(description, author, null, timeout);
 	}
 
@@ -36,7 +36,7 @@ export default class extends Extendable {
 	public async sendSimpleEmbedWithAuthorAndTitle(this: KlasaMessage, description: string, author: MessageEmbedAuthor | null, title: string | null, timeout?: number | null): Promise<KlasaMessage | KlasaMessage[]> {
 		const color = await this.guild.settings.get(GuildSettings.EmbedColor);
 		const promise: Promise<KlasaMessage | KlasaMessage[]> = this.sendEmbed(new MessageEmbed()
-			.setAuthor(author || '')
+			.setAuthor(author.name || '', author.iconURL || '', author.url || '')
 			.setColor(color)
 			.setDescription(description)
 			.setTitle(title || ''));
@@ -105,7 +105,7 @@ export default class extends Extendable {
 			.setImage(url));
 	}
 
-	public async sendSimpleEmbedReply(this: KlasaMessage, description: string | null): Promise<KlasaMessage | KlasaMessage[]> {
+	public sendSimpleEmbedReply(this: KlasaMessage, description: string | null): Promise<KlasaMessage | KlasaMessage[]> {
 		return this.sendEmbed(new MessageEmbed()
 			.setAuthor(this.client.user.username, this.client.user.displayAvatarURL({ size: 128, format: 'png', dynamic: true }))
 			.setDescription(description), { reply: this.author });

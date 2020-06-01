@@ -9,37 +9,38 @@ import { GuildSettings } from '@lib/types/settings/GuildSettings';
 import { baseEmbed } from '@lib/helpers/embed-helpers';
 
 /**
- * Returns a list of servers the bot is in.
+ * Search for a server the bot is in.
  *
  * @export
- * @class ListServersCommand
+ * @class SearchServersCommand
  * @extends {Command}
  */
-export default class ListServersCommand extends Command {
+export default class SearchServersCommand extends Command {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['ls', 'listservers'],
-			description: 'Returns a list of servers the bot is in.',
+			aliases: ['ss', 'searchservers'],
+			description: 'Search for a server the bot is in.',
 			guarded: true,
 			hidden: true,
-			permissionLevel: 9 // BOT OWNER
+			permissionLevel: 9, // BOT OWNER
+			usage: '<serverName:string{2}>'
 		});
 	}
 
 	/**
-	 * Run the "ListServersCommand" command.
+	 * Run the "SearchServersCommand" command.
 	 *
 	 * @param {KlasaMessage} msg
 	 * @returns {(Promise<KlasaMessage | KlasaMessage[]>)}
-	 * @memberof ListServersCommand
+	 * @memberof SearchServersCommand
 	 */
-	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-		const guilds = Array.from(this.client.guilds.values());
+	public async run(msg: KlasaMessage, [serverName]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
+		const guilds = Array.from(this.client.guilds.values()).filter((guild: Guild) => guild.name.includes(serverName));
 		const totalGuilds = guilds.length;
 		const display = new RichDisplay(baseEmbed(msg)
-			.setTitle('Server List')
-			.setDescription(`Spudnik is connected to **${totalGuilds}** servers${this.client.shard ? `, in Shard ${this.client.shard.ids}` : ''}.`));
+			.setTitle('Server Search')
+			.setDescription(`Found ${totalGuilds} servers${this.client.shard ? `, in Shard ${this.client.shard.ids}` : ''} containing **${serverName}**.`));
 		const noOfPages = Math.ceil(totalGuilds / 5);
 
 		for (let i = 0; i < noOfPages; i++) {

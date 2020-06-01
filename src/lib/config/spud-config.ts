@@ -24,10 +24,23 @@ export const SpudConfig = {
 	dictionaryApiKey: process.env.SPUD_DICTIONARYAPI || '',
 	breweryDbApiKey: process.env.SPUD_BREWDBAPI || '',
 	stackoverflowApiKey: process.env.SPUD_STACKOVERFLOWAPI || '',
-	// Bot List API Keys
-	bfdApiKey: process.env.SPUD_BFDAPI || '',
+	// BotBlock API Keys
+	arcanecenterApiKey: process.env.SPUD_ARCANEAPI || '',
+	botlistspaceApiKey: process.env.SPUD_BOTSPACEAPI || '',
 	bodApiKey: process.env.SPUD_BODAPI || '',
+	bfdApiKey: process.env.SPUD_BFDAPI || '',
+	discordboatsApiKey: process.env.SPUD_DBOATSAPI || '',
 	botsggApiKey: process.env.SPUD_BOTSGGAPI || '',
-	dbApiKey: process.env.SPUD_DBAPI || '',
-	dblApiKey: process.env.SPUD_DBLAPI || ''
+	discordappsApiKey: process.env.SPUD_DAPPSAPI || '',
+	dblApiKey: process.env.SPUD_DBLAPI || '',
+	delApiKey: process.env.SPUD_DELAPI || '',
+	glennApiKey: process.env.SPUD_GLENNAPI || '',
+	mythicalApiKey: process.env.SPUD_MYTHICALAPI || '',
+	topggApiKey: process.env.SPUD_TOPGGAPI || '',
+	yablApiKey: process.env.SPUD_YABLAPI || '',
+	// Non-BotBlock API Keys
+	cloudlistApi: process.env.SPUD_CLOUDLISTAPI || '',
+	lbotsApi: process.env.SPUD_LBOTSAPI || '',
+	lmbApi: process.env.SPUD_LMBAPI || '',
+	dbwApi: process.env.SPUD_DBWAPI || ''
 };
