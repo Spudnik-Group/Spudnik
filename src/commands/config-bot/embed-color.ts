@@ -38,17 +38,16 @@ export default class EmbedColorCommand extends Command {
 	 * @memberof EmbedColorCommand
 	 */
 	public async run(msg: KlasaMessage, [color]: [string]): Promise<KlasaMessage | KlasaMessage[]> {
-		const embedColorEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.EmbedColor);
-
 		if (color) {
 			try {
 				await msg.guild.settings.update(GuildSettings.EmbedColor, color);
 
 				// Set up embed message
-				embedColorEmbed.setDescription(stripIndents`
-					**Member:** ${msg.author.tag} (${msg.author.id})
-					**Action:** Embed Color set to ${color}
-				`);
+				const embedColorEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.EmbedColor)
+					.setDescription(stripIndents`
+						**Member:** ${msg.author.tag} (${msg.author.id})
+						**Action:** Embed Color set to ${color}
+					`);
 
 				return this.sendSuccess(msg, embedColorEmbed);
 			} catch (err) {
@@ -59,10 +58,11 @@ export default class EmbedColorCommand extends Command {
 				await msg.guild.settings.update('embedColor', '55555');
 
 				// Set up embed message
-				embedColorEmbed.setDescription(stripIndents`
-					**Member:** ${msg.author.tag} (${msg.author.id})
-					**Action:** Embed Color Reset
-				`);
+				const embedColorEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.EmbedColor)
+					.setDescription(stripIndents`
+						**Member:** ${msg.author.tag} (${msg.author.id})
+						**Action:** Embed Color Reset
+					`);
 
 				return this.sendSuccess(msg, embedColorEmbed);
 			} catch (err) {
