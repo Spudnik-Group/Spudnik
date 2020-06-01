@@ -22,7 +22,7 @@ export default class CommandSearchCommand extends Command {
 			description: 'Search for a command with the given text.',
 			guarded: true,
 			requiredPermissions: Permissions.FLAGS.EMBED_LINKS,
-			usage: '<commandName:string>'
+			usage: '<commandName:string{2}>'
 		});
 	}
 
