@@ -43,14 +43,14 @@ export default class extends Task {
 				headers: { 'Content-Type': 'application/json' }
 			});
 
-			if (botBlockResponse.success.length) {
+			if (botBlockResponse.success) {
 				Object.keys(botBlockResponse.success).forEach((key: string) => {
 					this.client.emit('log', `Posted statistics successfully to ${key}`);
 				});
 			}
-			if (botBlockResponse.failure.length) {
+			if (botBlockResponse.failure) {
 				Object.keys(botBlockResponse.failure).forEach((key: string) => {
-					this.client.emit('log', `Failed to post statistics to ${key} - ${botBlockResponse.failure.key[1]}`);
+					this.client.emit('log', `Failed to post statistics to ${key} - ${botBlockResponse.failure[key][1]}`);
 				});
 			}
 

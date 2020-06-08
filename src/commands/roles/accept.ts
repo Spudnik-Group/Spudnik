@@ -36,7 +36,7 @@ export default class AcceptCommand extends Command {
 			await msg.member.roles.add(role);
 			await msg.delete();
 		} catch (err) {
-			return msg.sendSimpleError('There was an error with the request. Try again?', 3000);
+			return msg.sendSimpleError('There was an error setting your role, contact a moderator to get it set manually.', 3000);
 		}
 	}
 
