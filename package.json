@@ -74,7 +74,7 @@
         "eslint-plugin-prefer-arrow": "1.2.1",
         "eslint-plugin-unicorn": "20.0.0",
         "nodemon": "1.19.4",
-        "typescript": "3.9.3"
+        "typescript": "3.9.5"
     },
     "_moduleAliases": {
         "@utils": "./dist/lib/util",
