@@ -1,0 +1,35 @@
+{
+  "baseBranches": [
+    "staging"
+  ],
+  "extends": [
+    "config:base",
+    "config:semverAllMonthly",
+    ":enableVulnerabilityAlerts",
+    ":pinSkipCi",
+    ":label(devops)",
+    ":automergeAll",
+    ":automergePr"
+  ],
+  "supportPolicy": [
+    "lts"
+  ],
+  "travis": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "packagePatterns": [ "eslint" ],
+      "groupName": "eslint"
+    },
+    {
+      "packagePatterns": [
+        "^@types/"
+      ],
+      "automerge": true
+    }
+  ],
+  "schedule": [
+    "before 3am on the first day of the month"
+  ]
+}
