@@ -15,6 +15,7 @@ export interface LanguageKeys {
 	SETTING_GATEWAY_INVALID_TYPE: string;
 	SETTING_GATEWAY_INVALID_FILTERED_VALUE: (entry: SchemaEntry, value: unknown) => string;
 	RESOLVER_MULTI_TOO_FEW: (name: string, min?: number) => string;
+	RESOLVER_INVALID_BATTLETAG: (name: string) => string;
 	RESOLVER_INVALID_BOOL: (name: string) => string;
 	RESOLVER_INVALID_CHANNEL: (name: string) => string;
 	RESOLVER_INVALID_CUSTOM: (name: string, type: string) => string;
@@ -23,6 +24,7 @@ export interface LanguageKeys {
 	RESOLVER_INVALID_EMOJI: (name: string) => string;
 	RESOLVER_INVALID_FLOAT: (name: string) => string;
 	RESOLVER_INVALID_GUILD: (name: string) => string;
+	RESOLVER_INVALID_HEXCOLOR: (name: string) => string;
 	RESOLVER_INVALID_INT: (name: string) => string;
 	RESOLVER_INVALID_LITERAL: (name: string) => string;
 	RESOLVER_INVALID_MEMBER: (name: string) => string;
