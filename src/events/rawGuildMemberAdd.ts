@@ -11,7 +11,7 @@ export default class extends Event {
 		super(store, file, directory, { name: 'GUILD_MEMBER_ADD', emitter: store.client.ws });
 	}
 
-	public run(data: any): Promise<void> {
+	public run(data: any): void {
 		const guild = this.client.guilds.get(data.guild_id);
 		const member = guild.members.add(data);
 

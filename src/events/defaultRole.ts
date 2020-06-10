@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Guild, GuildMember, Permissions, TextChannel } from 'discord.js';
+import { Guild, GuildMember, TextChannel } from 'discord.js';
 import { Event, KlasaMessage } from 'klasa';
 import { stripIndents } from 'common-tags';
 import { modLogMessage } from '@lib/helpers/custom-helpers';
@@ -38,16 +38,13 @@ export default class extends Event {
 				// eslint-disable-next-line @typescript-eslint/typedef
 				const reactions = await messageSent.awaitReactions((__, user) => user.id === member.id, { time: 1000 * 60 * 5, max: 1 });
 
-				// Remove all reactions if the user has permissions to do so
-				if (messageSent.guild && (messageSent.channel as TextChannel).permissionsFor(messageSent.guild.me!)!.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
-					messageSent.reactions.removeAll().catch((err: any) => this.client.emit('warn', `There was an error trying to remove all reactions from a message; ${err}`));
-				}
+				console.log(reactions);
 
 				const roleEmbed = specialEmbed(messageSent as KlasaMessage, specialEmbedTypes.RoleManager);
 
 				if (Boolean(reactions.size) && reactions.firstKey() === REACTIONS.YES) {
-					await member.roles.add(role.id);
-					await messageSent.delete();
+					await member.roles.add(role.id).catch((reason: any) => console.log(reason));
+					await messageSent.delete().catch((reason: any) => console.log(reason));
 
 					roleEmbed.setDescription(stripIndents`
 						**Member:** ${member.user.tag} (${member.id})
