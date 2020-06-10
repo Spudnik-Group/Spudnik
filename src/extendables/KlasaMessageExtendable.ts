@@ -98,14 +98,14 @@ export default class extends Extendable {
 		return promise;
 	}
 
-	public async sendSimpleImage(this: KlasaMessage, description: string | null, url: string): Promise<KlasaMessage | KlasaMessage[]> {
+	public async sendSimpleImage(this: KlasaMessage, description: string | '', url: string): Promise<KlasaMessage | KlasaMessage[]> {
 		return this.sendEmbed(new MessageEmbed()
 			.setAuthor(this.client.user.username, this.client.user.displayAvatarURL({ size: 128, format: 'png', dynamic: true }))
 			.setDescription(description)
 			.setImage(url));
 	}
 
-	public sendSimpleEmbedReply(this: KlasaMessage, description: string | null): Promise<KlasaMessage | KlasaMessage[]> {
+	public sendSimpleEmbedReply(this: KlasaMessage, description: string | ''): Promise<KlasaMessage | KlasaMessage[]> {
 		return this.sendEmbed(new MessageEmbed()
 			.setAuthor(this.client.user.username, this.client.user.displayAvatarURL({ size: 128, format: 'png', dynamic: true }))
 			.setDescription(description), { reply: this.author });
