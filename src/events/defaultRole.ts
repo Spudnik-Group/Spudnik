@@ -2,13 +2,14 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Guild, GuildMember, Permissions, TextChannel } from 'discord.js';
+import { Guild, GuildMember, TextChannel } from 'discord.js';
 import { Event, KlasaMessage } from 'klasa';
 import { stripIndents } from 'common-tags';
 import { modLogMessage } from '@lib/helpers/custom-helpers';
 import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
 import { delay } from '@lib/utils/util';
+import { responses } from '@lib/constants/responses';
 
 export default class extends Event {
 
@@ -28,26 +29,19 @@ export default class extends Event {
 
 				const messageSent = await (channel as TextChannel).send(message);
 
-				const REACTIONS = { YES: '✅', NO: '❎' };
-
 				await delay(5000);
 
-				await messageSent.react(REACTIONS.YES);
-				await messageSent.react(REACTIONS.NO);
+				await messageSent.react(responses.reactions.YES);
+				await messageSent.react(responses.reactions.NO);
 
 				// eslint-disable-next-line @typescript-eslint/typedef
-				const reactions = await messageSent.awaitReactions((__, user) => user.id === member.id, { time: 1000 * 60 * 5, max: 1 });
-
-				// Remove all reactions if the user has permissions to do so
-				if (messageSent.guild && (messageSent.channel as TextChannel).permissionsFor(messageSent.guild.me!)!.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
-					messageSent.reactions.removeAll().catch((err: any) => this.client.emit('warn', `There was an error trying to remove all reactions from a message; ${err}`));
-				}
+				const reactions = await (await (channel as TextChannel).messages.fetch(messageSent.id)).awaitReactions((__, user) => user.id === member.id, { time: 1000 * 60 * 5, max: 1 });
 
 				const roleEmbed = specialEmbed(messageSent as KlasaMessage, specialEmbedTypes.RoleManager);
 
-				if (Boolean(reactions.size) && reactions.firstKey() === REACTIONS.YES) {
-					await member.roles.add(role.id);
-					await messageSent.delete();
+				if (Boolean(reactions.size) && reactions.firstKey() === responses.reactions.YES) {
+					await member.roles.add(role.id).catch((reason: any) => console.log(reason));
+					await messageSent.delete().catch((reason: any) => console.log(reason));
 
 					roleEmbed.setDescription(stripIndents`
 						**Member:** ${member.user.tag} (${member.id})
@@ -55,7 +49,7 @@ export default class extends Event {
 					`);
 
 					await modLogMessage(messageSent as KlasaMessage, roleEmbed);
-				} else if (Boolean(reactions.size) && reactions.firstKey() === REACTIONS.NO) {
+				} else if (Boolean(reactions.size) && reactions.firstKey() === responses.reactions.NO) {
 					await member.kick('User did not accept TOS.');
 					await messageSent.delete();
 

@@ -1,6 +1,7 @@
 import { Message, MessageEmbed, MessageEmbedAuthor, MessageOptions, Permissions, TextChannel } from 'discord.js';
 import { KlasaMessage, MessageAskOptions, Extendable, ExtendableStore } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import { responses } from '@lib/constants/responses';
 
 export default class extends Extendable {
 
@@ -114,12 +115,10 @@ export default class extends Extendable {
 }
 
 const OPTIONS = { time: 1000 * 60 * 1, max: 1 };
-const REACTIONS = { YES: '✅', NO: '❎' };
-const REG_ACCEPT = /^y|yes?|yeah?$/i;
 
 async function awaitReaction(message: Message, messageSent: Message, promptOptions: MessageAskOptions = OPTIONS): Promise<boolean> {
-	await messageSent.react(REACTIONS.YES);
-	await messageSent.react(REACTIONS.NO);
+	await messageSent.react(responses.reactions.YES);
+	await messageSent.react(responses.reactions.NO);
 
 	// eslint-disable-next-line @typescript-eslint/typedef
 	const reactions = await messageSent.awaitReactions((__, user) => user.id === message.author.id, promptOptions);
@@ -129,11 +128,11 @@ async function awaitReaction(message: Message, messageSent: Message, promptOptio
 		messageSent.reactions.removeAll().catch((err: any) => this.client.emit('warn', `There was an error trying to remove all reactions from a message; ${err}`));
 	}
 
-	return Boolean(reactions.size) && reactions.firstKey() === REACTIONS.YES;
+	return Boolean(reactions.size) && reactions.firstKey() === responses.reactions.YES;
 }
 
 async function awaitMessage(message: Message, promptOptions: MessageAskOptions = OPTIONS): Promise<boolean> {
 	const messages = await message.channel.awaitMessages((mes: any) => mes.author === message.author, promptOptions);
 
-	return Boolean(messages.size) && REG_ACCEPT.test(messages.first()!.content);
+	return Boolean(messages.size) && responses.yes.includes(message.content);
 }

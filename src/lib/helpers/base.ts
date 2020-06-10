@@ -4,9 +4,7 @@
 
 import { Channel, TextChannel, User, PermissionString, Message, Permissions } from 'discord.js';
 import { KlasaMessage } from 'klasa';
-
-const yes = ['yes', 'y', 'ye', 'yeah', 'yup', 'yea'];
-const no = ['no', 'n', 'nah', 'nope'];
+import { responses } from '@lib/constants/responses';
 
 /**
  * Returns a mention of the supplied user text.
@@ -100,7 +98,7 @@ export const verify = async (channel: Channel, user: User, time: number = 30000)
 	const verify = await (channel as TextChannel).awaitMessages((res: Message) => {
 		const value = res.content.toLowerCase();
 
-		return res.author.id === user.id && (yes.includes(value) || no.includes(value));
+		return res.author.id === user.id && (responses.yes.includes(value) || responses.no.includes(value));
 	}, {
 		max: 1,
 		time
@@ -112,8 +110,8 @@ export const verify = async (channel: Channel, user: User, time: number = 30000)
 
 	await verify.first().delete();
 
-	if (yes.includes(choice)) return true;
-	if (no.includes(choice)) return false;
+	if (responses.yes.includes(choice)) return true;
+	if (responses.no.includes(choice)) return false;
 
 	return false;
 };
