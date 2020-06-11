@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Guild, GuildMember, TextChannel } from 'discord.js';
+import { Guild, GuildMember, TextChannel, MessageReaction, User } from 'discord.js';
 import { Event, KlasaMessage } from 'klasa';
 import { stripIndents } from 'common-tags';
 import { modLogMessage } from '@lib/helpers/custom-helpers';
@@ -34,14 +34,14 @@ export default class extends Event {
 				await messageSent.react(responses.reactions.YES);
 				await messageSent.react(responses.reactions.NO);
 
-				// eslint-disable-next-line @typescript-eslint/typedef
-				const reactions = await (await (channel as TextChannel).messages.fetch(messageSent.id)).awaitReactions((__, user) => user.id === member.id, { time: 1000 * 60 * 5, max: 1 });
+				const filter = (reaction: MessageReaction, user: User): boolean => user.id === member.id;
+				const reactions = await messageSent.awaitReactions(filter, { time: 1000 * 60 * 5, max: 1 });
 
 				const roleEmbed = specialEmbed(messageSent as KlasaMessage, specialEmbedTypes.RoleManager);
 
 				if (Boolean(reactions.size) && reactions.firstKey() === responses.reactions.YES) {
-					await member.roles.add(role.id).catch((reason: any) => console.log(reason));
-					await messageSent.delete().catch((reason: any) => console.log(reason));
+					await member.roles.add(role.id);
+					await messageSent.delete();
 
 					roleEmbed.setDescription(stripIndents`
 						**Member:** ${member.user.tag} (${member.id})
