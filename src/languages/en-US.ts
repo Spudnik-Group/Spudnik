@@ -81,6 +81,7 @@ export default class extends Language {
 			? `es for this guild are: ${prefix.map(pre => `\`${pre}\``).join(', ')}`
 			: ` in this guild is set to: \`${prefix}\``
 		}`,
+		
 		SETTING_GATEWAY_EXPECTS_GUILD: 'The parameter <Guild> expects either a Guild or a Guild Object.',
 		SETTING_GATEWAY_VALUE_FOR_KEY_NOEXT: (data, key) => `The value ${data} for the key ${key} does not exist.`,
 		SETTING_GATEWAY_VALUE_FOR_KEY_ALREXT: (data, key) => `The value ${data} for the key ${key} already exists.`,
@@ -89,6 +90,7 @@ export default class extends Language {
 		SETTING_GATEWAY_KEY_NOEXT: key => `The key ${key} does not exist in the current data schema.`,
 		SETTING_GATEWAY_INVALID_TYPE: 'The type parameter must be either add or remove.',
 		SETTING_GATEWAY_INVALID_FILTERED_VALUE: (piece, value) => `${piece.key} doesn't accept the value: ${value}`,
+		
 		RESOLVER_MULTI_TOO_FEW: (name, min = 1) => `Provided too few ${name}s. At least ${min} ${min === 1 ? 'is' : 'are'} required.`,
 		RESOLVER_INVALID_BATTLETAG: name => `${name} must be a valid battletag in the format: \`username#0000\``,
 		RESOLVER_INVALID_BOOL: name => `${name} must be true or false.`,
@@ -116,16 +118,20 @@ export default class extends Language {
 		RESOLVER_MINMAX_BOTH: (name, min, max, suffix) => `${name} must be between ${min} and ${max}${suffix}.`,
 		RESOLVER_MINMAX_MIN: (name, min, suffix) => `${name} must be greater than ${min}${suffix}.`,
 		RESOLVER_MINMAX_MAX: (name, max, suffix) => `${name} must be less than ${max}${suffix}.`,
+		
 		REACTIONHANDLER_PROMPT: 'Which page would you like to jump to?',
+		
 		COMMANDMESSAGE_MISSING: 'Missing one or more required arguments after end of input.',
 		COMMANDMESSAGE_MISSING_REQUIRED: name => `${name} is a required argument.`,
 		COMMANDMESSAGE_MISSING_OPTIONALS: possibles => `Missing a required option: (${possibles})`,
 		COMMANDMESSAGE_NOMATCH: possibles => `Your option didn't match any of the possibilities: (${possibles})`,
+		
 		// eslint-disable-next-line max-len
 		MONITOR_COMMAND_HANDLER_REPROMPT: (tag, error, time, abortOptions) => `${tag} | **${error}** | You have **${time}** seconds to respond to this prompt with a valid argument. Type **${abortOptions.join('**, **')}** to abort this prompt.`,
 		// eslint-disable-next-line max-len
 		MONITOR_COMMAND_HANDLER_REPEATING_REPROMPT: (tag, name, time, cancelOptions) => `${tag} | **${name}** is a repeating argument | You have **${time}** seconds to respond to this prompt with additional valid arguments. Type **${cancelOptions.join('**, **')}** to cancel this prompt.`,
 		MONITOR_COMMAND_HANDLER_ABORTED: 'Aborted',
+		
 		INHIBITOR_COOLDOWN: remaining => `You have just used this command. You can use this command again in ${remaining} second${remaining === 1 ? '' : 's'}.`,
 		INHIBITOR_DISABLED_GUILD: 'This command has been disabled by an admin in this guild.',
 		INHIBITOR_DISABLED_GLOBAL: 'This command has been globally disabled by the bot owner.',
@@ -135,6 +141,7 @@ export default class extends Language {
 		INHIBITOR_REQUIRED_SETTINGS: settings => `The guild is missing the **${settings.join(', ')}** guild setting${settings.length === 1 ? '' : 's'} and thus the command cannot run.`,
 		INHIBITOR_RUNIN: types => `This command is only available in ${types} channels.`,
 		INHIBITOR_RUNIN_NONE: name => `The ${name} command is not configured to run in any channel.`,
+		
 		COMMAND_BLACKLIST_DESCRIPTION: 'Blacklists or un-blacklists users and guilds from the bot.',
 		COMMAND_BLACKLIST_SUCCESS: (usersAdded, usersRemoved, guildsAdded, guildsRemoved) => [
 			usersAdded.length ? `**Users Added**\n${util.codeBlock('', usersAdded.join(', '))}` : '',
@@ -142,42 +149,10 @@ export default class extends Language {
 			guildsAdded.length ? `**Guilds Added**\n${util.codeBlock('', guildsAdded.join(', '))}` : '',
 			guildsRemoved.length ? `**Guilds Removed**\n${util.codeBlock('', guildsRemoved.join(', '))}` : ''
 		].filter(val => val !== '').join('\n'),
-		COMMAND_INVITE: () => [
-			`To add me to your discord guild: <${this.client.invite}>`,
-			'Don\'t be afraid to uncheck some permissions, I will let you know if you\'re trying to run a command without permissions.'
-		].join('\n'),
-		COMMAND_INVITE_DESCRIPTION: 'Displays the invite link of the bot, to invite it to your guild.',
-		COMMAND_INFO: [
-			"Klasa is a 'plug-and-play' framework built on top of the Discord.js library.",
-			'Most of the code is modularized, which allows developers to edit Klasa to suit their needs.',
-			'',
-			'Some features of Klasa include:',
-			'• 🐇💨 Fast loading times with ES2017 support (`async`/`await`)',
-			'• 🎚🎛 Per-client/guild/user settings that can be extended with your own fields',
-			'• 💬 Customizable command system with automated parameter resolving and the ability to load/reload commands on-the-fly',
-			'• 👀 "Monitors", which can watch messages and edits (for swear filters, spam protection, etc.)',
-			'• ⛔ "Inhibitors", which can prevent commands from running based on any condition you wish to apply (for permissions, blacklists, etc.)',
-			'• 🗄 "Providers", which simplify usage of any database of your choosing',
-			'• ✅ "Finalizers", which run after successful commands (for logging, collecting stats, cleaning up responses, etc.)',
-			'• ➕ "Extendables", which passively add methods, getters/setters, or static properties to existing Discord.js or Klasa classes',
-			'• 🌐 "Languages", which allow you to localize your bot\'s responses',
-			'• ⏲ "Tasks", which can be scheduled to run in the future, optionally repeating',
-			'',
-			'We hope to be a 100% customizable framework that can cater to all audiences. We do frequent updates and bugfixes when available.',
-			"If you're interested in us, check us out at https://klasa.js.org"
-		].join('\n'),
-		COMMAND_INFO_DESCRIPTION: 'Provides some information about this bot.',
 		COMMAND_HELP_DESCRIPTION: 'Display help for a command.',
 		COMMAND_HELP_NO_EXTENDED: 'No extended help available.',
-		COMMAND_HELP_DM: '📥 | The list of commands you have access to has been sent to your DMs.',
-		COMMAND_HELP_NODM: '❌ | You have DMs disabled, I couldn\'t send you the commands in DMs.',
 		COMMAND_HELP_USAGE: usage => `Usage :: ${usage}`,
 		COMMAND_HELP_EXTENDED: 'Extended Help ::',
-		COMMAND_ENABLE: (type, name) => `+ Successfully enabled ${type}: ${name}`,
-		COMMAND_ENABLE_DESCRIPTION: 'Re-enables or temporarily enables a command/inhibitor/monitor/finalizer. Default state restored on reboot.',
-		COMMAND_DISABLE: (type, name) => `+ Successfully disabled ${type}: ${name}`,
-		COMMAND_DISABLE_DESCRIPTION: 'Re-disables or temporarily disables a command/inhibitor/monitor/finalizer/event. Default state restored on reboot.',
-		COMMAND_DISABLE_WARN: 'You probably don\'t want to disable that, since you wouldn\'t be able to run any command to enable it again',
 		COMMAND_CONF_NOKEY: 'You must provide a key',
 		COMMAND_CONF_NOVALUE: 'You must provide a value',
 		COMMAND_CONF_GUARDED: name => `${util.toTitleCase(name)} may not be disabled.`,
@@ -208,8 +183,15 @@ export default class extends Language {
 			.addField('❯ Source Code', '[View](https://github.com/Spudnik-Group/Spudnik)', true)
 			.addField('❯ Invite to Your Server!', '[Invite](https://spudnik.io/invite)', true),
 		COMMAND_STATS_DESCRIPTION: 'Provides some details about the bot and stats.',
+		
 		MESSAGE_PROMPT_TIMEOUT: 'The prompt has timed out.',
-		TEXT_PROMPT_ABORT_OPTIONS: ['abort', 'stop', 'cancel']
+		TEXT_PROMPT_ABORT_OPTIONS: ['abort', 'stop', 'cancel'],
+
+		STARBOARD_AUTHOR: 'Author',
+		STARBOARD_CHANNEL: 'Channel',
+		STARBOARD_JUMP: 'Jump',
+		STARBOARD_LINK: 'Link',
+		STARBOARD_MESSAGE: 'Message'
 	};
 
 	public async init() {

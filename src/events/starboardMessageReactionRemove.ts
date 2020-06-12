@@ -51,17 +51,18 @@ export default class extends Event {
 			if (existingStar) {
 				// Check if there are still star board trigger emojis on the message
 				if (reactions) {
+					// TODO: convert this to a helper since its in two places
 					const starboardEmbed: MessageEmbed = new MessageEmbed()
 						.setAuthor(message.guild.name, message.guild.iconURL())
 						.setThumbnail(message.author.displayAvatarURL({ size: 128, format: 'png', dynamic: true }))
-						.addField('Author', message.author.toString(), true)
-						.addField('Channel', (channel as TextChannel).toString(), true)
-						.addField('Jump', `[Link](${message.url})`, true)
+						.addField(message.language.get('STARBOARD_AUTHOR'), message.author.toString(), true)
+						.addField(message.language.get('STARBOARD_CHANNEL'), (channel as TextChannel).toString(), true)
+						.addField(message.language.get('STARBOARD_JUMP'), `[${message.language.get('STARBOARD_LINK')}](${message.url})`, true)
 						.setColor(guild.settings.get(GuildSettings.EmbedColor))
 						.setTimestamp(message.createdTimestamp)
 						.setFooter(`⭐ ${reactions.count} | ${message.id} `);
 
-					if (message.content.length > 1) starboardEmbed.addField('Message', message.content); // Add message
+					if (message.content.length > 1) starboardEmbed.addField(message.language.get('STARBOARD_MESSAGE'), message.content); // Add message
 					// TODO: fix this? forcing type casting as any seems really shitty
 					if (message.attachments.size > 0) starboardEmbed.setImage((message.attachments as any).first().attachment); // Add attachments
 

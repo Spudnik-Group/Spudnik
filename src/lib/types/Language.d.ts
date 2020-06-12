@@ -121,4 +121,10 @@ export interface LanguageKeys {
 	COMMAND_STATS_DESCRIPTION: string;
 	MESSAGE_PROMPT_TIMEOUT: string;
 	TEXT_PROMPT_ABORT_OPTIONS: readonly string[];
+
+	STARBOARD_AUTHOR: string;
+	STARBOARD_CHANNEL: string;
+	STARBOARD_JUMP: string;
+	STARBOARD_LINK: string;
+	STARBOARD_MESSAGE: string;
 }
