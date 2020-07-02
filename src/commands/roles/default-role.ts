@@ -25,7 +25,7 @@ export default class DefaultRoleCommand extends Command {
 			extendedHelp: stripIndents`
 				If no role is provided, the default role is cleared.
 			`,
-			permissionLevel: 2,
+			permissionLevel: 2, // MANAGE_ROLES
 			requiredPermissions: Permissions.FLAGS.MANAGE_ROLES,
 			usage: '[role:role]'
 		});

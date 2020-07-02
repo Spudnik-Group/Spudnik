@@ -1,7 +1,7 @@
 import { Client, SchemaFolder } from 'klasa';
 
 Client.defaultGuildSchema
-	.add('warnings', 'any', { array: true })
+	.add('warnings', 'warning', { array: true })
 	.add('commands', (folder: SchemaFolder) => folder
 		.add('deleteMessages', 'boolean')
 		.add('disabled', 'string', { array: true })

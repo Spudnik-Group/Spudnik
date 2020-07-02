@@ -1,4 +1,6 @@
 import { T } from './Shared';
+import { IWarning } from '@lib/interfaces/warning';
+import { ITOSMessage } from '@lib/interfaces/tos-message';
 
 /* eslint-disable @typescript-eslint/no-namespace */
 
@@ -52,21 +54,10 @@ export namespace GuildSettings {
 			export const Enabled = T<boolean>('tos.welcome.enabled');
 			export const Message = T<string>('tos.welcome.message');
 		}
-		export const Messages = T<TosMessage[]>('tos.messages');
+		export const Messages = T<ITOSMessage[]>('tos.messages');
 	}
 
 	export const Language = T<string>('language');
 
-	export const Warnings = T<Warning[]>('warnings');
-}
-
-export interface TosMessage {
-	id: number;
-	title: string;
-	body: string;
-}
-
-export interface Warning {
-	id: string;
-	points: number;
+	export const Warnings = T<IWarning[]>('warnings');
 }
