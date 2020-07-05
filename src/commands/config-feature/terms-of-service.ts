@@ -5,10 +5,11 @@
 import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
 import { Command, CommandStore, KlasaMessage, Possible, Timestamp } from 'klasa';
-import { GuildSettings, TosMessage } from '@lib/types/settings/GuildSettings';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 import { resolveChannel, escapeMarkdown } from '@lib/helpers/base';
 import { modLogMessage } from '@lib/helpers/custom-helpers';
 import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
+import { ITOSMessage } from '@lib/interfaces/tos-message';
 
 /**
  * Sets/Shows the terms of service for a guild.
@@ -92,7 +93,7 @@ export default class TermsOfServiceCommand extends Command {
 		}
 
 		const tosMessages = msg.guild.settings.get(GuildSettings.Tos.Messages);
-		let existingTosMessage = tosMessages.find((message: TosMessage) => {
+		let existingTosMessage = tosMessages.find((message: ITOSMessage) => {
 			if (Number(message.id) === Number(item)) {
 				return true;
 			}
@@ -138,7 +139,7 @@ export default class TermsOfServiceCommand extends Command {
 		}
 
 		const tosMessages = msg.guild.settings.get(GuildSettings.Tos.Messages);
-		let existingTosMessage = tosMessages.find((message: TosMessage) => {
+		let existingTosMessage = tosMessages.find((message: ITOSMessage) => {
 			if (Number(message.id) === Number(item)) {
 				return true;
 			}
@@ -183,7 +184,7 @@ export default class TermsOfServiceCommand extends Command {
 			raw = true;
 		}
 
-		const tosMessage = msg.guild.settings.get(GuildSettings.Tos.Messages).find((message: TosMessage) => (Number(message.id) === Number(item)) ? true : false);
+		const tosMessage = msg.guild.settings.get(GuildSettings.Tos.Messages).find((message: ITOSMessage) => (Number(message.id) === Number(item)) ? true : false);
 
 		if (tosMessage) {
 			const tosEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Tos);
@@ -205,11 +206,11 @@ export default class TermsOfServiceCommand extends Command {
 	public list(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const tosEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.Tos);
 		const tosChannel = msg.guild.settings.get(GuildSettings.Tos.Channel);
-		const tosMessages = msg.guild.settings.get(GuildSettings.Tos.Messages).sort((a: TosMessage, b: TosMessage) => a.id - b.id);
+		const tosMessages = msg.guild.settings.get(GuildSettings.Tos.Messages).sort((a: ITOSMessage, b: ITOSMessage) => a.id - b.id);
 
 		if (tosChannel && tosChannel === msg.channel.id) {
 			if (tosMessages && tosMessages.length > 0) {
-				tosMessages.forEach((message: TosMessage) => {
+				tosMessages.forEach((message: ITOSMessage) => {
 					tosEmbed.author.name = `${message.title!}`;
 					tosEmbed.description = `${message.body!}`;
 
@@ -228,7 +229,7 @@ export default class TermsOfServiceCommand extends Command {
 		const defaultRole = msg.guild.settings.get(GuildSettings.Tos.Role);
 		const welcomeEnabled = msg.guild.settings.get(GuildSettings.Tos.Welcome.Enabled);
 		const welcomeMessage = msg.guild.settings.get(GuildSettings.Tos.Welcome.Message);
-		const tosMessages = msg.guild.settings.get(GuildSettings.Tos.Messages).sort((a: TosMessage, b: TosMessage) => a.id - b.id);
+		const tosMessages = msg.guild.settings.get(GuildSettings.Tos.Messages).sort((a: ITOSMessage, b: ITOSMessage) => a.id - b.id);
 
 		tosEmbed.description = stripIndents`
 			Channel: ${channel ? `<#${channel}>` : 'None set.'}
@@ -240,7 +241,7 @@ export default class TermsOfServiceCommand extends Command {
 		if (tosMessages.length) {
 			let tosList = '';
 
-			tosMessages.forEach((message: TosMessage) => {
+			tosMessages.forEach((message: ITOSMessage) => {
 				tosList += `${message.id} - ${message.title}\n`;
 			});
 			// TODO: change this to better output messages, this could overload the embed character limit

@@ -16,10 +16,6 @@ export const KlasaConfig: KlasaClientOptions = {
 		'GUILD_BAN_REMOVE',
 		'GUILD_EMOJIS_UPDATE',
 		'CHANNEL_PINS_UPDATE',
-		'MESSAGE_DELETE',
-		'MESSAGE_DELETE_BULK',
-		'MESSAGE_REACTION_REMOVE',
-		'MESSAGE_REACTION_REMOVE_ALL',
 		'PRESENCE_UPDATE',
 		'VOICE_STATE_UPDATE',
 		'TYPING_START',
@@ -48,7 +44,6 @@ export const KlasaConfig: KlasaClientOptions = {
 	/**
 	 * Caching Options
 	 */
-	commandMessageLifetime: 1,
 	messageCacheLifetime: 1,
 	messageCacheMaxSize: 1,
 	// The above 2 options are ignored while the interval is 0
