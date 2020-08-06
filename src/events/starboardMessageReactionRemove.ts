@@ -25,7 +25,6 @@ export default class extends Event {
 		if (starboard === channel) return; // Can't star items in starboard channel
 
 		const message: Message = await (channel as TextChannel).messages.fetch(event.message_id, false);
-		if (message.author.id === event.user_id) return; // You can't star your own messages
 		if (message.author.bot) return; // You can't star bot messages
 
 		const currentEmojiKey: any = (event.emoji.id) ? `${event.emoji.name}:${event.emoji.id}` : event.emoji.name;
