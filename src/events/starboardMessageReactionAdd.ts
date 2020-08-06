@@ -25,7 +25,6 @@ export default class extends Event {
 		if (starboard === channel) return; // Can't star items in starboard channel
 
 		const message: Message = await (channel as TextChannel).messages.fetch(event.message_id, false);
-		if (message.author.id === event.user_id) return; // You can't star your own messages
 		if (message.author.bot) return; // You can't star bot messages
 
 		const currentEmojiKey: any = (event.emoji.id) ? `${event.emoji.name}:${event.emoji.id}` : event.emoji.name;
@@ -71,6 +70,7 @@ export default class extends Event {
 						this.client.emit('warn', `Failed to edit starboard embed. Message ID: ${message.id}\nError: ${err}`);
 					});
 			} else {
+				if (message.author.id === event.user_id) return; // You can't be the first to star your own messages
 				// Fresh star, add to starboard
 				(starboard as TextChannel).send({ embed: starboardEmbed })
 					.catch((err: Error) => {
