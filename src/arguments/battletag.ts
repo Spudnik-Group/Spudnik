@@ -2,14 +2,14 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { Argument } from 'klasa';
+import { Argument, Possible, KlasaMessage } from 'klasa';
 
 export default class extends Argument {
 
-	public run(tag: string): any {
-		if (tag.match(/(\w{3,12})#(\d{4,5})/i)) return tag;
+	public run(arg: string, possible: Possible, message: KlasaMessage): any {
+		if (arg.match(/(\w{3,12})#(\d{4,5})/i)) return arg;
 
-		throw 'Please provide a valid battletag in the format: `username#0000`';
+		throw message.language.get('RESOLVER_INVALID_BATTLETAG', possible.name);
 	}
 
 }

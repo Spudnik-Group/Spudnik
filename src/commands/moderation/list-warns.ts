@@ -2,11 +2,11 @@
  * Copyright (c) 2020 Spudnik Group
  */
 
-import { stripIndents } from 'common-tags';
 import { MessageEmbed } from 'discord.js';
 import { Command, CommandStore, KlasaMessage } from 'klasa';
-import { GuildSettings, Warning } from '@lib/types/settings/GuildSettings';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 import { baseEmbed } from '@lib/helpers/embed-helpers';
+import { IWarning } from '@lib/interfaces/warning';
 
 /**
  * List warns for the guild.
@@ -44,13 +44,9 @@ export default class ListWarnsCommand extends Command {
 		if (guildWarnings.length) {
 			// Warnings present for current guild
 			// Build embed
-			guildWarnings.forEach((warning: Warning) => {
-				warnEmbed.description += stripIndents`
-
-						<@${warning.id}> (${warning.id}) - ${warning.points} Points
-					`;
+			guildWarnings.forEach((warning: IWarning) => {
+				warnEmbed.description += `<@${warning.id}> (${warning.id}) - ${warning.points} Points\n`;
 			});
-			warnEmbed.description += '\n\n';
 
 			// Send the success response
 			return msg.sendEmbed(warnEmbed);

@@ -5,8 +5,9 @@
 import { stripIndents } from 'common-tags';
 import { GuildMember, MessageEmbed } from 'discord.js';
 import { Command, CommandStore, KlasaMessage, Timestamp } from 'klasa';
-import { GuildSettings, Warning } from '@lib/types/settings/GuildSettings';
+import { GuildSettings } from '@lib/types/settings/GuildSettings';
 import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
+import { IWarning } from '@lib/interfaces/warning';
 
 /**
  * Clears warns for a member of the guild.
@@ -43,7 +44,7 @@ export default class ClearWarnsCommand extends Command {
 			try {
 				let memberIndex: number = null;
 				// Check for previous warnings of supplied member
-				const currentWarnings = guildWarnings.find((warning: Warning, index: number) => {
+				const currentWarning = guildWarnings.find((warning: IWarning, index: number) => {
 					if (warning.id === member.id) {
 						memberIndex = index;
 
@@ -53,11 +54,11 @@ export default class ClearWarnsCommand extends Command {
 					return false;
 				});
 
-				if (currentWarnings && memberIndex !== null) {
+				if (currentWarning && memberIndex !== null) {
 					// Previous warnings present for supplied member
-					const previousPoints = currentWarnings.points;
+					const previousPoints = currentWarning.points;
 
-					await msg.guild.settings.update(GuildSettings.Warnings, currentWarnings, { arrayAction: 'overwrite' });
+					await msg.guild.settings.update(GuildSettings.Warnings, currentWarning, { arrayAction: 'remove', arrayIndex: memberIndex });
 					// Set up embed message
 					warnEmbed.setDescription(stripIndents`
 						**Moderator:** ${msg.author.tag} (${msg.author.id})

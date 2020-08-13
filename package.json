@@ -40,7 +40,7 @@
         "chalk": "^4.0.0",
         "common-tags": "1.8.0",
         "d20": "^1.4.1",
-        "discord.js": "discordjs/discord.js#fe7df70",
+        "discord.js": "github:discordjs/discord.js#fe7df70",
         "erlpack": "github:discordapp/erlpack",
         "js-base64": "2.5.2",
         "klasa": "github:dirigeants/klasa#settings",
