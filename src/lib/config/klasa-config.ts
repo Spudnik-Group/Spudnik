@@ -76,7 +76,7 @@ export const KlasaConfig: KlasaClientOptions = {
 			autoAliases: true,
 			bucket: 2,
 			cooldown: 3,
-			deletable: true,
+			deletable: false,
 			description: '',
 			enabled: true,
 			guarded: false,
