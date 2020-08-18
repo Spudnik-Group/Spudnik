@@ -35,7 +35,7 @@ export default class AcceptCommand extends Command {
      */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
 		const modlogEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.RoleManager);
-		
+
 		try {
 			const role = msg.guild.settings.get(GuildSettings.Tos.Role);
 
