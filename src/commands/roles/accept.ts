@@ -4,6 +4,10 @@
 
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 import { GuildSettings } from '@lib/types/settings/GuildSettings';
+import { MessageEmbed } from 'discord.js';
+import { specialEmbed, specialEmbedTypes } from '@lib/helpers/embed-helpers';
+import { stripIndents } from 'common-tags';
+import { modLogMessage } from '@lib/helpers/custom-helpers';
 
 /**
  * Sets/Shows the terms of service for a guild.
@@ -30,8 +34,17 @@ export default class AcceptCommand extends Command {
      * @memberof AcceptCommand
      */
 	public async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
+		const modlogEmbed: MessageEmbed = specialEmbed(msg, specialEmbedTypes.RoleManager);
+		
 		try {
 			const role = msg.guild.settings.get(GuildSettings.Tos.Role);
+
+			modlogEmbed.setDescription(stripIndents`
+				**Member:** ${msg.member.user.tag} (${msg.member.id})
+				**Action:** accepted TOS
+			`);
+
+			await modLogMessage(msg, modlogEmbed);
 
 			await msg.member.roles.add(role);
 			await msg.delete();
