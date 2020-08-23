@@ -28,6 +28,7 @@ declare module 'klasa' {
 declare module 'discord.js' {
 	interface MessageEmbed {
 		// color
+		setDescription(description);
 	}
 
 	interface MessageEmbedAuthor {
