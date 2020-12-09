@@ -45,6 +45,9 @@ export default class RolesCommand extends Command {
 						let output: string = '';
 						currentPage.forEach((roleID: string) => {
 							const r: Role = msg.guild.roles.find((r: Role) => r.id === roleID);
+							if (!r) {
+								return;
+							}
 							output += `* <@&${r.id}> - ${r.members.size} members
 							`;
 						});
